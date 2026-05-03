@@ -3,7 +3,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { makeStyles } from "@material-ui/styles";
 import { loader } from '@monaco-editor/react';
-import { Button, AppBar, Toolbar } from "@material-ui/core";
+import { Button, AppBar, Toolbar, Typography } from "@material-ui/core";
 import AppLogo from "./plugins/AppLogo";
 import NavLink from "./components/NavLink";
 
@@ -56,6 +56,10 @@ const useStyles = makeStyles((theme) => ({
   toolbarRegular: {
     minHeight: 80,
   },
+  headerTitle: {
+    marginRight: 24,
+    fontWeight: 600,
+  },
 }));
 
 export default function App() {
@@ -71,6 +75,9 @@ export default function App() {
           }}
         >
           <AppLogo />
+          <Typography variant="h6" className={classes.headerTitle}>
+            Workflow Builder
+          </Typography>
           <Button component={NavLink} path="/">
             {ERRORS_INSPECTOR_ENABLED ? "Errors" : "Executions"}
           </Button>

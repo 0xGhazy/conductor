@@ -5,13 +5,13 @@ import { cleanDuplicateSlash } from "./fetch";
 const useStyles = makeStyles((theme) => ({
   logo: {
     height: 37,
-    width: 175,
-    marginRight: 30,
+    width: 37,
+    marginRight: 8,
   },
 }));
 
 export default function AppLogo() {
   const classes = useStyles();
-  const logoPath = 'https://assets.conductor-oss.org/logo.png';
-  return <img src={cleanDuplicateSlash(logoPath)} alt="Conductor" className={classes.logo} />;
+  const logoPath = "/vodafone-logo.svg";
+  return <img src={cleanDuplicateSlash(logoPath)} alt="Vodafone" className={classes.logo} />;
 }
