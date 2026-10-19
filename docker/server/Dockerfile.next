@@ -27,14 +27,12 @@ COPY . /conductor
 WORKDIR /conductor
 
 RUN if [ "$PREBUILT" = "true" ]; then \
-      rm -rf server/build/libs && mkdir -p server/build/libs && \
-      cp docker/server/libs/conductor-server.jar server/build/libs/conductor-server-boot.jar && \
+      rm -rf server/target && mkdir -p server/target && \
+      cp docker/server/libs/conductor-server.jar server/target/conductor-server.jar && \
       echo "Using pre-built server JAR"; \
     else \
-      ./gradlew build -x test -x spotlessCheck -x shadowJar \
-        -PindexingBackend=${INDEXING_BACKEND} \
-        -Dorg.gradle.jvmargs=-Xmx2g \
-        --no-daemon --no-parallel; \
+      sh ./mvnw clean package -DskipTests -B --no-transfer-progress && \
+      cp server/target/conductor-server-*.jar server/target/conductor-server.jar; \
     fi
 
 # ===========================================================================================================
@@ -73,7 +71,7 @@ RUN mkdir -p /app/config /app/logs /app/libs
 
 COPY docker/server/bin /app
 COPY docker/server/config /app/config
-COPY --from=builder /conductor/server/build/libs/*boot*.jar /app/libs/conductor-server.jar
+COPY --from=builder /conductor/server/target/conductor-server.jar /app/libs/conductor-server.jar
 
 # ui-next dist served by nginx on port 5000
 WORKDIR /usr/share/nginx/html

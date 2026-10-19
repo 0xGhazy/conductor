@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.conductoross</groupId>
+        <artifactId>conductor</artifactId>
+        <version>3.30.2-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>conductor-scheduler-mysql-persistence</artifactId>
+    <name>conductor-scheduler-mysql-persistence</name>
+    <description>Scheduler MySQL persistence for Conductor</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-scheduler-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-mysql-persistence</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+        </dependency>
+
+        <!-- Provided -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-scheduler-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mysql</artifactId>
+            <version>${revTestContainer}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

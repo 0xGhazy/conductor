@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.conductoross</groupId>
+        <artifactId>conductor</artifactId>
+        <version>3.30.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>conductor-task-status-listener</artifactId>
+    <name>conductor-task-status-listener</name>
+    <description>Task status listener for Conductor</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-redis-persistence</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rarefiedredis.redis</groupId>
+            <artifactId>redis-java</artifactId>
+            <version>${revRarefiedRedis}</version>
+        </dependency>
+
+        <!-- Provided -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-test-util</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>${revGroovy}</version>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>${gmavenplus-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>addTestSources</goal>
+                            <goal>compileTests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

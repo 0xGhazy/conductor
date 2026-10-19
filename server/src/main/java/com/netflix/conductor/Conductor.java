@@ -37,7 +37,6 @@ import org.springframework.core.io.FileSystemResource;
         basePackages = {
             "com.netflix.conductor",
             "io.orkes.conductor",
-            "dev.agentspan",
             "org.conductoross.conductor"
         })
 public class Conductor implements ApplicationRunner {
@@ -76,7 +75,7 @@ public class Conductor implements ApplicationRunner {
         log.info("┌────────────────────────────────────────────────────────────────────────┐");
         log.info("│                    CONDUCTOR SERVER CONFIGURATION                      │");
         log.info("├────────────────────────────────────────────────────────────────────────┤");
-        log.info("│  Database Type    : {}", padRight(dbType, 51) + "│");
+        log.info("│  Database Type    : {}", padRight(dbType, 51) + "│");                 
         log.info("│  Queue Type       : {}", padRight(queueType, 51) + "│");
         log.info("│  Indexing Type    : {}", padRight(indexingType, 51) + "│");
         log.info("│  Server Port      : {}", padRight(port, 51) + "│");
