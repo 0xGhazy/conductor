@@ -18,9 +18,6 @@
     <modules>
         <module>core</module>
         <module>postgres-persistence</module>
-        <module>mysql-persistence</module>
-        <module>cassandra-persistence</module>
         <module>redis-persistence</module>
-        <module>sqlite-persistence</module>
     </modules>
 </project>

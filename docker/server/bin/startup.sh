@@ -26,7 +26,7 @@ echo "Using java options config: $JAVA_OPTS"
 
 if [ -z "$CONFIG_PROP" ];
   then
-    echo "No CONFIG_PROP set — using built-in defaults (SQLite, no external dependencies required)";
+    echo "No CONFIG_PROP set — using application.properties defaults";
     java ${JAVA_OPTS} -jar conductor-server.jar 2>&1 | tee -a /app/logs/server.log
   else
     echo "Using config: $CONFIG_PROP";

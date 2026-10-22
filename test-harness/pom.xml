@@ -40,16 +40,7 @@
             <artifactId>conductor-redis-persistence</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-cassandra-persistence</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-es7-persistence</artifactId>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.conductoross</groupId>
             <artifactId>conductor-grpc-server</artifactId>

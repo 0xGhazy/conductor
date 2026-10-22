@@ -110,17 +110,10 @@
         <module>redis-persistence</module>
         <module>redis-lock</module>
         <module>redis-concurrency-limit</module>
-        <module>es6-persistence</module>
-        <module>es7-persistence</module>
         <module>es8-persistence</module>
-        <module>os-persistence</module>
-        <module>os-persistence-v2</module>
         <module>os-persistence-v3</module>
         <module>test-util</module>
         <module>postgres-persistence</module>
-        <module>mysql-persistence</module>
-        <module>sqlite-persistence</module>
-        <module>cassandra-persistence</module>
         <module>scheduler</module>
         <module>workflow-event-listener</module>
         <module>task-status-listener</module>
@@ -194,21 +187,7 @@
                 <artifactId>conductor-postgres-persistence</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-mysql-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-sqlite-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-cassandra-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.conductoross</groupId>
                 <artifactId>conductor-redis-configuration</artifactId>
@@ -236,27 +215,7 @@
             </dependency>
             <dependency>
                 <groupId>org.conductoross</groupId>
-                <artifactId>conductor-es6-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-es7-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
                 <artifactId>conductor-es8-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-os-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-os-persistence-v2</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -274,26 +233,13 @@
                 <artifactId>conductor-scheduler-postgres-persistence</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-scheduler-mysql-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-scheduler-cassandra-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.conductoross</groupId>
                 <artifactId>conductor-scheduler-redis-persistence</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-scheduler-sqlite-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+
             <dependency>
                 <groupId>org.conductoross</groupId>
                 <artifactId>conductor-workflow-event-listener</artifactId>

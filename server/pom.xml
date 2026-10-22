@@ -43,23 +43,16 @@
         </dependency>
         <dependency>
             <groupId>org.conductoross</groupId>
-            <artifactId>conductor-cassandra-persistence</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.conductoross</groupId>
             <artifactId>conductor-postgres-persistence</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.conductoross</groupId>
-            <artifactId>conductor-mysql-persistence</artifactId>
+            <artifactId>conductor-es8-persistence</artifactId>
         </dependency>
         <dependency>
             <groupId>org.conductoross</groupId>
-            <artifactId>conductor-sqlite-persistence</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-es7-persistence</artifactId>
+            <artifactId>conductor-os-persistence-v3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.conductoross</groupId>
@@ -89,22 +82,12 @@
             <groupId>org.conductoross</groupId>
             <artifactId>conductor-scheduler-postgres-persistence</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-scheduler-mysql-persistence</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-scheduler-cassandra-persistence</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.conductoross</groupId>
             <artifactId>conductor-scheduler-redis-persistence</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-scheduler-sqlite-persistence</artifactId>
-        </dependency>
+
 
         <!-- Listeners -->
         <dependency>
