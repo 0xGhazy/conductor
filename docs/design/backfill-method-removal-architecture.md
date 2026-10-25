@@ -92,7 +92,7 @@ Removing `reindexAgentExecutions` drops the sole use of the `IndexDAO`
 dependency, so both of these are removed as well:
 
 - Field `private final IndexDAO indexDAO;` — currently at `AgentService.java:75`.
-- Import `import com.netflix.conductor.dao.IndexDAO;` — currently at
+- Import `import com.vodafone.vss.weaver.dao.IndexDAO;` — currently at
   `AgentService.java:46`.
 
 > `AgentService` uses `@RequiredArgsConstructor` (Lombok). Removing the `final`
@@ -137,10 +137,10 @@ Every document in this set and every edit refers to these exact names:
 | Removed helper (reindex) | `reindexAgentExecutions` |
 | Removed constant (metadata key) | `AGENT_CLASSIFIER_BACKFILL_VERSION` |
 | Removed constant (version value) | `AGENT_CLASSIFIER_BACKFILL_VERSION_VALUE` |
-| Removed field | `indexDAO` (type `com.netflix.conductor.dao.IndexDAO`) |
+| Removed field | `indexDAO` (type `com.vodafone.vss.weaver.dao.IndexDAO`) |
 | Removed test method | `legacyAgentClassifierBackfillUsesConcreteExecutionTimeBounds` |
 | Production class | `org.conductoross.conductor.ai.agentspan.runtime.service.AgentService` |
-| Test class | `com.netflix.conductor.test.integration.agent.AgentSpanDeploymentContractEndToEndTest` |
+| Test class | `com.vodafone.vss.weaver.test.integration.agent.AgentSpanDeploymentContractEndToEndTest` |
 | Metadata string literal (workflow def) | `"agent_classifier_backfill_version"` |
 
 ## 6. Non-goals

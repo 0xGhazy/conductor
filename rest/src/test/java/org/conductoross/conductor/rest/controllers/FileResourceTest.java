@@ -29,9 +29,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.netflix.conductor.core.exception.AccessForbiddenException;
-import com.netflix.conductor.core.exception.NotFoundException;
-import com.netflix.conductor.rest.controllers.ApplicationExceptionMapper;
+import com.vodafone.vss.weaver.core.exception.AccessForbiddenException;
+import com.vodafone.vss.weaver.core.exception.NotFoundException;
+import com.vodafone.vss.weaver.rest.controllers.ApplicationExceptionMapper;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.any;

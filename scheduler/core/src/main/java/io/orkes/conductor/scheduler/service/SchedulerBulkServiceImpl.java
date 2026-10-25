@@ -17,9 +17,9 @@ import java.util.List;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Service;
 
-import com.netflix.conductor.annotations.Audit;
-import com.netflix.conductor.annotations.Trace;
-import com.netflix.conductor.common.model.BulkResponse;
+import com.vodafone.vss.weaver.annotations.Audit;
+import com.vodafone.vss.weaver.annotations.Trace;
+import com.vodafone.vss.weaver.common.model.BulkResponse;
 
 import io.orkes.conductor.scheduler.config.SchedulerConditions;
 import lombok.extern.slf4j.Slf4j;

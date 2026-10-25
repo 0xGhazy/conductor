@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.springframework.validation.annotation.Validated;
 
-import com.netflix.conductor.common.model.BulkResponse;
+import com.vodafone.vss.weaver.common.model.BulkResponse;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

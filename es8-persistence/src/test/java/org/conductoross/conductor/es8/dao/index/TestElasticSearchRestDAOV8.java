@@ -26,14 +26,14 @@ import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.junit.Test;
 
-import com.netflix.conductor.common.metadata.events.EventExecution;
-import com.netflix.conductor.common.metadata.events.EventHandler;
-import com.netflix.conductor.common.metadata.tasks.Task;
-import com.netflix.conductor.common.metadata.tasks.TaskExecLog;
-import com.netflix.conductor.common.run.TaskSummary;
-import com.netflix.conductor.common.run.Workflow.WorkflowStatus;
-import com.netflix.conductor.common.run.WorkflowSummary;
-import com.netflix.conductor.core.events.queue.Message;
+import com.vodafone.vss.weaver.common.metadata.events.EventExecution;
+import com.vodafone.vss.weaver.common.metadata.events.EventHandler;
+import com.vodafone.vss.weaver.common.metadata.tasks.Task;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskExecLog;
+import com.vodafone.vss.weaver.common.run.TaskSummary;
+import com.vodafone.vss.weaver.common.run.Workflow.WorkflowStatus;
+import com.vodafone.vss.weaver.common.run.WorkflowSummary;
+import com.vodafone.vss.weaver.core.events.queue.Message;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.collect.ImmutableMap;

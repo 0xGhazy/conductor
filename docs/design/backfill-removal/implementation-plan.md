@@ -35,7 +35,7 @@ Perform these deletions:
 
    ```java
    // DELETE:
-   import com.netflix.conductor.dao.IndexDAO;
+   import com.vodafone.vss.weaver.dao.IndexDAO;
    ```
 
 4. **`backfillLegacyAgentExecutionClassifiers()`.** Remove the method and its

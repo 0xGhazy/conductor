@@ -14,9 +14,9 @@ package org.conductoross.conductor.core.execution.tasks.annotated;
 
 import org.springframework.stereotype.Component;
 
-import com.netflix.conductor.sdk.workflow.executor.task.TaskContext;
-import com.netflix.conductor.sdk.workflow.task.InputParam;
-import com.netflix.conductor.sdk.workflow.task.WorkerTask;
+import com.vodafone.vss.weaver.sdk.workflow.executor.task.TaskContext;
+import com.vodafone.vss.weaver.sdk.workflow.task.InputParam;
+import com.vodafone.vss.weaver.sdk.workflow.task.WorkerTask;
 
 @Component
 public class SampleWorkers {

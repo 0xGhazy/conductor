@@ -32,10 +32,10 @@ import org.conductoross.conductor.model.file.StorageType;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.netflix.conductor.core.exception.AccessForbiddenException;
-import com.netflix.conductor.core.exception.ConflictException;
-import com.netflix.conductor.core.exception.NonTransientException;
-import com.netflix.conductor.core.exception.NotFoundException;
+import com.vodafone.vss.weaver.core.exception.AccessForbiddenException;
+import com.vodafone.vss.weaver.core.exception.ConflictException;
+import com.vodafone.vss.weaver.core.exception.NonTransientException;
+import com.vodafone.vss.weaver.core.exception.NotFoundException;
 
 import static org.junit.Assert.*;
 

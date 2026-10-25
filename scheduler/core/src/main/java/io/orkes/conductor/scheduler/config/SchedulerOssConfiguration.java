@@ -21,9 +21,9 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.netflix.conductor.core.sync.Lock;
-import com.netflix.conductor.dao.QueueDAO;
-import com.netflix.conductor.service.WorkflowService;
+import com.vodafone.vss.weaver.core.sync.Lock;
+import com.vodafone.vss.weaver.dao.QueueDAO;
+import com.vodafone.vss.weaver.service.WorkflowService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.orkes.conductor.dao.archive.SchedulerArchivalDAO;

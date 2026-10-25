@@ -12,7 +12,7 @@
  */
 package org.conductoross.conductor.core.exception;
 
-import com.netflix.conductor.core.exception.NonTransientException;
+import com.vodafone.vss.weaver.core.exception.NonTransientException;
 
 /** Server-side exception for file-storage failures (verification, storage backend errors). */
 public class FileStorageException extends NonTransientException {

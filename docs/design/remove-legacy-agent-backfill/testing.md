@@ -66,7 +66,7 @@ Because the change is deletion-only, the goal is to prove nothing else regressed
 | Formatting | `./gradlew spotlessApply` | No manual fixups needed afterward. |
 | Production compiles | `./gradlew :agentspan:compileJava` | Success; no unused-symbol or missing-symbol errors from the removals. |
 | agentspan tests | `./gradlew :agentspan:test` | All remaining tests pass. |
-| End-to-end contract suite | `./gradlew :test-harness:test --tests "com.netflix.conductor.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"` | Class compiles without the reflection import; all remaining tests pass; the deleted test no longer runs. |
+| End-to-end contract suite | `./gradlew :test-harness:test --tests "com.vodafone.vss.weaver.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"` | Class compiles without the reflection import; all remaining tests pass; the deleted test no longer runs. |
 
 ## 4. Regression guard for the review instruction
 

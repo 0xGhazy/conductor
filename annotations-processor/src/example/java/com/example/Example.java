@@ -12,8 +12,8 @@
  */
 package com.example;
 
-import com.netflix.conductor.annotations.protogen.ProtoField;
-import com.netflix.conductor.annotations.protogen.ProtoMessage;
+import com.vodafone.vss.weaver.annotations.protogen.ProtoField;
+import com.vodafone.vss.weaver.annotations.protogen.ProtoMessage;
 
 @ProtoMessage
 public class Example {

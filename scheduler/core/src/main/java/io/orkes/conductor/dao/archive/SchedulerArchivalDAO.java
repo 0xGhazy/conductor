@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.netflix.conductor.common.run.SearchResult;
+import com.vodafone.vss.weaver.common.run.SearchResult;
 
 import io.orkes.conductor.scheduler.model.WorkflowScheduleExecutionModel;
 

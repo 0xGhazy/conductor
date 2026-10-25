@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.conductor.common.run.SearchResult;
+import com.vodafone.vss.weaver.common.run.SearchResult;
 
 import io.orkes.conductor.scheduler.config.SchedulerConditions;
 import io.orkes.conductor.scheduler.model.WorkflowSchedule;

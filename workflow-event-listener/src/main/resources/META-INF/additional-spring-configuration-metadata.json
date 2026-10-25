@@ -50,31 +50,31 @@
       "name": "conductor.event-queues.sqs.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable the use of AWS SQS implementation to provide queues for consuming events.",
-      "sourceType": "com.netflix.conductor.contribs.queue.sqs.config.SQSEventQueueConfiguration"
+      "sourceType": "com.vodafone.vss.weaver.contribs.queue.sqs.config.SQSEventQueueConfiguration"
     },
     {
       "name": "conductor.event-queues.amqp.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable the use of RabbitMQ implementation to provide queues for consuming events.",
-      "sourceType": "com.netflix.conductor.contribs.queue.amqp.config.AMQPEventQueueConfiguration"
+      "sourceType": "com.vodafone.vss.weaver.contribs.queue.amqp.config.AMQPEventQueueConfiguration"
     },
     {
       "name": "conductor.event-queues.nats.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable the use of NATS implementation to provide queues for consuming events.",
-      "sourceType": "com.netflix.conductor.contribs.queue.nats.config.NATSConfiguration"
+      "sourceType": "com.vodafone.vss.weaver.contribs.queue.nats.config.NATSConfiguration"
     },
     {
       "name": "conductor.event-queues.nats-stream.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable the use of NATS Streaming implementation to provide queues for consuming events.",
-      "sourceType": "com.netflix.conductor.contribs.queue.nats.config.NATSStreamConfiguration"
+      "sourceType": "com.vodafone.vss.weaver.contribs.queue.nats.config.NATSStreamConfiguration"
     },
     {
       "name": "conductor.event-queues.kafka.enabled",
       "type": "java.lang.Boolean",
       "description": "Enable the use of Kafka implementation to provide queues for consuming events.",
-      "sourceType": "com.netflix.conductor.event-queue.kafkaeq.config.KafkaEventQueueConfiguration"
+      "sourceType": "com.vodafone.vss.weaver.event-queue.kafkaeq.config.KafkaEventQueueConfiguration"
     },
     {
       "name": "conductor.default-event-queue.type",
@@ -85,7 +85,7 @@
       "name": "conductor.workflow-status-listener.composite.types",
       "type": "java.util.List",
       "description": "List of workflow listener types to enable when using composite listener. Valid values: workflow_publisher, queue_publisher, kafka, archive",
-      "sourceType": "com.netflix.conductor.contribs.listener.composite.CompositeWorkflowStatusListenerProperties"
+      "sourceType": "com.vodafone.vss.weaver.contribs.listener.composite.CompositeWorkflowStatusListenerProperties"
     }
   ],
   "hints": [

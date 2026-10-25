@@ -12,9 +12,9 @@
  */
 package org.conductoross.conductor.core.execution.mapper;
 
-import com.netflix.conductor.core.exception.TerminateWorkflowException;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
+import com.vodafone.vss.weaver.core.exception.TerminateWorkflowException;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
 
 /** Used for validating tasks */
 public interface TaskMapperValidator {

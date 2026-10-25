@@ -21,15 +21,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.netflix.conductor.common.metadata.tasks.Task;
-import com.netflix.conductor.common.metadata.tasks.TaskType;
-import com.netflix.conductor.core.execution.WorkflowExecutor;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
-import com.netflix.conductor.sdk.workflow.executor.task.NonRetryableException;
-import com.netflix.conductor.sdk.workflow.executor.task.TaskContext;
-import com.netflix.conductor.sdk.workflow.task.InputParam;
-import com.netflix.conductor.sdk.workflow.task.WorkerTask;
+import com.vodafone.vss.weaver.common.metadata.tasks.Task;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
+import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
+import com.vodafone.vss.weaver.sdk.workflow.executor.task.NonRetryableException;
+import com.vodafone.vss.weaver.sdk.workflow.executor.task.TaskContext;
+import com.vodafone.vss.weaver.sdk.workflow.task.InputParam;
+import com.vodafone.vss.weaver.sdk.workflow.task.WorkerTask;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

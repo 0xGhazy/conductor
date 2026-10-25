@@ -12,7 +12,7 @@ The failure reported in review is:
 Gradle Test Executor 2 > AgentSpanDeploymentContractEndToEndTest > legacyAgentClassifierBackfillUsesConcreteExecutionTimeBounds() FAILED
     java.lang.NoSuchMethodException: org.conductoross.conductor.ai.agentspan.runtime.service.AgentService.backfillLegacyAgentExecutionClassifiers()
         at java.base/java.lang.Class.getDeclaredMethod(Class.java:2850)
-        at com.netflix.conductor.test.integration.agent.AgentSpanDeploymentContractEndToEndTest.legacyAgentClassifierBackfillUsesConcreteExecutionTimeBounds(AgentSpanDeploymentContractEndToEndTest.java:328)
+        at com.vodafone.vss.weaver.test.integration.agent.AgentSpanDeploymentContractEndToEndTest.legacyAgentClassifierBackfillUsesConcreteExecutionTimeBounds(AgentSpanDeploymentContractEndToEndTest.java:328)
 ```
 
 The test exists **only** to exercise `backfillLegacyAgentExecutionClassifiers`,
@@ -77,7 +77,7 @@ Run in order; each must pass before the change is considered complete.
    remaining tests in the class:
 
    ```
-   ./gradlew :test-harness:test --tests "com.netflix.conductor.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"
+   ./gradlew :test-harness:test --tests "com.vodafone.vss.weaver.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"
    ```
 
    Expected: the suite runs without the deleted test and without a

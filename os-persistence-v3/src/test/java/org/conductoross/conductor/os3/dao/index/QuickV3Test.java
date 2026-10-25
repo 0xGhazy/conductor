@@ -26,8 +26,8 @@ import org.opensearch.client.opensearch.OpenSearchClient;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.springframework.retry.support.RetryTemplate;
 
-import com.netflix.conductor.common.run.Workflow;
-import com.netflix.conductor.common.run.WorkflowSummary;
+import com.vodafone.vss.weaver.common.run.Workflow;
+import com.vodafone.vss.weaver.common.run.WorkflowSummary;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

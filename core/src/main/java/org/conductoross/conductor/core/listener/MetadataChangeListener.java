@@ -12,9 +12,9 @@
  */
 package org.conductoross.conductor.core.listener;
 
-import com.netflix.conductor.common.metadata.events.EventHandler;
-import com.netflix.conductor.common.metadata.tasks.TaskDef;
-import com.netflix.conductor.common.metadata.workflow.WorkflowDef;
+import com.vodafone.vss.weaver.common.metadata.events.EventHandler;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
+import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 
 /** Listener for metadata changes: workflow definitions, task definitions, and event handlers. */
 public interface MetadataChangeListener {

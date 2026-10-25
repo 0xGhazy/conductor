@@ -82,7 +82,7 @@ gone:
   class uses Lombok `@RequiredArgsConstructor`, deleting the `final` field also
   drops it from the generated constructor; Spring simply stops injecting it. No
   hand-written constructor exists to update.
-- Import `com.netflix.conductor.dao.IndexDAO` (currently line 46).
+- Import `com.vodafone.vss.weaver.dao.IndexDAO` (currently line 46).
 
 ### In `AgentSpanDeploymentContractEndToEndTest.java`
 
@@ -107,9 +107,9 @@ must survive:
 
 - `AgentService` field `private final ExecutionDAO executionDAO;` — used by
   the pause/resume execution paths (lines ~765, ~780).
-- Imports `com.netflix.conductor.common.run.SearchResult`,
-  `com.netflix.conductor.common.run.WorkflowSummary`,
-  `com.netflix.conductor.model.WorkflowModel`,
+- Imports `com.vodafone.vss.weaver.common.run.SearchResult`,
+  `com.vodafone.vss.weaver.common.run.WorkflowSummary`,
+  `com.vodafone.vss.weaver.model.WorkflowModel`,
   `org.conductoross.conductor.ai.agentspan.runtime.util.WorkflowClassifiers`,
   and `java.util.ArrayList` — all still referenced elsewhere in the class.
 - In the test: `import org.conductoross...service.AgentService` and the

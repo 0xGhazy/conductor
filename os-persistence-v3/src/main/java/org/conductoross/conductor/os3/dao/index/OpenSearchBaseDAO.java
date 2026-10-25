@@ -22,7 +22,7 @@ import org.conductoross.conductor.os3.dao.query.parser.internal.ParserException;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch._types.query_dsl.QueryStringQuery;
 
-import com.netflix.conductor.dao.IndexDAO;
+import com.vodafone.vss.weaver.dao.IndexDAO;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;

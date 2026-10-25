@@ -14,9 +14,9 @@ package org.conductoross.conductor.os3.utils;
 
 import org.apache.commons.io.Charsets;
 
-import com.netflix.conductor.common.run.TaskSummary;
-import com.netflix.conductor.common.run.WorkflowSummary;
-import com.netflix.conductor.core.utils.IDGenerator;
+import com.vodafone.vss.weaver.common.run.TaskSummary;
+import com.vodafone.vss.weaver.common.run.WorkflowSummary;
+import com.vodafone.vss.weaver.core.utils.IDGenerator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Resources;

@@ -15,7 +15,7 @@ package org.conductoross.conductor.common.metadata.agent;
 import java.util.List;
 import java.util.Map;
 
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
+import com.vodafone.vss.weaver.common.metadata.workflow.StartWorkflowRequest;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;

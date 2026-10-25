@@ -23,9 +23,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.netflix.conductor.common.model.BulkResponse;
-import com.netflix.conductor.core.exception.NotFoundException;
-import com.netflix.conductor.core.exception.TransientException;
+import com.vodafone.vss.weaver.common.model.BulkResponse;
+import com.vodafone.vss.weaver.core.exception.NotFoundException;
+import com.vodafone.vss.weaver.core.exception.TransientException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;

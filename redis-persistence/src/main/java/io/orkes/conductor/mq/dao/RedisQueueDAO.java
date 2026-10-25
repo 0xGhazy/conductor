@@ -14,10 +14,10 @@ package io.orkes.conductor.mq.dao;
 
 import java.util.concurrent.ExecutorService;
 
-import com.netflix.conductor.core.config.ConductorProperties;
-import com.netflix.conductor.dao.QueueDAO;
-import com.netflix.conductor.redis.config.RedisProperties;
-import com.netflix.conductor.redis.jedis.JedisCommands;
+import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.dao.QueueDAO;
+import com.vodafone.vss.weaver.redis.config.RedisProperties;
+import com.vodafone.vss.weaver.redis.jedis.JedisCommands;
 
 import io.orkes.conductor.mq.ConductorQueue;
 import io.orkes.conductor.mq.redis.single.ConductorRedisQueue;

@@ -14,14 +14,14 @@ package org.conductoross.conductor.core.execution;
 
 import java.time.Duration;
 
-import com.netflix.conductor.common.metadata.tasks.TaskDef;
-import com.netflix.conductor.common.metadata.tasks.TaskType;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static com.netflix.conductor.common.metadata.tasks.TaskType.TASK_TYPE_WAIT;
+import static com.vodafone.vss.weaver.common.metadata.tasks.TaskType.TASK_TYPE_WAIT;
 
 @Slf4j
 public class ExecutorUtils {

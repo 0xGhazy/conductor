@@ -39,7 +39,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
-import com.netflix.conductor.dao.IndexDAO;
+import com.vodafone.vss.weaver.dao.IndexDAO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

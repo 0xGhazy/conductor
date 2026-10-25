@@ -99,11 +99,11 @@ Create a `Main.java` with the following:
 ```java
 import io.orkes.conductor.client.ApiClient;
 import io.orkes.conductor.client.OrkesClients;
-import com.netflix.conductor.client.automator.TaskRunnerConfigurer;
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
-import com.netflix.conductor.sdk.workflow.def.ConductorWorkflow;
-import com.netflix.conductor.sdk.workflow.def.tasks.SimpleTask;
-import com.netflix.conductor.sdk.workflow.executor.WorkflowExecutor;
+import com.vodafone.vss.weaver.client.automator.TaskRunnerConfigurer;
+import com.vodafone.vss.weaver.common.metadata.workflow.StartWorkflowRequest;
+import com.vodafone.vss.weaver.sdk.workflow.def.ConductorWorkflow;
+import com.vodafone.vss.weaver.sdk.workflow.def.tasks.SimpleTask;
+import com.vodafone.vss.weaver.sdk.workflow.executor.WorkflowExecutor;
 
 import java.util.List;
 import java.util.Map;
@@ -620,10 +620,10 @@ See the [Examples Guide](https://github.com/conductor-oss/java-sdk/blob/main/exa
 
 | Example | Description | Run |
 |---------|-------------|-----|
-| [Hello World](https://github.com/conductor-oss/java-sdk/tree/main/examples/basics/hello-world) | Minimal workflow with worker | `./gradlew :examples:run -PmainClass=com.netflix.conductor.sdk.examples.helloworld.Main` |
+| [Hello World](https://github.com/conductor-oss/java-sdk/tree/main/examples/basics/hello-world) | Minimal workflow with worker | `./gradlew :examples:run -PmainClass=com.vodafone.vss.weaver.sdk.examples.helloworld.Main` |
 | [Workflow Operations](https://github.com/conductor-oss/java-sdk/tree/main/examples/old/src/main/java/io/orkes/conductor/sdk/examples/workflowops) | Pause, resume, terminate workflows | `./gradlew :examples:run -PmainClass=io.orkes.conductor.sdk.examples.workflowops.Main` |
-| [Shipment Workflow](https://github.com/conductor-oss/java-sdk/tree/main/examples/old/src/main/java/com/netflix/conductor/sdk/examples/shipment) | Real-world order processing | `./gradlew :examples:run -PmainClass=com.netflix.conductor.sdk.examples.shipment.Main` |
-| [Events](https://github.com/conductor-oss/java-sdk/tree/main/examples/old/src/main/java/com/netflix/conductor/sdk/examples/events) | Event-driven workflows | `./gradlew :examples:run -PmainClass=com.netflix.conductor.sdk.examples.events.EventHandlerExample` |
+| [Shipment Workflow](https://github.com/conductor-oss/java-sdk/tree/main/examples/old/src/main/java/com/netflix/conductor/sdk/examples/shipment) | Real-world order processing | `./gradlew :examples:run -PmainClass=com.vodafone.vss.weaver.sdk.examples.shipment.Main` |
+| [Events](https://github.com/conductor-oss/java-sdk/tree/main/examples/old/src/main/java/com/netflix/conductor/sdk/examples/events) | Event-driven workflows | `./gradlew :examples:run -PmainClass=com.vodafone.vss.weaver.sdk.examples.events.EventHandlerExample` |
 | [All AI examples](https://github.com/conductor-oss/java-sdk/blob/main/examples/old/src/main/java/io/orkes/conductor/sdk/examples/agentic/AgenticExamplesRunner.java) | All agentic/LLM workflows | `./gradlew :examples:run --args="--all"` |
 | [RAG Workflow](https://github.com/conductor-oss/java-sdk/blob/main/examples/old/src/main/java/io/orkes/conductor/sdk/examples/agentic/RagWorkflowExample.java) | RAG pipeline (index → search → answer) | `./gradlew :examples:run -PmainClass=io.orkes.conductor.sdk.examples.agentic.RagWorkflowExample` |
 | [Media Transcoder](https://github.com/conductor-oss/file-storage-java-sdk/tree/main/examples/file-storage/media-transcoder) | File-handling pipeline: upload video → transcode → thumbnail → manifest | `mvn -f examples/file-storage/media-transcoder/pom.xml exec:java` |

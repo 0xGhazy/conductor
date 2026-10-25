@@ -1,4 +1,5 @@
 gradlew eol=lf
+mvnw eol=lf
 *.gradle eol=lf
 *.java eol=lf
 *.groovy eol=lf

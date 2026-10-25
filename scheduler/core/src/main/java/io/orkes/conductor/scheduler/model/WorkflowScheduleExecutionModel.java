@@ -12,7 +12,7 @@
  */
 package io.orkes.conductor.scheduler.model;
 
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
+import com.vodafone.vss.weaver.common.metadata.workflow.StartWorkflowRequest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

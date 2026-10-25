@@ -16,7 +16,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.netflix.conductor.common.run.Workflow;
+import com.vodafone.vss.weaver.common.run.Workflow;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

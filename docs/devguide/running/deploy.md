@@ -50,13 +50,11 @@ Pre-built compose files for other backend combinations:
 
 | Compose file | Database | Queue | Index |
 |:--|:--|:--|:--|
-| `docker-compose.yaml` | Redis | Redis | Elasticsearch 7 |
+| `docker-compose-postgres-redis-elasticsearch8.yaml` | PostgreSQL | Redis | Elasticsearch 8 |
+| `docker-compose-postgres-redis-opensearch3.yaml` | PostgreSQL | Redis | OpenSearch 3 |
 | `docker-compose-es8.yaml` | Redis | Redis | Elasticsearch 8 |
-| `docker-compose-postgres.yaml` | PostgreSQL | PostgreSQL | PostgreSQL |
-| `docker-compose-postgres-es7.yaml` | PostgreSQL | PostgreSQL | Elasticsearch 7 |
-| `docker-compose-mysql.yaml` | MySQL | Redis | Elasticsearch 7 |
-| `docker-compose-redis-os2.yaml` | Redis | Redis | OpenSearch 2 |
 | `docker-compose-redis-os3.yaml` | Redis | Redis | OpenSearch 3 |
+| `docker-compose-postgres.yaml` | PostgreSQL | PostgreSQL | PostgreSQL |
 
 ```shell
 # Example: PostgreSQL for everything

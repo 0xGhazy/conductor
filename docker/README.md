@@ -44,14 +44,13 @@ TODO: Link to the helm charts
 ## Run Docker Compose Locally
 ### Use the docker-compose to bring up the local conductor server.
 
-| Docker Compose                                               | Description                |
-|--------------------------------------------------------------|----------------------------|
-| [docker-compose.yaml](docker-compose.yaml)                   | Redis + Elasticsearch 7    |
-| [docker-compose-postgres.yaml](docker-compose-postgres.yaml) | Postgres + Elasticsearch 7 |
-| [docker-compose-mysql.yaml](docker-compose-mysql.yaml)    | Mysql + Elasticsearch 7    |
-| [docker-compose-redis-os.yaml](docker-compose-redis-os.yaml) | Redis + OpenSearch 2.x (legacy - use os2) |
-| [docker-compose-redis-os2.yaml](docker-compose-redis-os2.yaml) | Redis + OpenSearch 2.x    |
-| [docker-compose-redis-os3.yaml](docker-compose-redis-os3.yaml) | Redis + OpenSearch 3.x    |
+| Docker Compose                                               | Description                     |
+|--------------------------------------------------------------|---------------------------------|
+| [docker-compose-postgres-redis-elasticsearch8.yaml](docker-compose-postgres-redis-elasticsearch8.yaml) | Postgres + Redis + Elasticsearch 8 |
+| [docker-compose-postgres-redis-opensearch3.yaml](docker-compose-postgres-redis-opensearch3.yaml)       | Postgres + Redis + OpenSearch 3    |
+| [docker-compose-es8.yaml](docker-compose-es8.yaml)           | Redis + Elasticsearch 8         |
+| [docker-compose-redis-os3.yaml](docker-compose-redis-os3.yaml) | Redis + OpenSearch 3            |
+| [docker-compose-postgres.yaml](docker-compose-postgres.yaml) | Postgres standalone             |
 
 ### Network errors during UI build with yarn
 

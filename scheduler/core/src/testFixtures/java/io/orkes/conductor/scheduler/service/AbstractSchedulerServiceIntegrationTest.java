@@ -25,11 +25,11 @@ import javax.sql.DataSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.netflix.conductor.common.config.ObjectMapperProvider;
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
-import com.netflix.conductor.core.exception.NotFoundException;
-import com.netflix.conductor.core.sync.Lock;
-import com.netflix.conductor.service.WorkflowService;
+import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
+import com.vodafone.vss.weaver.common.metadata.workflow.StartWorkflowRequest;
+import com.vodafone.vss.weaver.core.exception.NotFoundException;
+import com.vodafone.vss.weaver.core.sync.Lock;
+import com.vodafone.vss.weaver.service.WorkflowService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.orkes.conductor.dao.archive.SchedulerArchivalDAO;

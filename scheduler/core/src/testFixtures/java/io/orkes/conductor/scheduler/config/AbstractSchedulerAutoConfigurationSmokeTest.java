@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.support.RetryTemplate;
 
-import com.netflix.conductor.common.config.ObjectMapperProvider;
+import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.orkes.conductor.dao.scheduler.SchedulerDAO;

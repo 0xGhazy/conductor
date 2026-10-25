@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.springframework.test.context.TestPropertySource;
 
-import com.netflix.conductor.common.metadata.tasks.Task.Status;
-import com.netflix.conductor.common.run.SearchResult;
-import com.netflix.conductor.common.run.TaskSummary;
+import com.vodafone.vss.weaver.common.metadata.tasks.Task.Status;
+import com.vodafone.vss.weaver.common.run.SearchResult;
+import com.vodafone.vss.weaver.common.run.TaskSummary;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 

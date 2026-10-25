@@ -15,8 +15,8 @@ package io.orkes.conductor.scheduler.service;
 import java.time.Duration;
 import java.util.*;
 
-import com.netflix.conductor.core.events.queue.Message;
-import com.netflix.conductor.dao.QueueDAO;
+import com.vodafone.vss.weaver.core.events.queue.Message;
+import com.vodafone.vss.weaver.dao.QueueDAO;
 
 public class MockQueueDao implements QueueDAO {
 

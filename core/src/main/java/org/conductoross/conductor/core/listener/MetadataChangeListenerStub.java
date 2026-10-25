@@ -15,9 +15,9 @@ package org.conductoross.conductor.core.listener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netflix.conductor.common.metadata.events.EventHandler;
-import com.netflix.conductor.common.metadata.tasks.TaskDef;
-import com.netflix.conductor.common.metadata.workflow.WorkflowDef;
+import com.vodafone.vss.weaver.common.metadata.events.EventHandler;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
+import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 
 /** Stub listener default implementation. Logs each metadata change at debug level. */
 public class MetadataChangeListenerStub implements MetadataChangeListener {

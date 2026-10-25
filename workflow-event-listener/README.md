@@ -6,7 +6,7 @@ Workflow Event listeners can be configured for the purpose in Conductor:
 
 ## Published Artifacts
 
-Group: `com.netflix.conductor`
+Group: `com.vodafone.vss.weaver`
 
 | Published Artifact | Description |
 | ----------- | ----------- | 

@@ -61,7 +61,7 @@ public interface FileStorageService {
      *       owner (self, ancestors, or descendants — no depth limit).
      * </ul>
      *
-     * @throws com.netflix.conductor.core.exception.AccessForbiddenException if the caller is not in
+     * @throws com.vodafone.vss.weaver.core.exception.AccessForbiddenException if the caller is not in
      *     the file's workflow family
      */
     FileDownloadUrlResponse getDownloadUrl(@NotBlank String workflowId, @NotBlank String fileId);

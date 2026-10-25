@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 import org.conductoross.conductor.dao.SkillPackageDAO;
 import org.springframework.retry.support.RetryTemplate;
 
-import com.netflix.conductor.postgres.dao.PostgresBaseDAO;
+import com.vodafone.vss.weaver.postgres.dao.PostgresBaseDAO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

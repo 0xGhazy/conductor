@@ -11,22 +11,22 @@ There are 4 interfaces that need to be implemented for each backend:
 
 ```java
 //Store for workflow and task definitions
-com.netflix.conductor.dao.MetadataDAO
+com.vodafone.vss.weaver.dao.MetadataDAO
 ```
 
 ```java
 //Store for workflow executions
-com.netflix.conductor.dao.ExecutionDAO
+com.vodafone.vss.weaver.dao.ExecutionDAO
 ```
 
 ```java
 //Index for workflow executions
-com.netflix.conductor.dao.IndexDAO
+com.vodafone.vss.weaver.dao.IndexDAO
 ```
 
 ```java
 //Queue provider for tasks
-com.netflix.conductor.dao.QueueDAO
+com.vodafone.vss.weaver.dao.QueueDAO
 ```
 
 It is possible to mix and match different implementations for each of these.  
@@ -36,7 +36,7 @@ For example, SQS for queueing and a relational store for others.
 ## System Tasks
 To create system tasks follow the steps below:
 
-* Extend ```com.netflix.conductor.core.execution.tasks.WorkflowSystemTask```
+* Extend ```com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask```
 * Instantiate the new class as part of the startup (eager singleton)
 * Implement the ```TaskMapper``` [interface](https://github.com/conductor-oss/conductor/blob/main/core/src/main/java/com/netflix/conductor/core/execution/mapper/TaskMapper.java)
 

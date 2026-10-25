@@ -26,13 +26,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.netflix.conductor.core.execution.mapper.TaskMapper;
-import com.netflix.conductor.core.execution.tasks.SystemTaskRegistry;
-import com.netflix.conductor.core.execution.tasks.WorkflowSystemTask;
-import com.netflix.conductor.core.utils.ParametersUtils;
-import com.netflix.conductor.dao.MetadataDAO;
-import com.netflix.conductor.sdk.workflow.task.InputParam;
-import com.netflix.conductor.sdk.workflow.task.WorkerTask;
+import com.vodafone.vss.weaver.core.execution.mapper.TaskMapper;
+import com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry;
+import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
+import com.vodafone.vss.weaver.core.utils.ParametersUtils;
+import com.vodafone.vss.weaver.dao.MetadataDAO;
+import com.vodafone.vss.weaver.sdk.workflow.task.InputParam;
+import com.vodafone.vss.weaver.sdk.workflow.task.WorkerTask;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

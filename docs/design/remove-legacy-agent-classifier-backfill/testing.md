@@ -41,7 +41,7 @@ Run from the repository root:
 | `./gradlew spotlessApply` | Reformats touched files; no manual formatting needed. |
 | `./gradlew :agentspan:compileJava` | Compiles — confirms the `IndexDAO` import/field removal left no dangling reference and the Lombok constructor still resolves. |
 | `./gradlew :test-harness:compileTestJava` | Compiles — confirms the `Method` import removal left no dangling reference. |
-| `./gradlew :test-harness:test --tests "com.netflix.conductor.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"` | Passes; the `legacyAgentClassifierBackfill...` case is no longer present, so it can neither fail nor error with `NoSuchMethodException`. |
+| `./gradlew :test-harness:test --tests "com.vodafone.vss.weaver.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"` | Passes; the `legacyAgentClassifierBackfill...` case is no longer present, so it can neither fail nor error with `NoSuchMethodException`. |
 
 ## Regression surface
 

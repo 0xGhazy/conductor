@@ -1,6 +1,9 @@
-<!--
 
+<!--
     Copyright 2023 Conductor authors
+    Copyright 2026 Weaver contributors
+
+    This file has been modified as part of the Weaver project.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -13,19 +16,68 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
 -->
-<!-- default log configuration -->
-<Configuration status="WARN">
+<Configuration status="WARN" monitorInterval="30">
+
+    <Properties>
+        <Property name="LOG_DIR">../logs</Property>
+
+        <Property name="LOG_PATTERN">%d{ISO8601} [%-5level] [%t]%notEmpty{ requestId(%X{RID})}%notEmpty{ correlationId(%X{correlationId})} %c - %msg%notEmpty{ %throwable}%n</Property>
+    </Properties>
+
     <Appenders>
-        <Console name="CONSOLE">
-            <PatternLayout pattern="%-4r [%t] %-5p %c %x - %m%n"/>
+
+        <!-- Console Logger -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    disableAnsi="false"
+                    noConsoleNoAnsi="false"
+                    pattern="%highlight{${LOG_PATTERN}}{FATAL=red bold, ERROR=red, WARN=yellow, INFO=green, DEBUG=cyan, TRACE=blue}"/>
         </Console>
+
+        <!-- Rolling File Logger (Plain Text) -->
+        <RollingFile name="FileLog"
+                     fileName="${LOG_DIR}/app.log"
+                     filePattern="${LOG_DIR}/app-%d{yyyy-MM-dd}-%i.log.gz">
+
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
     </Appenders>
 
     <Loggers>
-        <Root level="INFO">
-            <AppenderRef ref="CONSOLE" />
+        <!-- Third-party Loggers -->
+        <Logger name="org.springframework" level="error" additivity="false">
+            <AppenderRef ref="FileLog"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="org.hibernate" level="error" additivity="false">
+            <AppenderRef ref="FileLog"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Logger name="com.zaxxer.hikari" level="error" additivity="false">
+            <AppenderRef ref="FileLog"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <!-- Weaver Application Logger -->
+        <Logger name="com.vodafone.vss.weaver" level="info" additivity="false">
+            <AppenderRef ref="FileLog"/>
+            <AppenderRef ref="Console"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="FileLog"/>
+            <AppenderRef ref="Console"/>
         </Root>
     </Loggers>
 </Configuration>

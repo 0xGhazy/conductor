@@ -44,7 +44,7 @@ covered no longer exists.
 
    ```bash
    ./gradlew :test-harness:test --tests \
-     'com.netflix.conductor.test.integration.agent.AgentSpanDeploymentContractEndToEndTest'
+     'com.vodafone.vss.weaver.test.integration.agent.AgentSpanDeploymentContractEndToEndTest'
    ```
 
    The suite runs green; the removed test is simply absent from the report.

@@ -28,15 +28,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
-import static com.netflix.conductor.rest.config.RequestMappingConstants.FILES;
-
 /**
  * REST controller for the file-storage feature. Gated by {@code conductor.file-storage.enabled}.
  * Path variables carry the bare {@code fileId}; request/response bodies carry the prefixed {@code
  * fileHandleId} via their DTO fields.
  */
 @RestController
-@RequestMapping(FILES)
+@RequestMapping("/api/files")
 @ConditionalOnProperty(name = "conductor.file-storage.enabled", havingValue = "true")
 public class FileResource {
 

@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import com.netflix.conductor.common.run.SearchResult;
+import com.vodafone.vss.weaver.common.run.SearchResult;
 
 import io.orkes.conductor.dao.scheduler.SchedulerDAO;
 import io.orkes.conductor.scheduler.model.WorkflowScheduleExecutionModel;

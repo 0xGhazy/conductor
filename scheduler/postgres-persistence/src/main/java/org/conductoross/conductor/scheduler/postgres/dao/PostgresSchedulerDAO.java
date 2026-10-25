@@ -18,9 +18,9 @@ import javax.sql.DataSource;
 
 import org.springframework.retry.support.RetryTemplate;
 
-import com.netflix.conductor.common.run.SearchResult;
-import com.netflix.conductor.metrics.Monitors;
-import com.netflix.conductor.postgres.dao.PostgresBaseDAO;
+import com.vodafone.vss.weaver.common.run.SearchResult;
+import com.vodafone.vss.weaver.metrics.Monitors;
+import com.vodafone.vss.weaver.postgres.dao.PostgresBaseDAO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.orkes.conductor.dao.scheduler.SchedulerDAO;

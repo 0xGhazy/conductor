@@ -222,7 +222,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.netflix.conductor.Conductor</mainClass>
+                    <mainClass>com.vodafone.vss.weaver.Conductor</mainClass>
                 </configuration>
                 <executions>
                     <execution>

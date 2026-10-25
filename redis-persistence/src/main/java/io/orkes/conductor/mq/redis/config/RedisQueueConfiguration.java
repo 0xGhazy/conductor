@@ -17,10 +17,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.netflix.conductor.core.config.ConductorProperties;
-import com.netflix.conductor.dao.QueueDAO;
-import com.netflix.conductor.redis.config.RedisProperties;
-import com.netflix.conductor.redis.jedis.JedisCommands;
+import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.dao.QueueDAO;
+import com.vodafone.vss.weaver.redis.config.RedisProperties;
+import com.vodafone.vss.weaver.redis.jedis.JedisCommands;
 
 import io.orkes.conductor.mq.dao.ClusteredRedisQueueDAO;
 import io.orkes.conductor.mq.dao.RedisQueueDAO;

@@ -26,7 +26,7 @@ import org.conductoross.conductor.model.file.FileUploadStatus;
 import org.conductoross.conductor.model.file.StorageType;
 import org.springframework.retry.support.RetryTemplate;
 
-import com.netflix.conductor.postgres.dao.PostgresBaseDAO;
+import com.vodafone.vss.weaver.postgres.dao.PostgresBaseDAO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -15,7 +15,7 @@ package org.conductoross.conductor.model;
 import java.util.List;
 import java.util.Map;
 
-import com.netflix.conductor.common.metadata.tasks.Task;
+import com.vodafone.vss.weaver.common.metadata.tasks.Task;
 
 import lombok.Data;
 

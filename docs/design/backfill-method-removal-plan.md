@@ -48,7 +48,7 @@ between steps if applied incrementally):
 6. **The now-unused import** (currently `AgentService.java:46`):
 
    ```java
-   import com.netflix.conductor.dao.IndexDAO;
+   import com.vodafone.vss.weaver.dao.IndexDAO;
    ```
 
 ### Do not touch

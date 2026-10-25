@@ -17,9 +17,9 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.netflix.conductor.dao.ExecutionDAO;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
+import com.vodafone.vss.weaver.dao.ExecutionDAO;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

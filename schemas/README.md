@@ -209,10 +209,10 @@ These schemas are derived from the Java model classes in the Conductor codebase:
 
 | Schema File | Java Class | Package |
 |-------------|------------|---------|
-| WorkflowDef.json | `WorkflowDef` | `com.netflix.conductor.common.metadata.workflow` |
-| TaskDef.json | `TaskDef` | `com.netflix.conductor.common.metadata.tasks` |
-| Workflow.json | `Workflow` | `com.netflix.conductor.common.run` |
-| Task.json | `Task` | `com.netflix.conductor.common.metadata.tasks` |
+| WorkflowDef.json | `WorkflowDef` | `com.vodafone.vss.weaver.common.metadata.workflow` |
+| TaskDef.json | `TaskDef` | `com.vodafone.vss.weaver.common.metadata.tasks` |
+| Workflow.json | `Workflow` | `com.vodafone.vss.weaver.common.run` |
+| Task.json | `Task` | `com.vodafone.vss.weaver.common.metadata.tasks` |
 
 The schemas accurately reflect:
 - All fields including inherited fields from `Auditable` and `Metadata`

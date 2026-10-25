@@ -16,10 +16,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
-import com.netflix.conductor.common.config.ObjectMapperProvider;
-import com.netflix.conductor.common.metadata.tasks.TaskResult;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.sdk.workflow.task.OutputParam;
+import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskResult;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.sdk.workflow.task.OutputParam;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

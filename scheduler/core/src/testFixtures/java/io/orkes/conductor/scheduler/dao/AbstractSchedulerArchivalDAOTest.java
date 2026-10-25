@@ -19,8 +19,8 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
-import com.netflix.conductor.common.run.SearchResult;
+import com.vodafone.vss.weaver.common.metadata.workflow.StartWorkflowRequest;
+import com.vodafone.vss.weaver.common.run.SearchResult;
 
 import io.orkes.conductor.dao.archive.SchedulerArchivalDAO;
 import io.orkes.conductor.scheduler.model.WorkflowScheduleExecutionModel;

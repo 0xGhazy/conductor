@@ -12,7 +12,7 @@
  */
 package org.conductoross.conductor.core.execution.tasks;
 
-import com.netflix.conductor.common.metadata.tasks.Task;
+import com.vodafone.vss.weaver.common.metadata.tasks.Task;
 
 /**
  * Optional lifecycle hook for beans that expose {@code @WorkerTask} methods as embedded system

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.conductor.common.model.BulkResponse;
+import com.vodafone.vss.weaver.common.model.BulkResponse;
 
 import io.orkes.conductor.scheduler.config.SchedulerConditions;
 import io.orkes.conductor.scheduler.service.SchedulerBulkService;

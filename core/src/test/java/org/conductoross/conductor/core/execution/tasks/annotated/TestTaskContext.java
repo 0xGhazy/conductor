@@ -15,8 +15,8 @@ package org.conductoross.conductor.core.execution.tasks.annotated;
 import org.junit.After;
 import org.junit.Test;
 
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.sdk.workflow.executor.task.TaskContext;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.sdk.workflow.executor.task.TaskContext;
 
 import static org.junit.Assert.*;
 

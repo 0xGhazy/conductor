@@ -19,9 +19,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import com.netflix.conductor.dao.ExecutionDAO;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
+import com.vodafone.vss.weaver.dao.ExecutionDAO;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
 
 /** Default {@link WorkflowFamilyResolver} — the access oracle for file-download scoping. */
 @Component

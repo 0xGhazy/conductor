@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.netflix.conductor.common.config.ObjectMapperProvider;
+import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

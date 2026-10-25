@@ -41,11 +41,11 @@ Confirm no remaining reference to `indexDAO` exists in the file after 1d.
 Remove:
 
 ```java
-import com.netflix.conductor.dao.IndexDAO;
+import com.vodafone.vss.weaver.dao.IndexDAO;
 ```
 
-Keep `import com.netflix.conductor.dao.ExecutionDAO;` and
-`import com.netflix.conductor.dao.MetadataDAO;` — both remain in use.
+Keep `import com.vodafone.vss.weaver.dao.ExecutionDAO;` and
+`import com.vodafone.vss.weaver.dao.MetadataDAO;` — both remain in use.
 
 ### 1d. Delete the backfill method and helpers (currently lines 407–521)
 
@@ -75,9 +75,9 @@ and ends at the closing brace of `reindexAgentExecutions`, immediately before:
 
 Do **not** remove these — they are used by retained methods:
 
-- `com.netflix.conductor.common.run.SearchResult`
-- `com.netflix.conductor.common.run.WorkflowSummary`
-- `com.netflix.conductor.model.WorkflowModel`
+- `com.vodafone.vss.weaver.common.run.SearchResult`
+- `com.vodafone.vss.weaver.common.run.WorkflowSummary`
+- `com.vodafone.vss.weaver.model.WorkflowModel`
 
 ## Edit set 2 — `AgentSpanDeploymentContractEndToEndTest.java`
 

@@ -25,7 +25,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.utility.DockerImageName;
 
-import com.netflix.conductor.common.config.TestObjectMapperConfiguration;
+import com.vodafone.vss.weaver.common.config.TestObjectMapperConfiguration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

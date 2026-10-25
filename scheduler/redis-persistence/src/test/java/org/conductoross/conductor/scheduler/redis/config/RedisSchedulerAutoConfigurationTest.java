@@ -18,10 +18,10 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.netflix.conductor.common.config.ObjectMapperProvider;
-import com.netflix.conductor.core.config.ConductorProperties;
-import com.netflix.conductor.redis.config.RedisProperties;
-import com.netflix.conductor.redis.jedis.JedisProxy;
+import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
+import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.redis.config.RedisProperties;
+import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.orkes.conductor.dao.archive.SchedulerArchivalDAO;

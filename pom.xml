@@ -121,8 +121,6 @@
         <module>json-jq-task</module>
         <module>amqp</module>
         <module>server</module>
-        <module>test-harness</module>
-        <module>e2e</module>
     </modules>
 
     <dependencyManagement>

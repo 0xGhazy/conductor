@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import com.netflix.conductor.common.metadata.tasks.TaskDef;
-import com.netflix.conductor.common.metadata.workflow.WorkflowTask;
-import com.netflix.conductor.core.execution.mapper.TaskMapper;
-import com.netflix.conductor.core.execution.mapper.TaskMapperContext;
-import com.netflix.conductor.core.utils.ParametersUtils;
-import com.netflix.conductor.dao.MetadataDAO;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
+import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
+import com.vodafone.vss.weaver.core.execution.mapper.TaskMapper;
+import com.vodafone.vss.weaver.core.execution.mapper.TaskMapperContext;
+import com.vodafone.vss.weaver.core.utils.ParametersUtils;
+import com.vodafone.vss.weaver.dao.MetadataDAO;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
 
 import lombok.extern.slf4j.Slf4j;
 

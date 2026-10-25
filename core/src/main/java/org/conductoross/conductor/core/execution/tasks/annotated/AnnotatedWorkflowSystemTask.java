@@ -18,14 +18,14 @@ import java.util.Optional;
 
 import org.conductoross.conductor.core.execution.tasks.TaskCancellationHandler;
 
-import com.netflix.conductor.common.metadata.tasks.TaskResult;
-import com.netflix.conductor.core.execution.WorkflowExecutor;
-import com.netflix.conductor.core.execution.tasks.WorkflowSystemTask;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
-import com.netflix.conductor.sdk.workflow.executor.task.NonRetryableException;
-import com.netflix.conductor.sdk.workflow.executor.task.TaskContext;
-import com.netflix.conductor.sdk.workflow.task.WorkerTask;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskResult;
+import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
+import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
+import com.vodafone.vss.weaver.sdk.workflow.executor.task.NonRetryableException;
+import com.vodafone.vss.weaver.sdk.workflow.executor.task.TaskContext;
+import com.vodafone.vss.weaver.sdk.workflow.task.WorkerTask;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

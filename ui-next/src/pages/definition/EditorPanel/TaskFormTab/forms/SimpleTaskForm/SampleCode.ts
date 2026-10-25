@@ -44,9 +44,9 @@ export const sampleJavaCode = ({
  */
 
 package org.example;
-import com.netflix.conductor.sdk.workflow.executor.WorkflowExecutor;
-import com.netflix.conductor.sdk.workflow.task.InputParam;
-import com.netflix.conductor.sdk.workflow.task.WorkerTask;
+import com.vodafone.vss.weaver.sdk.workflow.executor.WorkflowExecutor;
+import com.vodafone.vss.weaver.sdk.workflow.task.InputParam;
+import com.vodafone.vss.weaver.sdk.workflow.task.WorkerTask;
 import io.orkes.conductor.client.ApiClient;
 import io.orkes.conductor.client.OrkesClients;
 import com.fasterxml.jackson.databind.ObjectMapper;

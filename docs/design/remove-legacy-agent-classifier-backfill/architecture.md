@@ -116,7 +116,7 @@ Every other document in this set refers to these symbols with exactly these name
 | `AGENT_CLASSIFIER_BACKFILL_VERSION` | `private static final String` = `"agent_classifier_backfill_version"` | Read only by the removed methods. |
 | `AGENT_CLASSIFIER_BACKFILL_VERSION_VALUE` | `private static final int` = `2` | Read only by the removed methods. |
 | `indexDAO` | `private final IndexDAO` field | Used only on the `indexWorkflow` line inside `reindexAgentExecutions`. |
-| `import com.netflix.conductor.dao.IndexDAO;` | import | Becomes unused once the field is removed. |
+| `import com.vodafone.vss.weaver.dao.IndexDAO;` | import | Becomes unused once the field is removed. |
 
 ### Symbols deleted from `AgentSpanDeploymentContractEndToEndTest`
 
@@ -130,9 +130,9 @@ Every other document in this set refers to these symbols with exactly these name
 These share types/imports with the removed code but are used elsewhere, so they must
 remain:
 
-- Imports `com.netflix.conductor.common.run.SearchResult`,
-  `com.netflix.conductor.common.run.WorkflowSummary`,
-  `com.netflix.conductor.model.WorkflowModel` — still used by other `AgentService`
+- Imports `com.vodafone.vss.weaver.common.run.SearchResult`,
+  `com.vodafone.vss.weaver.common.run.WorkflowSummary`,
+  `com.vodafone.vss.weaver.model.WorkflowModel` — still used by other `AgentService`
   methods (search / execution lookups).
 - The `metadataDAO` field and `WorkflowClassifiers` usage — used across compile/deploy.
 - No data migration is required: the `agent_classifier_backfill_version` metadata stamp

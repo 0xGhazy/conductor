@@ -23,7 +23,7 @@ Run the affected integration suite with the removed test absent:
 
 ```bash
 ./gradlew :test-harness:test --tests \
-  "com.netflix.conductor.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"
+  "com.vodafone.vss.weaver.test.integration.agent.AgentSpanDeploymentContractEndToEndTest"
 ```
 
 Expected: build succeeds; the class runs with the backfill test no longer

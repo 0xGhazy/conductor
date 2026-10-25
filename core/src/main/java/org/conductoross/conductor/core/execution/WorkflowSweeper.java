@@ -26,27 +26,27 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
-import com.netflix.conductor.common.metadata.tasks.TaskType;
-import com.netflix.conductor.core.LifecycleAwareComponent;
-import com.netflix.conductor.core.config.ConductorProperties;
-import com.netflix.conductor.core.exception.NotFoundException;
-import com.netflix.conductor.core.execution.WorkflowExecutor;
-import com.netflix.conductor.core.execution.tasks.SystemTaskRegistry;
-import com.netflix.conductor.core.execution.tasks.WorkflowSystemTask;
-import com.netflix.conductor.core.utils.QueueUtils;
-import com.netflix.conductor.core.utils.Utils;
-import com.netflix.conductor.dao.ExecutionDAO;
-import com.netflix.conductor.dao.QueueDAO;
-import com.netflix.conductor.metrics.Monitors;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
-import com.netflix.conductor.service.ExecutionLockService;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
+import com.vodafone.vss.weaver.core.LifecycleAwareComponent;
+import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.exception.NotFoundException;
+import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
+import com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry;
+import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
+import com.vodafone.vss.weaver.core.utils.QueueUtils;
+import com.vodafone.vss.weaver.core.utils.Utils;
+import com.vodafone.vss.weaver.dao.ExecutionDAO;
+import com.vodafone.vss.weaver.dao.QueueDAO;
+import com.vodafone.vss.weaver.metrics.Monitors;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
+import com.vodafone.vss.weaver.service.ExecutionLockService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.netflix.conductor.core.config.SchedulerConfiguration.SWEEPER_EXECUTOR_NAME;
-import static com.netflix.conductor.core.utils.Utils.DECIDER_QUEUE;
+import static com.vodafone.vss.weaver.core.config.SchedulerConfiguration.SWEEPER_EXECUTOR_NAME;
+import static com.vodafone.vss.weaver.core.utils.Utils.DECIDER_QUEUE;
 
 @Component
 @Slf4j

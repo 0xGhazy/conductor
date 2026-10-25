@@ -13,16 +13,16 @@ This is an actual example of this module which is implemented in common/build.gr
 ```groovy
 task protogen(dependsOn: jar, type: JavaExec) {
     classpath configurations.annotationsProcessorCodegen
-    main = 'com.netflix.conductor.annotationsprocessor.protogen.ProtoGenTask'
+    main = 'com.vodafone.vss.weaver.annotationsprocessor.protogen.ProtoGenTask'
     args(
             "conductor.proto",
-            "com.netflix.conductor.proto",
+            "com.vodafone.vss.weaver.proto",
             "github.com/netflix/conductor/client/gogrpc/conductor/model",
             "${rootDir}/grpc/src/main/proto",
             "${rootDir}/grpc/src/main/java/com/netflix/conductor/grpc",
-            "com.netflix.conductor.grpc",
+            "com.vodafone.vss.weaver.grpc",
             jar.archivePath,
-            "com.netflix.conductor.common",
+            "com.vodafone.vss.weaver.common",
     )
 }
 ```

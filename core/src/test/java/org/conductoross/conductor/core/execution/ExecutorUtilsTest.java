@@ -20,14 +20,14 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.netflix.conductor.common.metadata.tasks.TaskDef;
-import com.netflix.conductor.common.metadata.tasks.TaskType;
-import com.netflix.conductor.common.metadata.workflow.WorkflowDef;
-import com.netflix.conductor.common.metadata.workflow.WorkflowTask;
-import com.netflix.conductor.core.execution.tasks.SystemTaskRegistry;
-import com.netflix.conductor.core.execution.tasks.WorkflowSystemTask;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.model.WorkflowModel;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
+import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
+import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
+import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
+import com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry;
+import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.model.WorkflowModel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

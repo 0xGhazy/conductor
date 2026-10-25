@@ -19,9 +19,9 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.netflix.conductor.common.metadata.tasks.Task;
-import com.netflix.conductor.model.TaskModel;
-import com.netflix.conductor.sdk.workflow.task.InputParam;
+import com.vodafone.vss.weaver.common.metadata.tasks.Task;
+import com.vodafone.vss.weaver.model.TaskModel;
+import com.vodafone.vss.weaver.sdk.workflow.task.InputParam;
 
 import static org.junit.Assert.*;
 

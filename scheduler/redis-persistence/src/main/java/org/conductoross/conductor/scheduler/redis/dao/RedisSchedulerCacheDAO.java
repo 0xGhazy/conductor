@@ -14,10 +14,10 @@ package org.conductoross.conductor.scheduler.redis.dao;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.netflix.conductor.core.config.ConductorProperties;
-import com.netflix.conductor.redis.config.RedisProperties;
-import com.netflix.conductor.redis.dao.BaseDynoDAO;
-import com.netflix.conductor.redis.jedis.JedisProxy;
+import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.redis.config.RedisProperties;
+import com.vodafone.vss.weaver.redis.dao.BaseDynoDAO;
+import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.orkes.conductor.dao.scheduler.SchedulerCacheDAO;

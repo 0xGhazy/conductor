@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
+import com.vodafone.vss.weaver.common.metadata.workflow.StartWorkflowRequest;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

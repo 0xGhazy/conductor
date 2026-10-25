@@ -29,7 +29,7 @@ import javax.sql.DataSource;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.netflix.conductor.common.metadata.workflow.StartWorkflowRequest;
+import com.vodafone.vss.weaver.common.metadata.workflow.StartWorkflowRequest;
 
 import io.orkes.conductor.dao.scheduler.SchedulerDAO;
 import io.orkes.conductor.scheduler.model.WorkflowScheduleExecutionModel;
@@ -320,7 +320,7 @@ public abstract class AbstractSchedulerDAOTest {
         exec.setState(WorkflowScheduleExecutionModel.State.FAILED);
         exec.setReason("No such workflow defined. name=missing-wf, version=1");
         exec.setStackTrace(
-                "com.netflix.conductor.core.exception.NotFoundException: No such workflow\n\tat ...");
+                "com.vodafone.vss.weaver.core.exception.NotFoundException: No such workflow\n\tat ...");
         dao().saveExecutionRecord(exec);
 
         WorkflowScheduleExecutionModel found = dao().readExecutionRecord(exec.getExecutionId());

@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
-import com.netflix.conductor.core.config.ConductorProperties;
-import com.netflix.conductor.core.events.queue.Message;
-import com.netflix.conductor.dao.QueueDAO;
-import com.netflix.conductor.redis.config.RedisProperties;
-import com.netflix.conductor.redis.jedis.JedisCommands;
+import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.events.queue.Message;
+import com.vodafone.vss.weaver.dao.QueueDAO;
+import com.vodafone.vss.weaver.redis.config.RedisProperties;
+import com.vodafone.vss.weaver.redis.jedis.JedisCommands;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;

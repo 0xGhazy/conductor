@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.conductoross.conductor.es8.dao.query.parser.Expression;
 import org.conductoross.conductor.es8.dao.query.parser.internal.ParserException;
 
-import com.netflix.conductor.common.run.SearchResult;
+import com.vodafone.vss.weaver.common.run.SearchResult;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOptions;

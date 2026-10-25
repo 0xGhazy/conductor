@@ -22,7 +22,7 @@ import redis.clients.jedis.params.ZAddParams;
 import redis.clients.jedis.resps.ScanResult;
 import redis.clients.jedis.resps.Tuple;
 
-/** Common interface for sharded and non-sharded Jedis */
+/** Compatibility interface for external libraries compiled against com.netflix.conductor */
 public interface JedisCommands {
 
     String set(String key, String value);

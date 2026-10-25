@@ -38,7 +38,7 @@ This is a distinct capability from existing Conductor mechanisms. See [Why not e
 
 The storage layer is defined as an interface in `core` and implemented in `redis-persistence`.
 
-**Interface:** `com.netflix.conductor.dao.WorkflowMessageQueueDAO`
+**Interface:** `com.vodafone.vss.weaver.dao.WorkflowMessageQueueDAO`
 
 Operations:
 - `push(workflowId, message)` — append a message to the workflow's queue
@@ -46,7 +46,7 @@ Operations:
 - `size(workflowId)` — return the current queue depth
 - `delete(workflowId)` — remove the entire queue key
 
-**Redis implementation:** `com.netflix.conductor.redis.dao.RedisWorkflowMessageQueueDAO`
+**Redis implementation:** `com.vodafone.vss.weaver.redis.dao.RedisWorkflowMessageQueueDAO`
 
 Redis data structure: one List per workflow.
 

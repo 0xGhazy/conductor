@@ -27,10 +27,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
-import com.netflix.conductor.core.exception.AccessForbiddenException;
-import com.netflix.conductor.core.exception.ConflictException;
-import com.netflix.conductor.core.exception.NonTransientException;
-import com.netflix.conductor.core.exception.NotFoundException;
+import com.vodafone.vss.weaver.core.exception.AccessForbiddenException;
+import com.vodafone.vss.weaver.core.exception.ConflictException;
+import com.vodafone.vss.weaver.core.exception.NonTransientException;
+import com.vodafone.vss.weaver.core.exception.NotFoundException;
 
 /**
  * Default {@link FileStorageService} implementation. Activated when {@code
