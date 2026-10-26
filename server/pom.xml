@@ -99,6 +99,12 @@
             <artifactId>conductor-task-status-listener</artifactId>
         </dependency>
 
+        <!-- Audit -->
+        <dependency>
+            <groupId>org.conductoross</groupId>
+            <artifactId>conductor-audit</artifactId>
+        </dependency>
+
         <!-- Framework & Metrics -->
         <dependency>
             <groupId>io.micrometer</groupId>

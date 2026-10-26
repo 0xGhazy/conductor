@@ -120,6 +120,7 @@
         <module>http-task</module>
         <module>json-jq-task</module>
         <module>amqp</module>
+        <module>audit</module>
         <module>server</module>
     </modules>
 
@@ -261,6 +262,11 @@
             <dependency>
                 <groupId>org.conductoross</groupId>
                 <artifactId>conductor-amqp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.conductoross</groupId>
+                <artifactId>conductor-audit</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
