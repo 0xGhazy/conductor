@@ -746,7 +746,7 @@ public class TestElasticSearchRestDAOV8 extends ElasticSearchRestDaoBaseTest {
                                                 100,
                                                 Collections.emptyList())
                                         .getResults());
-        return results.getFirst();
+        return results.get(0);
     }
 
     private TaskSummary findTaskSummary(String taskId) {
@@ -760,7 +760,7 @@ public class TestElasticSearchRestDAOV8 extends ElasticSearchRestDaoBaseTest {
                                                 100,
                                                 Collections.emptyList())
                                         .getResults());
-        return results.getFirst();
+        return results.get(0);
     }
 
     private TaskExecLog createLog(String taskId, String log) {

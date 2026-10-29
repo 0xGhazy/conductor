@@ -241,7 +241,7 @@ class Es8IndexManagementSupport {
             if (response.indexTemplates() == null || response.indexTemplates().isEmpty()) {
                 return null;
             }
-            return response.indexTemplates().getFirst();
+            return response.indexTemplates().get(0);
         } catch (ElasticsearchException e) {
             if (e.status() == HttpStatus.SC_NOT_FOUND) {
                 return null;

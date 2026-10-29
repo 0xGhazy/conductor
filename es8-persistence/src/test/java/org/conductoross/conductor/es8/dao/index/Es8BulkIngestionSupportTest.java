@@ -75,6 +75,6 @@ public class Es8BulkIngestionSupportTest {
                 Es8BulkIngestionSupport.collectFailedOperations(request, response);
 
         assertEquals(1, failedOperations.size());
-        assertEquals("task-2", failedOperations.getFirst().index().id());
+        assertEquals("task-2", failedOperations.get(0).index().id());
     }
 }

@@ -329,7 +329,7 @@ public class WorkflowSweeper extends LifecycleAwareComponent {
 
     private void forceSetLastTaskAsNotExecuted(WorkflowModel workflow) {
         if (workflow.getTasks() != null && !workflow.getTasks().isEmpty()) {
-            TaskModel taskModel = workflow.getTasks().getLast();
+            TaskModel taskModel = workflow.getTasks().get(workflow.getTasks().size() - 1);
             log.warn(
                     "Force setting isExecuted to false for last task - {} - {} - {} - {} for workflow {}",
                     taskModel.getTaskId(),

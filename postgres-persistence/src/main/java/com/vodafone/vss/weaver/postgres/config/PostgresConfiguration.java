@@ -187,6 +187,22 @@ public class PostgresConfiguration {
     }
 
     @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public PostgresDatasourceDAO postgresDatasourceDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new PostgresDatasourceDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public PostgresQueryDAO postgresQueryDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new PostgresQueryDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
     public RetryTemplate postgresRetryTemplate(PostgresProperties properties) {
         SimpleRetryPolicy retryPolicy = new CustomRetryPolicy();
         retryPolicy.setMaxAttempts(3);

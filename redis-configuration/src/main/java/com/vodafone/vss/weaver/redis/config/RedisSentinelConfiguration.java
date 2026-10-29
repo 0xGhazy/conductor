@@ -147,6 +147,6 @@ public class RedisSentinelConfiguration extends RedisConfiguration {
     }
 
     private String getPassword(java.util.List<Host> hosts) {
-        return hosts.isEmpty() ? null : hosts.getFirst().getPassword();
+        return hosts.isEmpty() ? null : hosts.get(0).getPassword();
     }
 }

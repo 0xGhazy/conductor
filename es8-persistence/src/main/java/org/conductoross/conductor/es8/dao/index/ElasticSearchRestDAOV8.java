@@ -1009,7 +1009,7 @@ public class ElasticSearchRestDAOV8 implements IndexDAO {
                             "Found %d documents for id %s across multiple indices behind alias %s: %s",
                             indices.size(), id, indexAlias, indices));
         }
-        return Optional.of(indices.getFirst());
+        return Optional.of(indices.get(0));
     }
 
     private DeleteOutcome deleteByIdWithIlmFallback(String indexAlias, String id)
@@ -1177,7 +1177,7 @@ public class ElasticSearchRestDAOV8 implements IndexDAO {
                 List<String> allIndices = new ArrayList<>();
                 root.fieldNames().forEachRemaining(allIndices::add);
                 if (allIndices.size() == 1) {
-                    return Optional.of(allIndices.getFirst());
+                    return Optional.of(allIndices.get(0));
                 }
                 return Optional.empty();
             }
@@ -1187,7 +1187,7 @@ public class ElasticSearchRestDAOV8 implements IndexDAO {
                                 "Alias %s has %d write indices: %s",
                                 alias, writeIndices.size(), writeIndices));
             }
-            return Optional.of(writeIndices.getFirst());
+            return Optional.of(writeIndices.get(0));
         } catch (ResponseException e) {
             int statusCode = e.getResponse().getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_NOT_FOUND) {

@@ -77,8 +77,10 @@ public class Weaver implements ApplicationRunner {
         log.info("├────────────────────────────────────────────────────────────────────────┤");
         log.info("│  Server URL       : {}", padRight(serverUrl) + "│");
         log.info("│  Swagger UI       : {}", padRight(serverUrl + "/swagger-ui/index.html") + "│");
+        // TODO: add management UI URL here
         log.info("└────────────────────────────────────────────────────────────────────────┘");
     }
+
 
     /**
      * Reads properties from the location specified in <code>CONDUCTOR_CONFIG_FILE</code> and sets

@@ -66,6 +66,10 @@
         <!-- Tasks -->
         <dependency>
             <groupId>org.conductoross</groupId>
+            <artifactId>conductor-database-task</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.conductoross</groupId>
             <artifactId>conductor-http-task</artifactId>
         </dependency>
         <dependency>
@@ -102,7 +106,7 @@
         <!-- Audit -->
         <dependency>
             <groupId>org.conductoross</groupId>
-            <artifactId>conductor-audit</artifactId>
+            <artifactId>audit</artifactId>
         </dependency>
 
         <!-- Framework & Metrics -->

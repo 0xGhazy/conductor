@@ -76,7 +76,7 @@ public class RedisStandaloneConfiguration extends RedisConfiguration {
                 redisProperties.isSsl(),
                 redisProperties.getMaxConnectionsPerHost());
 
-        Host host = hostSupplier.getHosts().getFirst();
+        Host host = hostSupplier.getHosts().get(0);
         if (host.getPassword() != null) {
             log.info("unified jedis connecting to Redis Standalone with AUTH");
         }

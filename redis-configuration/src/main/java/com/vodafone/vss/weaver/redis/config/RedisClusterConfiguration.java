@@ -124,6 +124,6 @@ public class RedisClusterConfiguration extends RedisConfiguration {
     }
 
     private String getPassword(List<Host> hosts) {
-        return hosts.isEmpty() ? null : hosts.getFirst().getPassword();
+        return hosts.isEmpty() ? null : hosts.get(0).getPassword();
     }
 }

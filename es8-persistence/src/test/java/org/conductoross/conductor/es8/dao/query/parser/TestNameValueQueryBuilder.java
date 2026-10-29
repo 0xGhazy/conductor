@@ -45,7 +45,7 @@ public class TestNameValueQueryBuilder extends AbstractParserTest {
 
         assertTrue(query.isBool());
         assertEquals(1, query.bool().mustNot().size());
-        Query mustNot = query.bool().mustNot().getFirst();
+        Query mustNot = query.bool().mustNot().get(0);
         assertTrue(mustNot.isTerm());
         assertEquals("status", mustNot.term().field());
         assertEquals("RUNNING", mustNot.term().value().stringValue());
@@ -89,7 +89,7 @@ public class TestNameValueQueryBuilder extends AbstractParserTest {
 
         assertTrue(query.isBool());
         assertEquals(1, query.bool().mustNot().size());
-        assertTrue(query.bool().mustNot().getFirst().isExists());
-        assertEquals("archived", query.bool().mustNot().getFirst().exists().field());
+        assertTrue(query.bool().mustNot().get(0).isExists());
+        assertEquals("archived", query.bool().mustNot().get(0).exists().field());
     }
 }
