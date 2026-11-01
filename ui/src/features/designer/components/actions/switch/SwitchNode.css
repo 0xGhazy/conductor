@@ -1,0 +1,56 @@
+.action-node-card.switch-node-card,
+.switch-node-card.action-node-card {
+  border-color: color-mix(in oklab, #06b6d4 52%, var(--color-border-default));
+  background: var(--color-canvas-default);
+  padding-bottom: 14px;
+}
+
+.switch-config-modal .node-config-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.switch-case-handle-label {
+  position: absolute;
+  bottom: -24px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+html[data-theme="dark"] .action-node-card.switch-node-card,
+html[data-theme="dark"] .switch-node-card.action-node-card {
+  border-color: color-mix(in oklab, #22d3ee 54%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+
+.switch-case-handle-plus {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.switch-case-handle-plus:hover {
+  transform: translateX(-50%) scale(1.22) !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.25), 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.switch-case-handle-plus-active {
+  transform: translateX(-50%) scale(1.15) !important;
+  animation: switch-case-pulse 1.8s infinite !important;
+}
+
+@keyframes switch-case-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+

@@ -1,0 +1,282 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-shrink: 0;
+  background-color: var(--color-canvas-default, #ffffff);
+  border-inline-start: 1px solid var(--color-border-default, #dde3ea);
+  color: var(--color-fg-default, #111827);
+  position: relative;
+  z-index: 25;
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1), transform 0.22s ease;
+  overflow: hidden;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.03);
+}
+
+.panel.resizing {
+  transition: none !important;
+  user-select: none;
+}
+
+.resizeHandle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 50;
+  user-select: none;
+  touch-action: none;
+  background: transparent;
+}
+
+.resizeHandle::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background-color: transparent;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.resizeHandle:hover::after,
+.resizeHandle.isResizing::after {
+  background-color: var(--color-accent-fg);
+  box-shadow: 0 0 8px var(--color-accent-soft, rgba(229, 72, 77, 0.4));
+}
+
+.panel.collapsed {
+  width: 0 !important;
+  min-width: 0 !important;
+  border-inline-start: none;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Floating expand button when collapsed */
+.expandToggle {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 8px;
+  transform: translateY(-50%);
+  z-index: 35;
+  background-color: var(--color-canvas-default, #ffffff);
+  border: 1px solid var(--color-border-strong, #c6d0da);
+  color: var(--color-fg-default, #111827);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  padding: 8px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.expandToggle:hover {
+  background-color: var(--color-surface-soft, #eef1f4);
+  color: var(--color-accent-fg);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.expandToggle:focus-visible {
+  outline: 2px solid var(--color-focus-ring, rgba(229, 72, 77, 0.35));
+  outline-offset: 2px;
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: var(--color-canvas-default, #ffffff);
+  border-bottom: 1px solid var(--color-border-default, #dde3ea);
+  min-height: 56px;
+  flex-shrink: 0;
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.headerIconBadge {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--color-surface-soft, #eef1f4);
+  color: var(--color-fg-default, #111827);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-default, #dde3ea);
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.headerTitle {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-fg-default, #111827);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerSubtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-fg-muted, #667085);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+.collapseButton {
+  background: none;
+  border: none;
+  color: var(--color-fg-muted, #667085);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  margin-inline-start: 8px;
+}
+
+.collapseButton:hover {
+  background-color: var(--color-surface-soft, #eef1f4);
+  color: var(--color-fg-default, #111827);
+}
+
+.collapseButton:focus-visible {
+  outline: 2px solid var(--color-focus-ring, rgba(229, 72, 77, 0.35));
+  outline-offset: 2px;
+}
+
+/* Tabs */
+.tabsContainer {
+  position: sticky;
+  top: 56px;
+  z-index: 9;
+  background-color: var(--color-canvas-default, #ffffff);
+  border-bottom: 1px solid var(--color-border-default, #dde3ea);
+  flex-shrink: 0;
+}
+
+.tabList {
+  display: flex;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 12px;
+  gap: 4px;
+}
+
+.tabList::-webkit-scrollbar {
+  display: none;
+}
+
+.tabButton {
+  background: none;
+  border: none;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-fg-muted, #667085);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  position: relative;
+  outline: none;
+}
+
+.tabButton:hover:not(:disabled) {
+  color: var(--color-fg-default, #111827);
+}
+
+.tabButton.activeTab {
+  color: var(--color-accent-fg);
+  border-bottom-color: var(--color-accent-fg);
+}
+
+.tabButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tabButton:focus-visible {
+  outline: 2px solid var(--color-focus-ring, rgba(229, 72, 77, 0.35));
+  outline-offset: -2px;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Body / Content */
+.contentArea {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Empty State */
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--color-fg-muted, #667085);
+}
+
+.emptyIconWrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background-color: var(--color-surface-soft, #eef1f4);
+  color: var(--color-fg-soft, #98a2b3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.emptyTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-fg-default, #111827);
+  margin-bottom: 6px;
+}
+
+.emptyDescription {
+  font-size: 13px;
+  color: var(--color-fg-muted, #667085);
+  line-height: 1.5;
+  max-width: 240px;
+}

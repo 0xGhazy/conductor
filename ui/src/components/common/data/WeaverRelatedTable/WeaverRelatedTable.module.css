@@ -1,0 +1,169 @@
+/* WeaverRelatedTable - Secondary Related Records Table */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: var(--color-canvas-default, #ffffff);
+  border: 1px solid var(--color-border-default, #dde3ea);
+  border-radius: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Header & Toolbar */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: var(--color-canvas-subtle, #f7f8fa);
+  border-bottom: 1px solid var(--color-border-default, #dde3ea);
+  flex-wrap: wrap;
+}
+
+.toolbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.searchWrapper {
+  width: 220px;
+  max-width: 100%;
+}
+
+.bulkActionsBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 8px;
+  background: var(--color-accent-soft, rgba(229, 72, 77, 0.08));
+  border: 1px solid var(--color-accent-fg);
+  border-radius: 6px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--color-accent-fg);
+}
+
+/* Table Area */
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--color-canvas-default, #ffffff);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table Head */
+.tableHeadRow {
+  background-color: var(--color-canvas-subtle, #f7f8fa);
+}
+
+.tableHeadCell {
+  text-align: left !important;
+  font-size: 0.775rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  color: var(--color-fg-muted, #667085) !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid var(--color-border-default, #dde3ea) !important;
+  white-space: nowrap;
+}
+
+/* Table Body */
+.tableRow {
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid var(--color-border-default, #dde3ea);
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.tableRow:hover {
+  background-color: var(--color-surface-soft, rgba(0, 0, 0, 0.02)) !important;
+}
+
+.tableRowClickable {
+  cursor: pointer;
+}
+
+.tableRowClickable:focus-visible {
+  outline: 2px solid var(--color-focus-ring, rgba(229, 72, 77, 0.3));
+  outline-offset: -2px;
+}
+
+.tableRowSelected {
+  background-color: var(--color-accent-soft, rgba(229, 72, 77, 0.06)) !important;
+}
+
+.tableCell {
+  font-size: 0.825rem !important;
+  color: var(--color-fg-default, #111827) !important;
+  padding: 8px 12px !important;
+  line-height: 1.4 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actionsCell {
+  width: 48px;
+  padding: 4px 8px !important;
+  text-align: right;
+}
+
+/* Error State */
+.errorAlert {
+  padding: 10px 14px;
+  background-color: rgba(229, 72, 77, 0.08);
+  border-bottom: 1px solid rgba(229, 72, 77, 0.2);
+  color: #c93136;
+  font-size: 0.825rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Empty State */
+.emptyContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  text-align: center;
+  gap: 8px;
+  background-color: var(--color-canvas-default, #ffffff);
+}
+
+.emptyText {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-fg-muted, #667085);
+  margin: 0;
+}
+
+/* Pagination container */
+.paginationWrapper {
+  border-top: 1px solid var(--color-border-default, #dde3ea);
+  background-color: var(--color-canvas-subtle, #f7f8fa);
+}

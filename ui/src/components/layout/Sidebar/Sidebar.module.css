@@ -1,0 +1,244 @@
+.sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  background-color: var(--color-canvas-default);
+  border-right: 1px solid var(--color-border-default);
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  user-select: none;
+  z-index: 100;
+  flex-shrink: 0;
+}
+
+.expanded {
+  width: 260px;
+}
+
+.collapsed {
+  width: 64px;
+}
+
+/* Brand Header */
+.brandHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+}
+
+.brandLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.brandLogo {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.brandInfo {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.brandName {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--color-fg-default);
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.versionBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-fg-muted);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.collapseBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-fg-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.collapseBtn:hover {
+  color: var(--color-fg-default);
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-border-default);
+}
+
+/* Navigation Scrollable Area */
+.navContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 12px 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb, rgba(127, 127, 127, 0.28)) transparent;
+}
+
+.navContainer::-webkit-scrollbar {
+  width: 6px;
+}
+
+.navContainer::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-thumb, rgba(127, 127, 127, 0.28));
+  border-radius: 4px;
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.groupLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-fg-soft);
+  padding: 4px 12px 6px 12px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.groupDivider {
+  height: 1px;
+  background-color: var(--color-border-default);
+  margin: 8px 6px;
+}
+
+/* Nav Item Button */
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: var(--color-fg-muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  outline: none;
+}
+
+.collapsed .navItem {
+  justify-content: center;
+  padding: 0;
+  width: 44px;
+  margin: 0 auto;
+}
+
+.navItem:hover {
+  color: var(--color-fg-default);
+  background-color: var(--color-surface-soft);
+}
+
+.navItem:focus-visible {
+  box-shadow: var(--color-focus-ring);
+}
+
+.navItemActive {
+  color: var(--color-fg-default);
+  background-color: var(--color-accent-subtle);
+  font-weight: 600;
+}
+
+.navItemActive:hover {
+  background-color: color-mix(in srgb, var(--color-accent-fg) 16%, transparent);
+}
+
+.activeIndicator {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background-color: var(--color-accent-fg);
+}
+
+.navIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.navItemActive .navIcon {
+  color: var(--color-accent-fg);
+}
+
+.navLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Tooltip on Collapsed Rail */
+.tooltipWrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.tooltipBubble {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--color-surface-raised, #252E42);
+  color: var(--color-fg-default, #FFFFFF);
+  border: 1px solid var(--color-border-default);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: var(--shadow-md);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 200;
+}
+
+.tooltipWrapper:hover .tooltipBubble {
+  opacity: 1;
+  transform: translateY(-50%) translateX(2px);
+}

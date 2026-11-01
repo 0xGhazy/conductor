@@ -1,0 +1,48 @@
+.action-node-card.terminate-node-card,
+.terminate-node-card.action-node-card {
+  border-color: color-mix(in oklab, #ef4444 48%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+
+.action-node-card.terminate-node-card.terminate-node-card--completed {
+  border-color: color-mix(in oklab, #22c55e 52%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+
+.action-node-card.terminate-node-card.terminate-node-card--failed {
+  border-color: color-mix(in oklab, #ef4444 52%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+
+.action-node-card.terminate-node-card.terminate-node-card--terminated {
+  border-color: color-mix(in oklab, #f59e0b 52%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+
+html[data-theme="dark"] .action-node-card.terminate-node-card,
+html[data-theme="dark"] .terminate-node-card.action-node-card {
+  border-color: color-mix(in oklab, #f87171 52%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+
+html[data-theme="dark"] .action-node-card.terminate-node-card.terminate-node-card--completed {
+  border-color: color-mix(in oklab, #4ade80 52%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+
+html[data-theme="dark"] .action-node-card.terminate-node-card.terminate-node-card--failed {
+  border-color: color-mix(in oklab, #f87171 54%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+
+html[data-theme="dark"] .action-node-card.terminate-node-card.terminate-node-card--terminated {
+  border-color: color-mix(in oklab, #fbbf24 52%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+
+.terminate-config-modal .node-config-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}

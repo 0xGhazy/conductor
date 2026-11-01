@@ -1,0 +1,76 @@
+.indicatorButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  user-select: none;
+  line-height: 1.2;
+}
+
+.indicatorButton:hover {
+  transform: translateY(-1px);
+}
+
+.indicatorButton:active {
+  transform: translateY(0);
+}
+
+.indicatorButton:focus-visible {
+  outline: 2px solid var(--color-focus-ring, rgba(229, 72, 77, 0.4));
+  outline-offset: 1px;
+}
+
+.valid {
+  color: var(--color-success-fg, #10b981);
+  background-color: var(--color-success-subtle, rgba(16, 185, 129, 0.1));
+  border-color: var(--color-success-border, rgba(16, 185, 129, 0.25));
+}
+
+.valid:hover {
+  background-color: var(--color-success-subtle, rgba(16, 185, 129, 0.18));
+}
+
+.hasWarnings {
+  color: var(--color-attention-fg, #d97706);
+  background-color: var(--color-attention-subtle, rgba(245, 158, 11, 0.1));
+  border-color: var(--color-attention-border, rgba(245, 158, 11, 0.25));
+}
+
+.hasWarnings:hover {
+  background-color: var(--color-attention-subtle, rgba(245, 158, 11, 0.18));
+}
+
+.hasErrors {
+  color: var(--color-danger-fg, #ef4444);
+  background-color: var(--color-danger-subtle, rgba(239, 68, 68, 0.1));
+  border-color: var(--color-danger-border, rgba(239, 68, 68, 0.25));
+}
+
+.hasErrors:hover {
+  background-color: var(--color-danger-subtle, rgba(239, 68, 68, 0.18));
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  background-color: currentColor;
+  color: var(--color-canvas-default, #ffffff);
+}
+
+.badgeText {
+  color: var(--color-canvas-default, #ffffff);
+}

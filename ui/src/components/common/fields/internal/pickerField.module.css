@@ -1,0 +1,36 @@
+/* Shared styling for Weaver date/time picker fields */
+
+.root {
+  display: inline-flex;
+  vertical-align: top;
+}
+
+.readOnly {
+  cursor: default;
+}
+
+.readOnly :global(.MuiInputBase-root) {
+  background-color: var(--color-canvas-subtle, rgba(0, 0, 0, 0.02));
+  cursor: default;
+}
+
+.readOnly :global(.MuiInputBase-input) {
+  cursor: default !important;
+  user-select: text;
+}
+
+.readOnly :global(.MuiIconButton-root) {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Direction support */
+.dirRtl :global(.MuiInputBase-input) {
+  text-align: right;
+  direction: rtl;
+}
+
+.dirLtr :global(.MuiInputBase-input) {
+  text-align: left;
+  direction: ltr;
+}

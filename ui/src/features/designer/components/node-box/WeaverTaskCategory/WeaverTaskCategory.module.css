@@ -1,0 +1,99 @@
+/* WeaverTaskCategory CSS Module */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 14px;
+}
+
+/* Quick Add Header: Title on Left, "... More tasks" on Right */
+.quickAddHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+
+.quickAddTitle {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--color-fg-default, #0f172a);
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.moreTasksBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #2563eb;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.moreTasksBtn:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.moreTasksBtn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+
+.moreTasksDots {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+/* Dotted Category Divider */
+.categoryDivider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 14px 0 10px 0;
+  gap: 8px;
+}
+
+.categoryDivider::before,
+.categoryDivider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 2px dotted #cbd5e1;
+}
+
+.categoryTitle {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #3b82f6;
+  white-space: nowrap;
+  padding: 0 4px;
+}
+
+/* Responsive 6-column Task Grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
+}
+
+@media (max-width: 320px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

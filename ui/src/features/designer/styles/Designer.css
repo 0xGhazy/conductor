@@ -1,0 +1,1517 @@
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: "Open Sans", sans-serif !important;
+
+  background: var(--color-canvas-subtle, #f7f7f7);
+}
+
+.designer-workspace {
+  background: var(--color-canvas-subtle);
+}
+
+.designer-workspace .react-flow,
+.designer-workspace .react-flow__renderer,
+.designer-workspace .react-flow__pane,
+.designer-workspace .react-flow__viewport {
+  background: var(--color-canvas-default) !important;
+}
+
+.designer-workspace .react-flow__viewport {
+  background: transparent !important;
+}
+
+.designer-workspace .react-flow__pane::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(color-mix(in oklab, var(--color-border-default) 50%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+.designer-workspace .react-flow::after {
+  display: none;
+}
+
+.designer-workspace .react-flow__controls {
+  border: 1px solid var(--color-border-default);
+  background: color-mix(in oklab, var(--color-canvas-default) 88%, var(--color-canvas-subtle));
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 18px color-mix(in oklab, var(--color-fg-default) 8%, transparent);
+}
+
+.designer-workspace .react-flow__controls-button {
+  border-bottom-color: var(--color-border-default) !important;
+  color: var(--color-fg-default);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.designer-workspace .react-flow__controls-button:hover {
+  background: color-mix(in oklab, var(--color-accent-fg) 14%, transparent);
+  color: var(--color-accent-fg);
+}
+
+.designer-workspace .react-flow__minimap {
+  border: 1px solid var(--color-border-default);
+  background: color-mix(in oklab, var(--color-canvas-default) 90%, var(--color-canvas-subtle));
+  box-shadow: 0 10px 20px color-mix(in oklab, var(--color-fg-default) 8%, transparent);
+}
+
+.designer-actions-panel {
+  backdrop-filter: blur(10px);
+  box-shadow: 10px 0 30px color-mix(in oklab, var(--color-fg-default) 9%, transparent);
+  position: relative;
+}
+
+.designer-actions-panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -1px;
+  width: 14px;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+}
+
+.designer-toolbox-toggle {
+  border: 1px solid var(--color-border-default, #d0d7de);
+  background: var(--color-canvas-default);
+  color: var(--color-fg-default, #1f2328);
+  border-radius: 0;
+  cursor: pointer;
+  min-width: 28px;
+  min-height: 76px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.designer-toolbox-toggle:hover {
+  transform: rotate(180deg) translateY(-1px);
+  border-color: color-mix(in oklab, var(--color-accent-fg) 38%, var(--color-border-default));
+  box-shadow: none;
+}
+
+.designer-toolbox-toggle-label {
+  display: inline-block;
+  white-space: nowrap;
+}
+.container-warpper {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+.border {
+  border: 1px solid var(--color-border-default, #e5e7eb);
+}
+.rounded-2xl {
+  border-radius: 1rem;
+}
+.rounded-lg {
+  border-radius: 0.5rem;
+}
+.shadow-sm {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.bg-white {
+  background: var(--color-canvas-default, #fff);
+}
+.text-gray-500 {
+  color: var(--color-fg-muted, #6b7280);
+}
+.text-gray-600 {
+  color: var(--color-fg-muted, #4b5563);
+}
+.text-gray-700 {
+  color: var(--color-fg-default, #374151);
+}
+.font-medium {
+  font-weight: 500;
+}
+.font-semibold {
+  font-weight: 600;
+}
+.text-sm {
+  font-size: 0.9rem;
+}
+.text-xs {
+  font-size: 0.78rem;
+}
+.p-4 {
+  padding: 1rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mb-1 {
+  margin-bottom: 0.25rem;
+}
+.mr-2 {
+  margin-right: 0.5rem;
+}
+.w-full {
+  width: 100%;
+}
+.min-w-\[220px\] {
+  min-width: 220px;
+}
+.max-w-\[180px\] {
+  max-width: 180px;
+}
+.max-w-\[220px\] {
+  max-width: 220px;
+}
+.grid {
+  display: grid;
+}
+
+.flex {
+  display: flex;
+}
+.justify-center {
+  justify-content: space-between;
+}
+.flex-col {
+  flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.items-end {
+  align-items: stretch;
+}
+.gap-2 {
+  gap: 0.5rem;
+}
+.h-full {
+  height: 100%;
+}
+.w-screen {
+  width: 100vw;
+}
+.h-screen {
+  height: 100vh;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.min-w-0 {
+  min-width: 0;
+}
+.outline-none {
+  outline: none;
+}
+.bg-blue-50 {
+  background: var(--color-accent-soft);
+}
+.border-blue-200 {
+  border-color: var(--color-border-default);
+}
+.bg-blue-600 {
+  background: var(--color-accent-fg);
+}
+.bg-blue-700 {
+  background: var(--color-accent-hover);
+}
+.bg-gray-100 {
+  background: var(--color-canvas-subtle, #f3f4f6);
+}
+.bg-gray-200 {
+  background: var(--color-canvas-subtle, #e5e7eb);
+}
+.bg-red-600 {
+  background: #dc2626;
+}
+.bg-red-700 {
+  background: #b91c1c;
+}
+.text-white {
+  color: #fff;
+}
+.rounded {
+  border-radius: 0.25rem;
+}
+.inline-block {
+  display: inline-block;
+}
+.align-middle {
+  vertical-align: middle;
+}
+
+.connections-header {
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  background: var(--color-canvas-subtle, #f5f5f5);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+.connections-header .logo {
+  height: 28px; /* smaller logo reduces header height */
+  width: auto;
+}
+
+.connections-header h1 {
+  font-size: 18px; /* smaller text also helps */
+  margin: 0; /* remove default h1 margin */
+}
+
+.panel button {
+  background-color: #e60000;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.panel button:hover {
+  background-color: #b80000 !important;
+  color: #fff !important;
+}
+
+.section {
+  height: 100%;
+  padding: 16px;
+  font-family: sans-serif;
+  color: var(--color-fg-default, #111827);
+}
+
+/* Full-screen overlay */
+.overlay {
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: flex-end; /* push panel to the right */
+  z-index: 999;
+}
+
+/* Close button in top-right of panel */
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Keyframes for the slide effect */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.floating-toggle {
+  display: inline;
+  background: #e60000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 12px 6px;
+  border-radius: 8px 0 0 8px; /* rounded left side */
+
+  /* vertical text bottom → top */
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.floating-toggle:hover {
+  transform: scale(1.05);
+}
+
+.floating-toggle i {
+  font-size: 28px;
+}
+
+.floating-toggle-wrapper {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 1001;
+}
+
+.floating-toggle:hover {
+  opacity: 0.9;
+}
+
+html[data-theme="dark"] .container-warpper {
+  background: var(--color-canvas-default, #0d1117);
+}
+html[data-theme="dark"] .connections-header {
+  background: var(--color-canvas-subtle, #161b22);
+  border-bottom: 1px solid var(--color-border-default, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+}
+html[data-theme="dark"] .section {
+  color: var(--color-fg-default, #c9d1d9);
+}
+html[data-theme="dark"] .react-flow,
+html[data-theme="dark"] .react-flow__renderer,
+html[data-theme="dark"] .react-flow__pane,
+html[data-theme="dark"] .react-flow__viewport {
+  background: var(--color-canvas-default, #0d1117);
+}
+html[data-theme="dark"] .designer-workspace {
+  background: var(--color-canvas-subtle);
+}
+html[data-theme="dark"] .designer-workspace .react-flow,
+html[data-theme="dark"] .designer-workspace .react-flow__renderer,
+html[data-theme="dark"] .designer-workspace .react-flow__pane,
+html[data-theme="dark"] .designer-workspace .react-flow__viewport {
+  background: var(--color-canvas-default) !important;
+}
+html[data-theme="dark"] .designer-workspace .react-flow__viewport {
+  background: transparent !important;
+}
+html[data-theme="dark"] .designer-workspace .react-flow__pane::before {
+  opacity: 0.18;
+}
+html[data-theme="dark"] .designer-workspace .react-flow::after {
+  display: none;
+}
+html[data-theme="dark"] .designer-workspace .react-flow__controls,
+html[data-theme="dark"] .designer-workspace .react-flow__minimap {
+  border-color: var(--color-border-default);
+  background: color-mix(in oklab, var(--color-canvas-subtle) 82%, var(--color-canvas-default));
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+}
+html[data-theme="dark"] .designer-toolbox-toggle {
+  border-color: var(--color-border-default);
+  background: var(--color-canvas-subtle);
+  color: var(--color-fg-default);
+}
+
+.designer-node-card {
+  background: var(--color-canvas-default, #ffffff);
+  border-color: var(--color-border-default, #e5e7eb);
+  color: var(--color-fg-default, #111827);
+}
+.designer-node-card.validation-node-card {
+  border-color: color-mix(in oklab, #10b981 48%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+.designer-node-card.rule-engine-node-card {
+  --rule-badge-bg: rgba(139, 92, 246, 0.15);
+  --rule-badge-border: rgba(139, 92, 246, 0.3);
+  --rule-badge-icon: #7c3aed;
+  border-color: color-mix(in oklab, #8b5cf6 48%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+.designer-node-card.jexl-node-card {
+  border-color: color-mix(in oklab, #7c3aed 52%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+.designer-node-card.script-node-card {
+  border-color: color-mix(in oklab, var(--action-node-color, #2563eb) 52%, var(--color-border-default));
+  background: var(--color-canvas-default);
+}
+.scope-node {
+  width: 100%;
+  height: 100%;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.scope-node-card {
+  min-width: 240px;
+  height: 88px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 32px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in oklab, #8b5cf6 54%, var(--color-border-default));
+  background: var(--color-canvas-default);
+  box-shadow: none;
+  transition: border-color 180ms ease;
+}
+
+.scope-node-card:hover {
+  border-color: color-mix(in oklab, #8b5cf6 70%, var(--color-border-default));
+  box-shadow: none;
+}
+
+/* Positioned box matching the scope surface, hosting SelectionTrace; the hover lift lives here so it moves with it. */
+.scope-node-frame {
+  position: relative;
+  transition: transform 160ms ease;
+}
+
+.scope-node-frame:not(.scope-node-frame--fill):hover {
+  transform: translate3d(0, -1px, 0);
+}
+
+.scope-node-frame--fill {
+  width: 100%;
+  height: 100%;
+}
+
+/* Collapsed scope: solid fill in the scope's chosen color (same fill recipe as task nodes, see WeaverTaskNode.css).
+   `html .scope-node` prefix outranks the html[data-theme] scope rules further down. */
+html .scope-node .scope-node-card {
+  --scope-fill: color-mix(in oklab, var(--scope-color, var(--hue-violet)) var(--node-fill-strength, 82%), #000);
+  color: var(--node-on-fill, #ffffff);
+  background: var(--scope-fill);
+  border-color: color-mix(in oklab, var(--scope-fill) 78%, #000);
+}
+
+html .scope-node .scope-node-card:hover {
+  border-color: var(--scope-color, var(--hue-violet));
+}
+
+html .scope-node .scope-node-card .scope-node-title,
+html .scope-node .scope-node-card .scope-node-icon,
+html .scope-node .scope-node-card .scope-node-kicker {
+  color: var(--node-on-fill, #ffffff);
+}
+
+html .scope-node .scope-node-card .scope-node-kicker {
+  opacity: 0.8;
+}
+
+html .scope-node .scope-node-card .scope-node-tag {
+  color: var(--node-on-fill, #ffffff);
+  background: color-mix(in oklab, var(--node-on-fill, #ffffff) 16%, transparent);
+  border-color: color-mix(in oklab, var(--node-on-fill, #ffffff) 28%, transparent);
+}
+
+html .scope-node .scope-node-card .scope-node-icon-button {
+  color: var(--node-on-fill, #ffffff);
+  background: color-mix(in oklab, var(--node-on-fill, #ffffff) 14%, transparent);
+  border-color: color-mix(in oklab, var(--node-on-fill, #ffffff) 30%, transparent);
+}
+
+html .scope-node .scope-node-card .scope-node-icon-button:hover {
+  background: color-mix(in oklab, var(--node-on-fill, #ffffff) 24%, transparent);
+  border-color: color-mix(in oklab, var(--node-on-fill, #ffffff) 50%, transparent);
+}
+
+html .scope-node .scope-node-frame > .scope-node-surface--selected {
+  border-color: var(--color-accent-fg);
+}
+
+.scope-node-container {
+  width: 100%;
+  height: 100%;
+  min-width: 280px;
+  min-height: 180px;
+  position: relative;
+  border-radius: 24px;
+  border: 1.5px dashed color-mix(in oklab, #8b5cf6 58%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+  box-shadow: none;
+  transition: width 180ms ease, height 180ms ease, border-color 180ms ease, background-color 180ms ease;
+  overflow: hidden;
+}
+
+.scope-node--focused .scope-node-container {
+  border-style: solid;
+  border-color: color-mix(in oklab, #38bdf8 72%, var(--color-border-default));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, #38bdf8 20%, transparent),
+    0 24px 52px color-mix(in oklab, #38bdf8 12%, transparent);
+}
+
+.scope-node-header {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 34px;
+  padding: 6px 8px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in oklab, var(--color-border-default) 78%, transparent);
+  background: color-mix(in oklab, var(--color-canvas-default) 88%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.scope-node-header-title,
+.scope-node-main {
+  min-width: 0;
+}
+
+.scope-node-header-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-fg-default);
+}
+
+.scope-node-title {
+  color: var(--color-fg-default);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scope-node-tag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  color: color-mix(in oklab, #6d28d9 72%, var(--color-fg-default));
+  background: color-mix(in oklab, #8b5cf6 14%, transparent);
+  border: 1px solid color-mix(in oklab, #8b5cf6 20%, transparent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.scope-node-header-title .scope-node-tag {
+  margin-top: 0;
+}
+
+.scope-node-icon {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  color: #7c3aed;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.scope-node-icon--small {
+  width: 24px;
+  height: 24px;
+  border-radius: 0;
+}
+
+.scope-node-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.scope-node-icon-button {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid color-mix(in oklab, #8b5cf6 24%, var(--color-border-default));
+  border-radius: 10px;
+  color: color-mix(in oklab, #6d28d9 75%, var(--color-fg-default));
+  background: color-mix(in oklab, var(--color-canvas-default) 82%, transparent);
+  cursor: pointer;
+  transition: transform 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.scope-node-icon-button:hover {
+  transform: translate3d(0, -1px, 0);
+  border-color: color-mix(in oklab, #8b5cf6 58%, var(--color-border-default));
+  background: color-mix(in oklab, #8b5cf6 14%, var(--color-canvas-default));
+}
+
+.scope-node-handle {
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--color-canvas-default);
+  background: #8b5cf6;
+}
+
+.scope-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 16px;
+  border: 1px solid var(--color-border-default);
+  background: color-mix(in oklab, var(--color-canvas-default) 88%, transparent);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 30px color-mix(in oklab, var(--color-fg-default) 10%, transparent);
+}
+
+.scope-toolbar-button,
+.scope-breadcrumb-button {
+  border: 1px solid color-mix(in oklab, var(--color-accent-fg) 28%, var(--color-border-default));
+  background: color-mix(in oklab, var(--color-canvas-default) 84%, transparent);
+  color: var(--color-fg-default);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.scope-toolbar-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.scope-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 520px;
+  overflow: hidden;
+}
+
+.scope-breadcrumb-label {
+  color: var(--color-fg-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.scope-breadcrumb-current {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-fg-default);
+  font-size: 12px;
+  font-weight: 800;
+}
+.jexl-node-card .font-medium {
+  color: var(--color-fg-default, #111827);
+}
+.jexl-run-button {
+  background: var(--color-canvas-default, #ffffff);
+}
+.jexl-run-button:hover {
+  background: var(--color-table-hover, #f6f8fa);
+}
+html[data-theme="dark"] .designer-node-card {
+  background: var(--color-canvas-subtle, #161b22);
+  border-color: var(--color-border-default, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+}
+html[data-theme="dark"] .designer-node-card.validation-node-card {
+  border-color: color-mix(in oklab, #34d399 50%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+html[data-theme="dark"] .designer-node-card.rule-engine-node-card {
+  --rule-badge-bg: rgba(139, 92, 246, 0.35);
+  --rule-badge-border: rgba(167, 139, 250, 0.5);
+  --rule-badge-icon: #c4b5fd;
+  border-color: color-mix(in oklab, #a78bfa 50%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+html[data-theme="dark"] .designer-node-card.jexl-node-card {
+  border-color: color-mix(in oklab, #a78bfa 54%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+html[data-theme="dark"] .designer-node-card.script-node-card {
+  border-color: color-mix(in oklab, var(--action-node-color, #2563eb) 54%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+html[data-theme="dark"] .scope-node-card {
+  border-color: color-mix(in oklab, #a78bfa 62%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .scope-node-container {
+  border-color: color-mix(in oklab, #a78bfa 60%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .scope-node-header,
+html[data-theme="dark"] .scope-toolbar {
+  background: color-mix(in oklab, var(--color-canvas-default) 82%, transparent);
+}
+
+html[data-theme="dark"] .scope-node-tag {
+  color: color-mix(in oklab, #c4b5fd 82%, var(--color-fg-default));
+  background: color-mix(in oklab, #8b5cf6 18%, transparent);
+  border-color: color-mix(in oklab, #a78bfa 24%, transparent);
+}
+
+html[data-theme="dark"] .scope-node-icon {
+  color: #c4b5fd;
+  background: transparent;
+  border: 0;
+}
+
+html[data-theme="dark"] .scope-node-icon-button {
+  color: #c4b5fd;
+  background: color-mix(in oklab, #8b5cf6 16%, transparent);
+  border-color: color-mix(in oklab, #a78bfa 32%, var(--color-border-default));
+}
+html[data-theme="dark"] .jexl-run-button {
+  background: var(--color-canvas-default, #0d1117);
+}
+html[data-theme="dark"] .jexl-run-button:hover {
+  background: var(--color-table-hover, #161b22);
+}
+
+.settings-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+html[data-theme="dark"] .designer-modal {
+  background: var(--color-canvas-subtle, #161b22);
+  color: var(--color-fg-default, #c9d1d9);
+  scrollbar-color: color-mix(in oklab, var(--color-fg-muted) 58%, transparent)
+    color-mix(in oklab, var(--color-canvas-default) 84%, transparent);
+}
+html[data-theme="dark"] .designer-modal::-webkit-scrollbar-track {
+  background: color-mix(in oklab, var(--color-canvas-default) 84%, transparent);
+}
+html[data-theme="dark"] .designer-modal::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-fg-muted) 58%, transparent);
+  border-color: color-mix(in oklab, var(--color-canvas-default) 84%, transparent);
+}
+html[data-theme="dark"] .designer-modal::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--color-accent-fg) 44%, transparent);
+}
+html[data-theme="dark"] .designer-modal .MuiInputBase-root,
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-root,
+html[data-theme="dark"] .designer-modal .MuiInputBase-input {
+  background: var(--color-canvas-default, #0d1117);
+  color: var(--color-fg-default, #c9d1d9);
+}
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-notchedOutline {
+  border-color: var(--color-border-default, #30363d);
+}
+html[data-theme="dark"] .designer-modal .MuiInputBase-root,
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-root,
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-root:hover,
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: none !important;
+  filter: none !important;
+  outline: none !important;
+}
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline,
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+html[data-theme="dark"] .designer-modal .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  box-shadow: none !important;
+  border-width: 1px !important;
+}
+html[data-theme="dark"] .designer-modal .MuiFormControl-root,
+html[data-theme="dark"] .designer-modal .MuiFormControl-root .MuiInputBase-root,
+html[data-theme="dark"] .designer-modal .MuiFormControl-root .MuiOutlinedInput-root,
+html[data-theme="dark"] .designer-modal .MuiFormControl-root .MuiSelect-select {
+  box-shadow: none !important;
+  filter: none !important;
+}
+html[data-theme="dark"] .designer-modal .MuiFormControl-root .Mui-focused,
+html[data-theme="dark"] .designer-modal .MuiFormControl-root .Mui-focused .MuiOutlinedInput-notchedOutline {
+  box-shadow: none !important;
+}
+html[data-theme="dark"] .designer-modal .MuiInputLabel-root {
+  color: var(--color-fg-muted, #8b949e);
+}
+html[data-theme="dark"] .designer-modal .MuiFormHelperText-root {
+  color: var(--color-fg-muted, #8b949e);
+}
+html[data-theme="dark"] .designer-modal .MuiFormHelperText-root.Mui-error {
+  color: var(--color-status-danger, #f85149) !important;
+}
+html[data-theme="dark"] .designer-modal .MuiInputLabel-root.Mui-error {
+  color: var(--color-status-danger, #f85149) !important;
+}
+.designer-modal .MuiFormHelperText-root.Mui-error {
+  color: var(--color-status-danger, #cf222e) !important;
+}
+html[data-theme="dark"] .designer-modal .MuiTableCell-root,
+html[data-theme="dark"] .designer-modal .MuiTableCell-head,
+html[data-theme="dark"] .designer-modal .MuiTableCell-body {
+  color: var(--color-fg-default, #c9d1d9);
+  border-color: var(--color-border-default, #30363d);
+}
+
+.http-run-button {
+  background: var(--color-canvas-default, #ffffff);
+}
+.http-run-button:hover {
+  background: var(--color-table-hover, #f6f8fa);
+}
+html[data-theme="dark"] .http-run-button {
+  background: var(--color-canvas-default, #0d1117);
+}
+html[data-theme="dark"] .http-run-button:hover {
+  background: var(--color-table-hover, #161b22);
+}
+
+.designer-modal .MuiOutlinedInput-root {
+  border-radius: 12px !important;
+}
+.designer-modal .MuiOutlinedInput-root fieldset,
+.designer-modal .MuiOutlinedInput-notchedOutline {
+  border-radius: 12px !important;
+}
+.designer-modal .MuiInputBase-root,
+.designer-modal .MuiInputBase-root fieldset {
+  border-radius: 12px !important;
+}
+
+.designer-modal {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--color-fg-muted) 40%, transparent)
+    color-mix(in oklab, var(--color-canvas-subtle) 82%, transparent);
+}
+
+.designer-modal::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.designer-modal::-webkit-scrollbar-track {
+  background: color-mix(in oklab, var(--color-canvas-subtle) 82%, transparent);
+}
+
+.designer-modal::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--color-fg-muted) 42%, transparent);
+  border: 2px solid color-mix(in oklab, var(--color-canvas-subtle) 82%, transparent);
+}
+
+.designer-modal::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--color-accent-fg) 36%, transparent);
+}
+
+.node-config-modal {
+  border: 1px solid var(--color-border-default);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--color-canvas-default, #ffffff) !important;
+}
+
+.node-config-modal-header {
+  border-bottom: 1px solid var(--color-border-default);
+  padding-bottom: 10px;
+}
+
+.node-config-modal-title {
+  font-size: 1.08rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em;
+}
+
+.node-config-run-btn {
+  border: none !important;
+  background: transparent !important;
+  color: var(--color-status-success, #1a7f37) !important;
+}
+
+.node-config-run-btn:hover {
+  background: transparent !important;
+}
+
+html[data-theme="light"] .node-config-modal .MuiOutlinedInput-notchedOutline {
+  border: 1px solid color-mix(in oklab, var(--color-border-default) 90%, transparent) !important;
+}
+
+html[data-theme="light"] .node-config-modal .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 30%, var(--color-border-default)) !important;
+}
+
+html[data-theme="light"] .node-config-modal .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 48%, var(--color-border-default)) !important;
+}
+
+.node-config-tabs {
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.node-config-tabs .MuiTab-root {
+  text-transform: none;
+  min-height: 38px;
+  font-weight: 700;
+  color: var(--color-fg-muted);
+}
+
+.node-config-tabs .MuiTab-root .MuiTab-iconWrapper {
+  margin-right: 6px;
+  transition: color 140ms ease, filter 140ms ease, transform 140ms ease;
+}
+
+.node-config-tabs .MuiTab-root:nth-of-type(1) .MuiTab-iconWrapper {
+  color: #3b82f6;
+}
+
+.node-config-tabs .MuiTab-root:nth-of-type(2) .MuiTab-iconWrapper {
+  color: #8b5cf6;
+}
+
+.node-config-tabs .MuiTab-root:nth-of-type(3) .MuiTab-iconWrapper {
+  color: #10b981;
+}
+
+.node-config-tabs .MuiTab-root:nth-of-type(4) .MuiTab-iconWrapper {
+  color: #f59e0b;
+}
+
+.node-config-tabs .Mui-selected {
+  color: var(--color-fg-default) !important;
+}
+
+.node-config-tabs .Mui-selected .MuiTab-iconWrapper {
+  filter: drop-shadow(0 0 6px color-mix(in oklab, currentColor 38%, transparent));
+  transform: translateY(-0.5px);
+}
+
+.node-config-tabs .MuiTabs-indicator {
+  background: var(--color-accent-fg);
+}
+
+.node-config-modal input:-webkit-autofill,
+.node-config-modal input:-webkit-autofill:hover,
+.node-config-modal input:-webkit-autofill:focus,
+.node-config-modal textarea:-webkit-autofill,
+.node-config-modal textarea:-webkit-autofill:hover,
+.node-config-modal textarea:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-fg-default) !important;
+  box-shadow: 0 0 0 1000px color-mix(in oklab, var(--color-canvas-default) 94%, var(--color-canvas-subtle)) inset !important;
+  -webkit-box-shadow: 0 0 0 1000px color-mix(in oklab, var(--color-canvas-default) 94%, var(--color-canvas-subtle)) inset !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+.node-config-footer {
+  border-top: 1px solid var(--color-border-default);
+  padding-top: 12px;
+}
+
+.node-config-footer .MuiButton-root {
+  border-radius: 0 !important;
+}
+
+.http-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.http-headers-rows {
+  display: grid;
+  gap: 10px;
+}
+
+.database-config-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.database-params-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.database-params-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.database-result-cards {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.database-result-card-status,
+.database-result-card-time,
+.database-result-card-size {
+  grid-column: span 2;
+}
+
+.database-result-card-affected,
+.database-result-card-errorcode,
+.database-result-card-requestid {
+  grid-column: span 2;
+}
+
+.http-headers-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 40px;
+  gap: 10px;
+  align-items: center;
+}
+
+.http-headers-row-delete {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .http-config-grid {
+    grid-template-columns: 1fr;
+  }
+  .database-config-grid {
+    grid-template-columns: 1fr;
+  }
+  .database-params-row {
+    grid-template-columns: 1fr;
+  }
+  .database-result-cards {
+    grid-template-columns: 1fr;
+  }
+  .database-result-card-status,
+  .database-result-card-time,
+  .database-result-card-size,
+  .database-result-card-affected,
+  .database-result-card-errorcode,
+  .database-result-card-requestid {
+    grid-column: auto;
+  }
+}
+
+.http-result-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.http-result-card {
+  border: 1px solid var(--color-border-default);
+  background: color-mix(in oklab, var(--color-canvas-default) 90%, var(--color-canvas-subtle));
+  padding: 10px 12px;
+}
+
+.http-result-card-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.http-result-card-icon {
+  color: var(--color-accent-fg);
+  display: inline-flex;
+}
+
+.http-result-card-label {
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--color-fg-muted);
+}
+
+.http-result-card-value {
+  margin-top: 4px !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 1.3;
+  word-break: break-word;
+  color: var(--color-fg-default);
+}
+
+.http-result-subtitle {
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+  color: var(--color-fg-muted);
+  font-weight: 700 !important;
+}
+
+.http-json-editor,
+.http-json-editor .monaco-editor,
+.http-json-editor .monaco-editor-background,
+.http-json-editor .monaco-editor .margin,
+.http-json-editor .monaco-editor .margin-view-overlays {
+  border-radius: 0 !important;
+}
+
+
+.http-context-menu-item {
+  margin: 3px 6px !important;
+  border-radius: 8px !important;
+  color: var(--color-fg-default);
+  transition: background-color 140ms ease, transform 120ms ease;
+}
+
+.http-context-menu-item:hover {
+  background: color-mix(in oklab, var(--color-accent-fg) 12%, transparent) !important;
+  transform: translateX(1px);
+}
+
+.http-context-menu-item .MuiSvgIcon-root {
+  color: color-mix(in oklab, var(--color-accent-fg) 62%, var(--color-fg-default));
+}
+
+.http-context-menu-item-danger .MuiSvgIcon-root,
+.http-context-menu-item-danger {
+  color: var(--color-danger-fg, #d1242f) !important;
+}
+
+html[data-theme="dark"] .http-context-menu-item:hover {
+  background: color-mix(in oklab, var(--color-accent-fg) 18%, transparent) !important;
+}
+
+
+.start-config-modal {
+  border: 1px solid var(--color-border-default);
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--color-canvas-default, #ffffff) !important;
+}
+
+.start-config-modal #start-metadata-title {
+  font-size: 1.08rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.start-config-section-title {
+  margin-top: 4px;
+  font-size: 0.78rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-fg-muted);
+}
+
+.start-config-section-card {
+  border: 1px solid var(--color-border-default);
+  border-radius: 0;
+  padding: 12px;
+  background: color-mix(in oklab, var(--color-canvas-default) 90%, var(--color-canvas-subtle));
+}
+
+.start-config-modal .MuiInputBase-root,
+.start-config-modal .MuiOutlinedInput-root {
+  background: color-mix(in oklab, var(--color-canvas-default) 94%, var(--color-canvas-subtle));
+}
+
+.start-config-modal .MuiInputBase-root:not(.MuiInputBase-multiline),
+.start-config-modal .MuiOutlinedInput-root:not(.MuiInputBase-multiline) {
+  min-height: 50px;
+  height: 50px;
+}
+
+.start-config-modal .MuiInputBase-input,
+.start-config-modal .MuiSelect-select {
+  min-height: 50px !important;
+  height: 50px !important;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.start-config-modal .MuiInputBase-inputMultiline {
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.start-config-modal .MuiOutlinedInput-notchedOutline {
+  border: 1px solid color-mix(in oklab, var(--color-border-default) 90%, transparent) !important;
+}
+.start-config-modal .MuiOutlinedInput-notchedOutline legend {
+  display: none !important;
+  max-width: 0 !important;
+  width: 0 !important;
+  padding: 0 !important;
+  visibility: hidden !important;
+}
+
+.start-config-modal .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 34%, var(--color-border-default)) !important;
+}
+
+.start-config-modal .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 52%, var(--color-border-default)) !important;
+}
+
+.start-config-metadata-grid .MuiOutlinedInput-notchedOutline,
+.start-config-metadata-grid .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.start-config-metadata-grid .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+.start-config-parameters-grid .MuiOutlinedInput-notchedOutline,
+.start-config-parameters-grid .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.start-config-parameters-grid .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+.http-config-modal .MuiOutlinedInput-notchedOutline,
+.http-config-modal .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+.http-config-modal .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+html[data-theme="light"] .http-config-modal .MuiOutlinedInput-notchedOutline {
+  border: 1px solid color-mix(in oklab, var(--color-border-default) 90%, transparent) !important;
+}
+
+html[data-theme="light"] .http-config-modal .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 30%, var(--color-border-default)) !important;
+}
+
+html[data-theme="light"] .http-config-modal .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 48%, var(--color-border-default)) !important;
+}
+
+html[data-theme="light"] .start-config-metadata-grid .MuiOutlinedInput-notchedOutline,
+html[data-theme="light"] .start-config-parameters-grid .MuiOutlinedInput-notchedOutline {
+  border: 1px solid color-mix(in oklab, var(--color-border-default) 90%, transparent) !important;
+}
+
+html[data-theme="light"] .start-config-metadata-grid .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline,
+html[data-theme="light"] .start-config-parameters-grid .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 30%, var(--color-border-default)) !important;
+}
+
+html[data-theme="light"] .start-config-metadata-grid .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline,
+html[data-theme="light"] .start-config-parameters-grid .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: color-mix(in oklab, var(--color-accent-fg) 48%, var(--color-border-default)) !important;
+}
+
+.http-config-modal .MuiSelect-select,
+.http-config-modal .MuiOutlinedInput-root,
+.http-config-modal .MuiOutlinedInput-notchedOutline,
+.http-config-modal .MuiOutlinedInput-root fieldset {
+  border-radius: 0 !important;
+}
+
+.database-config-modal .MuiSelect-select,
+.database-config-modal .MuiOutlinedInput-root,
+.database-config-modal .MuiOutlinedInput-notchedOutline,
+.database-config-modal .MuiOutlinedInput-root fieldset,
+.database-config-modal .MuiInputBase-root,
+.database-config-modal .MuiInputBase-root fieldset,
+.rule-engine-config-modal .MuiSelect-select,
+.rule-engine-config-modal .MuiOutlinedInput-root,
+.rule-engine-config-modal .MuiOutlinedInput-notchedOutline,
+.rule-engine-config-modal .MuiOutlinedInput-root fieldset,
+.rule-engine-config-modal .MuiInputBase-root,
+.rule-engine-config-modal .MuiInputBase-root fieldset,
+.validation-config-modal .MuiSelect-select,
+.validation-config-modal .MuiOutlinedInput-root,
+.validation-config-modal .MuiOutlinedInput-notchedOutline,
+.validation-config-modal .MuiOutlinedInput-root fieldset,
+.validation-config-modal .MuiInputBase-root,
+.validation-config-modal .MuiInputBase-root fieldset {
+  border-radius: 0 !important;
+}
+
+.rule-engine-config-modal .rule-config-json-editor,
+.rule-engine-config-modal .rule-config-json-editor .monaco-editor,
+.rule-engine-config-modal .rule-config-json-editor .monaco-editor-background,
+.rule-engine-config-modal .rule-config-json-editor .monaco-editor .margin,
+.rule-engine-config-modal .rule-config-json-editor .monaco-editor .margin-view-overlays,
+.validation-config-modal .rule-config-json-editor,
+.validation-config-modal .rule-config-json-editor .monaco-editor,
+.validation-config-modal .rule-config-json-editor .monaco-editor-background,
+.validation-config-modal .rule-config-json-editor .monaco-editor .margin,
+.validation-config-modal .rule-config-json-editor .monaco-editor .margin-view-overlays {
+  border-radius: 0 !important;
+}
+
+.database-config-modal .start-config-json-editor,
+.database-config-modal .start-config-json-editor .monaco-editor,
+.database-config-modal .start-config-json-editor .monaco-editor-background,
+.database-config-modal .start-config-json-editor .monaco-editor .margin,
+.database-config-modal .start-config-json-editor .monaco-editor .margin-view-overlays {
+  border-radius: 0 !important;
+}
+
+.jexl-config-modal .MuiSelect-select,
+.jexl-config-modal .MuiOutlinedInput-root,
+.jexl-config-modal .MuiOutlinedInput-notchedOutline,
+.jexl-config-modal .MuiOutlinedInput-root fieldset,
+.jexl-config-modal .MuiInputBase-root,
+.jexl-config-modal .MuiInputBase-root fieldset {
+  border-radius: 0 !important;
+}
+
+.jexl-config-modal .start-config-json-editor,
+.jexl-config-modal .start-config-json-editor .monaco-editor,
+.jexl-config-modal .start-config-json-editor .monaco-editor-background,
+.jexl-config-modal .start-config-json-editor .monaco-editor .margin,
+.jexl-config-modal .start-config-json-editor .monaco-editor .margin-view-overlays {
+  border-radius: 0 !important;
+}
+
+.terminate-config-modal .MuiSelect-select,
+.terminate-config-modal .MuiOutlinedInput-root,
+.terminate-config-modal .MuiOutlinedInput-notchedOutline,
+.terminate-config-modal .MuiOutlinedInput-root fieldset,
+.terminate-config-modal .MuiInputBase-root,
+.terminate-config-modal .MuiInputBase-root fieldset {
+  border-radius: 0 !important;
+}
+
+.terminate-config-modal .start-config-json-editor,
+.terminate-config-modal .start-config-json-editor .monaco-editor,
+.terminate-config-modal .start-config-json-editor .monaco-editor-background,
+.terminate-config-modal .start-config-json-editor .monaco-editor .margin,
+.terminate-config-modal .start-config-json-editor .monaco-editor .margin-view-overlays {
+  border-radius: 0 !important;
+}
+
+.switch-config-modal .MuiSelect-select,
+.switch-config-modal .MuiOutlinedInput-root,
+.switch-config-modal .MuiOutlinedInput-notchedOutline,
+.switch-config-modal .MuiOutlinedInput-root fieldset,
+.switch-config-modal .MuiInputBase-root,
+.switch-config-modal .MuiInputBase-root fieldset {
+  border-radius: 0 !important;
+}
+
+.switch-config-modal .start-config-json-editor,
+.switch-config-modal .start-config-json-editor .monaco-editor,
+.switch-config-modal .start-config-json-editor .monaco-editor-background,
+.switch-config-modal .start-config-json-editor .monaco-editor .margin,
+.switch-config-modal .start-config-json-editor .monaco-editor .margin-view-overlays {
+  border-radius: 0 !important;
+}
+
+.start-config-modal .MuiInputBase-input::placeholder {
+  color: var(--color-fg-muted);
+  opacity: 0.95;
+}
+
+.start-config-footer {
+  border-top: 1px solid var(--color-border-default);
+  padding-top: 14px;
+}
+
+.start-config-modal .MuiButton-root {
+  border-radius: 0 !important;
+}
+
+.start-config-tabs {
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.start-config-tabs .MuiTab-root {
+  text-transform: none;
+  min-height: 38px;
+  font-weight: 700;
+  color: var(--color-fg-muted);
+}
+
+.start-config-tabs .Mui-selected {
+  color: var(--color-fg-default) !important;
+}
+
+.start-config-tabs .MuiTabs-indicator {
+  background: var(--color-accent-fg);
+}
+
+.start-config-json-editor {
+  border: 1px solid color-mix(in oklab, var(--color-border-default) 86%, transparent);
+  background: var(--color-canvas-subtle);
+}
+
+.start-config-json-editor .monaco-scrollable-element > .scrollbar > .slider {
+  background: color-mix(in oklab, var(--color-fg-muted) 42%, transparent) !important;
+}
+
+.start-config-json-editor .monaco-scrollable-element > .scrollbar > .slider:hover {
+  background: color-mix(in oklab, var(--color-accent-fg) 40%, transparent) !important;
+}
+
+.start-config-json-editor .monaco-editor,
+.start-config-json-editor .monaco-editor-background,
+.start-config-json-editor .monaco-editor .margin,
+.start-config-json-editor .monaco-editor .margin-view-overlays {
+  background: color-mix(in oklab, var(--color-canvas-default) 90%, var(--color-canvas-subtle)) !important;
+}
+
+html[data-theme="dark"] .start-config-json-editor {
+  border-color: color-mix(in oklab, var(--color-border-default) 94%, transparent);
+  background: var(--color-canvas-default);
+}
+
+.start-config-modal .MuiOutlinedInput-root,
+.start-config-modal .MuiInputBase-root,
+.start-config-modal .MuiOutlinedInput-notchedOutline,
+.start-config-modal .MuiOutlinedInput-root fieldset,
+.start-config-modal .MuiInputBase-root fieldset,
+.start-config-modal .MuiSelect-select,
+.start-config-modal .MuiPaper-root,
+.start-config-modal .MuiIconButton-root {
+  border-radius: 0 !important;
+}
+
+html[data-theme="dark"] .start-config-modal {
+  border-color: var(--color-border-default);
+  box-shadow: none;
+  background: var(--color-canvas-subtle, #161b22) !important;
+}
+
+html[data-theme="dark"] .start-config-section-card {
+  border-color: var(--color-border-default);
+  background: color-mix(in oklab, var(--color-canvas-default) 84%, var(--color-canvas-subtle));
+}
+
+html[data-theme="dark"] .node-config-modal {
+  border-color: var(--color-border-default);
+  box-shadow: none;
+  background: var(--color-canvas-subtle, #161b22) !important;
+}
+
+html[data-theme="dark"] .node-config-run-btn {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: var(--color-status-success, #3fb950) !important;
+}
+
+.run-result-modal .start-config-json-editor,
+.run-result-modal .start-config-json-editor .monaco-editor,
+.run-result-modal .start-config-json-editor .monaco-editor-background,
+.run-result-modal .start-config-json-editor .monaco-editor .margin,
+.run-result-modal .start-config-json-editor .monaco-editor .margin-view-overlays,
+.run-result-modal .start-config-json-editor .monaco-editor .overflow-guard,
+.run-result-modal .start-config-json-editor .monaco-editor .monaco-scrollable-element,
+.run-result-modal .start-config-json-editor .monaco-editor .decorationsOverviewRuler {
+  border-radius: 0 !important;
+}

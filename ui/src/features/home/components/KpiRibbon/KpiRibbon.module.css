@@ -1,0 +1,191 @@
+.ribbonGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1200px) {
+  .ribbonGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .ribbonGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kpiCard {
+  position: relative;
+  background-color: var(--color-canvas-default);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpiCard:hover {
+  border-color: var(--color-border-strong);
+  transform: translateY(-1px);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-fg-muted);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+
+.iconBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: var(--color-surface-soft);
+  color: var(--color-fg-default);
+}
+
+.metricValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-fg-default);
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-fg-soft);
+}
+
+.subText {
+  font-size: 12px;
+  color: var(--color-fg-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Success Card Variations */
+.badgeHealthy {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-status-success);
+  background-color: var(--hue-green-tint, rgba(22, 163, 74, 0.12));
+}
+
+.badgeWarning {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-status-warn);
+  background-color: var(--hue-amber-tint, rgba(217, 119, 6, 0.12));
+}
+
+.badgeDanger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-status-danger);
+  background-color: color-mix(in srgb, var(--color-status-danger) 12%, transparent);
+}
+
+/* Active Running Card */
+.activeCard {
+  border-color: color-mix(in srgb, var(--color-status-info) 30%, var(--color-border-default));
+}
+
+.runningDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-status-info);
+  box-shadow: 0 0 0 0 var(--color-status-info);
+  animation: pulseRunning 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseRunning {
+  0% {
+    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(29, 78, 216, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(29, 78, 216, 0);
+  }
+}
+
+/* Failure Triage Alert Card (Focal Moment) */
+.triageCard {
+  border-color: color-mix(in srgb, var(--color-status-danger) 35%, var(--color-border-default));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-status-danger) 3%, var(--color-canvas-default)) 0%,
+    var(--color-canvas-default) 100%
+  );
+}
+
+.triageCard:hover {
+  border-color: var(--color-status-danger);
+}
+
+.triageActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background-color: var(--color-status-danger);
+  color: #ffffff;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.triageActionBtn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.triageCalmBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-status-success);
+}

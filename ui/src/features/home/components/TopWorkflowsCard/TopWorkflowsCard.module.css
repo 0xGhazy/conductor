@@ -1,0 +1,182 @@
+.cardContainer {
+  background-color: var(--color-canvas-default);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cardContainer:hover {
+  border-color: var(--color-border-strong);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-fg-default);
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 12px;
+  color: var(--color-fg-soft);
+  margin-top: 2px;
+}
+
+.workflowList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.workflowRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-default);
+  background-color: var(--color-canvas-default);
+  transition: all 0.15s ease;
+}
+
+.workflowRow:hover {
+  border-color: var(--color-border-strong);
+  background-color: var(--color-surface-soft);
+}
+
+.rowTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rankBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: var(--color-surface-soft);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-fg-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.workflowName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-fg-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.ratePill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rateSuccess {
+  background-color: var(--hue-green-tint, rgba(22, 163, 74, 0.12));
+  color: var(--color-status-success);
+}
+
+.rateWarn {
+  background-color: var(--hue-amber-tint, rgba(217, 119, 6, 0.12));
+  color: var(--color-status-warn);
+}
+
+.rateDanger {
+  background-color: color-mix(in srgb, var(--color-status-danger) 12%, transparent);
+  color: var(--color-status-danger);
+}
+
+.actionLinks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.workflowRow:hover .actionLinks {
+  opacity: 1;
+}
+
+.actionIconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--color-fg-muted);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.actionIconBtn:hover {
+  color: var(--color-accent-fg);
+  background-color: var(--color-canvas-default);
+}
+
+.rowBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--color-fg-soft);
+  gap: 12px;
+}
+
+.barTrack {
+  flex: 1;
+  height: 4px;
+  background-color: var(--color-surface-soft);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  background-color: var(--color-accent-fg);
+}
+
+.statsText {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.emptyState {
+  padding: 32px 16px;
+  text-align: center;
+  border: 1px dashed var(--color-border-default);
+  border-radius: 6px;
+  color: var(--color-fg-soft);
+  font-size: 13px;
+}

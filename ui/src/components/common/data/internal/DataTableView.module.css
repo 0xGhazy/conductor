@@ -1,0 +1,123 @@
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+  background-color: var(--color-canvas-default);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb, rgba(127, 127, 127, 0.28)) transparent;
+}
+
+.tableContainer::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.tableContainer::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-thumb, rgba(127, 127, 127, 0.28));
+  border-radius: 4px;
+}
+
+.tableRoot {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: inherit;
+}
+
+/* Sticky Header */
+.headerRow {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: var(--color-canvas-subtle);
+}
+
+.headerCell {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-fg-muted);
+  border-bottom: 1px solid var(--color-border-default);
+  white-space: nowrap;
+  background: inherit;
+}
+
+.headerCellSortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.headerCellSortable:hover {
+  color: var(--color-fg-default);
+}
+
+/* Table Body Rows */
+.bodyRow {
+  height: 40px;
+  transition: background-color 0.15s ease;
+  cursor: default;
+}
+
+.bodyRowClickable {
+  cursor: pointer;
+}
+
+.bodyRow:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.bodyRowSelected {
+  background-color: var(--color-accent-subtle) !important;
+}
+
+.bodyRowSelected:hover {
+  background-color: color-mix(in srgb, var(--color-accent-fg) 16%, transparent) !important;
+}
+
+.bodyCell {
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--color-fg-default);
+  border-bottom: 1px solid var(--color-border-default);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  vertical-align: middle;
+}
+
+.checkboxCell {
+  width: 44px;
+  padding: 0 0 0 14px;
+  text-align: center;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+.actionsCell {
+  width: 52px;
+  padding: 0 10px;
+  text-align: right;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border-default);
+}
+
+/* Selection Controls */
+.selectionControl {
+  accent-color: var(--color-accent-fg);
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  vertical-align: middle;
+}
+
+/* Sort Indicator */
+.sortIndicator {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  vertical-align: middle;
+  color: var(--color-accent-fg);
+}

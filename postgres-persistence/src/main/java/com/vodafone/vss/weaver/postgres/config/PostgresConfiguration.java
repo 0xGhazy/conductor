@@ -203,6 +203,62 @@ public class PostgresConfiguration {
     }
 
     @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public com.vodafone.vss.weaver.postgres.dao.PostgresHttpConnectionDAO postgresHttpConnectionDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new com.vodafone.vss.weaver.postgres.dao.PostgresHttpConnectionDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public com.vodafone.vss.weaver.postgres.dao.PostgresApiCollectionDAO postgresApiCollectionDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new com.vodafone.vss.weaver.postgres.dao.PostgresApiCollectionDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public com.vodafone.vss.weaver.postgres.dao.PostgresWorkflowTranslationDAO postgresWorkflowTranslationDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new com.vodafone.vss.weaver.postgres.dao.PostgresWorkflowTranslationDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public com.vodafone.vss.weaver.postgres.dao.PostgresRedisDatasourceDAO postgresRedisDatasourceDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new com.vodafone.vss.weaver.postgres.dao.PostgresRedisDatasourceDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public com.vodafone.vss.weaver.postgres.dao.PostgresScriptDAO postgresScriptDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new com.vodafone.vss.weaver.postgres.dao.PostgresScriptDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public com.vodafone.vss.weaver.postgres.dao.PostgresSecretDAO postgresSecretDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new com.vodafone.vss.weaver.postgres.dao.PostgresSecretDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
+    @DependsOn({"flywayForPrimaryDb"})
+    public com.vodafone.vss.weaver.postgres.dao.PostgresSupportedLanguageDAO postgresSupportedLanguageDAO(
+            @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
+            ObjectMapper objectMapper) {
+        return new com.vodafone.vss.weaver.postgres.dao.PostgresSupportedLanguageDAO(retryTemplate, objectMapper, dataSource);
+    }
+
+    @Bean
     public RetryTemplate postgresRetryTemplate(PostgresProperties properties) {
         SimpleRetryPolicy retryPolicy = new CustomRetryPolicy();
         retryPolicy.setMaxAttempts(3);

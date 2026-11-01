@@ -126,6 +126,10 @@ public class Query implements AutoCloseable {
         return addParameterInternal((ps, idx) -> ps.setTimestamp(idx, timestamp));
     }
 
+    public Query addParameter(final byte[] value) {
+        return addParameterInternal((ps, idx) -> ps.setBytes(idx, value));
+    }
+
     /**
      * Serializes {@literal value} to a JSON string for persistence.
      *

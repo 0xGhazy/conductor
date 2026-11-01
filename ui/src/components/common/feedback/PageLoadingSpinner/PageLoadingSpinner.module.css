@@ -1,0 +1,103 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--color-canvas-default, #ffffff);
+  color: var(--color-fg-default, #1f2328);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* In-content variant: fills the available content area instead of the viewport */
+.inline {
+  min-height: 240px;
+  height: 100%;
+  flex: 1 1 auto;
+  background-color: transparent;
+}
+
+.spinnerWrapper {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinnerGlow {
+  display: none;
+}
+
+.spinnerOuter {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--color-accent-fg);
+  border-left-color: var(--color-orange-fg, #FF8A3D);
+  animation: spinClockwise 1s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+}
+
+.spinnerInner {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-bottom-color: var(--color-accent-fg);
+  border-right-color: var(--color-orange-fg, #FF8A3D);
+  opacity: 0.75;
+  animation: spinCounterClockwise 0.8s linear infinite;
+}
+
+.label {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--color-fg-muted, #57606a);
+  animation: pulseText 2s ease-in-out infinite;
+}
+
+@keyframes spinClockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinCounterClockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes pulseText {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}

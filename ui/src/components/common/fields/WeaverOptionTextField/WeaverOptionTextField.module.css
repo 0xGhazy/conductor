@@ -1,0 +1,84 @@
+/* WeaverOptionTextField Component Styling */
+
+.root {
+  display: inline-flex;
+  vertical-align: top;
+}
+
+.refreshButton {
+  padding: 4px !important;
+  color: var(--color-fg-muted, #57606a) !important;
+  transition: color 0.15s ease, transform 0.2s ease !important;
+}
+
+.refreshButton:hover {
+  color: var(--color-accent-fg) !important;
+  background-color: var(--color-accent-soft, #FDE8E9) !important;
+}
+
+.refreshSpinning {
+  animation: spin 0.8s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.adornmentGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Suggestion dropdown option item styling */
+.optionItem {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  padding: 6px 12px !important;
+  gap: 2px !important;
+  border-bottom: 1px solid var(--color-border-subtle, rgba(0, 0, 0, 0.04)) !important;
+}
+
+.optionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+
+.optionLabel {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: var(--color-fg-default, #1f2328);
+}
+
+.optionGroupBadge {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-fg-muted, #57606a);
+  background-color: var(--color-canvas-subtle, #f6f8fa);
+  border: 1px solid var(--color-border-default, #d0d7de);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.optionValuePreview {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.75rem;
+  color: var(--color-accent-fg);
+  background-color: var(--color-accent-soft, #FDE8E9);
+  padding: 1px 4px;
+  border-radius: 3px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

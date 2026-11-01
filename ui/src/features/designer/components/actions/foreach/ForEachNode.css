@@ -1,0 +1,167 @@
+.action-node-card.foreach-node-card,
+.foreach-node-card.action-node-card {
+  border-color: color-mix(in oklab, #8b5cf6 50%, var(--color-border-default));
+  background: var(--color-canvas-default);
+  min-width: 210px;
+  position: relative;
+}
+
+.foreach-node-card .action-node-title {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.foreach-node-title-value {
+  color: inherit;
+  font-weight: 800;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.9em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+.foreach-node-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+.foreach-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: rgba(139, 92, 246, 0.12);
+  color: #6d28d9;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.foreach-badge--mode {
+  background: rgba(59, 130, 246, 0.12);
+  color: #1d4ed8;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.foreach-handles-bar {
+  position: relative;
+  width: 100%;
+  height: 14px;
+  margin-top: 6px;
+}
+
+.foreach-handle-wrapper {
+  position: absolute;
+  bottom: -6px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.foreach-handle {
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50% !important;
+  border: 2px solid #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.foreach-handle:hover {
+  transform: scale(1.22);
+}
+
+.foreach-handle--loop {
+  background: #8b5cf6 !important;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35) !important;
+}
+
+.foreach-handle--next {
+  background: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35) !important;
+}
+
+.foreach-handle-active {
+  animation: foreach-handle-pulse 1.8s infinite !important;
+}
+
+@keyframes foreach-handle-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.foreach-handle-label {
+  position: absolute;
+  bottom: -18px;
+  font-size: 9.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.foreach-handle-label--loop {
+  color: #7c3aed;
+}
+
+.foreach-handle-label--next {
+  color: #2563eb;
+}
+
+.foreach-config-modal .node-config-footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Dark theme styling */
+html[data-theme="dark"] .action-node-card.foreach-node-card,
+html[data-theme="dark"] .foreach-node-card.action-node-card {
+  border-color: color-mix(in oklab, #a78bfa 55%, var(--color-border-default));
+  background: var(--color-canvas-subtle);
+}
+
+html[data-theme="dark"] .foreach-badge {
+  background: rgba(167, 139, 250, 0.2);
+  color: #c4b5fd;
+  border-color: rgba(167, 139, 250, 0.35);
+}
+
+html[data-theme="dark"] .foreach-badge--mode {
+  background: rgba(96, 165, 250, 0.2);
+  color: #93c5fd;
+  border-color: rgba(96, 165, 250, 0.35);
+}
+
+html[data-theme="dark"] .foreach-handle {
+  border-color: #1e1e2f !important;
+}
+
+html[data-theme="dark"] .foreach-handle-label--loop {
+  color: #c4b5fd;
+}
+
+html[data-theme="dark"] .foreach-handle-label--next {
+  color: #93c5fd;
+}

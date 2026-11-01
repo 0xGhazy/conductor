@@ -1,0 +1,47 @@
+/* WeaverButton Core Styling */
+.root {
+  position: relative !important;
+  overflow: hidden !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease, border-color 0.2s ease !important;
+}
+
+/* Subtle active press feedback */
+.root:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+/* Delete Hold State (progress visuals live in HoldProgress.module.css) */
+.holding {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Loading state styling */
+.loading {
+  cursor: wait !important;
+  pointer-events: none;
+}
+
+/* Spinner wrapper inside icon slots */
+.spinnerWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+/* Content wrapper ensuring button text stays above hold overlay */
+.content {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+}
+
+/* Ensure startIcon and endIcon stay above hold overlay */
+.root :global(.MuiButton-startIcon),
+.root :global(.MuiButton-endIcon) {
+  position: relative;
+  z-index: 2;
+}

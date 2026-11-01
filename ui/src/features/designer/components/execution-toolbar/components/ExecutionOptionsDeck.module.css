@@ -1,0 +1,290 @@
+/* Single-Row Horizontal Execution Options Deck Styles - Theme-Aware */
+.deckWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  user-select: none;
+  animation: deckFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes deckFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Inline Divider */
+.inlineDivider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--color-border-default, rgba(127, 127, 127, 0.2));
+  flex-shrink: 0;
+  margin: 0 2px;
+}
+
+/* Inline Form Group */
+.inlineGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.inlineLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-fg-muted, #717d96);
+  white-space: nowrap;
+}
+
+/* Mode Segmented Control */
+.segmentedControl {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  height: 26px;
+  width: 116px;
+  padding: 2px;
+  background-color: var(--color-surface-sunken, rgba(0, 0, 0, 0.08));
+  border: 1px solid var(--color-border-default, rgba(127, 127, 127, 0.2));
+  border-radius: 6px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.segmentButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-fg-muted, #717d96);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.segmentButton:hover:not(.segmentActive) {
+  color: var(--color-fg-default, #151b2b);
+  background-color: color-mix(in srgb, var(--color-fg-default, #000) 6%, transparent);
+}
+
+.segmentActive {
+  background-color: var(--hue-blue, #2563eb);
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Correlation ID & Attached UUID Button */
+.inputWithQuickAction {
+  display: inline-flex;
+  align-items: stretch;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.deckInput {
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 5px;
+  background-color: var(--color-surface-soft, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--color-border-default, rgba(127, 127, 127, 0.2));
+  color: var(--color-fg-default, #151b2b);
+  font-size: 11px;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.deckInput::placeholder {
+  color: var(--color-fg-muted, #717d96);
+}
+
+.deckInput:focus {
+  outline: none;
+  border-color: var(--hue-blue, #2563eb);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--hue-blue, #2563eb) 25%, transparent);
+}
+
+.inputWithQuickAction .deckInput {
+  width: 140px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.quickActionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 0 8px;
+  border-radius: 0 5px 5px 0;
+  border: 1px solid var(--color-border-default, rgba(127, 127, 127, 0.2));
+  background-color: var(--color-surface-soft, rgba(0, 0, 0, 0.04));
+  color: var(--hue-blue, #2563eb);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.quickActionBtn:hover {
+  background-color: color-mix(in srgb, var(--hue-blue, #2563eb) 12%, transparent);
+  border-color: var(--hue-blue, #2563eb);
+}
+
+/* Wait Seconds Input with 's' Suffix */
+.inputWithSuffix {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.numberInput {
+  width: 62px;
+  padding-right: 18px;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+
+.numberInput::-webkit-outer-spin-button,
+.numberInput::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.suffix {
+  position: absolute;
+  right: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-fg-muted, #717d96);
+  pointer-events: none;
+}
+
+/* Pause At Breakpoint Dropdown */
+.deckSelect {
+  height: 26px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23717d96' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 11px;
+  padding: 0 20px 0 8px;
+  max-width: 170px;
+  flex-shrink: 0;
+  background-color: var(--color-surface-soft, rgba(0, 0, 0, 0.04));
+  border: 1px solid var(--color-border-default, rgba(127, 127, 127, 0.2));
+  border-radius: 5px;
+  color: var(--color-fg-default, #151b2b);
+}
+
+.deckSelect option {
+  background-color: var(--color-canvas-default, #ffffff);
+  color: var(--color-fg-default, #151b2b);
+  padding: 4px 8px;
+}
+
+/* Polling Pills Group */
+.pillsGroup {
+  display: inline-flex;
+  height: 26px;
+  gap: 2px;
+  padding: 2px;
+  background-color: var(--color-surface-sunken, rgba(0, 0, 0, 0.08));
+  border: 1px solid var(--color-border-default, rgba(127, 127, 127, 0.2));
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.pillButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  border: none;
+  background: transparent;
+  color: var(--color-fg-muted, #717d96);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pillButton:hover:not(.pillActive) {
+  color: var(--color-fg-default, #151b2b);
+  background-color: color-mix(in srgb, var(--color-fg-default, #000) 6%, transparent);
+}
+
+.pillActive {
+  background-color: color-mix(in srgb, var(--hue-blue, #2563eb) 20%, transparent);
+  color: var(--hue-blue, #2563eb);
+  border: 1px solid color-mix(in srgb, var(--hue-blue, #2563eb) 40%, transparent);
+}
+
+/* Right Actions Group */
+.rightActionsGroup {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.resetButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--color-fg-muted, #717d96);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.resetButton:hover {
+  color: var(--color-fg-default, #151b2b);
+  background-color: var(--color-surface-soft, rgba(127, 127, 127, 0.08));
+}
+
+.doneButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background-color: var(--hue-blue, #2563eb);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.doneButton:hover {
+  filter: brightness(1.1);
+}

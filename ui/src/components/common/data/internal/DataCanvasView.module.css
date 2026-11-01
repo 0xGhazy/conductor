@@ -1,0 +1,142 @@
+.canvasGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  background-color: var(--color-canvas-default);
+  box-sizing: border-box;
+}
+
+/* Skeleton State */
+.skeletonCard {
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background-color: var(--color-canvas-subtle);
+  padding: 14px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.skeletonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.skeletonCheckbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background-color: var(--color-surface-soft);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonAction {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: var(--color-surface-soft);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonIdentity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.skeletonIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background-color: var(--color-surface-soft);
+  flex-shrink: 0;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonTitleGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.skeletonTitle {
+  height: 14px;
+  width: 70%;
+  border-radius: 4px;
+  background-color: var(--color-surface-soft);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonTag {
+  height: 10px;
+  width: 40%;
+  border-radius: 4px;
+  background-color: var(--color-surface-soft);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonMetrics {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.skeletonMetricRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.skeletonMetricLabel {
+  height: 10px;
+  width: 30%;
+  border-radius: 3px;
+  background-color: var(--color-surface-soft);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonMetricValue {
+  height: 10px;
+  width: 45%;
+  border-radius: 3px;
+  background-color: var(--color-surface-soft);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.skeletonFooter {
+  border-top: 1px solid var(--color-border-default);
+  padding-top: 10px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.skeletonButton {
+  height: 24px;
+  width: 80px;
+  border-radius: 4px;
+  background-color: var(--color-surface-soft);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0.6;
+  }
+}

@@ -1,0 +1,57 @@
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.saved {
+  background-color: var(--color-success-subtle, rgba(16, 185, 129, 0.1));
+  color: var(--color-success-fg, #10b981);
+  border: 1px solid var(--color-success-border, rgba(16, 185, 129, 0.25));
+}
+
+.unsaved {
+  background-color: var(--color-attention-subtle, rgba(245, 158, 11, 0.1));
+  color: var(--color-attention-fg, #d97706);
+  border: 1px solid var(--color-attention-border, rgba(245, 158, 11, 0.25));
+}
+
+.saving {
+  background-color: var(--color-accent-subtle, rgba(59, 130, 246, 0.1));
+  color: var(--color-accent-fg, #3b82f6);
+  border: 1px solid var(--color-accent-border, rgba(59, 130, 246, 0.25));
+}
+
+.failed {
+  background-color: var(--color-danger-subtle, rgba(239, 68, 68, 0.1));
+  color: var(--color-danger-fg, #ef4444);
+  border: 1px solid var(--color-danger-border, rgba(239, 68, 68, 0.25));
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: currentColor;
+  display: inline-block;
+}
+
+.spinIcon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

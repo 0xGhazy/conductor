@@ -1,0 +1,36 @@
+.action-node-card.respond-node-card,
+.respond-node-card.action-node-card {
+  position: relative;
+  min-width: 190px;
+  border-radius: 12px;
+  background: var(--color-canvas-subtle, #ffffff);
+  border: 1.5px solid #0f766e;
+  box-shadow: 0 4px 14px rgba(15, 118, 110, 0.12);
+  transition: all 0.2s ease;
+}
+
+.action-node-card.respond-node-card:hover,
+.respond-node-card.action-node-card:hover {
+  box-shadow: 0 6px 20px rgba(15, 118, 110, 0.22);
+  border-color: #0d9488;
+}
+
+.action-node-card.respond-node-card--terminal,
+.respond-node-card--terminal.action-node-card {
+  border-left: 4px solid #0f766e;
+}
+
+.respond-config-modal {
+  max-width: 900px;
+  width: 95vw;
+}
+
+.respond-config-modal .database-config-grid {
+  padding-top: 8px;
+  row-gap: 16px;
+  overflow: visible;
+}
+
+.respond-config-modal .MuiFormControl-root {
+  overflow: visible;
+}

@@ -1,0 +1,683 @@
+.explorerContainer {
+  background: var(--color-canvas-default, #ffffff);
+  border: 1px solid var(--color-border-default, #d8dde8);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 1px 3px rgba(21, 27, 43, 0.05);
+}
+
+.explorerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-fg-default, #151b2b);
+  margin: 0;
+}
+
+.countBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-surface-soft, #e2e8f0);
+  color: var(--color-fg-muted, #4a5468);
+}
+
+.expandToggleBtn {
+  background: transparent;
+  border: 1px solid var(--color-border-default, #d8dde8);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-fg-muted, #64748b);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.expandToggleBtn:hover {
+  background: var(--color-surface-soft, #e2e8f0);
+  color: var(--color-fg-default, #151b2b);
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.addEndpointBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-default, #d8dde8);
+  background: var(--color-canvas-default, #ffffff);
+  color: var(--color-fg-default, #151b2b);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.addEndpointBtn:hover {
+  background: var(--color-surface-soft, #f1f5f9);
+  border-color: var(--color-border-strong, #7e899e);
+  transform: translateY(-1px);
+}
+
+/* Search bar */
+.searchWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-fg-muted, #7e899e);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 38px;
+  padding: 0 32px 0 34px;
+  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border-default, #d8dde8);
+  background: var(--color-canvas-subtle, #f8fafc);
+  color: var(--color-fg-default, #151b2b);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  background: var(--color-canvas-default, #ffffff);
+  border-color: var(--color-accent-fg, #d9102b);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent-fg, #d9102b) 20%, transparent);
+}
+
+.clearSearchBtn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--color-fg-muted, #7e899e);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.clearSearchBtn:hover {
+  color: var(--color-fg-default, #151b2b);
+}
+
+/* Method Filter Chips */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 4px;
+}
+
+.filterChip {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+/* ALL Chip */
+.chipAll {
+  background: var(--color-surface-soft, #e2e8f0);
+  border: 1px solid var(--color-border-default, #d8dde8);
+  color: var(--color-fg-muted, #4a5468);
+}
+
+.chipAll:hover {
+  background: var(--color-surface-raised, #cbd5e1);
+  border-color: var(--color-border-strong, #7e899e);
+  color: var(--color-fg-default, #151b2b);
+}
+
+.chipActiveAll {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+/* GET Chip */
+.chipGet {
+  background: var(--hue-blue-tint, rgba(37, 99, 235, 0.12));
+  border: 1px solid color-mix(in srgb, var(--hue-blue, #2563eb) 35%, transparent);
+  color: var(--hue-blue, #2563eb);
+}
+
+.chipGet:hover {
+  background: color-mix(in srgb, var(--hue-blue, #2563eb) 22%, transparent);
+  border-color: color-mix(in srgb, var(--hue-blue, #2563eb) 60%, transparent);
+}
+
+.chipActiveGet {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+}
+
+/* POST Chip */
+.chipPost {
+  background: var(--hue-green-tint, rgba(22, 163, 74, 0.12));
+  border: 1px solid color-mix(in srgb, var(--hue-green, #16a34a) 35%, transparent);
+  color: var(--hue-green, #16a34a);
+}
+
+.chipPost:hover {
+  background: color-mix(in srgb, var(--hue-green, #16a34a) 22%, transparent);
+  border-color: color-mix(in srgb, var(--hue-green, #16a34a) 60%, transparent);
+}
+
+.chipActivePost {
+  background: #16a34a !important;
+  color: #ffffff !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.4);
+}
+
+/* PUT Chip */
+.chipPut {
+  background: var(--hue-amber-tint, rgba(217, 119, 6, 0.12));
+  border: 1px solid color-mix(in srgb, var(--hue-amber, #d97706) 35%, transparent);
+  color: var(--hue-amber, #d97706);
+}
+
+.chipPut:hover {
+  background: color-mix(in srgb, var(--hue-amber, #d97706) 22%, transparent);
+  border-color: color-mix(in srgb, var(--hue-amber, #d97706) 60%, transparent);
+}
+
+.chipActivePut {
+  background: #d97706 !important;
+  color: #ffffff !important;
+  border-color: #d97706 !important;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.4);
+}
+
+/* PATCH Chip */
+.chipPatch {
+  background: var(--hue-violet-tint, rgba(124, 58, 237, 0.12));
+  border: 1px solid color-mix(in srgb, var(--hue-violet, #7c3aed) 35%, transparent);
+  color: var(--hue-violet, #7c3aed);
+}
+
+.chipPatch:hover {
+  background: color-mix(in srgb, var(--hue-violet, #7c3aed) 22%, transparent);
+  border-color: color-mix(in srgb, var(--hue-violet, #7c3aed) 60%, transparent);
+}
+
+.chipActivePatch {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: #7c3aed !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+}
+
+/* DELETE Chip */
+.chipDelete {
+  background: var(--hue-red-tint, rgba(220, 38, 38, 0.12));
+  border: 1px solid color-mix(in srgb, var(--hue-red, #dc2626) 35%, transparent);
+  color: var(--hue-red, #dc2626);
+}
+
+.chipDelete:hover {
+  background: color-mix(in srgb, var(--hue-red, #dc2626) 22%, transparent);
+  border-color: color-mix(in srgb, var(--hue-red, #dc2626) 60%, transparent);
+}
+
+.chipActiveDelete {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+}
+
+.chipCount {
+  font-size: 11px;
+  opacity: 0.9;
+}
+
+/* HTTP Method Variables for Endpoint Cards */
+.cardGet {
+  --method-color: #2563eb;
+  --method-color-bright: #3b82f6;
+  --method-bg: rgba(37, 99, 235, 0.07);
+  --method-bg-hover: rgba(37, 99, 235, 0.13);
+  --method-border: rgba(37, 99, 235, 0.32);
+  --method-border-hover: rgba(37, 99, 235, 0.6);
+  --method-badge-bg: rgba(37, 99, 235, 0.18);
+  --method-badge-border: rgba(37, 99, 235, 0.4);
+  --method-shadow: rgba(37, 99, 235, 0.14);
+}
+
+.cardPost {
+  --method-color: #16a34a;
+  --method-color-bright: #22c55e;
+  --method-bg: rgba(22, 163, 74, 0.07);
+  --method-bg-hover: rgba(22, 163, 74, 0.13);
+  --method-border: rgba(22, 163, 74, 0.32);
+  --method-border-hover: rgba(22, 163, 74, 0.6);
+  --method-badge-bg: rgba(22, 163, 74, 0.18);
+  --method-badge-border: rgba(22, 163, 74, 0.4);
+  --method-shadow: rgba(22, 163, 74, 0.14);
+}
+
+.cardPut {
+  --method-color: #d97706;
+  --method-color-bright: #f59e0b;
+  --method-bg: rgba(217, 119, 6, 0.07);
+  --method-bg-hover: rgba(217, 119, 6, 0.13);
+  --method-border: rgba(217, 119, 6, 0.32);
+  --method-border-hover: rgba(217, 119, 6, 0.6);
+  --method-badge-bg: rgba(217, 119, 6, 0.18);
+  --method-badge-border: rgba(217, 119, 6, 0.4);
+  --method-shadow: rgba(217, 119, 6, 0.14);
+}
+
+.cardPatch {
+  --method-color: #7c3aed;
+  --method-color-bright: #a855f7;
+  --method-bg: rgba(124, 58, 237, 0.07);
+  --method-bg-hover: rgba(124, 58, 237, 0.13);
+  --method-border: rgba(124, 58, 237, 0.32);
+  --method-border-hover: rgba(124, 58, 237, 0.6);
+  --method-badge-bg: rgba(124, 58, 237, 0.18);
+  --method-badge-border: rgba(124, 58, 237, 0.4);
+  --method-shadow: rgba(124, 58, 237, 0.14);
+}
+
+.cardDelete {
+  --method-color: #dc2626;
+  --method-color-bright: #ef4444;
+  --method-bg: rgba(220, 38, 38, 0.07);
+  --method-bg-hover: rgba(220, 38, 38, 0.13);
+  --method-border: rgba(220, 38, 38, 0.32);
+  --method-border-hover: rgba(220, 38, 38, 0.6);
+  --method-badge-bg: rgba(220, 38, 38, 0.18);
+  --method-badge-border: rgba(220, 38, 38, 0.4);
+  --method-shadow: rgba(220, 38, 38, 0.14);
+}
+
+.cardOther {
+  --method-color: #64748b;
+  --method-color-bright: #94a3b8;
+  --method-bg: var(--color-canvas-default, #ffffff);
+  --method-bg-hover: var(--color-canvas-subtle, #f8fafc);
+  --method-border: var(--color-border-default, #d8dde8);
+  --method-border-hover: var(--color-border-strong, #7e899e);
+  --method-badge-bg: var(--color-surface-soft, #e2e8f0);
+  --method-badge-border: var(--color-border-default, #d8dde8);
+  --method-shadow: rgba(0, 0, 0, 0.06);
+}
+
+/* Tag Sections */
+.tagGroupsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tagGroupSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid var(--color-border-default, #d8dde8);
+  border-radius: 12px;
+  background: var(--color-canvas-subtle, #f8fafc);
+  padding: 14px 18px;
+  transition: all 0.2s ease;
+}
+
+.tagGroupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  padding: 4px 0;
+  user-select: none;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.tagHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.tagIconWrapper {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--color-surface-soft, #e2e8f0);
+  color: var(--color-fg-muted, #4a5468);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tagName {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-fg-default, #151b2b);
+  letter-spacing: -0.01em;
+  transition: color 0.15s ease;
+}
+
+.tagGroupHeader:hover .tagName {
+  color: var(--color-accent-fg, #d9102b);
+}
+
+.tagCountPill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-surface-soft, #e2e8f0);
+  color: var(--color-fg-muted, #64748b);
+}
+
+.tagHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tagMethodPills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.miniMethodGet {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(37, 99, 235, 0.15);
+  color: #2563eb;
+}
+
+.miniMethodPost {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(22, 163, 74, 0.15);
+  color: #16a34a;
+}
+
+.miniMethodPut {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(217, 119, 6, 0.15);
+  color: #d97706;
+}
+
+.miniMethodPatch {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(124, 58, 237, 0.15);
+  color: #7c3aed;
+}
+
+.miniMethodDelete {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
+
+.tagChevron {
+  color: var(--color-fg-muted, #7e899e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tagEndpointsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+/* Endpoint Card */
+.endpointCard {
+  border: 1px solid var(--method-border, var(--color-border-default, #d8dde8));
+  border-radius: 10px;
+  padding: 14px 18px;
+  background: var(--method-bg, var(--color-canvas-default, #ffffff));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.endpointCard:hover {
+  background: var(--method-bg-hover, var(--color-canvas-subtle, #f8fafc));
+  border-color: var(--method-border-hover, var(--color-border-strong, #7e899e));
+  box-shadow: 0 4px 16px var(--method-shadow, rgba(0, 0, 0, 0.08));
+  transform: translateY(-1px);
+}
+
+.endpointMain {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
+}
+
+.methodBadge {
+  min-width: 68px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 5px 10px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  background: var(--method-badge-bg, rgba(255, 255, 255, 0.06));
+  color: var(--method-color-bright, var(--method-color, #151b2b));
+  border: 1px solid var(--method-badge-border, var(--method-border));
+  transition: all 0.2s ease;
+}
+
+.endpointDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.urlRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.urlText {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-fg-default, #151b2b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copyBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-fg-muted, #7e899e);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.copyBtn:hover {
+  background: var(--method-badge-bg, var(--color-surface-soft, #e2e8f0));
+  color: var(--method-color-bright, var(--method-color, var(--color-fg-default, #151b2b)));
+}
+
+.copiedText {
+  color: #16a34a !important;
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.endpointName {
+  font-size: 12px;
+  color: var(--color-fg-muted, #64748b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardTagPill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--method-badge-bg, rgba(0, 0, 0, 0.05));
+  color: var(--method-color-bright, var(--method-color, #64748b));
+  border: 1px solid var(--method-badge-border, transparent);
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.inspectBtn {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--method-border, var(--color-border-default, #d8dde8));
+  background: var(--method-bg, var(--color-canvas-subtle, #f8fafc));
+  color: var(--method-color-bright, var(--method-color, var(--color-fg-default)));
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.inspectBtn:hover {
+  background: var(--method-color-bright, var(--method-color, var(--color-accent-solid)));
+  border-color: var(--method-color-bright, var(--method-color, var(--color-accent-solid)));
+  color: #ffffff;
+  box-shadow: 0 2px 8px var(--method-shadow, rgba(0, 0, 0, 0.2));
+}
+
+/* Empty States */
+.emptyExplorer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  text-align: center;
+  gap: 12px;
+}
+
+.emptyText {
+  font-size: 14px;
+  color: var(--color-fg-muted, #64748b);
+  margin: 0;
+}
+
+.clearFilterBtn {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid var(--color-border-default, #d8dde8);
+  background: var(--color-canvas-default, #ffffff);
+  color: var(--color-fg-default, #151b2b);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearFilterBtn:hover {
+  background: var(--color-surface-soft, #e2e8f0);
+}

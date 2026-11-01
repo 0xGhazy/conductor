@@ -1,0 +1,633 @@
+.consoleContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  background: var(--color-surface-soft, #0d1117);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-default, #30363d);
+}
+
+.compact {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Toolbar Header */
+.toolbarHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--color-canvas-default, #161b22);
+  border-bottom: 1px solid var(--color-border-default, #30363d);
+  flex-shrink: 0;
+}
+
+.toolbarRowPrimary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.levelPillsGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.levelPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid var(--color-border-default, #30363d);
+  background: var(--color-surface-soft, #21262d);
+  color: var(--color-fg-muted, #8b949e);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.levelPill:hover {
+  background: var(--color-surface-hover, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+  border-color: var(--color-border-strong, #8b949e);
+}
+
+.levelPillActive {
+  background: var(--color-accent-subtle, #1f2937);
+  border-color: var(--color-accent-fg, #38bdf8);
+  color: var(--color-fg-default, #f0f6fc);
+  box-shadow: 0 0 0 1px var(--color-accent-fg, #38bdf8);
+}
+
+.levelPillActive.levelError {
+  background: color-mix(in srgb, #ef4444 18%, transparent);
+  border-color: #ef4444;
+  color: #fca5a5;
+  box-shadow: 0 0 0 1px #ef4444;
+}
+
+.levelPillActive.levelWarn {
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+  border-color: #f59e0b;
+  color: #fde68a;
+  box-shadow: 0 0 0 1px #f59e0b;
+}
+
+.levelPillActive.levelInfo {
+  background: color-mix(in srgb, #3b82f6 18%, transparent);
+  border-color: #3b82f6;
+  color: #bfdbfe;
+  box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.levelPillActive.levelDebug {
+  background: color-mix(in srgb, #8b5cf6 18%, transparent);
+  border-color: #8b5cf6;
+  color: #ddd6fe;
+  box-shadow: 0 0 0 1px #8b5cf6;
+}
+
+.levelPillActive.levelTrace {
+  background: color-mix(in srgb, #06b6d4 18%, transparent);
+  border-color: #06b6d4;
+  color: #a5f3fc;
+  box-shadow: 0 0 0 1px #06b6d4;
+}
+
+.pillCount {
+  display: inline-block;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.85;
+}
+
+.primaryRightControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.taskSelect {
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--color-surface-soft, #21262d);
+  border: 1px solid var(--color-border-default, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+  max-width: 220px;
+}
+
+.taskSelect:focus {
+  border-color: var(--color-accent-fg, #38bdf8);
+}
+
+.contextTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  color: var(--color-fg-muted, #8b949e);
+  padding: 3px 7px;
+  border-radius: 4px;
+  background: var(--color-surface-soft, #21262d);
+  border: 1px solid var(--color-border-default, #30363d);
+}
+
+/* Secondary Toolbar Row */
+.toolbarRowSecondary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.searchWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+  max-width: 480px;
+  position: relative;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 9px;
+  color: var(--color-fg-muted, #8b949e);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  height: 30px;
+  padding: 0 30px 0 30px;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11.5px;
+  background: var(--color-surface-soft, #0d1117);
+  border: 1px solid var(--color-border-default, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchInput:focus {
+  border-color: var(--color-accent-fg, #38bdf8);
+  box-shadow: 0 0 0 1px var(--color-accent-fg, #38bdf8);
+}
+
+.clearSearchBtn {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 2px;
+  color: var(--color-fg-muted, #8b949e);
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.clearSearchBtn:hover {
+  color: var(--color-fg-default, #f0f6fc);
+}
+
+.matchCountChip {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent-fg, #38bdf8);
+  background: color-mix(in srgb, var(--color-accent-fg, #38bdf8) 12%, transparent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.toolbarActionsGroup {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--color-surface-soft, #21262d);
+  border: 1px solid var(--color-border-default, #30363d);
+  color: var(--color-fg-muted, #8b949e);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.toggleBtn:hover {
+  background: var(--color-surface-hover, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+}
+
+.toggleBtnActive {
+  background: color-mix(in srgb, var(--color-accent-fg, #38bdf8) 15%, transparent);
+  border-color: var(--color-accent-fg, #38bdf8);
+  color: var(--color-accent-fg, #38bdf8);
+  font-weight: 600;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--color-surface-soft, #21262d);
+  border: 1px solid var(--color-border-default, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.actionBtn:hover:not(:disabled) {
+  border-color: var(--color-border-strong, #8b949e);
+  background: var(--color-surface-hover, #30363d);
+}
+
+.actionBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Console Body & Log List */
+.consoleBody {
+  position: relative;
+  flex: 1;
+  min-height: 280px;
+  overflow-y: auto;
+  overflow-x: auto;
+  background: var(--color-canvas-default, #0d1117);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.logList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 6px 0;
+  list-style: none;
+  min-width: 100%;
+  width: max-content;
+}
+
+.logList.wrapMode {
+  width: 100%;
+}
+
+.showMoreRow {
+  display: flex;
+  justify-content: center;
+  padding: 8px 12px;
+}
+
+.logRow {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 2px 12px;
+  border-left: 2px solid transparent;
+  transition: background-color 0.12s ease;
+}
+
+.logRow:hover {
+  background: color-mix(in srgb, var(--color-surface-hover, #30363d) 40%, transparent);
+}
+
+.logRow.rowError {
+  border-left-color: #ef4444;
+  background: color-mix(in srgb, #ef4444 6%, transparent);
+}
+
+.logRow.rowWarn {
+  border-left-color: #f59e0b;
+  background: color-mix(in srgb, #f59e0b 4%, transparent);
+}
+
+.gutterNumber {
+  width: 38px;
+  flex-shrink: 0;
+  text-align: right;
+  color: var(--color-fg-subtle, #484f58);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+  font-size: 11px;
+}
+
+.timestamp {
+  flex-shrink: 0;
+  color: var(--color-fg-muted, #8b949e);
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.levelBadge {
+  flex-shrink: 0;
+  min-width: 48px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+  display: inline;
+  user-select: none;
+}
+
+.badgeError {
+  background: none;
+  border: none;
+  color: var(--color-status-danger, #ef4444);
+}
+
+.badgeWarn {
+  background: none;
+  border: none;
+  color: var(--color-status-warn, #f59e0b);
+}
+
+.badgeInfo {
+  background: none;
+  border: none;
+  color: var(--color-accent-fg, #38bdf8);
+}
+
+.badgeDebug {
+  background: none;
+  border: none;
+  color: #a78bfa;
+}
+
+.badgeTrace {
+  background: none;
+  border: none;
+  color: #22d3ee;
+}
+
+.loggerTag {
+  flex-shrink: 0;
+  color: var(--color-fg-muted, #8b949e);
+  font-weight: 400;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.taskRefPill {
+  flex-shrink: 0;
+  display: inline;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--hue-cyan, #06b6d4);
+  cursor: pointer;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
+  white-space: nowrap;
+}
+
+.taskRefPill:hover {
+  background: none;
+  border: none;
+  color: var(--color-accent-emphasis, #38bdf8);
+  text-decoration: underline;
+}
+
+.taskRefText {
+  flex-shrink: 0;
+  color: var(--hue-cyan, #06b6d4);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.separator {
+  flex-shrink: 0;
+  color: var(--color-fg-muted, #64748b);
+  user-select: none;
+  font-size: 12px;
+}
+
+.copyLineBtn {
+  opacity: 0;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-default, #30363d);
+  background: var(--color-surface-soft, #21262d);
+  color: var(--color-fg-muted, #8b949e);
+  cursor: pointer;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
+  margin-left: auto;
+}
+
+.logRow:hover .copyLineBtn {
+  opacity: 1;
+}
+
+.copyLineBtn:hover {
+  background: var(--color-surface-hover, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+}
+
+.messageContent {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-fg-default, #c9d1d9);
+  white-space: pre;
+}
+
+.wrapMode .messageContent {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.highlightMark {
+  background: color-mix(in srgb, #fbbf24 35%, transparent);
+  color: #fef08a;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* Empty, Error, and Loading States */
+.stateMessageContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 16px;
+  color: var(--color-fg-muted, #8b949e);
+  text-align: center;
+}
+
+.stateMessageIcon {
+  color: var(--color-fg-subtle, #484f58);
+}
+
+.stateMessageTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-fg-default, #c9d1d9);
+}
+
+.stateMessageText {
+  font-size: 12px;
+  color: var(--color-fg-muted, #8b949e);
+  max-width: 440px;
+}
+
+.stateActionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-surface-soft, #21262d);
+  border: 1px solid var(--color-border-default, #30363d);
+  color: var(--color-fg-default, #c9d1d9);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.stateActionButton:hover {
+  background: var(--color-surface-hover, #30363d);
+  border-color: var(--color-border-strong, #8b949e);
+}
+
+.errorState {
+  color: var(--color-status-danger, #ef4444);
+}
+
+.errorState .stateMessageIcon {
+  color: var(--color-status-danger, #ef4444);
+}
+
+/* Footer Status Bar */
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  font-size: 11px;
+  color: var(--color-fg-muted, #8b949e);
+  background: var(--color-canvas-default, #161b22);
+  border-top: 1px solid var(--color-border-default, #30363d);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.statusBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusBarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.livePinIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-accent-fg, #38bdf8);
+}
+
+.pinDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-fg, #38bdf8);
+  box-shadow: 0 0 6px var(--color-accent-fg, #38bdf8);
+}
+
+/* Spin animation for refresh */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .toolbarRowPrimary,
+  .toolbarRowSecondary {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .primaryRightControls {
+    justify-content: space-between;
+  }
+
+  .searchWrap {
+    max-width: 100%;
+  }
+
+  .toolbarActionsGroup {
+    justify-content: flex-end;
+  }
+
+  .gutterNumber {
+    display: none;
+  }
+}

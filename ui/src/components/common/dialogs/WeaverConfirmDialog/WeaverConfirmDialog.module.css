@@ -1,0 +1,411 @@
+/* WeaverConfirmDialog styles */
+
+/* Backdrop overlay: solid dark scrim (no full-viewport backdrop blur, which is expensive to composite) */
+.backdrop {
+  background-color: rgba(8, 10, 13, 0.72) !important;
+}
+
+/* Modal Paper Surface */
+.paper {
+  border-radius: 14px !important;
+  box-shadow: 0 24px 64px -8px rgba(0, 0, 0, 0.65), 0 8px 24px -4px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid var(--color-border-strong, #35424D) !important;
+  background-color: var(--color-surface-raised, #1D242B) !important;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0%, rgba(255, 255, 255, 0) 100%) !important;
+  overflow: hidden;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 24px 14px 24px !important;
+  gap: 16px;
+  background-color: transparent !important;
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  font-size: 22px;
+  transition: transform 0.2s ease;
+}
+
+.iconWrapper:hover {
+  transform: scale(1.05);
+}
+
+/* Intent icon badge styles with high luminosity */
+.intentDanger {
+  background-color: var(--color-accent-soft, rgba(255, 90, 95, 0.16));
+  color: var(--color-status-danger, #FF6B70);
+  border: 1px solid rgba(255, 107, 112, 0.35);
+}
+
+.intentWarning {
+  background-color: var(--color-orange-soft, rgba(255, 155, 69, 0.14));
+  color: var(--color-status-warn, #FFB15C);
+  border: 1px solid rgba(255, 177, 92, 0.35);
+}
+
+.intentInfo {
+  background-color: var(--color-support-soft, rgba(91, 200, 188, 0.14));
+  color: var(--color-support-fg, #5BC8BC);
+  border: 1px solid rgba(91, 200, 188, 0.35);
+}
+
+.intentDefault {
+  background-color: var(--color-accent-soft, rgba(255, 90, 95, 0.12));
+  color: var(--color-accent-fg);
+  border: 1px solid rgba(255, 90, 95, 0.28);
+}
+
+.titleText {
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  color: var(--color-fg-default, #F2F5F7) !important;
+  line-height: 1.35 !important;
+  margin: 0;
+  word-break: break-word;
+}
+
+.closeButton {
+  margin: -6px -8px 0 0 !important;
+  color: var(--color-fg-muted, #A9B4BF) !important;
+  border-radius: 6px !important;
+  transition: color 0.15s ease, background-color 0.15s ease !important;
+}
+
+.closeButton:hover {
+  color: var(--color-fg-default, #F2F5F7) !important;
+  background-color: var(--color-surface-soft, rgba(255, 255, 255, 0.08)) !important;
+}
+
+/* Content */
+.content {
+  padding: 4px 24px 22px 24px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: visible !important;
+}
+
+.message {
+  font-size: 0.975rem;
+  font-weight: 500;
+  color: var(--color-fg-default, #F2F5F7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--color-fg-muted, #A9B4BF);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Section Title */
+.sectionTitle {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-fg-muted, #A9B4BF);
+  margin-bottom: 8px;
+}
+
+/* Key-Value Details Container */
+.detailsContainer {
+  background-color: var(--color-surface-soft, #171D23);
+  border: 1px solid var(--color-border-default, #26313A);
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detailRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 0.875rem;
+}
+
+.detailRow + .detailRow {
+  padding-top: 8px;
+  border-top: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.06));
+}
+
+.detailLabel {
+  color: var(--color-fg-muted, #A9B4BF);
+  font-weight: 500;
+  font-size: 0.8125rem;
+  flex-shrink: 0;
+}
+
+.detailValue {
+  color: var(--color-fg-default, #F2F5F7);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-align: right;
+  word-break: break-word;
+  background: var(--color-surface-raised, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--color-border-default, rgba(255, 255, 255, 0.08));
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Related Records List Container */
+.relatedRecordsList {
+  max-height: 260px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-default, #26313A);
+  border-radius: 8px;
+  background-color: var(--color-surface-soft, #171D23);
+}
+
+.relatedRecordItem {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--color-border-default, #26313A);
+  transition: background-color 0.15s ease;
+}
+
+.relatedRecordItem:last-child {
+  border-bottom: none;
+}
+
+.relatedRecordItem:hover {
+  background-color: var(--color-surface-raised, rgba(255, 255, 255, 0.04));
+}
+
+.relatedRecordMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.relatedRecordLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.relatedRecordIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  color: var(--color-fg-muted, #A9B4BF);
+  flex-shrink: 0;
+}
+
+.relatedRecordTitles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.relatedRecordTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-fg-default, #F2F5F7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.relatedRecordSubtitle {
+  font-size: 0.775rem;
+  color: var(--color-fg-muted, #A9B4BF);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.relatedRecordStatus {
+  flex-shrink: 0;
+}
+
+.relatedRecordNestedDetails {
+  margin-top: 8px;
+  padding-left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-top: 1px dashed var(--color-border-default, #26313A);
+  padding-top: 6px;
+}
+
+.relatedRecordDetailRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.775rem;
+  gap: 12px;
+}
+
+.relatedRecordDetailLabel {
+  color: var(--color-fg-muted, #A9B4BF);
+}
+
+.relatedRecordDetailValue {
+  color: var(--color-fg-default, #F2F5F7);
+  font-weight: 500;
+}
+
+/* Custom Related Content Area */
+.relatedContentWrapper {
+  border-radius: 8px;
+}
+
+/* Typed Confirmation Box */
+.textConfirmationWrapper {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.confirmationPrompt {
+  font-size: 0.875rem;
+  color: var(--color-fg-default, #F2F5F7);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+
+.expectedTextBadge {
+  display: inline-block;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--color-status-danger, #FF6B70);
+  background-color: var(--color-accent-soft, rgba(255, 90, 95, 0.16));
+  border: 1px solid rgba(255, 107, 112, 0.35);
+  padding: 1px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+/* Actions Footer */
+.actions {
+  padding: 16px 24px 20px 24px !important;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid var(--color-border-default, #26313A);
+  background-color: var(--color-surface-soft, #171D23) !important;
+}
+
+.actionButton {
+  min-width: 90px;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  padding: 7px 16px !important;
+  font-size: 0.875rem !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+
+.cancelButton {
+  background-color: transparent !important;
+  border: 1px solid var(--color-border-strong, #35424D) !important;
+  color: var(--color-fg-default, #F2F5F7) !important;
+}
+
+.cancelButton:hover {
+  background-color: var(--color-surface-raised, rgba(255, 255, 255, 0.08)) !important;
+  border-color: var(--color-fg-muted, #A9B4BF) !important;
+}
+
+/* Danger Confirm Button */
+.confirmButtonDanger {
+  background-color: var(--color-accent-fg) !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.confirmButtonDanger:hover {
+  background-color: var(--color-accent-hover, #FF7043) !important;
+  box-shadow: 0 4px 14px rgba(255, 90, 95, 0.35) !important;
+}
+
+.confirmButtonDanger:disabled,
+.confirmButtonDanger.Mui-disabled {
+  background-color: rgba(255, 90, 95, 0.12) !important;
+  color: rgba(255, 90, 95, 0.45) !important;
+  border: 1px solid rgba(255, 90, 95, 0.22) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+/* Warning Confirm Button */
+.confirmButtonWarning {
+  background-color: var(--color-orange-fg, #FF9B45) !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.confirmButtonWarning:hover {
+  background-color: var(--color-status-warn, #FFB15C) !important;
+  box-shadow: 0 4px 14px rgba(255, 155, 69, 0.35) !important;
+}
+
+.confirmButtonWarning:disabled,
+.confirmButtonWarning.Mui-disabled {
+  background-color: rgba(255, 155, 69, 0.12) !important;
+  color: rgba(255, 155, 69, 0.45) !important;
+  border: 1px solid rgba(255, 155, 69, 0.22) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+/* Primary / Info Confirm Button */
+.confirmButtonPrimary {
+  background-color: var(--color-accent-fg) !important;
+  color: #FFFFFF !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.confirmButtonPrimary:hover {
+  background-color: var(--color-accent-hover, #FF7043) !important;
+  box-shadow: 0 4px 14px rgba(255, 90, 95, 0.35) !important;
+}
+
+.confirmButtonPrimary:disabled,
+.confirmButtonPrimary.Mui-disabled {
+  background-color: rgba(255, 90, 95, 0.12) !important;
+  color: rgba(255, 90, 95, 0.45) !important;
+  border: 1px solid rgba(255, 90, 95, 0.22) !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}

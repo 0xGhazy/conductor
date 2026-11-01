@@ -1,0 +1,9 @@
+.workbench-json-square .start-config-json-editor,
+.workbench-json-square .start-config-json-editor .monaco-editor,
+.workbench-json-square .start-config-json-editor .monaco-editor-background,
+.workbench-json-square .start-config-json-editor .monaco-editor .margin,
+.workbench-json-square .start-config-json-editor .monaco-editor .margin-view-overlays,
+.workbench-json-square .start-config-json-editor .monaco-editor .overflow-guard,
+.workbench-json-square .start-config-json-editor .monaco-editor .monaco-scrollable-element {
+  border-radius: 0 !important;
+}

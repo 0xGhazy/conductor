@@ -1,0 +1,109 @@
+/* Start Node Circular Styles */
+.start-node-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  user-select: none;
+  cursor: default;
+}
+
+.start-node-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: 2.5px solid #34d399;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.start-node-title {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  line-height: 1;
+  text-align: center;
+  user-select: none;
+}
+
+html[data-theme="dark"] .start-node-circle {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  border-color: #10b981;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+/* (+) Output Handle Button */
+.start-node-handle-plus {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 50% !important;
+  background-color: #10b981 !important;
+  border: 2px solid var(--color-canvas-default, #ffffff) !important;
+  color: #ffffff !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35) !important;
+  z-index: 10 !important;
+  bottom: -11px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+.start-node-handle-plus:hover {
+  background-color: #059669 !important;
+  transform: translateX(-50%) scale(1.18) !important;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25), 0 3px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.start-node-handle-plus.handle-right {
+  top: 50% !important;
+  right: -11px !important;
+  bottom: auto !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+}
+
+.start-node-handle-plus.handle-right:hover {
+  transform: translateY(-50%) scale(1.18) !important;
+}
+
+.start-node-handle-plus-active {
+  background-color: #2563eb !important;
+  border-color: #ffffff !important;
+  transform: translateX(-50%) scale(1.12) !important;
+  animation: start-node-pulse 1.8s infinite !important;
+}
+
+.start-node-handle-plus.handle-right.start-node-handle-plus-active {
+  transform: translateY(-50%) scale(1.12) !important;
+}
+
+@keyframes start-node-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+}
+
+.start-node-plus-icon {
+  pointer-events: none;
+  stroke: #ffffff;
+}

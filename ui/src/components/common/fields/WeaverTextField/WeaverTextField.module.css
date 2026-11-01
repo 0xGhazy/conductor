@@ -1,0 +1,57 @@
+/* WeaverTextField Component Styling */
+
+.root {
+  display: inline-flex;
+  vertical-align: top;
+}
+
+.readOnly {
+  cursor: default;
+}
+
+.readOnly :global(.MuiInputBase-root) {
+  background-color: var(--color-canvas-subtle, rgba(0, 0, 0, 0.02));
+  cursor: default;
+}
+
+.readOnly :global(.MuiInputBase-input) {
+  cursor: default;
+  user-select: text;
+}
+
+/* Icon action buttons inside input adornments */
+.adornmentButton {
+  padding: 4px !important;
+  color: var(--color-fg-muted, #57606a) !important;
+  transition: color 0.15s ease, background-color 0.15s ease !important;
+}
+
+.adornmentButton:hover {
+  color: var(--color-fg-default, #1f2328) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.adornmentGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.spinnerAdornment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent-fg);
+  margin-right: 4px;
+}
+
+/* Directional styling */
+.dirRtl :global(.MuiInputBase-input) {
+  text-align: right;
+  direction: rtl;
+}
+
+.dirLtr :global(.MuiInputBase-input) {
+  text-align: left;
+  direction: ltr;
+}

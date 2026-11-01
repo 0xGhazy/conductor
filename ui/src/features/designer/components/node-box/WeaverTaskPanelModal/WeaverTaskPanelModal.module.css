@@ -1,0 +1,110 @@
+/* WeaverTaskPanelModal CSS Module */
+
+.modalCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 520px;
+  max-width: 94vw;
+  max-height: 85vh;
+  background-color: var(--color-canvas-default, #ffffff);
+  border: 1px solid var(--color-border-default, #e2e8f0);
+  border-radius: 16px;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  z-index: 1300;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border-default, #f1f5f9);
+  background-color: var(--color-canvas-subtle, #f8fafc);
+  flex-shrink: 0;
+}
+
+.headerTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerIcon {
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.headerTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-fg-default, #0f172a);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.headerBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  letter-spacing: 0.02em;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.escKey {
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-fg-muted, #64748b);
+  background: var(--color-canvas-default, #ffffff);
+  border: 1px solid var(--color-border-default, #cbd5e1);
+  border-radius: 4px;
+  padding: 2px 6px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--color-fg-muted, #64748b);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.closeBtn:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: var(--color-fg-default, #0f172a);
+}
+
+.closeBtn:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 1px;
+}
+
+.modalBody {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}

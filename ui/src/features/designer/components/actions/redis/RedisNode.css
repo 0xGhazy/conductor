@@ -1,0 +1,150 @@
+/* RedisNode.css - Dark and Light Mode Design System for Redis Action Node & Modal */
+
+.redis-modal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 85vh;
+  background-color: var(--color-canvas-subtle, #ffffff);
+  color: var(--color-fg-default, #1e293b);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.redis-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-border-default, #e2e8f0);
+  background-color: var(--color-canvas-default, #f8fafc);
+}
+
+.redis-modal-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #dc382d;
+}
+
+.redis-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.redis-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 24px;
+  border-top: 1px solid var(--color-border-default, #e2e8f0);
+  background-color: var(--color-canvas-default, #f8fafc);
+}
+
+.redis-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.redis-form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-fg-default, #475569);
+}
+
+.redis-form-input,
+.redis-form-select {
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  border: 1px solid var(--color-border-default, #cbd5e1);
+  border-radius: 8px;
+  background-color: var(--color-canvas-default, #ffffff);
+  color: var(--color-fg-default, #0f172a);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.redis-form-input option,
+.redis-form-select option {
+  background-color: var(--color-canvas-default, #ffffff);
+  color: var(--color-fg-default, #0f172a);
+}
+
+.redis-form-input::placeholder {
+  color: var(--color-fg-muted, #94a3b8);
+}
+
+.redis-form-input:hover,
+.redis-form-select:hover {
+  border-color: var(--color-accent-fg);
+}
+
+.redis-form-input:focus,
+.redis-form-select:focus {
+  border-color: var(--color-accent-fg);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent-fg) 20%, transparent);
+}
+
+.redis-form-input.has-error,
+.redis-form-select.has-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+}
+
+.redis-action-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(220, 56, 45, 0.15);
+  color: #dc382d;
+  letter-spacing: 0.5px;
+}
+
+.redis-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.redis-help-text {
+  font-size: 0.75rem;
+  color: var(--color-fg-muted, #64748b);
+  margin-top: 2px;
+}
+
+.redis-params-container {
+  margin-top: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: var(--color-canvas-default, rgba(220, 56, 45, 0.04));
+  border: 1px solid var(--color-border-default, rgba(220, 56, 45, 0.15));
+}
+
+/* Square borders for inputs in the Redis Action Node Modal */
+.redis-config-modal .MuiSelect-select,
+.redis-config-modal .MuiOutlinedInput-root,
+.redis-config-modal .MuiOutlinedInput-notchedOutline,
+.redis-config-modal .MuiOutlinedInput-root fieldset,
+.redis-config-modal .MuiInputBase-root,
+.redis-config-modal .MuiInputBase-root fieldset,
+.redis-config-modal .MuiButton-root {
+  border-radius: 0 !important;
+}
+
+.redis-config-modal .monaco-editor,
+.redis-config-modal .monaco-editor-background,
+.redis-config-modal .monaco-editor .margin,
+.redis-config-modal .monaco-editor .margin-view-overlays,
+.redis-config-modal .monaco-editor .overflow-guard,
+.redis-config-modal .monaco-editor .monaco-scrollable-element {
+  border-radius: 0 !important;
+}

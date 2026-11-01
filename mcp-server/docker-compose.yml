@@ -1,0 +1,39 @@
+name: weaver-mcp
+
+services:
+  mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: weaver-mcp:local
+    restart: unless-stopped
+    init: true
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 3000
+      WEAVER_BASE_URL: ${WEAVER_BASE_URL:-http://host.docker.internal:9090}
+      WEAVER_REQUEST_TIMEOUT_MS: ${WEAVER_REQUEST_TIMEOUT_MS:-10000}
+      WEAVER_EXECUTION_TIMEOUT_MS: ${WEAVER_EXECUTION_TIMEOUT_MS:-130000}
+      WEAVER_LIST_MAX_PAGES: ${WEAVER_LIST_MAX_PAGES:-100}
+      MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1,[::1]}
+      MCP_ALLOWED_ORIGINS: ${MCP_ALLOWED_ORIGINS:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "127.0.0.1:${MCP_PORT:-3000}:3000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=16m
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s

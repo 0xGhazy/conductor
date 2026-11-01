@@ -1,0 +1,68 @@
+/* Full button background progress layer during hold */
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  pointer-events: none;
+  opacity: 0;
+  background-color: currentColor;
+  z-index: 1;
+  transition: width 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.overlay.active {
+  opacity: var(--weaver-hold-fill-opacity, 0.24);
+  width: 100%;
+  border-right: 2.5px solid currentColor;
+  box-shadow: 2px 0 8px currentColor;
+  transition: width var(--weaver-hold-duration, 1500ms) linear, opacity 0.15s ease-in;
+}
+
+/* Hold Progress Track & Indicator (bottom strip, disabled by default) */
+.track {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background-color: rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+:global([data-theme="dark"]) .track {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Bottom Progress Strip */
+.bar {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background-color: currentColor;
+  pointer-events: none;
+  transition: width 0.15s ease-out;
+}
+
+.bar.active {
+  width: 100%;
+  transition: width var(--weaver-hold-duration, 1500ms) linear;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .bar.active {
+    transition: none !important;
+    width: 100% !important;
+    opacity: 0.8 !important;
+  }
+
+  .overlay.active {
+    transition: none !important;
+    width: 100% !important;
+    opacity: 0.24 !important;
+  }
+}
