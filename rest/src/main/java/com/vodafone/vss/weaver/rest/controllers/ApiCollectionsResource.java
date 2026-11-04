@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.tasks.http.controller;
+package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.UUID;
 
@@ -48,11 +48,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "API Collections", description = "Endpoints for managing HTTP API collections and endpoint definitions")
 @RequestMapping(value = "/api/actions/http/collections", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ApiCollectionsController {
+public class ApiCollectionsResource {
 
     private final ApiCollectionsService service;
 
-    public ApiCollectionsController(ApiCollectionsService service) {
+    public ApiCollectionsResource(ApiCollectionsService service) {
         this.service = service;
     }
 

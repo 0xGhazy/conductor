@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.tasks.scripting.controller;
+package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.UUID;
 import jakarta.validation.Valid;
@@ -54,24 +54,21 @@ import com.vodafone.vss.weaver.tasks.scripting.service.ScriptService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @Tag(name = "Scripts API", description = "Create, manage, and execute Python, JavaScript, and JEXL scripts")
 @RequestMapping(value = "/api/scripts", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ScriptsController {
+public class ScriptResource {
 
-    private static final Logger log = LoggerFactory.getLogger(ScriptsController.class);
+    private static final Logger log = LoggerFactory.getLogger(ScriptResource.class);
 
     private final ScriptExecutorService scriptExecutorService;
     private final ScriptService scriptService;
     private final ScriptMetricsService scriptMetricsService;
 
     @Autowired
-    public ScriptsController(
+    public ScriptResource(
             ScriptExecutorService scriptExecutorService,
             ScriptService scriptService,
             @Autowired(required = false) ScriptMetricsService scriptMetricsService) {

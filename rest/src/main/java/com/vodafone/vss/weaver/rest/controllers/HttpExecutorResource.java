@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.tasks.http.controller;
+package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.UUID;
 
@@ -37,13 +37,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @RequestMapping(value = "/api/actions/http", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "HTTP Executor API", description = "Ad-hoc HTTP requests processing API")
-public class HttpExecutorController {
+public class HttpExecutorResource {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpExecutorController.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpExecutorResource.class);
 
     private final HttpExecutorService service;
 
-    public HttpExecutorController(HttpExecutorService service) {
+    public HttpExecutorResource(HttpExecutorService service) {
         this.service = service;
     }
 

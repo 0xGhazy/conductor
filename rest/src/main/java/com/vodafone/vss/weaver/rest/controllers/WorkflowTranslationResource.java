@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.tasks.respond.controller;
+package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.UUID;
 
@@ -38,15 +38,17 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(path = "/api/workflows/translations", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Workflow Translations", description = "Workflow localized translation management endpoints")
-@RequiredArgsConstructor
-public class WorkflowTranslationController {
+public class WorkflowTranslationResource {
 
     private final WorkflowTranslationService translationService;
+
+    public WorkflowTranslationResource(WorkflowTranslationService translationService) {
+        this.translationService = translationService;
+    }
 
     @GetMapping
     @Operation(summary = "Search workflow translations (paginated)")

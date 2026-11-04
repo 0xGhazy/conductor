@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.tasks.http.controller;
+package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,13 +45,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "HTTP Connections Management", description = "Endpoints for managing and defining HTTP connections")
 @RequestMapping(value = "/api/actions/http/connections", produces = MediaType.APPLICATION_JSON_VALUE)
-public class HttpConnectionController {
+public class HttpConnectionResource {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpConnectionController.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpConnectionResource.class);
 
     private final HttpConnectionService service;
 
-    public HttpConnectionController(HttpConnectionService service) {
+    public HttpConnectionResource(HttpConnectionService service) {
         this.service = service;
     }
 

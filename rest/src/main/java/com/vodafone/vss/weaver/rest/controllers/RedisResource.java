@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.tasks.redis.controller;
+package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.UUID;
 import jakarta.validation.Valid;
@@ -45,13 +45,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "Redis Instances Resource", description = "Managing Redis dynamic datasources")
 @RequestMapping(value = "/api/redis", produces = MediaType.APPLICATION_JSON_VALUE)
-public class RedisController {
+public class RedisResource {
 
-    private static final Logger log = LoggerFactory.getLogger(RedisController.class);
+    private static final Logger log = LoggerFactory.getLogger(RedisResource.class);
 
     private final RedisService redisService;
 
-    public RedisController(RedisService redisService) {
+    public RedisResource(RedisService redisService) {
         this.redisService = redisService;
     }
 

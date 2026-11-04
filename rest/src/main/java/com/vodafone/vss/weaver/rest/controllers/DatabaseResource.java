@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.actions.database.controller;
+package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.Set;
 import java.util.UUID;
@@ -48,14 +48,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "Database Resource", description = "Managing RDBMS database instances and queries")
 @RequestMapping(value = "/api/database", produces = MediaType.APPLICATION_JSON_VALUE)
-public class DatabaseController {
+public class DatabaseResource {
 
-    private static final Logger log = LoggerFactory.getLogger(DatabaseController.class);
+    private static final Logger log = LoggerFactory.getLogger(DatabaseResource.class);
 
     private final QueryService queryService;
     private final DatasourceService datasourceService;
 
-    public DatabaseController(QueryService queryService, DatasourceService datasourceService) {
+    public DatabaseResource(QueryService queryService, DatasourceService datasourceService) {
         this.queryService = queryService;
         this.datasourceService = datasourceService;
     }
