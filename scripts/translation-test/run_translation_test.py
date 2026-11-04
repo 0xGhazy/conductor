@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """End-to-end check of workflow translations and message resolving.
 
-Registers the `translation-test` workflow, stores one translated message, then runs the
-workflow synchronously in different languages and checks the returned message.
+Registers the `translation-test` workflow, whose TERMINATE tasks resolve translated messages
+themselves (no Respond task), stores its translated messages, then runs it synchronously in
+different languages and checks the returned message, including a FAILED ending.
 
 Usage:
     python scripts/translation-test/run_translation_test.py [--base-url http://localhost:8080] [--token JWT]
@@ -18,18 +19,29 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-WORKFLOW_FILE = pathlib.Path(__file__).with_name("translation-test-workflow.json")
-WORKFLOW_NAME = "translation-test"
-WORKFLOW_VERSION = 1
-MESSAGE_CODE = "ORDER_CONFIRMED"
+HERE = pathlib.Path(__file__).parent
 
-# Templates use ${input.x} (workflow input) and ${variables.x} (the Respond task's variables).
-TRANSLATIONS = {
+# Templates use ${input.x} (workflow input) and ${variables.x} (variables given to the task).
+ORDER_CONFIRMED = {
     "en-US": "Hello ${input.customerName}, your order ${variables.orderId} is confirmed.",
     "ar-EG": "مرحبا ${input.customerName}، تم تأكيد طلبك رقم ${variables.orderId}.",
 }
+PAYMENT_DECLINED = {
+    "en-US": "Sorry ${input.customerName}, your payment was declined.",
+    "ar-EG": "عذرا ${input.customerName}، تم رفض الدفع.",
+}
 EXPECTED_EN = "Hello Ahmed, your order 1001 is confirmed."
 EXPECTED_AR = "مرحبا Ahmed، تم تأكيد طلبك رقم 1001."
+DECLINED_AR = "عذرا Ahmed، تم رفض الدفع."
+
+SUITES = {
+    "terminate": {
+        "file": "translation-test-workflow.json",
+        "messages": {"ORDER_CONFIRMED": ORDER_CONFIRMED, "PAYMENT_DECLINED": PAYMENT_DECLINED},
+        "default_language_supported": True,
+        "has_failure_path": True,
+    },
+}
 
 
 class Api:
@@ -58,39 +70,126 @@ class Api:
                 return error.code, raw
 
 
-def setup(api):
-    workflow = json.loads(WORKFLOW_FILE.read_text(encoding="utf-8"))
-    status, body = api.call("PUT", "/api/metadata/workflow", [workflow])
-    if status >= 300:
-        sys.exit(f"Could not register workflow ({status}): {body}")
-    print(f"Registered workflow {WORKFLOW_NAME} v{WORKFLOW_VERSION}")
+class Suite:
+    def __init__(self, api, key, config):
+        self.api = api
+        self.key = key
+        self.config = config
+        self.workflow = json.loads((HERE / config["file"]).read_text(encoding="utf-8"))
+        self.name = self.workflow["name"]
+        self.version = self.workflow["version"]
+        self.failures = 0
+        self.total = 0
 
-    key = "/".join(urllib.parse.quote(p, safe="") for p in (WORKFLOW_NAME, str(WORKFLOW_VERSION), MESSAGE_CODE))
-    payload = {
-        "workflowName": WORKFLOW_NAME,
-        "workflowVersion": WORKFLOW_VERSION,
-        "messageCode": MESSAGE_CODE,
-        "translations": TRANSLATIONS,
-    }
-    status, body = api.call("POST", "/api/workflows/translations", payload)
-    if status == 409:  # already there from an earlier run: replace its languages
-        status, body = api.call("PUT", f"/api/workflows/translations/{key}", payload)
-    if status >= 300:
-        sys.exit(f"Could not save translation ({status}): {body}")
-    print(f"Saved translation {MESSAGE_CODE} in {', '.join(TRANSLATIONS)}")
+    def setup(self):
+        status, body = self.api.call("PUT", "/api/metadata/workflow", [self.workflow])
+        if status >= 300:
+            sys.exit(f"Could not register workflow {self.name} ({status}): {body}")
+        for code, translations in self.config["messages"].items():
+            payload = {
+                "workflowName": self.name,
+                "workflowVersion": self.version,
+                "messageCode": code,
+                "translations": translations,
+            }
+            status, body = self.api.call("POST", "/api/workflows/translations", payload)
+            if status == 409:  # already there from an earlier run: replace its languages
+                key = "/".join(urllib.parse.quote(str(p), safe="") for p in (self.name, self.version, code))
+                status, body = self.api.call("PUT", f"/api/workflows/translations/{key}", payload)
+            if status >= 300:
+                sys.exit(f"Could not save translation {code} for {self.name} ({status}): {body}")
+        print(f"\n== {self.key}: {self.name} v{self.version} "
+              f"(messages: {', '.join(self.config['messages'])})")
 
+    def run(self, workflow_input, accept_language=None):
+        headers = {"Accept-Language": accept_language} if accept_language else {}
+        status, body = self.api.call(
+            "POST",
+            f"/api/workflow/execute/{self.name}/{self.version}?waitForSeconds=10",
+            {"input": workflow_input},
+            headers,
+        )
+        if status >= 300 or not isinstance(body, dict):
+            return None, f"HTTP {status}: {body}"
+        return body, None
 
-def run(api, workflow_input, accept_language=None):
-    headers = {"Accept-Language": accept_language} if accept_language else {}
-    status, body = api.call(
-        "POST",
-        f"/api/workflow/execute/{WORKFLOW_NAME}/{WORKFLOW_VERSION}?waitForSeconds=10",
-        {"input": workflow_input},
-        headers,
-    )
-    if status >= 300 or not isinstance(body, dict):
-        return None, f"HTTP {status}: {body}"
-    return body.get("output") or {}, None
+    def check(self, description, ok, details=""):
+        self.total += 1
+        self.failures += 0 if ok else 1
+        print(f"{'PASS' if ok else 'FAIL'}  {description}")
+        if not ok and details:
+            print(f"      {details}")
+
+    def check_message(self, description, workflow_input, accept_language, expected_message, expected_language):
+        run, error = self.run(workflow_input, accept_language)
+        if error:
+            self.check(description, False, error)
+            return
+        output = run.get("output") or {}
+        message, language = output.get("message"), output.get("languageCode")
+        ok = message == expected_message and (expected_language is None or language == expected_language)
+        self.check(
+            description,
+            ok,
+            f"expected [{expected_language}] {expected_message}\n      got      [{language}] {message}",
+        )
+
+    def run_checks(self):
+        base = {"messageCode": "ORDER_CONFIRMED", "customerName": "Ahmed", "orderId": "1001"}
+        self.check_message("Accept-Language ar-EG gives Arabic", base, "ar-EG", EXPECTED_AR, "ar-EG")
+        self.check_message("Accept-Language en-US gives English", base, "en-US", EXPECTED_EN, "en-US")
+        self.check_message("Accept-Language in lower case still matches", base, "ar-eg", EXPECTED_AR, "ar-EG")
+        self.check_message(
+            "Highest-priority language in the header wins",
+            base, "fr;q=0.3, en-US;q=0.9, ar-EG;q=0.5", EXPECTED_EN, "en-US")
+        self.check_message(
+            "_language in the body overrides the header", {**base, "_language": "en-US"}, "ar-EG", EXPECTED_EN, "en-US")
+        self.check_message(
+            "Unknown message code returns the code itself",
+            {**base, "messageCode": "NO_SUCH_CODE"}, "en-US", "NO_SUCH_CODE", None)
+        self.check_message(
+            "Placeholder text in workflow input is never expanded",
+            {**base, "customerName": "#{S:PATH} ${weaver.env.PATH}"},
+            "en-US",
+            "Hello #{S:PATH} ${weaver.env.PATH}, your order 1001 is confirmed.",
+            "en-US",
+        )
+
+        if self.config["default_language_supported"]:
+            self.check_message(
+                "No language given uses the workflow's default language (en-US)",
+                base, None, EXPECTED_EN, "en-US")
+        else:
+            run, error = self.run(base)
+            output = (run or {}).get("output") or {}
+            print(f"INFO  No language given: got [{output.get('languageCode')}] {output.get('message')}"
+                  " (this task ignores the workflow's default language)")
+
+        if self.config["has_failure_path"]:
+            self.check_failure_path(base)
+
+    def check_failure_path(self, base):
+        description = "FAILED ending returns the translated message and uses it as the failure reason"
+        run, error = self.run({**base, "outcome": "failure"}, "ar-EG")
+        if error:
+            self.check(description, False, error)
+            return
+        output = run.get("output") or {}
+        status, workflow = self.api.call("GET", f"/api/workflow/{run.get('workflowId')}?includeTasks=false")
+        reason = workflow.get("reasonForIncompletion") if isinstance(workflow, dict) else None
+        ok = (
+            workflow.get("status") == "FAILED"
+            and output.get("message") == DECLINED_AR
+            and output.get("responseCode") == "PAYMENT_DECLINED"
+            and output.get("orderId") == "1001"
+            and reason == DECLINED_AR
+        ) if isinstance(workflow, dict) else False
+        self.check(
+            description,
+            ok,
+            f"status={workflow.get('status') if isinstance(workflow, dict) else status} "
+            f"output={output} reason={reason}",
+        )
 
 
 def main():
@@ -100,51 +199,15 @@ def main():
     args = parser.parse_args()
     api = Api(args.base_url, args.token)
 
-    setup(api)
+    failures = total = 0
+    for key in SUITES:
+        suite = Suite(api, key, SUITES[key])
+        suite.setup()
+        suite.run_checks()
+        failures += suite.failures
+        total += suite.total
 
-    base_input = {"messageCode": MESSAGE_CODE, "customerName": "Ahmed", "orderId": "1001"}
-    checks = [
-        # (description, workflow input, Accept-Language header, expected message, expected language)
-        ("Accept-Language ar-EG gives Arabic", base_input, "ar-EG", EXPECTED_AR, "ar-EG"),
-        ("Accept-Language en-US gives English", base_input, "en-US", EXPECTED_EN, "en-US"),
-        ("Accept-Language in lower case still matches", base_input, "ar-eg", EXPECTED_AR, "ar-EG"),
-        ("Highest-priority language in the header wins", base_input, "fr;q=0.3, en-US;q=0.9, ar-EG;q=0.5", EXPECTED_EN, "en-US"),
-        ("_language in the body overrides the header", {**base_input, "_language": "en-US"}, "ar-EG", EXPECTED_EN, "en-US"),
-        ("Unknown message code returns the code itself", {**base_input, "messageCode": "NO_SUCH_CODE"}, "en-US", "NO_SUCH_CODE", None),
-        (
-            "Placeholder text in workflow input is never expanded",
-            {**base_input, "customerName": "#{S:PATH} ${weaver.env.PATH}"},
-            "en-US",
-            "Hello #{S:PATH} ${weaver.env.PATH}, your order 1001 is confirmed.",
-            "en-US",
-        ),
-    ]
-
-    failures = 0
-    for description, workflow_input, accept_language, expected_message, expected_language in checks:
-        output, error = run(api, workflow_input, accept_language)
-        if error:
-            failures += 1
-            print(f"FAIL  {description}\n      {error}")
-            continue
-        message, language = output.get("message"), output.get("languageCode")
-        ok = message == expected_message and (expected_language is None or language == expected_language)
-        failures += 0 if ok else 1
-        print(f"{'PASS' if ok else 'FAIL'}  {description}")
-        if not ok:
-            print(f"      expected [{expected_language}] {expected_message}")
-            print(f"      got      [{language}] {message}")
-
-    # Reported, not asserted: with no language at all, the workflow's metadata.defaultLanguage
-    # (en-US) should be used, but the Respond task does not read it yet (task list, Task 4).
-    output, error = run(api, base_input)
-    if error:
-        print(f"INFO  No language given: request failed: {error}")
-    else:
-        print(f"INFO  No language given: got [{output.get('languageCode')}] {output.get('message')}"
-              " (expected en-US once Task 4 is done)")
-
-    print(f"\n{len(checks) - failures}/{len(checks)} checks passed")
+    print(f"\n{total - failures}/{total} checks passed")
     return 1 if failures else 0
 
 

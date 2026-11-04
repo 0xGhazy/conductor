@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import com.vodafone.vss.weaver.common.exceptions.BusinessException;
 import com.vodafone.vss.weaver.common.validation.ErrorResponse;
 import com.vodafone.vss.weaver.core.exception.AccessForbiddenException;
 import com.vodafone.vss.weaver.core.exception.ConflictException;
@@ -62,8 +63,13 @@ public class ApplicationExceptionMapper {
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleAll(HttpServletRequest request, Throwable th) {
+        // Weaver services throw BusinessException carrying their own status (400, 404, 409, ...);
+        // without this it would fall through to 500.
         HttpStatus status =
-                EXCEPTION_STATUS_MAP.getOrDefault(th.getClass(), HttpStatus.INTERNAL_SERVER_ERROR);
+                th instanceof BusinessException business && business.getStatus() != null
+                        ? business.getStatus()
+                        : EXCEPTION_STATUS_MAP.getOrDefault(
+                                th.getClass(), HttpStatus.INTERNAL_SERVER_ERROR);
 
         logException(request, th, status);
 

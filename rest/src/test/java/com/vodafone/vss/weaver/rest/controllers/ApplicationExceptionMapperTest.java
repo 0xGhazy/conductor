@@ -112,6 +112,20 @@ public class ApplicationExceptionMapperTest {
                 new HttpRequestMethodNotSupportedException("GET"), status().isMethodNotAllowed());
     }
 
+    @Test
+    public void testBusinessExceptionKeepsItsStatus() throws Exception {
+        // Weaver services signal 400/404/409 with BusinessException; it must not become a 500.
+        assertLoggedAtWarn(
+                com.vodafone.vss.weaver.common.ExceptionUtils.throwAlreadyExist("already exists"),
+                status().isConflict());
+        assertLoggedAtWarn(
+                com.vodafone.vss.weaver.common.ExceptionUtils.throwNotFound("missing"),
+                status().isNotFound());
+        assertLoggedAtWarn(
+                com.vodafone.vss.weaver.common.ExceptionUtils.throwBadInputs("bad", "reason"),
+                status().isBadRequest());
+    }
+
     private void assertLoggedAtWarn(Exception exception, ResultMatcher expectedStatus)
             throws Exception {
         // logger is a static mock reused across assertions; start each one clean.

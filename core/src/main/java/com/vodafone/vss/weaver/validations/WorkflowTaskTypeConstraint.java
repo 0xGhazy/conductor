@@ -485,7 +485,7 @@ public @interface WorkflowTaskTypeConstraint {
             if (inputStatusParam == null || !validateInputStatus(inputStatusParam.toString())) {
                 String message =
                         String.format(
-                                "terminate task must have an %s parameter and must be set to COMPLETED or FAILED, taskName: %s",
+                                "terminate task must have an %s parameter and must be set to COMPLETED, FAILED or TERMINATED, taskName: %s",
                                 getTerminationStatusParameter(), workflowTask.getName());
                 context.buildConstraintViolationWithTemplate(message).addConstraintViolation();
                 valid = false;

@@ -650,6 +650,13 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
                             terminateTask
                                     .getInputData()
                                     .get(Terminate.getTerminationReasonParameter());
+            if (StringUtils.isBlank(reason)
+                    && Terminate.hasMessageCode(terminateTask.getInputData())
+                    && terminateTask.getOutputData() != null) {
+                // A translated message is the most useful reason for the caller.
+                Object message = terminateTask.getOutputData().get(Terminate.OUTPUT_MESSAGE);
+                reason = message != null ? String.valueOf(message) : null;
+            }
             if (StringUtils.isBlank(reason)) {
                 reason =
                         String.format(

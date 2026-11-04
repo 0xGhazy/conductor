@@ -119,7 +119,9 @@ services:
       - KC_HTTP_PORT=8080
       - KC_HOSTNAME_STRICT=false
     volumes:
-      - ./keycloak:/opt/keycloak/data/import:ro
+      - ./keycloak/weaver-realm.json:/opt/keycloak/data/import/weaver-realm.json:ro
+      # Weaver login theme; the realm selects it with "loginTheme": "weaver"
+      - ./keycloak/themes/weaver:/opt/keycloak/themes/weaver:ro
     ports:
       - "${WEAVER_KEYCLOAK_PORT:-8085}:8080"
     networks:

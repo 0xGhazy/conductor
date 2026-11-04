@@ -452,7 +452,7 @@ public class WorkflowTaskTypeConstraintTest {
 
         Assert.assertEquals(1, validationErrors.size());
         Assert.assertEquals(
-                "terminate task must have an terminationStatus parameter and must be set to COMPLETED or FAILED, taskName: terminate_task",
+                "terminate task must have an terminationStatus parameter and must be set to COMPLETED, FAILED or TERMINATED, taskName: terminate_task",
                 validationErrors.get(0));
     }
 
@@ -469,7 +469,7 @@ public class WorkflowTaskTypeConstraintTest {
 
         Assert.assertEquals(1, validationErrors.size());
         Assert.assertEquals(
-                "terminate task must have an terminationStatus parameter and must be set to COMPLETED or FAILED, taskName: terminate_task",
+                "terminate task must have an terminationStatus parameter and must be set to COMPLETED, FAILED or TERMINATED, taskName: terminate_task",
                 validationErrors.get(0));
     }
 

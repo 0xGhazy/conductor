@@ -159,4 +159,60 @@ public class TestTerminate {
         terminateTask.execute(workflow, task, executor);
         assertEquals(TaskModel.Status.COMPLETED, task.getStatus());
     }
+
+    @Test
+    public void resolves_translated_message_into_output() {
+        com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef def =
+                new com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef();
+        def.setName("shop");
+        def.setVersion(1);
+        WorkflowModel workflow = new WorkflowModel();
+        workflow.setWorkflowDefinition(def);
+        workflow.setInput(new HashMap<>(Map.of("_language", "ar-EG")));
+
+        Terminate terminateTask = new Terminate();
+        terminateTask.setMessageResolver(
+                new com.vodafone.vss.weaver.core.messages.MessageResolver(
+                        (name, version, code) ->
+                                Map.of("en-US", "Order ${orderId} placed", "ar-EG", "تم الطلب ${orderId}"),
+                        null,
+                        "en-US"));
+
+        TaskModel task = new TaskModel();
+        task.getInputData().put(getTerminationStatusParameter(), "COMPLETED");
+        task.getInputData().put(getTerminationWorkflowOutputParameter(), Map.of("orderId", "1001"));
+        task.getInputData().put(Terminate.MESSAGE_CODE_PARAMETER, "ORDER_PLACED");
+        task.getInputData().put(Terminate.VARIABLES_PARAMETER, Map.of("orderId", "1001"));
+
+        assertTrue(terminateTask.execute(workflow, task, executor));
+        assertEquals(TaskModel.Status.COMPLETED, task.getStatus());
+        assertEquals("1001", task.getOutputData().get("orderId"));
+        assertEquals("ORDER_PLACED", task.getOutputData().get(Terminate.OUTPUT_RESPONSE_CODE));
+        assertEquals("ar-EG", task.getOutputData().get(Terminate.OUTPUT_LANGUAGE_CODE));
+        assertEquals("تم الطلب 1001", task.getOutputData().get(Terminate.OUTPUT_MESSAGE));
+    }
+
+    @Test
+    public void message_code_without_resolver_returns_the_code() {
+        Terminate terminateTask = new Terminate();
+        TaskModel task = new TaskModel();
+        task.getInputData().put(getTerminationStatusParameter(), "FAILED");
+        task.getInputData().put(Terminate.MESSAGE_CODE_PARAMETER, "PAYMENT_DECLINED");
+
+        terminateTask.execute(new WorkflowModel(), task, executor);
+
+        assertEquals("PAYMENT_DECLINED", task.getOutputData().get(Terminate.OUTPUT_MESSAGE));
+    }
+
+    @Test
+    public void without_message_code_output_is_unchanged() {
+        Terminate terminateTask = new Terminate();
+        TaskModel task = new TaskModel();
+        task.getInputData().put(getTerminationStatusParameter(), "COMPLETED");
+        task.getInputData().put(getTerminationWorkflowOutputParameter(), Map.of("a", "b"));
+
+        terminateTask.execute(new WorkflowModel(), task, executor);
+
+        assertEquals(Map.of("a", "b"), task.getOutputData());
+    }
 }

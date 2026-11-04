@@ -110,8 +110,7 @@ public class DatabaseResource {
 
     @PostMapping("/instances/status")
     @Operation(summary = "Get database instances statuses", description = "Check connection status for multiple datasources. Body: JSON array of datasource ids.", operationId = "bulkPingDatabaseInstances")
-    public ResponseEntity<AppResponse> bulkPingDatabaseInstances(
-            @RequestBody @NotEmpty(message = "Requested IDs is required") Set<@NotNull UUID> ids) {
+    public ResponseEntity<AppResponse> bulkPingDatabaseInstances(@RequestBody @NotEmpty(message = "Requested IDs is required") Set<@NotNull UUID> ids) {
         log.info("Bulk ping database instances request received - count={}", ids.size());
         ResponseEntity<AppResponse> response = datasourceService.bulkPingRest(ids);
         log.info("Bulk ping database instances request completed successfully");

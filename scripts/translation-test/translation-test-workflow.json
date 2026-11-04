@@ -1,39 +1,69 @@
 {
   "name": "translation-test",
-  "description": "Test workflow for translations: resolves one message code in the caller's language and returns it",
+  "description": "Test workflow for translations: TERMINATE resolves the message in the caller's language (no Respond task)",
   "version": 1,
   "schemaVersion": 2,
   "ownerEmail": "example@email.com",
   "restartable": true,
   "timeoutPolicy": "ALERT_ONLY",
   "timeoutSeconds": 0,
-  "inputParameters": ["messageCode", "customerName", "orderId", "_language"],
+  "inputParameters": [
+    "outcome",
+    "customerName",
+    "orderId",
+    "_language"
+  ],
   "tasks": [
     {
-      "name": "RespondWorker",
-      "taskReferenceName": "respond_ref",
-      "type": "SIMPLE",
+      "name": "route",
+      "taskReferenceName": "route_ref",
+      "type": "SWITCH",
+      "evaluatorType": "value-param",
+      "expression": "outcome",
       "inputParameters": {
-        "messageCode": "${workflow.input.messageCode}",
-        "languageCode": "${workflow.input._language}",
-        "variables": {
-          "orderId": "${workflow.input.orderId}"
+        "outcome": "${workflow.input.outcome}"
+      },
+      "decisionCases": {
+        "failure": [
+          {
+            "name": "terminate",
+            "taskReferenceName": "end_failed_ref",
+            "type": "TERMINATE",
+            "inputParameters": {
+              "terminationStatus": "FAILED",
+              "messageCode": "PAYMENT_DECLINED",
+              "workflowOutput": {
+                "orderId": "${workflow.input.orderId}"
+              }
+            }
+          }
+        ]
+      },
+      "defaultCase": [
+        {
+          "name": "terminate",
+          "taskReferenceName": "end_ok_ref",
+          "type": "TERMINATE",
+          "inputParameters": {
+            "terminationStatus": "COMPLETED",
+            "messageCode": "${workflow.input.messageCode}",
+            "variables": {
+              "orderId": "${workflow.input.orderId}"
+            },
+            "workflowOutput": {
+              "orderId": "${workflow.input.orderId}"
+            }
+          }
         }
-      }
-    },
-    {
-      "name": "terminate",
-      "taskReferenceName": "terminate_ref",
-      "type": "TERMINATE",
-      "inputParameters": {
-        "terminationStatus": "COMPLETED",
-        "workflowOutput": "${respond_ref.output}"
-      }
+      ]
     }
   ],
   "outputParameters": {},
   "metadata": {
     "defaultLanguage": "en-US",
-    "supportedLanguages": ["en-US", "ar-EG"]
+    "supportedLanguages": [
+      "en-US",
+      "ar-EG"
+    ]
   }
 }
