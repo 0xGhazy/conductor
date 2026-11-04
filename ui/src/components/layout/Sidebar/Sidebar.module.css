@@ -33,12 +33,36 @@
   flex-shrink: 0;
 }
 
-.brandLink {
+/* Collapsed rail: the logo alone, centred */
+.collapsed .brandHeader {
+  justify-content: center;
+  padding: 0;
+}
+
+/* The logo is the open/close button */
+.brandToggle {
   display: flex;
   align-items: center;
   gap: 10px;
-  text-decoration: none;
   min-width: 0;
+  padding: 4px;
+  margin: 0 -4px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.brandToggle:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.brandToggle:focus-visible {
+  outline: none;
+  box-shadow: var(--color-focus-ring);
 }
 
 .brandLogo {
@@ -70,27 +94,6 @@
   color: var(--color-fg-muted);
   font-variant-numeric: tabular-nums;
   line-height: 1;
-}
-
-.collapseBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--color-fg-muted);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  flex-shrink: 0;
-}
-
-.collapseBtn:hover {
-  color: var(--color-fg-default);
-  background-color: var(--color-surface-soft);
-  border-color: var(--color-border-default);
 }
 
 /* Navigation Scrollable Area */

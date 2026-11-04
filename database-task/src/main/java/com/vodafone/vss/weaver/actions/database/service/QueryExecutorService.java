@@ -69,8 +69,21 @@ public class QueryExecutorService {
                                         Map<String, Object> parameters,
                                         int timeoutSeconds,
                                         String name) {
+        return execute(datasourceId, sql, parameters, timeoutSeconds, name, 0);
+    }
+
+    /**
+     * Runs the SQL; when {@code maxRows > 0} at most that many rows are returned and the
+     * result is marked {@code truncated} if the statement produced more.
+     */
+    public QueryExecutionResult execute(UUID datasourceId,
+                                        @NotNull String sql,
+                                        Map<String, Object> parameters,
+                                        int timeoutSeconds,
+                                        String name,
+                                        int maxRows) {
         try (DataSourceLease lease = leasePool(datasourceId)) {
-            return sqlExecute(sql, parameters, timeoutSeconds, name, lease.template());
+            return sqlExecute(sql, parameters, timeoutSeconds, name, lease.template(), maxRows);
         }
     }
 
@@ -92,7 +105,8 @@ public class QueryExecutorService {
                                     Map<String, Object> parameters,
                                     int timeoutSeconds,
                                     String name,
-                                    @NotNull NamedParameterJdbcTemplate template) {
+                                    @NotNull NamedParameterJdbcTemplate template,
+                                    int maxRows) {
         log.info("Executing SQL query {} with timeout {}s", name, timeoutSeconds);
 
         QueryExecutionResult out = QueryExecutionResult.builder().status("FAILED").build();
@@ -101,7 +115,7 @@ public class QueryExecutorService {
         long start = System.currentTimeMillis();
         try {
             NamedParameterJdbcTemplate activeTemplate = getNamedParameterJdbcTemplate(template, timeoutSeconds);
-            executePreparedStatement(activeTemplate, sql.trim(), parameters, out);
+            executePreparedStatement(activeTemplate, sql.trim(), parameters, maxRows, out);
 
             out.setStatus("SUCCESS");
             return out;
@@ -178,7 +192,7 @@ public class QueryExecutorService {
         }
     }
 
-    private void executePreparedStatement(NamedParameterJdbcTemplate template, String sql, Map<String, Object> parameters, QueryExecutionResult out) {
+    private void executePreparedStatement(NamedParameterJdbcTemplate template, String sql, Map<String, Object> parameters, int maxRows, QueryExecutionResult out) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource(parameters == null ? Collections.emptyMap() : parameters);
         var parsedSql = NamedParameterUtils.parseSqlStatement(sql);
         String sqlToUse = NamedParameterUtils.substituteNamedParameters(parsedSql, parameterSource);
@@ -186,6 +200,10 @@ public class QueryExecutorService {
 
         PreparedStatementCreator statementCreator = connection -> {
             var preparedStatement = connection.prepareStatement(sqlToUse);
+            if (maxRows > 0) {
+                // One extra row tells us whether the result was cut.
+                preparedStatement.setMaxRows(maxRows + 1);
+            }
             for (int index = 0; index < values.length; index++) {
                 preparedStatement.setObject(index + 1, values[index]);
             }
@@ -196,6 +214,10 @@ public class QueryExecutorService {
             boolean hasResultSet = preparedStatement.execute();
             if (hasResultSet) {
                 List<Map<String, Object>> rows = readRows(preparedStatement.getResultSet());
+                if (maxRows > 0 && rows.size() > maxRows) {
+                    rows = rows.subList(0, maxRows);
+                    out.setTruncated(true);
+                }
                 List<Map<String, Object>> normalized = rows.stream()
                         .map(row -> QueryParamTypeConverter.normalizeRow(row, mapper))
                         .toList();

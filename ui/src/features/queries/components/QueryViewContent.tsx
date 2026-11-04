@@ -367,6 +367,21 @@ export default function QueryViewContent({
     document.title = name ? `Query: ${name}` : isCreateMode ? "New Query" : "Query";
   }, [form?.name, isCreateMode]);
 
+  // Header breadcrumb shows the saved query name (not the id, and not every keystroke).
+  const savedName = useMemo(() => {
+    const body = getField(queryDetail.data, "data") ?? {};
+    const data = getField(body, "data") ?? body ?? {};
+    return String(getField(data, "name") ?? "").trim();
+  }, [queryDetail.data]);
+  useEffect(() => {
+    if (isCreateMode || !savedName) return;
+    window.dispatchEvent(
+      new CustomEvent("weaver:breadcrumb-title", {
+        detail: { title: savedName, pathname: window.location.pathname },
+      })
+    );
+  }, [savedName, isCreateMode]);
+
   const handleChange = (field: string, value: unknown) => {
     setForm((prev: any) => ({ ...(prev || {}), [field]: value }));
     setFormErrors((prev) => ({ ...prev, [field]: "" }));
@@ -420,6 +435,8 @@ export default function QueryViewContent({
       // Refresh lists/details in the background. The form already reflects the saved record,
       // so we keep the current hydration (no refetch-driven form reset).
       void queryClient.invalidateQueries({ queryKey: queryDefinitionKeys.all });
+      // The database page shows its queries inside the database response.
+      void queryClient.invalidateQueries({ queryKey: datasourceKeys.details() });
 
       if (isCreateMode && normalized?.id) {
         navigate(`/queries/${encodeURIComponent(normalized.id)}`, { replace: true });
@@ -495,6 +512,8 @@ export default function QueryViewContent({
       await deleteQuery(queryId);
       queryClient.removeQueries({ queryKey: queryDefinitionKeys.detail(queryId) });
       void queryClient.invalidateQueries({ queryKey: queryDefinitionKeys.all });
+      // The database page shows its queries inside the database response.
+      void queryClient.invalidateQueries({ queryKey: datasourceKeys.details() });
       showSuccess("Query deleted successfully.");
       if (propOnBack) {
         propOnBack();

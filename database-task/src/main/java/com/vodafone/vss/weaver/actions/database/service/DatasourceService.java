@@ -15,7 +15,6 @@
  */
 package com.vodafone.vss.weaver.actions.database.service;
 
-import java.net.URI;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
@@ -28,22 +27,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.vodafone.vss.weaver.actions.database.dialect.DatabaseDialect;
+import com.vodafone.vss.weaver.actions.database.dialect.DialectRegistry;
+import com.vodafone.vss.weaver.actions.database.dto.DatabaseConnectionTestRequest;
+import com.vodafone.vss.weaver.actions.database.dto.DatabaseRequest;
 import com.vodafone.vss.weaver.actions.database.dto.DatasourceConfig;
 import com.vodafone.vss.weaver.actions.database.event.DatasourceChangedEvent;
 import com.vodafone.vss.weaver.actions.database.registry.DataSourceLease;
 import com.vodafone.vss.weaver.actions.database.util.PasswordEncryptionUtil;
 import com.vodafone.vss.weaver.audit.service.AuditSecurityHelper;
+import com.vodafone.vss.weaver.audit.service.UserService;
 import com.vodafone.vss.weaver.common.ExceptionUtils;
+import com.vodafone.vss.weaver.common.audit.UserMinimal;
 import com.vodafone.vss.weaver.common.database.*;
-import com.vodafone.vss.weaver.common.dto.AppResponse;
 import com.vodafone.vss.weaver.common.exceptions.BusinessExceptionBuilder;
-import com.vodafone.vss.weaver.common.response.PaginatedResult;
 import com.vodafone.vss.weaver.dao.DatasourceDAO;
 import com.vodafone.vss.weaver.dao.QueryDAO;
 
@@ -59,6 +62,12 @@ public class DatasourceService {
 
     @Autowired(required = false)
     private AuditSecurityHelper auditSecurityHelper;
+
+    @Autowired(required = false)
+    private UserService userService;
+
+    @Autowired(required = false)
+    private DialectRegistry dialectRegistry = DialectRegistry.getDefault();
 
     @Value("${datasource.connection.strict-validation:false}")
     private boolean strictValidation;
@@ -142,44 +151,23 @@ public class DatasourceService {
         return dynamicDataSourceManager.ping(id);
     }
 
-    public ResponseEntity<AppResponse> createDatabase(@NotNull DatasourceModel payload) {
+    // ----- REST operations: return models; the REST layer decides the HTTP status ----- //
+
+    public DatasourceModel create(@NotNull DatabaseRequest request) {
+        DatasourceModel payload = request.toModel();
+        validate(payload, true);
         String normalizedName = payload.getName().trim();
         DatabaseType databaseType = payload.getType();
-        log.info("Start defining new datasource instance [{}] of engine type {}", normalizedName, databaseType);
-
-        if (payload.getConnection() == null || payload.getConnection().getPassword() == null || payload.getConnection().getPassword().isBlank()) {
-            throw ExceptionUtils.throwBusinessException(
-                    BusinessExceptionBuilder.builder()
-                            .message("Datasource creation failed")
-                            .reason("Database password is required")
-                            .code("MISSING_PASSWORD")
-                            .withDetail("field", "connection.password")
-                            .withDetail("error", "Database password is required")
-                            .retryable(false)
-                            .success(false)
-                            .status(HttpStatus.BAD_REQUEST)
-                            .build());
-        }
+        log.info("Creating database [{}] of type {}", normalizedName, databaseType);
 
         if (existsByNameIgnoreCase(normalizedName)) {
-            throw ExceptionUtils.throwBusinessException(
-                    BusinessExceptionBuilder.builder()
-                            .message("Datasource creation failed")
-                            .reason("Datasource with the same name already exists")
-                            .code("DUPLICATE_NAME")
-                            .status(HttpStatus.CONFLICT)
-                            .retryable(false)
-                            .success(false)
-                            .build());
+            throw duplicateName(normalizedName);
         }
 
         JdbcConnectionDetails conn = withPoolDefaults(payload.getConnection());
-        String rawPassword = conn.getPassword();
-        String encryptedPassword = PasswordEncryptionUtil.encrypt(rawPassword);
-        conn.setPassword(encryptedPassword);
+        conn.setPassword(PasswordEncryptionUtil.encrypt(conn.getPassword()));
 
-        String currentUserId = getCurrentUserId();
-
+        UserMinimal currentUserId = currentUser();
         DatasourceModel datasource = DatasourceModel.builder()
                 .name(normalizedName)
                 .type(databaseType)
@@ -191,167 +179,93 @@ public class DatasourceService {
         // Probe before persisting
         PingResult probe = dynamicDataSourceManager.testConnection(toResolvedConfig(datasource));
         if (probe != null && !probe.reachable()) {
-            log.warn("Connection test failed for new datasource [{}]: {}", normalizedName, probe.errorCode());
+            log.warn("Connection test failed for new database [{}]: {}", normalizedName, probe.errorCode());
             if (strictValidation) {
                 handleConnectionFailure(probe, "creation");
             }
         }
 
         DatasourceModel saved = datasourceDAO.create(datasource);
-        UUID datasourceId = saved.getId();
         eventPublisher.publishEvent(DatasourceChangedEvent.changed(saved.getId(), saved.getVersion()));
-        log.info("Datasource created in database successfully with id {}", datasourceId);
+        log.info("Database [{}] created with id {}", normalizedName, saved.getId());
 
-        DatasourceStatus status = recordProbe(datasourceId, probe);
-
-        DatasourceModel responseData = copyForResponse(saved);
-        responseData.setStatus(status);
-
-        AppResponse response = AppResponse.builder()
-                .message("Datasource created successfully")
-                .data(responseData)
-                .status(HttpStatus.CREATED)
-                .retryable(false)
-                .success(true)
-                .build();
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(datasourceId)
-                .toUri();
-        return ResponseEntity.created(location).body(response);
+        // The password stays in the entity; JSON never includes it (see JdbcConnectionDetails).
+        saved.setStatus(recordProbe(saved.getId(), probe));
+        return withUsers(saved);
     }
 
-    public ResponseEntity<AppResponse> updateRest(@NotNull UUID id, @NotNull DatasourceModel payload) {
+    public DatasourceModel update(@NotNull UUID id, @NotNull DatabaseRequest request) {
+        DatasourceModel payload = request.toModel();
+        validate(payload, false);
         String normalizedName = payload.getName().trim();
         DatabaseType databaseType = payload.getType();
-        log.debug("Start updating database instance of id {} engine type {} ", normalizedName, databaseType);
 
         DatasourceModel current = datasourceDAO.findById(id).orElseThrow(() -> datasourceNotFound(id));
-        Long expectedVersion = current.getVersion();
+        if (!normalizedName.equalsIgnoreCase(current.getName()) && existsByNameIgnoreCase(normalizedName)) {
+            throw duplicateName(normalizedName);
+        }
 
         JdbcConnectionDetails newConnection = withPoolDefaults(payload.getConnection());
-        String rawPassword = payload.getConnection() != null ? payload.getConnection().getPassword() : null;
-        if (isPasswordBlankOrMasked(rawPassword)) {
-            newConnection.setPassword(current.getConnection() != null ? current.getConnection().getPassword() : null);
-        } else {
-            newConnection.setPassword(PasswordEncryptionUtil.encrypt(rawPassword));
-        }
+        newConnection.setPassword(passwordToStore(payload, current));
 
         DatasourceModel candidate = DatasourceModel.builder()
                 .id(id)
                 .name(normalizedName)
                 .type(databaseType)
-                .version(expectedVersion)
+                .version(current.getVersion())
                 .connection(newConnection)
+                // Unchanged by an update; kept so the response shows the real creator and time.
+                .createdAt(current.getCreatedAt())
+                .createdBy(current.getCreatedBy())
                 .build();
 
         PingResult probe = dynamicDataSourceManager.testConnection(toResolvedConfig(candidate));
         if (probe != null && !probe.reachable()) {
-            log.warn("Connection test failed for datasource {} update: {}", id, probe.errorCode());
+            log.warn("Connection test failed for database {} update: {}", id, probe.errorCode());
             if (strictValidation) {
                 handleConnectionFailure(probe, "update");
             }
         }
 
-        String currentUserId = getCurrentUserId();
-        candidate.setUpdatedBy(currentUserId);
-
+        candidate.setUpdatedBy(currentUser());
         DatasourceModel updated = datasourceDAO.update(candidate);
         eventPublisher.publishEvent(DatasourceChangedEvent.changed(updated.getId(), updated.getVersion()));
+        log.info("Database {} updated", id);
 
-        DatasourceStatus status = recordProbe(id, probe);
-        DatasourceModel responseData = copyForResponse(updated);
-        responseData.setStatus(status);
-
-        AppResponse response = AppResponse.builder()
-                .message("Datasource updated successfully")
-                .data(responseData)
-                .status(HttpStatus.OK)
-                .retryable(true)
-                .success(true)
-                .build();
-
-        return new ResponseEntity<>(response, response.getStatus());
+        updated.setStatus(recordProbe(id, probe));
+        return withUsers(updated);
     }
 
-    public ResponseEntity<AppResponse> findByIdRest(@NotNull UUID id) {
-        log.debug("Fetching a datasource with id {}", id);
-
-        DatasourceModel datasource = findById(id).orElseThrow(() -> {
-            log.error("Datasource with id {} not found in database", id);
-            return ExceptionUtils.throwNotFound("Datasource not found");
-        });
-
-        DatasourceModel responseData = copyForResponse(datasource);
-        responseData.setStatus(statusOf(id));
-
-        AppResponse response = AppResponse.builder()
-                .message("Datasource fetched successfully")
-                .data(responseData)
-                .status(HttpStatus.OK)
-                .retryable(false)
-                .success(true)
-                .build();
-
-        return new ResponseEntity<>(response, response.getStatus());
+    /** The database with its connection status, or a 404 error. */
+    public DatasourceModel get(@NotNull UUID id) {
+        DatasourceModel datasource = findById(id).orElseThrow(() -> datasourceNotFound(id));
+        datasource.setStatus(statusOf(id));
+        return withUsers(datasource);
     }
 
-    public ResponseEntity<AppResponse> findAllPaginatedRest(@NotNull Pageable pageable, String search) {
+    /** One page of databases, newest first, with their connection status. */
+    public Page<DatasourceModel> list(String search, int page, int size) {
         String normalizedSearch = normalizeSearch(search);
-        int offset = (int) pageable.getOffset();
-        int limit = pageable.getPageSize();
-
-        List<DatasourceModel> list = datasourceDAO.findAll(offset, limit, normalizedSearch, false);
+        List<DatasourceModel> items = datasourceDAO.findAll(page * size, size, normalizedSearch, false);
+        for (DatasourceModel ds : items) {
+            ds.setStatus(statusOf(ds.getId()));
+            withUsers(ds);
+        }
         long total = datasourceDAO.count(normalizedSearch);
-
-        List<DatasourceModel> responseList = list.stream().map(ds -> {
-            DatasourceModel clean = copyForResponse(ds);
-            clean.setStatus(statusOf(ds.getId()));
-            return clean;
-        }).toList();
-
-        PaginatedResult details = new PaginatedResult(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                total,
-                (int) Math.ceil((double) total / pageable.getPageSize()),
-                responseList.size()
-        );
-
-        AppResponse response = AppResponse.builder()
-                .message("Data sources fetched successfully")
-                .data(responseList)
-                .details(details)
-                .status(HttpStatus.OK)
-                .retryable(true)
-                .success(true)
-                .build();
-
-        return new ResponseEntity<>(response, response.getStatus());
+        return new PageImpl<>(items, PageRequest.of(page, size), total);
     }
 
-    public ResponseEntity<AppResponse> deleteByIdRest(UUID id) {
-        log.debug("Deleting datasource with id {}", id);
+    /** Deletes the database; 404 when missing, 409 while saved queries still use it. */
+    public void deleteDatabase(@NotNull UUID id) {
         try {
             delete(id);
         } catch (NoSuchElementException e) {
-            throw ExceptionUtils.throwBusinessException(
-                    BusinessExceptionBuilder.builder()
-                            .message("Failed to delete datasource")
-                            .reason("Datasource with id " + id + " not found")
-                            .code("DATASOURCE_NOT_FOUND")
-                            .retryable(false)
-                            .success(false)
-                            .status(HttpStatus.NOT_FOUND)
-                            .build()
-            );
+            throw datasourceNotFound(id);
         } catch (IllegalStateException e) {
             throw ExceptionUtils.throwBusinessException(
                     BusinessExceptionBuilder.builder()
-                            .message("Failed to delete datasource")
-                            .reason("Related queries found with datasource id " + id)
+                            .message("Failed to delete database")
+                            .reason(e.getMessage())
                             .code("RELATED_QUERIES_FOUND")
                             .retryable(false)
                             .success(false)
@@ -359,21 +273,23 @@ public class DatasourceService {
                             .build()
             );
         }
-
-        return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<AppResponse> bulkPingRest(@NotNull @NotEmpty Set<UUID> requestedIds) {
-        log.debug("Fetching bulk datasources for ping with ids {}", requestedIds);
+    /** Pings one saved database and returns it with the fresh status. */
+    public DatasourceModel ping(@NotNull UUID id) {
+        return ping(Set.of(id)).get(0);
+    }
 
+    /** Pings saved databases; 404 (listing the missing ids) when any id is unknown. */
+    public List<DatasourceModel> ping(@NotNull @NotEmpty Set<UUID> requestedIds) {
         List<DatasourceModel> existingDataSources = findAllByIds(requestedIds);
         Set<UUID> foundIds = existingDataSources.stream().map(DatasourceModel::getId).collect(Collectors.toSet());
         List<UUID> missingIds = requestedIds.stream().filter(id -> !foundIds.contains(id)).toList();
         if (!missingIds.isEmpty()) {
             throw ExceptionUtils.throwBusinessException(
                     BusinessExceptionBuilder.builder()
-                            .message("Failed to bulk ping datasources")
-                            .reason("Some provided datasources IDs not found")
+                            .message("Failed to ping databases")
+                            .reason("Some database ids were not found")
                             .code("DATASOURCE_NOT_FOUND")
                             .withDetail("missing", missingIds)
                             .retryable(false)
@@ -385,30 +301,123 @@ public class DatasourceService {
 
         Map<UUID, DatasourceModel> datasourceMap = existingDataSources.stream()
                 .collect(Collectors.toMap(DatasourceModel::getId, Function.identity()));
-
         Map<UUID, PingResult> pingResults = dynamicDataSourceManager.getHealthService().bulkPing(requestedIds, 30);
 
-        List<DatasourceModel> results = requestedIds.stream().map(id -> {
+        return requestedIds.stream().map(id -> {
+            PingResult pingResult = pingResults.getOrDefault(id,
+                    new PingResult(false, "Ping failed", DatabaseErrorCode.CONNECTION_FAILED.name()));
             DatasourceModel datasource = datasourceMap.get(id);
-            PingResult pingResult = pingResults.getOrDefault(id, new PingResult(false, "Ping failed", DatabaseErrorCode.CONNECTION_FAILED.name()));
-            DatasourceStatus status = pingResult.reachable()
-                    ? DatasourceStatus.active()
-                    : DatasourceStatus.inactive("Ping failed", pingResult.reason(), pingResult.errorCode());
-
-            DatasourceModel clean = copyForResponse(datasource);
-            clean.setStatus(status);
-            return clean;
+            datasource.setStatus(toStatus(pingResult, "Ping failed"));
+            return withUsers(datasource);
         }).toList();
+    }
 
-        AppResponse response = AppResponse.builder()
-                .message("Bulk ping completed successfully")
-                .data(results)
-                .status(HttpStatus.OK)
-                .retryable(true)
-                .success(true)
+    /**
+     * Tests a connection without saving anything. The password is required, except when the
+     * payload carries the id of a saved database: then a blank or masked password means
+     * "use the stored one", so an edit form can test without retyping it.
+     */
+    public DatasourceStatus testConnection(@NotNull DatabaseConnectionTestRequest request) {
+        DatasourceModel payload = request.toModel();
+        UUID savedId = request.getId();
+        DatasourceModel current = savedId != null
+                ? datasourceDAO.findById(savedId).orElseThrow(() -> datasourceNotFound(savedId))
+                : null;
+        validate(payload, current == null);
+
+        JdbcConnectionDetails conn = withPoolDefaults(payload.getConnection());
+        conn.setPassword(passwordToStore(payload, current));
+        DatasourceModel candidate = DatasourceModel.builder()
+                .name(payload.getName().trim())
+                .type(payload.getType())
+                .connection(conn)
                 .build();
 
-        return new ResponseEntity<>(response, response.getStatus());
+        PingResult probe = dynamicDataSourceManager.testConnection(toResolvedConfig(candidate));
+        log.info("Connection test for [{}]: reachable={}", candidate.getName(), probe != null && probe.reachable());
+        return probe == null
+                ? DatasourceStatus.unknown("Connection test unavailable")
+                : toStatus(probe, "Connection test failed");
+    }
+
+    /** Adds the users behind createdBy / updatedBy (when user lookup is configured). */
+    private DatasourceModel withUsers(DatasourceModel datasource) {
+        if (userService != null) {
+            userService.fillUsers(datasource);
+        }
+        return datasource;
+    }
+
+    private static DatasourceStatus toStatus(PingResult result, String failureMessage) {
+        return result.reachable()
+                ? DatasourceStatus.active()
+                : DatasourceStatus.inactive(failureMessage, result.reason(), result.errorCode());
+    }
+
+    /** Encrypted password to use: the new one when given, otherwise the stored one. */
+    private static String passwordToStore(DatasourceModel payload, DatasourceModel current) {
+        String raw = payload.getConnection() != null ? payload.getConnection().getPassword() : null;
+        if (!isPasswordBlankOrMasked(raw)) {
+            return PasswordEncryptionUtil.encrypt(raw);
+        }
+        return current != null && current.getConnection() != null ? current.getConnection().getPassword() : null;
+    }
+
+    /** Checks required fields and the JDBC URL format; 400 with every problem found. */
+    private void validate(DatasourceModel payload, boolean passwordRequired) {
+        List<String> errors = new ArrayList<>();
+        if (payload.getName() == null || payload.getName().isBlank()) {
+            errors.add("name is required");
+        }
+        if (payload.getType() == null) {
+            errors.add("type is required");
+        }
+        JdbcConnectionDetails conn = payload.getConnection();
+        if (conn == null) {
+            errors.add("connection is required");
+        } else {
+            if (conn.getUrl() == null || conn.getUrl().isBlank()) {
+                errors.add("connection.url is required");
+            } else if (payload.getType() != null && !conn.getUrl().contains("${")
+                    && dialectRegistry.supports(payload.getType())) {
+                // URLs with placeholders are checked by the connection probe after resolving.
+                DatabaseDialect dialect = dialectRegistry.getDialect(payload.getType());
+                if (!dialect.isValidUrl(conn.getUrl().trim())) {
+                    errors.add("connection.url is not a valid " + payload.getType()
+                            + " JDBC URL; expected " + dialect.urlFormatHint());
+                }
+            }
+            if (conn.getUsername() == null || conn.getUsername().isBlank()) {
+                errors.add("connection.username is required");
+            }
+            if (passwordRequired && isPasswordBlankOrMasked(conn.getPassword())) {
+                errors.add("connection.password is required");
+            }
+        }
+        if (!errors.isEmpty()) {
+            throw ExceptionUtils.throwBusinessException(
+                    BusinessExceptionBuilder.builder()
+                            .message("Invalid database definition")
+                            .reason(String.join("; ", errors))
+                            .code("INVALID_DATABASE")
+                            .withDetail("errors", errors)
+                            .retryable(false)
+                            .success(false)
+                            .status(HttpStatus.BAD_REQUEST)
+                            .build());
+        }
+    }
+
+    private static RuntimeException duplicateName(String name) {
+        return ExceptionUtils.throwBusinessException(
+                BusinessExceptionBuilder.builder()
+                        .message("Database name already in use")
+                        .reason("A database named '" + name + "' already exists")
+                        .code("DUPLICATE_NAME")
+                        .status(HttpStatus.CONFLICT)
+                        .retryable(false)
+                        .success(false)
+                        .build());
     }
 
     private DatasourceStatus statusOf(UUID id) {
@@ -465,38 +474,8 @@ public class DatasourceService {
                 .build();
     }
 
-    private boolean isPasswordBlankOrMasked(String password) {
+    private static boolean isPasswordBlankOrMasked(String password) {
         return password == null || password.isBlank() || password.startsWith("****");
-    }
-
-    private DatasourceModel copyForResponse(DatasourceModel ds) {
-        if (ds == null) return null;
-        JdbcConnectionDetails cleanConn = null;
-        if (ds.getConnection() != null) {
-            cleanConn = JdbcConnectionDetails.builder()
-                    .url(ds.getConnection().getUrl())
-                    .username(ds.getConnection().getUsername())
-                    .password(null) // never expose password
-                    .schema(ds.getConnection().getSchema())
-                    .maxPoolSize(ds.getConnection().getMaxPoolSize())
-                    .minimumIdle(ds.getConnection().getMinimumIdle())
-                    .idleTimeout(ds.getConnection().getIdleTimeout())
-                    .maxLifetime(ds.getConnection().getMaxLifetime())
-                    .connectionTimeout(ds.getConnection().getConnectionTimeout())
-                    .properties(ds.getConnection().getProperties())
-                    .build();
-        }
-        return DatasourceModel.builder()
-                .id(ds.getId())
-                .name(ds.getName())
-                .version(ds.getVersion())
-                .type(ds.getType())
-                .connection(cleanConn)
-                .createdAt(ds.getCreatedAt())
-                .updatedAt(ds.getUpdatedAt())
-                .createdBy(ds.getCreatedBy())
-                .updatedBy(ds.getUpdatedBy())
-                .build();
     }
 
     private RuntimeException datasourceNotFound(UUID id) {
@@ -512,18 +491,30 @@ public class DatasourceService {
         );
     }
 
-    private String getCurrentUserId() {
-        if (auditSecurityHelper != null) {
-            try {
-                var actor = auditSecurityHelper.resolveCurrentActor();
-                if (actor != null && actor.getActorId() != null) {
-                    return actor.getActorId();
-                }
-            } catch (Exception e) {
-                // fallback to default
-            }
+    /**
+     * The caller as an id-only user: the token's subject is the Keycloak user id (user_entity.id).
+     * Null when nobody is signed in (security disabled) or the subject is not a user id.
+     */
+    private UserMinimal currentUser() {
+        if (auditSecurityHelper == null) {
+            return null;
         }
-        return "system";
+        String actorId;
+        try {
+            var actor = auditSecurityHelper.resolveCurrentActor();
+            actorId = actor != null ? actor.getActorId() : null;
+        } catch (Exception e) {
+            return null;
+        }
+        if (actorId == null || actorId.isBlank()) {
+            return null;
+        }
+        try {
+            return UserMinimal.ofId(UUID.fromString(actorId.trim()).toString());
+        } catch (IllegalArgumentException e) {
+            log.debug("Caller '{}' is not a Keycloak user id; createdBy/updatedBy left empty", actorId);
+            return null;
+        }
     }
 
     private static String normalizeSearch(String search) {

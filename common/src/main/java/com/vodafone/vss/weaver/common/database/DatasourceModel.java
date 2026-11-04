@@ -15,7 +15,12 @@
  */
 package com.vodafone.vss.weaver.common.database;
 
+import com.vodafone.vss.weaver.common.audit.UserAudited;
+import com.vodafone.vss.weaver.common.audit.UserMinimal;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.util.List;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -33,7 +38,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DatasourceModel implements Serializable {
+public class DatasourceModel implements Serializable, UserAudited {
 
     private UUID id;
     private String name;
@@ -41,8 +46,24 @@ public class DatasourceModel implements Serializable {
     private DatabaseType type;
     private JdbcConnectionDetails connection;
     private DatasourceStatus status;
+
+    /**
+     * The database's saved queries (newest first, without SQL); only in
+     * GET /api/databases/{id}?withQueries=true. Never stored or read from requests.
+     */
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<QueryModel> queries;
     @Builder.Default private Instant createdAt = Instant.now();
     private Instant updatedAt;
-    private String createdBy;
-    private String updatedBy;
+    /**
+     * Who created it: the Keycloak user (only the id, user_entity.id, is stored). Set by the server
+     * and never read from requests; responses add the name and email when the user is known.
+     */
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private UserMinimal createdBy;
+
+    /** Who last changed it; same rules as {@link #createdBy}. */
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private UserMinimal updatedBy;
 }

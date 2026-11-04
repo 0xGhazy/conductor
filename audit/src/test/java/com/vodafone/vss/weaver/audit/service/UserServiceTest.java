@@ -14,11 +14,13 @@ package com.vodafone.vss.weaver.audit.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.vodafone.vss.weaver.common.audit.UserAudited;
 import com.vodafone.vss.weaver.common.audit.UserMinimal;
 import com.vodafone.vss.weaver.dao.UserLookupDAO;
 
@@ -102,5 +104,94 @@ public class UserServiceTest {
         UserService serviceWithoutDao = new UserService(null, 100, 24);
         assertNull(serviceWithoutDao.getUserMinimalById("any-user"));
         assertEquals(0, serviceWithoutDao.getCacheSize());
+    }
+
+    @Test
+    public void resolveFindsCachedUsersById() {
+        assertEquals("John Doe", userService.resolve("user-1").orElseThrow().getName());
+        verify(userLookupDAO, never()).findByIdAndRealm(anyString(), anyString());
+    }
+
+    @Test
+    public void resolveLooksUpUnknownIdsAndCachesThem() {
+        UserMinimal admin = new UserMinimal("user-9", "admin", "Conductor", "Admin", "admin@conductor.local");
+        when(userLookupDAO.findByIdAndRealm(eq("user-9"), anyString())).thenReturn(Optional.of(admin));
+
+        assertEquals("Conductor Admin", userService.resolve("user-9").orElseThrow().getName());
+        assertEquals("Conductor Admin", userService.resolve("user-9").orElseThrow().getName());
+        verify(userLookupDAO, times(1)).findByIdAndRealm(eq("user-9"), anyString());
+    }
+
+    @Test
+    public void nameFallsBackToTheUsernameWhichIsNotKept() throws Exception {
+        UserMinimal user = new UserMinimal("user-7", "svc-bot", null, " ", null);
+
+        assertEquals("svc-bot", user.getName());
+        String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(user);
+        assertFalse(json.contains("username"), json);
+    }
+
+    @Test
+    public void unknownValuesAreLookedUpOnlyOnce() {
+        String deleted = UUID.randomUUID().toString();
+        when(userLookupDAO.findByIdAndRealm(eq(deleted), anyString())).thenReturn(Optional.empty());
+
+        assertTrue(userService.resolve(deleted).isEmpty());
+        assertTrue(userService.resolve(deleted).isEmpty());
+        verify(userLookupDAO, times(1)).findByIdAndRealm(eq(deleted), anyString());
+    }
+
+    @Test
+    public void resolveIgnoresBlankAndSurvivesLookupErrors() {
+        assertTrue(userService.resolve(null).isEmpty());
+        assertTrue(userService.resolve("  ").isEmpty());
+        when(userLookupDAO.findByIdAndRealm(eq("broken"), anyString())).thenThrow(new RuntimeException("db down"));
+        assertTrue(userService.resolve("broken").isEmpty());
+    }
+
+    @Test
+    public void fillUsersSetsBothUsersFromKeycloakIds() {
+        UUID creator = UUID.randomUUID();
+        UUID unknown = UUID.randomUUID();
+        userService.putUser(new UserMinimal(creator.toString(), "ops", "Ops", "User", "ops@example.com"));
+        Record record = new Record(UserMinimal.ofId(creator.toString()), UserMinimal.ofId(unknown.toString()));
+
+        userService.fillUsers(List.of(record));
+
+        assertEquals("Ops User", record.createdBy.getName());
+        assertEquals("ops@example.com", record.createdBy.getEmail());
+        // Unknown id: kept as { id } without name or email.
+        assertEquals(unknown.toString(), record.updatedBy.getId());
+        assertNull(record.updatedBy.getName());
+    }
+
+    private static final class Record implements UserAudited {
+        private UserMinimal createdBy;
+        private UserMinimal updatedBy;
+
+        Record(UserMinimal createdBy, UserMinimal updatedBy) {
+            this.createdBy = createdBy;
+            this.updatedBy = updatedBy;
+        }
+
+        @Override
+        public UserMinimal getCreatedBy() {
+            return createdBy;
+        }
+
+        @Override
+        public UserMinimal getUpdatedBy() {
+            return updatedBy;
+        }
+
+        @Override
+        public void setCreatedBy(UserMinimal user) {
+            this.createdBy = user;
+        }
+
+        @Override
+        public void setUpdatedBy(UserMinimal user) {
+            this.updatedBy = user;
+        }
     }
 }

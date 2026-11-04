@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.vodafone.vss.weaver.actions.database.validation;
+package com.vodafone.vss.weaver.actions.database.dto;
 
-/**
- * Validation group marker interface for API input validation.
- */
-public interface ApiInput {
-}
+import java.util.List;
+import java.util.UUID;
 
+/** Outcome of a bulk delete: which ids were removed and which did not exist. */
+public record BulkDeleteResult(List<UUID> deleted, List<UUID> notFound) {}

@@ -21,10 +21,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import com.vodafone.vss.weaver.actions.database.exception.DatasourceUnavailableException;
 
 import com.vodafone.vss.weaver.common.exceptions.BusinessException;
 import com.vodafone.vss.weaver.common.validation.ErrorResponse;
@@ -59,6 +67,15 @@ public class ApplicationExceptionMapper {
         EXCEPTION_STATUS_MAP.put(AccessForbiddenException.class, HttpStatus.FORBIDDEN);
         EXCEPTION_STATUS_MAP.put(
                 HttpRequestMethodNotSupportedException.class, HttpStatus.METHOD_NOT_ALLOWED);
+        // Malformed requests are the caller's fault, not a server error.
+        EXCEPTION_STATUS_MAP.put(MethodArgumentNotValidException.class, HttpStatus.BAD_REQUEST);
+        EXCEPTION_STATUS_MAP.put(HandlerMethodValidationException.class, HttpStatus.BAD_REQUEST);
+        EXCEPTION_STATUS_MAP.put(HttpMessageNotReadableException.class, HttpStatus.BAD_REQUEST);
+        EXCEPTION_STATUS_MAP.put(MethodArgumentTypeMismatchException.class, HttpStatus.BAD_REQUEST);
+        EXCEPTION_STATUS_MAP.put(MissingServletRequestParameterException.class, HttpStatus.BAD_REQUEST);
+        EXCEPTION_STATUS_MAP.put(HttpMediaTypeNotSupportedException.class, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+        // A configured database that cannot be reached right now.
+        EXCEPTION_STATUS_MAP.put(DatasourceUnavailableException.class, HttpStatus.SERVICE_UNAVAILABLE);
     }
 
     @ExceptionHandler(Throwable.class)
@@ -78,7 +95,8 @@ public class ApplicationExceptionMapper {
         errorResponse.setStatus(status.value());
         errorResponse.setMessage(th.getMessage());
         errorResponse.setRetryable(
-                th instanceof TransientException); // set it to true for TransientException
+                th instanceof TransientException
+                        || (th instanceof DatasourceUnavailableException unavailable && unavailable.isRetryable()));
 
         Monitors.error("error", String.valueOf(status.value()));
 

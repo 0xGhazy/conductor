@@ -1,6 +1,6 @@
 import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { CircularProgress, Collapse } from "@mui/material";
 import {
   FiDatabase,
@@ -44,7 +44,6 @@ import {
 } from "@/utils/dateTime";
 import { getInitials } from "@/utils/user";
 import { getAuditFields } from "@/utils/audit";
-import { extractList } from "@/utils/data";
 import {
   createDatasource,
   datasourceKeys,
@@ -52,9 +51,10 @@ import {
   fetchDatasourceByName,
   updateDatasource,
   pingDatasource,
+  testDatasourceConnection,
+  toStatusDetails,
   useDatasource,
 } from "@/features/databases";
-import { fetchQueriesByDatasourceId, queryDefinitionKeys } from "@/features/queries";
 import {
   buildEmptyDatasource,
   buildDatasourcePayload,
@@ -106,22 +106,14 @@ export default function DatabaseViewPage({
   const [savedName, setSavedName] = useState("");
 
   // Cached server state
-  const datasourceQuery = useDatasource(id, !isCreateMode);
-  const relatedQueriesQuery = useQuery({
-    queryKey: queryDefinitionKeys.byDatasource(id || ""),
-    queryFn: async (): Promise<QueryDefinition[]> => {
-      const response = await fetchQueriesByDatasourceId(id as string, {
-        page: 0,
-        size: 100,
-        sort: "createdAt,DESC",
-      } as any);
-      return extractList<QueryDefinition>(response?.data ?? {});
-    },
-    enabled: !isCreateMode && !!id,
-  });
-  const queries = relatedQueriesQuery.data ?? EMPTY_QUERIES;
+  // One request: the database and its newest 100 queries.
+  const datasourceQuery = useDatasource(id, !isCreateMode, { withQueries: true });
+  const queries = useMemo(() => {
+    const embedded = (datasourceQuery.data as { queries?: unknown } | undefined)?.queries;
+    return Array.isArray(embedded) ? (embedded as QueryDefinition[]) : EMPTY_QUERIES;
+  }, [datasourceQuery.data]);
   const loading = !isCreateMode && !!id && datasourceQuery.isPending;
-  const queriesLoading = !isCreateMode && !!id && relatedQueriesQuery.isPending;
+  const queriesLoading = loading;
 
   // Hydrate form state from server data once per record (or once for create mode),
   // synchronously during render so there's no empty-form flash. Background refetches
@@ -269,28 +261,27 @@ export default function DatabaseViewPage({
     }
   };
 
+  // Saved and unchanged: ping it (also refreshes its stored status). New or edited: test the
+  // form values without saving; the id lets a blank password reuse the stored one.
   const handlePing = async () => {
-    if (!id || isCreateMode) return;
+    const testForm = isCreateMode || !id || isDirty;
     setPinging(true);
     const startPing = performance.now();
     try {
-      const response = await pingDatasource(id);
+      const pingStatus = testForm
+        ? (await testDatasourceConnection({
+            ...buildDatasourcePayload(form),
+            id: isCreateMode ? undefined : id,
+          }))?.data
+        : toStatusDetails((await pingDatasource(id as string))?.data?.status);
       const elapsed = Math.round(performance.now() - startPing);
       setLatencyMs(elapsed);
-      const body = response?.data ?? response ?? {};
-      const results = (body as any)?.results ?? [];
-      const firstItem = results[0];
-      // Results are datasource entities; the ping outcome is in their nested status object.
-      const pingStatus = firstItem?.status && typeof firstItem.status === "object" ? firstItem.status : firstItem;
-      const isOk =
-        pingStatus?.status === "ACTIVE" ||
-        (body as any)?.success === true;
+      const isOk = pingStatus?.status === "ACTIVE";
 
       const pingLastCheck = pingStatus?.lastCheck;
       const diagMsg =
         pingStatus?.message ||
         pingStatus?.reason ||
-        (body as any)?.message ||
         (isOk
           ? "HikariCP pool connection validated successfully and responsive to queries."
           : "Unable to establish JDBC connection to host.");
@@ -302,14 +293,23 @@ export default function DatabaseViewPage({
         notify.error(`Database ping failed (${elapsed} ms): ${diagMsg}`);
       }
 
+      if (testForm) {
+        // Nothing was saved, so there is no stored status to refresh.
+        setStatusDetails({ ...(pingStatus || {}), lastCheck: pingLastCheck || new Date().toISOString() });
+        return;
+      }
+
       // Refresh datasource details (and stale list/fleet caches) to pick up the updated
       // status and real backend lastCheck. Form state is not re-hydrated by this refetch.
       await queryClient.invalidateQueries({ queryKey: datasourceKeys.all });
-      const refData: any = queryClient.getQueryData(datasourceKeys.detail(id)) ?? {};
-      if (refData?.status && typeof refData.status === "object") {
+      const refData = (queryClient.getQueryData(datasourceKeys.detailWithQueries(id as string)) ?? {}) as {
+        status?: DatasourceStatusDetails | string;
+      };
+      const refStatus = refData.status;
+      if (refStatus && typeof refStatus === "object") {
         setStatusDetails({
-          ...refData.status,
-          lastCheck: refData.status.lastCheck || pingLastCheck || new Date().toISOString(),
+          ...refStatus,
+          lastCheck: refStatus.lastCheck || pingLastCheck || new Date().toISOString(),
         });
       } else if (pingLastCheck) {
         setStatusDetails((prev) => ({

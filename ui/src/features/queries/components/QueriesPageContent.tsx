@@ -1,13 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import PropTypes from "prop-types";
 import { Box, Link } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import StorageIcon from "@mui/icons-material/Storage";
 import { useNavigate } from "react-router-dom";
 
@@ -17,12 +12,10 @@ import type {
   WeaverDataField,
 } from "@/components/common/data/WeaverDataExplorer/WeaverDataExplorer.types";
 import Tag from "@/components/common/data/Tag/Tag";
-import { WeaverConfirmDialog } from "@/components/common/dialogs";
 import { getErrorMessage } from "@/utils/error";
 import { toTimezoneDateTime } from "@/utils/dateTime";
-import { deleteQuery } from "@/features/queries/services/queriesApi";
+import { getUserName } from "@/utils/user";
 import { normalizeQuery } from "@/features/queries/services/queriesService";
-import { queryDefinitionKeys } from "@/features/queries/hooks/queryKeys";
 import { useQueryDefinitionsList } from "@/features/queries/hooks/useQueryDefinitions";
 
 type QueryRow = ReturnType<typeof normalizeQuery>;
@@ -93,27 +86,21 @@ const extractTotal = (body: any, fallback: number) => {
   return Number(total) || 0;
 };
 
-export default function QueriesPageContent({ onNotify = null, search = "", onCreateQuery = null }: any) {
+interface QueriesPageContentProps {
+  search?: string;
+  onCreateQuery?: (() => void) | null;
+}
+
+export default function QueriesPageContent({ search = "", onCreateQuery = null }: QueriesPageContentProps) {
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
   const [page, setPage] = useState(0);
   const [pageSize, setPageSize] = useState(20);
-  const [selectedIds, setSelectedIds] = useState<Array<string | number>>([]);
-
-  const [confirmState, setConfirmState] = useState<any>({
-    open: false,
-    title: "Delete queries?",
-    description: "You are about to delete queries.",
-    warnings: [],
-    confirmPhrase: "DELETE",
-    onConfirm: null,
-  });
 
   const trimmedSearch = (search || "").trim();
   const listParams = useMemo(() => {
     const params: Record<string, unknown> = {
-      includeQuery: false,
+      includeSql: false,
       page,
       size: pageSize,
       sort: "createdAt,DESC",
@@ -125,7 +112,6 @@ export default function QueriesPageContent({ onNotify = null, search = "", onCre
   }, [page, pageSize, trimmedSearch]);
 
   const queriesQuery = useQueryDefinitionsList(listParams);
-  const { refetch: refetchQueries } = queriesQuery;
 
   const { items, rowCount } = useMemo(() => {
     const response = queriesQuery.data;
@@ -173,7 +159,7 @@ export default function QueriesPageContent({ onNotify = null, search = "", onCre
               underline="hover"
               onClick={(event) => {
                 event.stopPropagation();
-                navigate(`/queries/${encodeURIComponent(queryId)}`);
+                navigate(`/queries/${encodeURIComponent(queryId)}`, { state: { name } });
               }}
               sx={{ fontWeight: 600, textAlign: "left", color: "primary.main" }}
             >
@@ -201,9 +187,27 @@ export default function QueriesPageContent({ onNotify = null, search = "", onCre
         searchable: true,
         sortable: true,
         width: 170,
-        render: (val) => (
-          <Tag text={String(val || "-")} color="#0891b2" borderColor="#0891b2" />
-        ),
+        render: (val, r) => {
+          const databaseId = String(r?.dataSource || "").trim();
+          const databaseName = String(val || "-");
+          if (!databaseId) return databaseName;
+          return (
+            <Link
+              component="button"
+              type="button"
+              underline="hover"
+              onClick={(event) => {
+                event.stopPropagation();
+                navigate(`/databases/${encodeURIComponent(databaseId)}`, {
+                  state: { name: databaseName },
+                });
+              }}
+              sx={{ textAlign: "left", color: "primary.main" }}
+            >
+              {databaseName}
+            </Link>
+          );
+        },
       },
       {
         key: "timeoutMs",
@@ -219,6 +223,22 @@ export default function QueriesPageContent({ onNotify = null, search = "", onCre
         sortable: true,
         width: 200,
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
+      },
+      {
+        key: "createdBy",
+        label: "Created By",
+        getValue: (r) => getUserName(r.createdBy, "-"),
+        visibleByDefault: false,
+        hideable: true,
+        width: 150,
+      },
+      {
+        key: "updatedBy",
+        label: "Updated By",
+        getValue: (r) => getUserName(r.updatedBy, "-"),
+        visibleByDefault: false,
+        hideable: true,
+        width: 150,
       },
       {
         key: "updatedAt",
@@ -242,122 +262,23 @@ export default function QueriesPageContent({ onNotify = null, search = "", onCre
     }
   }, [onCreateQuery, navigate]);
 
-  const openDeleteConfirm = useCallback(
-    ({ selectedRows }: { selectedRows?: any[] }) => {
-      const list = Array.isArray(selectedRows) ? selectedRows : [];
-      if (!list.length) return;
-      const confirmPhrase = list.length === 1 ? String(list[0]?.name || "DELETE") : "DELETE";
-
-      setConfirmState({
-        open: true,
-        title: `Delete ${list.length} quer${list.length > 1 ? "ies" : "y"}?`,
-        description: `You're about to delete ${list.length} quer${list.length > 1 ? "ies" : "y"}.`,
-        warnings: ["This action can't be undone."],
-        confirmPhrase,
-        onConfirm: async () => {
-          await Promise.all(
-            list.map((item) => item?.id).filter(Boolean).map((id: string) => deleteQuery(id))
-          );
-          setSelectedIds([]);
-          onNotify?.({ message: "Query(s) deleted successfully." });
-          void queryClient.invalidateQueries({ queryKey: queryDefinitionKeys.all });
-        },
-      });
-    },
-    [onNotify, queryClient]
-  );
-
-  const exportAsJson = useCallback((records: any[]) => {
-    if (!records.length) return;
-    const payload = JSON.stringify(records, null, 2);
-    const blob = new Blob([payload], { type: "application/json" });
-    const href = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = href;
-    a.download = "queries.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(href);
-  }, []);
-
+  // The only toolbar action, shown as a button (so there is no actions menu).
   const toolbarActions = useMemo<WeaverDataAction<any>[]>(
     () => [
       {
         id: "new",
         label: "New Query",
         icon: <AddIcon fontSize="small" />,
+        asButton: true,
         onClick: openCreateView,
       },
-      {
-        id: "refresh",
-        label: "Refresh",
-        icon: <RefreshIcon fontSize="small" />,
-        onClick: () => {
-          refetchQueries();
-        },
-      },
     ],
-    [openCreateView, refetchQueries]
-  );
-
-  const rowActions = useMemo<WeaverDataAction<any>[]>(
-    () => [
-      {
-        id: "open",
-        label: "Open / Edit",
-        icon: <VisibilityIcon fontSize="small" />,
-        onClick: ({ record }) => {
-          if (record?.id) {
-            navigate(`/queries/${encodeURIComponent(record.id)}`);
-          }
-        },
-      },
-      {
-        id: "delete",
-        label: "Delete",
-        icon: <DeleteOutlineIcon fontSize="small" />,
-        danger: true,
-        onClick: ({ record }) => {
-          if (record) {
-            openDeleteConfirm({ selectedRows: [record] });
-          }
-        },
-      },
-    ],
-    [navigate, openDeleteConfirm]
-  );
-
-  const bulkActions = useMemo<WeaverDataAction<any>[]>(
-    () => [
-      {
-        id: "export",
-        label: "Export as JSON",
-        icon: <FileDownloadOutlinedIcon fontSize="small" />,
-        onClick: ({ selectedRecords }) => {
-          if (selectedRecords && selectedRecords.length) {
-            exportAsJson(selectedRecords);
-          }
-        },
-      },
-      {
-        id: "delete",
-        label: "Delete Selected",
-        icon: <DeleteOutlineIcon fontSize="small" />,
-        danger: true,
-        onClick: ({ selectedRecords }) => {
-          if (selectedRecords && selectedRecords.length) {
-            openDeleteConfirm({ selectedRows: selectedRecords });
-          }
-        },
-      },
-    ],
-    [exportAsJson, openDeleteConfirm]
+    [openCreateView]
   );
 
   const handleRecordClick = useCallback(
-    (r: { id?: string | number } | null | undefined) => {
-      if (r?.id) navigate(`/queries/${encodeURIComponent(r.id)}`);
+    (r: { id?: string | number; name?: string } | null | undefined) => {
+      if (r?.id) navigate(`/queries/${encodeURIComponent(r.id)}`, { state: { name: r.name } });
     },
     [navigate]
   );
@@ -376,65 +297,36 @@ export default function QueriesPageContent({ onNotify = null, search = "", onCre
   );
 
   return (
-    <>
-      <WeaverDataExplorer<any>
-        records={items}
-        getRecordId={getRecordId}
-        fields={fields}
-        storageKey="queries"
-        defaultVisibleFields={DEFAULT_VISIBLE_FIELDS}
-        dataMode="server"
-        selectionMode="multiple"
-        selectedIds={selectedIds}
-        onSelectionChange={setSelectedIds}
-        loading={loading}
-        errorMessage={errorMessage || undefined}
-        searchable
-        searchValue={search}
-        searchPlaceholder="Search queries by name..."
-        stickyHeader
-        height="calc(100vh - 220px)"
-        toolbarActions={toolbarActions}
-        rowActions={rowActions}
-        bulkActions={bulkActions}
-        onRecordClick={handleRecordClick}
-        pagination
-        totalRecords={rowCount}
-        pageSizeOptions={PAGE_SIZE_OPTIONS}
-        paginationModel={paginationModel}
-        onPaginationChange={handlePaginationChange}
-        canvas={CANVAS_CONFIG}
-        emptyTitle="No queries found"
-        emptyDescription="Create your first SQL query definition to use in workflows."
-      />
-
-      <WeaverConfirmDialog
-        intent="danger"
-        open={confirmState.open}
-        title={confirmState.title}
-        message={confirmState.description}
-        description={confirmState.warnings?.join(" ")}
-        confirmLabel="Delete"
-        textConfirmation={{ expectedText: confirmState.confirmPhrase }}
-        onCancel={() => setConfirmState((prev: any) => ({ ...prev, open: false }))}
-        onConfirm={async () => {
-          try {
-            await confirmState.onConfirm?.();
-            setConfirmState((prev: any) => ({ ...prev, open: false }));
-          } catch (error) {
-            onNotify?.({
-              severity: "error",
-              message: getErrorMessage(error, "Delete failed."),
-            });
-          }
-        }}
-      />
-    </>
+    <WeaverDataExplorer<any>
+      records={items}
+      getRecordId={getRecordId}
+      fields={fields}
+      storageKey="queries"
+      defaultVisibleFields={DEFAULT_VISIBLE_FIELDS}
+      dataMode="server"
+      selectionMode="none"
+      loading={loading}
+      errorMessage={errorMessage || undefined}
+      searchable
+      searchValue={search}
+      searchPlaceholder="Search queries by name..."
+      stickyHeader
+      height="calc(100vh - 220px)"
+      toolbarActions={toolbarActions}
+      onRecordClick={handleRecordClick}
+      pagination
+      totalRecords={rowCount}
+      pageSizeOptions={PAGE_SIZE_OPTIONS}
+      paginationModel={paginationModel}
+      onPaginationChange={handlePaginationChange}
+      canvas={CANVAS_CONFIG}
+      emptyTitle="No queries found"
+      emptyDescription="Create your first SQL query definition to use in workflows."
+    />
   );
 }
 
 QueriesPageContent.propTypes = {
-  onNotify: PropTypes.func,
   search: PropTypes.string,
   onCreateQuery: PropTypes.func,
 };

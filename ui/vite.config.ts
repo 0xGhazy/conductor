@@ -1,7 +1,13 @@
 /// <reference types="vitest" />
 import path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
+
+const envDir = path.resolve(__dirname, '..')
+const apiTarget =
+  process.env.WEAVER_API_PROXY_TARGET ||
+  loadEnv('development', envDir, '').WEAVER_API_PROXY_TARGET ||
+  'http://localhost:8080'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,7 +17,7 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['./src/test/setup.ts'],
   },
-  envDir: path.resolve(__dirname, '..'),
+  envDir,
   // Keep Vite's optimized deps cache out of `node_modules` to reduce Windows file-lock issues
   // (e.g. EBUSY rename errors and "Outdated Optimize Dep" 504s).
   cacheDir: '.vite',
@@ -21,42 +27,17 @@ export default defineConfig({
     },
   },
   server: {
+    // The Conductor server serves every API (workflows, databases, queries, secrets, ...).
+    // Point WEAVER_API_PROXY_TARGET elsewhere to use another backend.
     proxy: {
-      '^/api/workflow(/|$)': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-      '^/api/metadata/workflow(/|$)': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-      '^/api/tasks(/|$)': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-      '^/api/agent/tasks(/|$)': {
-        target: 'http://localhost:8080',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/api': {
-        target: 'http://localhost:9090',
-        changeOrigin: true,
-        secure: false,
-      },
-      '/health': {
-        target: 'http://localhost:9090',
-        changeOrigin: true,
-        secure: false,
-      },
+      '/api': { target: apiTarget, changeOrigin: true, secure: false },
+      '/health': { target: apiTarget, changeOrigin: true, secure: false },
+      // Kept for older dashboard code paths.
       '/conductor-health': {
-        target: 'http://localhost:8080',
+        target: apiTarget,
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/conductor-health/, '/health'),
         secure: false,
+        rewrite: (path) => path.replace(/^\/conductor-health/, '/health'),
       },
     },
   },

@@ -17,7 +17,7 @@ import type {
  *  - GET http://localhost:8080/api/tasks/queue/polldata/all
  *  - GET http://localhost:8080/health
  */
-const CONDUCTOR_BASE = (config as any).conductorApiBaseUrl || "http://localhost:8080";
+const CONDUCTOR_BASE: string = config.conductorApiBaseUrl ?? "";
 const WEAVER_BASE = config.apiBaseUrl || "";
 
 export const DASHBOARD_ENDPOINTS = {

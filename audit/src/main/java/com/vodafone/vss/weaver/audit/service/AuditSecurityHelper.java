@@ -96,9 +96,6 @@ public class AuditSecurityHelper {
                         if (user.getEmail() != null && !user.getEmail().isBlank()) {
                             email = user.getEmail();
                         }
-                        if (user.getUsername() != null && !user.getUsername().isBlank()) {
-                            username = user.getUsername();
-                        }
                     }
                 } catch (Exception ex) {
                     log.debug("User resolution failed for actorId '{}': {}", actorId, ex.getMessage());

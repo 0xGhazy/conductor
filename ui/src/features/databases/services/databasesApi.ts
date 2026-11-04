@@ -2,10 +2,10 @@ import apiClient from "@/services/apiClient";
 import { config } from "@/config/appConfig";
 import { extractList } from "@/utils/data";
 import type { ApiResponse, PaginationParams, PaginatedData } from "@/types/api";
-import type { Datasource, DatasourcePayload } from "../types/databaseTypes";
+import type { Datasource, DatasourcePayload, DatasourceStatusDetails } from "../types/databaseTypes";
 
-const DATABASE_API = `${config.apiBaseUrl}/api/database`;
-const DATASOURCES_API = `${DATABASE_API}/instances`;
+const DATABASE_API = `${config.apiBaseUrl}/api/databases`;
+const DATASOURCES_API = DATABASE_API;
 
 const toDatabaseInstancePayload = (payload: DatasourcePayload): DatasourcePayload => ({
   ...payload,
@@ -16,7 +16,7 @@ const toDatabaseInstancePayload = (payload: DatasourcePayload): DatasourcePayloa
       url: payload.url,
       username: payload.username,
       password: payload.password,
-      maximumPoolSize: (payload as any).maxPoolSize ?? payload.maximumPoolSize,
+      maxPoolSize: (payload as { maxPoolSize?: number }).maxPoolSize ?? payload.maximumPoolSize,
       connectionTimeout: payload.connectionTimeout,
       idleTimeout: payload.idleTimeout,
       schema: payload.schema,
@@ -30,11 +30,15 @@ export const fetchDatasources = (
     .get<ApiResponse<PaginatedData<Datasource> | Datasource[]>>(DATASOURCES_API, { params })
     .then((res) => res.data);
 
+/** One database. `withQueries` also returns its newest 100 queries (without SQL) in `queries`. */
 export const fetchDatasourceById = (
-  id: string
+  id: string,
+  { withQueries = false }: { withQueries?: boolean } = {}
 ): Promise<ApiResponse<Datasource>> =>
   apiClient
-    .get<ApiResponse<Datasource>>(`${DATASOURCES_API}/${encodeURIComponent(id)}`)
+    .get<ApiResponse<Datasource>>(`${DATASOURCES_API}/${encodeURIComponent(id)}`, {
+      params: withQueries ? { withQueries: true } : undefined,
+    })
     .then((res) => res.data);
 
 export const createDatasource = (
@@ -62,12 +66,25 @@ export const deleteDatasource = (
     .delete<ApiResponse<void>>(`${DATASOURCES_API}/${encodeURIComponent(id)}`)
     .then((res) => res.data);
 
+/** Pings a saved database; `data` is the database with a fresh `status`. */
 export const pingDatasource = (
   id: string
-): Promise<ApiResponse<{ requested: string[]; results: Datasource[] }>> =>
+): Promise<ApiResponse<Datasource>> =>
   apiClient
-    .post<ApiResponse<{ requested: string[]; results: Datasource[] }>>(
-      `${DATASOURCES_API}/${encodeURIComponent(id)}/ping`
+    .post<ApiResponse<Datasource>>(`${DATASOURCES_API}/${encodeURIComponent(id)}/ping`)
+    .then((res) => res.data);
+
+/**
+ * Tests a connection from form values without saving. Pass `id` when editing a saved
+ * database so a blank or masked password reuses the stored one.
+ */
+export const testDatasourceConnection = (
+  payload: DatasourcePayload & { id?: string | null }
+): Promise<ApiResponse<DatasourceStatusDetails>> =>
+  apiClient
+    .post<ApiResponse<DatasourceStatusDetails>>(
+      `${DATASOURCES_API}/test`,
+      toDatabaseInstancePayload(payload)
     )
     .then((res) => res.data);
 
@@ -93,6 +110,7 @@ export {
   updateDatasource as updateDatabase,
   deleteDatasource as deleteDatabase,
   pingDatasource as pingDatabase,
+  testDatasourceConnection as testDatabaseConnection,
   DATASOURCES_API,
   DATABASE_API,
 };

@@ -26,12 +26,11 @@ export function installFetchInterceptor(): void {
       urlString = (input as Request).url;
     }
 
-    const apiBaseUrl = config.apiBaseUrl || "";
+    const backendBases = [config.apiBaseUrl, config.conductorApiBaseUrl].filter(Boolean) as string[];
     const isBackendRequest =
       urlString.startsWith("/api") ||
       urlString.startsWith("/health") ||
-      (apiBaseUrl && urlString.startsWith(apiBaseUrl)) ||
-      urlString.includes("localhost:9090");
+      backendBases.some((base) => urlString.startsWith(base));
 
     if (!isBackendRequest) {
       return originalFetch(input, init);

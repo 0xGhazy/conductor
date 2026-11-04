@@ -15,7 +15,7 @@
  */
 package com.vodafone.vss.weaver.actions.database.service;
 
-import java.net.URI;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import jakarta.annotation.PreDestroy;
@@ -25,41 +25,51 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.vodafone.vss.weaver.actions.database.dto.AdhocQueryExecutionRequest;
-import com.vodafone.vss.weaver.actions.database.exception.DatasourceUnavailableException;
+import com.vodafone.vss.weaver.actions.database.dto.BulkDeleteResult;
+import com.vodafone.vss.weaver.actions.database.dto.QueryExecutionRequest;
+import com.vodafone.vss.weaver.actions.database.dto.SqlExecutionRequest;
 import com.vodafone.vss.weaver.actions.database.util.QueryParamTypeConverter;
 import com.vodafone.vss.weaver.actions.database.util.SqlMinifier;
+import com.vodafone.vss.weaver.annotations.Audit;
 import com.vodafone.vss.weaver.audit.service.AuditSecurityHelper;
+import com.vodafone.vss.weaver.audit.service.UserService;
 import com.vodafone.vss.weaver.common.ExceptionUtils;
+import com.vodafone.vss.weaver.common.audit.UserMinimal;
+import com.vodafone.vss.weaver.common.database.DatasourceMinimal;
 import com.vodafone.vss.weaver.common.database.DatasourceModel;
 import com.vodafone.vss.weaver.common.database.QueryExecutionResult;
 import com.vodafone.vss.weaver.common.database.QueryModel;
 import com.vodafone.vss.weaver.common.database.QueryParameterDataType;
-import com.vodafone.vss.weaver.common.dto.AppResponse;
 import com.vodafone.vss.weaver.common.exceptions.BusinessExceptionBuilder;
-import com.vodafone.vss.weaver.common.response.PaginatedResult;
 import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.dao.DatasourceDAO;
 import com.vodafone.vss.weaver.dao.QueryDAO;
 
+/**
+ * Saved queries: CRUD for the REST API, and execution for both the API and the DATABASE task.
+ * Methods return models; the REST layer decides the HTTP status.
+ */
 @Service
 public class QueryService {
 
     private static final Logger log = LoggerFactory.getLogger(QueryService.class);
 
+    static final int DEFAULT_TIMEOUT_MS = 5000;
+
     private final QueryDAO queryDAO;
     private final DatasourceDAO datasourceDAO;
     private final QueryExecutorService queryExecutorService;
     private final Cache<UUID, QueryModel> queryCache;
-    private final Cache<String, PaginatedCacheEntry> paginatedQueryCache;
+    private final int maxRowsLimit;
+    private final Duration maxTimeout;
 
     @Autowired(required = false)
     private AuditSecurityHelper auditSecurityHelper;
@@ -67,7 +77,8 @@ public class QueryService {
     @Autowired(required = false)
     private WeaverPlaceholderResolver placeholders;
 
-    private record PaginatedCacheEntry(List<?> data, PaginatedResult details) {}
+    @Autowired(required = false)
+    private UserService userService;
 
     @Autowired
     public QueryService(
@@ -75,7 +86,9 @@ public class QueryService {
             DatasourceDAO datasourceDAO,
             QueryExecutorService queryExecutorService,
             @Value("${query.cache.max-size:1000}") int maxCacheSize,
-            @Value("${query.cache.key.ttl:3600}") long ttlSeconds
+            @Value("${query.cache.key.ttl:3600}") long ttlSeconds,
+            @Value("${weaver.database.execute.max-rows:1000}") int maxRowsLimit,
+            @Value("${weaver.database.execute.max-timeout:60s}") Duration maxTimeout
     ) {
         this.queryDAO = queryDAO;
         this.datasourceDAO = datasourceDAO;
@@ -84,211 +97,133 @@ public class QueryService {
                 .maximumSize(maxCacheSize)
                 .expireAfterWrite(ttlSeconds, TimeUnit.SECONDS)
                 .build();
-        this.paginatedQueryCache = Caffeine.newBuilder()
-                .maximumSize(maxCacheSize)
-                .expireAfterWrite(ttlSeconds, TimeUnit.SECONDS)
-                .build();
-        log.info("QueryService initialized with Caffeine cache (maxSize={}, ttl={}s)", maxCacheSize, ttlSeconds);
+        this.maxRowsLimit = Math.max(1, maxRowsLimit);
+        this.maxTimeout = maxTimeout;
     }
 
-    public ResponseEntity<AppResponse> createRest(@NotNull QueryModel payload) {
-        String normalizedName = payload.getName().trim();
-        UUID datasourceId = payload.getDatasourceId();
-        if (datasourceId == null) {
-            throw ExceptionUtils.throwBadInputs("Validation error", "Datasource ID is required");
-        }
-        log.info("Start defining new query {} on datasource {}", normalizedName, datasourceId);
+    // ----- CRUD ----- //
 
-        DatasourceModel datasource = loadDatasource(datasourceId);
+    public QueryModel create(@NotNull QueryModel payload) {
+        validate(payload);
+        String name = payload.getName().trim();
+        DatasourceModel datasource = loadDatasource(payload.getDatasourceId());
+        ensureUniqueName(name, datasource.getId(), null);
 
-        String currentUserId = getCurrentUserId();
-
-        QueryModel query = QueryModel.builder()
-                .name(normalizedName)
+        UserMinimal actor = currentUser();
+        QueryModel saved = queryDAO.create(QueryModel.builder()
+                .name(name)
                 .description(normalizeDescription(payload.getDescription()))
                 .sql(SqlMinifier.minify(payload.getSql()))
                 .parameters(normalizeParameters(payload.getParameters()))
                 .datasourceId(datasource.getId())
                 .timeout(payload.getTimeout() != null ? payload.getTimeout() : 1000)
-                .createdBy(currentUserId)
-                .updatedBy(currentUserId)
-                .build();
-
-        QueryModel saved = queryDAO.create(query);
+                .createdBy(actor)
+                .updatedBy(actor)
+                .build());
         queryCache.put(saved.getId(), saved);
-        paginatedQueryCache.invalidateAll();
-        log.info("Query {} has been created with id {}", normalizedName, saved.getId());
-
-        AppResponse response = AppResponse.builder()
-                .message("Query created successfully")
-                .data(saved)
-                .status(HttpStatus.CREATED)
-                .retryable(false)
-                .success(true)
-                .build();
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(saved.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(response);
+        log.info("Query {} created with id {}", name, saved.getId());
+        return toResponse(saved, true);
     }
 
-    public ResponseEntity<AppResponse> updateRest(@NotNull UUID id, @NotNull QueryModel payload) {
-        String normalizedName = payload.getName().trim();
-        UUID datasourceId = payload.getDatasourceId();
-        if (datasourceId == null) {
-            throw ExceptionUtils.throwBadInputs("Validation error", "Datasource ID is required");
-        }
-        log.info("Start updating query {} on datasource {}", normalizedName, datasourceId);
+    public QueryModel update(@NotNull UUID id, @NotNull QueryModel payload) {
+        validate(payload);
+        String name = payload.getName().trim();
+        QueryModel existing = get(id);
+        loadDatasource(payload.getDatasourceId());
+        ensureUniqueName(name, payload.getDatasourceId(), id);
 
-        QueryModel existing = findById(id);
-        loadDatasource(datasourceId);
-
-        String currentUserId = getCurrentUserId();
-
-        QueryModel query = QueryModel.builder()
+        QueryModel updated = queryDAO.update(QueryModel.builder()
                 .id(id)
-                .name(normalizedName)
+                .name(name)
                 .description(normalizeDescription(payload.getDescription()))
                 .sql(SqlMinifier.minify(payload.getSql()))
                 .parameters(normalizeParameters(payload.getParameters()))
-                .datasourceId(datasourceId)
+                .datasourceId(payload.getDatasourceId())
                 .timeout(payload.getTimeout() != null ? payload.getTimeout() : existing.getTimeout())
                 .createdBy(existing.getCreatedBy())
-                .updatedBy(currentUserId)
-                .build();
-
-        QueryModel updated = queryDAO.update(query);
+                .updatedBy(currentUser())
+                .build());
         queryCache.put(updated.getId(), updated);
-        paginatedQueryCache.invalidateAll();
-        log.info("Query {} has been updated with id {}", normalizedName, updated.getId());
-
-        AppResponse response = AppResponse.builder()
-                .message("Query updated successfully")
-                .data(updated)
-                .status(HttpStatus.OK)
-                .retryable(false)
-                .success(true)
-                .build();
-
-        return new ResponseEntity<>(response, response.getStatus());
+        log.info("Query {} updated (id {})", name, id);
+        return toResponse(updated, true);
     }
 
-    public ResponseEntity<AppResponse> findByIdRest(@NotNull UUID id, boolean includeQuery) {
-        log.info("Start fetching query with id {}", id);
-        QueryModel entity = findById(id);
-        QueryModel out = copyForResponse(entity, includeQuery);
-
-        AppResponse response = AppResponse.builder()
-                .message("Query fetched successfully")
-                .data(out)
-                .status(HttpStatus.OK)
-                .retryable(false)
-                .success(true)
-                .build();
-
-        return new ResponseEntity<>(response, response.getStatus());
+    /** The query, or a 404 error. */
+    public QueryModel get(@NotNull UUID id) {
+        try {
+            return findById(id);
+        } catch (NoSuchElementException e) {
+            throw ExceptionUtils.throwNotFound("Query not found with id " + id);
+        }
     }
 
-    public ResponseEntity<AppResponse> findAllPageableRest(UUID datasource, boolean includeQuery, String search, Pageable pageable) {
+    public QueryModel get(@NotNull UUID id, boolean includeSql) {
+        return toResponse(get(id), includeSql);
+    }
+
+    /** One page of queries, newest first, optionally limited to one database. */
+    public Page<QueryModel> list(UUID databaseId, boolean includeSql, String search, int page, int size) {
         String normalizedSearch = normalizeSearch(search);
-        int offset = (int) pageable.getOffset();
-        int limit = pageable.getPageSize();
-
-        List<QueryModel> list = queryDAO.findAll(offset, limit, normalizedSearch, datasource);
-        long total = queryDAO.count(normalizedSearch, datasource);
-
-        List<QueryModel> responseList = list.stream()
-                .map(q -> copyForResponse(q, includeQuery))
-                .toList();
-
-        PaginatedResult details = new PaginatedResult(
-                pageable.getPageNumber(),
-                pageable.getPageSize(),
-                total,
-                (int) Math.ceil((double) total / pageable.getPageSize()),
-                responseList.size()
-        );
-
-        AppResponse response = AppResponse.builder()
-                .message("Queries fetched successfully")
-                .data(responseList)
-                .details(details)
-                .status(HttpStatus.OK)
-                .retryable(false)
-                .success(true)
-                .build();
-
-        return new ResponseEntity<>(response, response.getStatus());
+        List<QueryModel> items = toResponses(queryDAO.findAll(page * size, size, normalizedSearch, databaseId), includeSql);
+        long total = queryDAO.count(normalizedSearch, databaseId);
+        return new PageImpl<>(items, PageRequest.of(page, size), total);
     }
 
-    public ResponseEntity<AppResponse> deleteByIdRest(@NotNull UUID id) {
-        log.info("Deleting query with id {}", id);
-        boolean deleted = queryDAO.deleteById(id);
-        if (!deleted) {
+    public void delete(@NotNull UUID id) {
+        if (!queryDAO.deleteById(id)) {
             throw ExceptionUtils.throwNotFound("Query not found with id " + id);
         }
         queryCache.invalidate(id);
-        paginatedQueryCache.invalidateAll();
-        return ResponseEntity.noContent().build();
+        log.info("Query {} deleted", id);
     }
 
-    public ResponseEntity<AppResponse> bulkDeleteRest(@NotNull Set<UUID> ids) {
-        log.info("Bulk deleting queries: count={}", ids.size());
+    public BulkDeleteResult deleteAll(@NotNull Set<UUID> ids) {
+        List<UUID> deleted = new ArrayList<>();
+        List<UUID> notFound = new ArrayList<>();
         for (UUID id : ids) {
-            queryDAO.deleteById(id);
+            if (queryDAO.deleteById(id)) {
+                deleted.add(id);
+            } else {
+                notFound.add(id);
+            }
             queryCache.invalidate(id);
         }
-        paginatedQueryCache.invalidateAll();
-        AppResponse response = AppResponse.builder()
-                .message("Queries deleted successfully")
-                .status(HttpStatus.OK)
-                .retryable(false)
-                .success(true)
-                .build();
-        return new ResponseEntity<>(response, response.getStatus());
+        log.info("Bulk delete of queries: deleted={}, notFound={}", deleted.size(), notFound.size());
+        return new BulkDeleteResult(deleted, notFound);
     }
 
-    public ResponseEntity<AppResponse> executeAdhocQueryRest(AdhocQueryExecutionRequest payload) {
-        UUID datasourceId = payload.getDatasource();
-        String sql = payload.getSql();
-        Integer timeoutMs = payload.getTimeout();
-        Map<String, Object> parameters = payload.getParameters();
+    // ----- Execution from the REST API (audited, row and time limited) ----- //
 
-        log.info("Executing ad-hoc query on datasource {}: timeout={}ms", datasourceId, timeoutMs);
-
-        QueryExecutionResult result = executeSql(datasourceId, sql, parameters, timeoutMs, "adhoc");
-        if (!"SUCCESS".equals(result.getStatus())) {
-            AppResponse response = AppResponse.builder()
-                    .message(result.getReason() != null ? String.valueOf(result.getReason()) : "Query execution failed")
-                    .status(HttpStatus.BAD_REQUEST)
-                    .data(result)
-                    .success(false)
-                    .retryable(false)
-                    .build();
-            return new ResponseEntity<>(response, response.getStatus());
-        }
-
-        AppResponse response = AppResponse.builder()
-                .message("Ad-hoc query executed successfully")
-                .status(HttpStatus.OK)
-                .data(result)
-                .success(true)
-                .retryable(false)
-                .build();
-        return new ResponseEntity<>(response, response.getStatus());
+    /** Runs SQL sent by the caller against a database. */
+    @Audit
+    public QueryExecutionResult runSql(@NotNull UUID databaseId, @NotNull SqlExecutionRequest request) {
+        loadDatasource(databaseId);
+        int timeoutMs = effectiveTimeoutMs(request.getTimeout());
+        int maxRows = effectiveMaxRows(request.getMaxRows());
+        log.info("SQL run on database {} by {} (timeout={}ms, maxRows={})",
+                databaseId, currentUser(), timeoutMs, maxRows);
+        return queryExecutorService.execute(
+                databaseId,
+                request.getSql().trim(),
+                request.getParameters() != null ? request.getParameters() : Collections.emptyMap(),
+                QueryExecutorService.toTimeoutSeconds(timeoutMs),
+                "adhoc",
+                maxRows);
     }
+
+    /** Runs a saved query with the caller's arguments. */
+    @Audit
+    public QueryExecutionResult runQuery(@NotNull UUID queryId, QueryExecutionRequest request) {
+        QueryModel query = get(queryId);
+        int maxRows = effectiveMaxRows(request != null ? request.getMaxRows() : null);
+        log.info("Saved query {} run by {} (maxRows={})", queryId, currentUser(), maxRows);
+        return executeSaved(query, request != null ? request.getParameters() : null, maxRows);
+    }
+
+    // ----- Execution from the DATABASE task ----- //
 
     public QueryExecutionResult executeSavedQuery(@NotNull UUID queryId, Map<String, Object> arguments) {
-        QueryModel query = findById(queryId);
-        DatasourceModel datasource = loadDatasource(query.getDatasourceId());
-        Map<String, Object> parameters = QueryParamTypeConverter.parseQueryParameters(
-                arguments, query.getParameters(), datasource.getType());
-        // Saved SQL is admin configuration and may use ${weaver.env...} / ${weaver.secrets...}.
-        // Arguments are caller data and are bound as parameters, never resolved.
-        return executeSql(datasource.getId(), resolveConfig(query.getSql()), parameters, query.getTimeout(), query.getName());
+        return executeSaved(findById(queryId), arguments, 0);
     }
 
     public QueryExecutionResult executeTaskSql(@NotNull UUID datasourceId,
@@ -313,6 +248,7 @@ public class QueryService {
                 name);
     }
 
+    /** Lookup used by the task; throws {@link NoSuchElementException} when missing. */
     public QueryModel findById(@NotNull UUID id) {
         QueryModel cached = queryCache.getIfPresent(id);
         if (cached != null) {
@@ -324,11 +260,67 @@ public class QueryService {
         return query;
     }
 
+    private QueryExecutionResult executeSaved(QueryModel query, Map<String, Object> arguments, int maxRows) {
+        DatasourceModel datasource = loadDatasource(query.getDatasourceId());
+        Map<String, Object> parameters = QueryParamTypeConverter.parseQueryParameters(
+                arguments, query.getParameters(), datasource.getType());
+        // Saved SQL is admin configuration and may use ${weaver.env...} / ${weaver.secrets...}.
+        // Arguments are caller data and are bound as parameters, never resolved.
+        return queryExecutorService.execute(
+                datasource.getId(),
+                resolveConfig(query.getSql()).trim(),
+                parameters != null ? parameters : Collections.emptyMap(),
+                QueryExecutorService.toTimeoutSeconds(query.getTimeout()),
+                query.getName(),
+                maxRows);
+    }
+
+    int effectiveMaxRows(Integer requested) {
+        return requested == null ? maxRowsLimit : Math.min(Math.max(1, requested), maxRowsLimit);
+    }
+
+    int effectiveTimeoutMs(Integer requested) {
+        long cap = maxTimeout != null && !maxTimeout.isNegative() && !maxTimeout.isZero()
+                ? maxTimeout.toMillis() : Integer.MAX_VALUE;
+        long wanted = requested == null ? DEFAULT_TIMEOUT_MS : Math.max(1, requested);
+        return (int) Math.min(Math.min(wanted, cap), Integer.MAX_VALUE);
+    }
+
+    // ----- Helpers ----- //
+
+    private static void validate(QueryModel payload) {
+        List<String> errors = new ArrayList<>();
+        if (payload.getName() == null || payload.getName().isBlank()) {
+            errors.add("name is required");
+        }
+        if (payload.getSql() == null || payload.getSql().isBlank()) {
+            errors.add("sql is required");
+        }
+        if (payload.getDatasourceId() == null) {
+            errors.add("datasourceId is required");
+        }
+        if (payload.getTimeout() != null && payload.getTimeout() <= 0) {
+            errors.add("timeout must be greater than 0");
+        }
+        if (!errors.isEmpty()) {
+            throw ExceptionUtils.throwBadInputs("Invalid query", String.join("; ", errors));
+        }
+    }
+
+    private void ensureUniqueName(String name, UUID datasourceId, UUID currentId) {
+        queryDAO.findByNameAndDatasourceId(name, datasourceId)
+                .filter(other -> !other.getId().equals(currentId))
+                .ifPresent(other -> {
+                    throw ExceptionUtils.throwAlreadyExist(
+                            "A query named '" + name + "' already exists on this database");
+                });
+    }
+
     private DatasourceModel loadDatasource(UUID id) {
         return datasourceDAO.findById(id).orElseThrow(() -> ExceptionUtils.throwBusinessException(
                 BusinessExceptionBuilder.builder()
-                        .message("Datasource not found with id " + id)
-                        .reason("No datasource found matching the provided id")
+                        .message("Database not found with id " + id)
+                        .reason("No database found matching the provided id")
                         .code("DATASOURCE_NOT_FOUND")
                         .status(HttpStatus.NOT_FOUND)
                         .retryable(false)
@@ -362,40 +354,80 @@ public class QueryService {
         return (search == null || search.isBlank()) ? null : search.trim();
     }
 
-    private static QueryModel copyForResponse(QueryModel q, boolean includeQuery) {
+    /**
+     * A copy for API responses (cached queries are shared with the task, so they are never
+     * changed), with the SQL only when asked and the users behind createdBy / updatedBy.
+     */
+    private QueryModel toResponse(QueryModel query, boolean includeSql) {
+        return toResponses(List.of(query), includeSql).get(0);
+    }
+
+    /** Response copies, each with its database (id, name, type); every database is loaded once. */
+    private List<QueryModel> toResponses(List<QueryModel> queries, boolean includeSql) {
+        Map<UUID, DatasourceMinimal> databases = new HashMap<>();
+        for (QueryModel query : queries) {
+            UUID databaseId = query.getDatasourceId();
+            if (databaseId != null && !databases.containsKey(databaseId)) {
+                databases.put(databaseId, datasourceDAO.findById(databaseId)
+                        .map(DatasourceMinimal::of)
+                        .orElse(DatasourceMinimal.ofId(databaseId)));
+            }
+        }
+        return queries.stream()
+                .map(query -> copyForResponse(query, includeSql, databases.get(query.getDatasourceId())))
+                .toList();
+    }
+
+    private QueryModel copyForResponse(QueryModel q, boolean includeSql, DatasourceMinimal database) {
         if (q == null) return null;
-        return QueryModel.builder()
+        QueryModel copy = QueryModel.builder()
                 .id(q.getId())
                 .name(q.getName())
                 .description(q.getDescription())
-                .sql(includeQuery ? q.getSql() : null)
+                .sql(includeSql ? q.getSql() : null)
                 .timeout(q.getTimeout())
                 .parameters(q.getParameters())
                 .datasourceId(q.getDatasourceId())
+                .datasource(database)
                 .createdAt(q.getCreatedAt())
                 .updatedAt(q.getUpdatedAt())
                 .createdBy(q.getCreatedBy())
                 .updatedBy(q.getUpdatedBy())
                 .build();
+        if (userService != null) {
+            userService.fillUsers(copy);
+        }
+        return copy;
     }
 
-    private String getCurrentUserId() {
-        if (auditSecurityHelper != null) {
-            try {
-                var actor = auditSecurityHelper.resolveCurrentActor();
-                if (actor != null && actor.getActorId() != null) {
-                    return actor.getActorId();
-                }
-            } catch (Exception e) {
-                // fallback to default
-            }
+    /**
+     * The caller as an id-only user: the token's subject is the Keycloak user id (user_entity.id).
+     * Null when nobody is signed in (security disabled) or the subject is not a user id.
+     */
+    private UserMinimal currentUser() {
+        if (auditSecurityHelper == null) {
+            return null;
         }
-        return "system";
+        String actorId;
+        try {
+            var actor = auditSecurityHelper.resolveCurrentActor();
+            actorId = actor != null ? actor.getActorId() : null;
+        } catch (Exception e) {
+            return null;
+        }
+        if (actorId == null || actorId.isBlank()) {
+            return null;
+        }
+        try {
+            return UserMinimal.ofId(UUID.fromString(actorId.trim()).toString());
+        } catch (IllegalArgumentException e) {
+            log.debug("Caller '{}' is not a Keycloak user id; createdBy/updatedBy left empty", actorId);
+            return null;
+        }
     }
 
     @PreDestroy
     public void close() {
         queryCache.invalidateAll();
-        paginatedQueryCache.invalidateAll();
     }
 }

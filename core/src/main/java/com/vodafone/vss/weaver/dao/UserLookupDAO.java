@@ -26,15 +26,16 @@ public interface UserLookupDAO {
      * Finds a user by their user ID and realm ID.
      *
      * @param id Keycloak or identity user UUID
-     * @param realmId Target realm or domain identifier
+     * @param realmId Target realm name or id
      * @return Optional containing UserMinimal if found, or empty
      */
     Optional<UserMinimal> findByIdAndRealm(String id, String realmId);
 
+
     /**
      * Lists all users belonging to a realm.
      *
-     * @param realmId Target realm identifier
+     * @param realmId Target realm name or id
      * @return List of minimal user records
      */
     List<UserMinimal> findByRealm(String realmId);

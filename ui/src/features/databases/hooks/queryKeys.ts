@@ -6,4 +6,6 @@ export const datasourceKeys = {
   fleetStats: () => [...datasourceKeys.all, "fleetStats"] as const,
   details: () => [...datasourceKeys.all, "detail"] as const,
   detail: (id: string) => [...datasourceKeys.details(), id] as const,
+  /** The database plus its queries (GET /api/databases/{id}?withQueries=true). */
+  detailWithQueries: (id: string) => [...datasourceKeys.detail(id), "withQueries"] as const,
 };

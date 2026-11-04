@@ -27,6 +27,7 @@ buildscan.log
 node_modules
 /ui/build
 /ui/.vite
+/test-exports
 /ui/public/monaco-editor
 
 # publishing secrets

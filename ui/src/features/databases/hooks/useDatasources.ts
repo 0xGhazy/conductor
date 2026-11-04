@@ -76,11 +76,16 @@ export const useDatasourceFleetStats = () =>
   });
 
 /** Raw datasource record (API `data` payload, un-normalized) for the detail page. */
-export const useDatasource = (id: string | undefined, enabled = true) =>
+/** One database; `withQueries` also loads its queries in the same request. */
+export const useDatasource = (
+  id: string | undefined,
+  enabled = true,
+  { withQueries = false }: { withQueries?: boolean } = {}
+) =>
   useQuery({
-    queryKey: datasourceKeys.detail(id || ""),
+    queryKey: withQueries ? datasourceKeys.detailWithQueries(id || "") : datasourceKeys.detail(id || ""),
     queryFn: async () => {
-      const response = await fetchDatasourceById(id as string);
+      const response = await fetchDatasourceById(id as string, { withQueries });
       const body = response?.data ?? {};
       return ((body as { data?: unknown })?.data ?? body ?? {}) as Record<string, unknown>;
     },

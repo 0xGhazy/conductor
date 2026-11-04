@@ -1,12 +1,9 @@
 import apiClient from "@/services/apiClient";
 import { config } from "@/config/appConfig";
-import type { ApiResponse } from "@/types/api";
 import type { TaskExecutionLog, WorkflowExecution } from "../types/executionTypes";
 
 const WORKFLOW_API = `${config.apiBaseUrl}/api/workflow`;
-const EXECUTIONS_API = `${config.apiBaseUrl}/api/executions`;
 const TASKS_API = `${config.apiBaseUrl}/api/tasks`;
-const AGENT_TASKS_API = `${config.apiBaseUrl}/api/agent/tasks`;
 
 export const fetchExecutions = async (
   params: WorkflowSearchParams = {}
@@ -30,54 +27,25 @@ export const fetchExecutionById = async (
       return data.data;
     }
   } catch {
-    // Fallback to executions endpoint if needed
-    try {
-      const fallback = await apiClient.get<ApiResponse<WorkflowExecution>>(
-        `${EXECUTIONS_API}/${workflowId}`
-      );
-      return fallback.data?.data || null;
-    } catch {
-      return null;
-    }
+    return null;
   }
   return null;
 };
 
 export const fetchTaskExecutionLogs = async (taskId: string): Promise<TaskExecutionLog[]> => {
   try {
-    const res = await apiClient.get<any>(`${AGENT_TASKS_API}/${encodeURIComponent(taskId)}/log`);
-    const payload = res.data;
+    const res = await apiClient.get<unknown>(`${TASKS_API}/${encodeURIComponent(taskId)}/log`);
+    const payload = res.data as { data?: unknown } | unknown[];
     if (Array.isArray(payload)) {
-      return payload;
+      return payload as TaskExecutionLog[];
     }
-    if (payload?.data && Array.isArray(payload.data)) {
-      return payload.data;
+    if (payload && Array.isArray((payload as { data?: unknown }).data)) {
+      return (payload as { data: TaskExecutionLog[] }).data;
     }
     return [];
   } catch (err) {
-    console.warn(`Could not fetch logs from ${AGENT_TASKS_API}/${taskId}`, err);
-    // 1st fallback: try direct Conductor /api/tasks/{taskId}/log
-    try {
-      const direct = await apiClient.get<any>(`${TASKS_API}/${encodeURIComponent(taskId)}/log`);
-      const payload = direct.data;
-      if (Array.isArray(payload)) {
-        return payload;
-      }
-      if (payload?.data && Array.isArray(payload.data)) {
-        return payload.data;
-      }
-    } catch {
-      // ignore and try backend fallback
-    }
-    // 2nd fallback to backend executions endpoint if needed
-    try {
-      const fallback = await apiClient.get<ApiResponse<TaskExecutionLog[]>>(
-        `${EXECUTIONS_API}/tasks/${encodeURIComponent(taskId)}/logs`
-      );
-      return fallback.data?.data || [];
-    } catch {
-      return [];
-    }
+    console.warn(`Could not fetch logs for task ${taskId}`, err);
+    return [];
   }
 };
 

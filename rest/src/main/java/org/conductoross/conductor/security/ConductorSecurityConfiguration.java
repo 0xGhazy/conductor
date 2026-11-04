@@ -140,6 +140,9 @@ public class ConductorSecurityConfiguration {
 
         String adminRole = properties.getAdminRole();
         String operatorRole = properties.getOperatorRole();
+        String[] writerRoles = {
+            adminRole, operatorRole, adminRole.toUpperCase(), operatorRole.toUpperCase(), "ADMIN", "OPERATOR"
+        };
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -159,6 +162,12 @@ public class ConductorSecurityConfiguration {
                                 adminRole, operatorRole, adminRole.toUpperCase(), operatorRole.toUpperCase(), "ADMIN", "OPERATOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/metadata/**").hasAnyRole(
                                 adminRole, operatorRole, adminRole.toUpperCase(), operatorRole.toUpperCase(), "ADMIN", "OPERATOR")
+                        // Databases and saved queries: anyone signed in can read and ping; creating,
+                        // changing, deleting, testing connections and running SQL need admin or operator.
+                        .requestMatchers(HttpMethod.POST, "/api/databases/ping", "/api/databases/*/ping").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/databases/**", "/api/queries/**").hasAnyRole(writerRoles)
+                        .requestMatchers(HttpMethod.PUT, "/api/databases/**", "/api/queries/**").hasAnyRole(writerRoles)
+                        .requestMatchers(HttpMethod.DELETE, "/api/databases/**", "/api/queries/**").hasAnyRole(writerRoles)
                         // All other REST APIs require authentication
                         .requestMatchers("/api/**").authenticated()
                         // SPA and client-side routes (non-API GET requests rewritten by SpaInterceptor)

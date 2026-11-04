@@ -30,7 +30,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * PostgreSQL implementation of UserLookupDAO querying Keycloak user_entity table via JDBC.
  */
-public class PostgresUserLookupDAO extends PostgresBaseDAO implements UserLookupDAO {
+public class PostgresUserLookupDAO extends PostgresBaseDAO implements UserLookupDAO, AutoCloseable {
+
+    // Keycloak's own tables, read from its database. The realm can be given by name or id.
+    private static final String SELECT_USERS =
+            "SELECT u.id, u.username, u.first_name, u.last_name, u.email "
+                    + "FROM user_entity u JOIN realm r ON r.id = u.realm_id ";
+    private static final String REALM_FILTER = "(r.name = ? OR r.id = ?)";
 
     public PostgresUserLookupDAO(
             RetryTemplate retryTemplate, ObjectMapper objectMapper, DataSource dataSource) {
@@ -42,27 +48,7 @@ public class PostgresUserLookupDAO extends PostgresBaseDAO implements UserLookup
         if (id == null || id.isBlank()) {
             return Optional.empty();
         }
-        try {
-            String sql =
-                    "SELECT id, username, first_name, last_name, email FROM keycloak.user_entity "
-                            + "WHERE id = ? AND realm_id = ?";
-            return queryWithTransaction(
-                    sql,
-                    q -> {
-                        q.addParameter(id);
-                        q.addParameter(realmId);
-                        return q.executeAndFetch(
-                                rs -> {
-                                    if (rs.next()) {
-                                        return Optional.of(mapUser(rs));
-                                    }
-                                    return Optional.empty();
-                                });
-                    });
-        } catch (Exception ex) {
-            logger.debug("Could not query keycloak.user_entity for user '{}': {}", id, ex.getMessage());
-            return Optional.empty();
-        }
+        return findOne(SELECT_USERS + "WHERE u.id = ? AND " + REALM_FILTER, id, realmId);
     }
 
     @Override
@@ -70,14 +56,52 @@ public class PostgresUserLookupDAO extends PostgresBaseDAO implements UserLookup
         if (realmId == null || realmId.isBlank()) {
             return Collections.emptyList();
         }
+        return findMany(SELECT_USERS + "WHERE " + REALM_FILTER, realmId, realmId);
+    }
+
+    @Override
+    public List<UserMinimal> findAll() {
+        return findMany(SELECT_USERS);
+    }
+
+    /** Closes the connection pool to the Keycloak database. */
+    @Override
+    public void close() {
+        if (dataSource instanceof AutoCloseable closeable) {
+            try {
+                closeable.close();
+            } catch (Exception ex) {
+                logger.debug("Could not close the user lookup connection pool: {}", ex.getMessage());
+            }
+        }
+    }
+
+    private Optional<UserMinimal> findOne(String sql, String key, String realmId) {
         try {
-            String sql =
-                    "SELECT id, username, first_name, last_name, email FROM keycloak.user_entity "
-                            + "WHERE realm_id = ?";
             return queryWithTransaction(
                     sql,
                     q -> {
+                        q.addParameter(key);
                         q.addParameter(realmId);
+                        q.addParameter(realmId);
+                        return q.executeAndFetch(
+                                rs -> rs.next() ? Optional.of(mapUser(rs)) : Optional.<UserMinimal>empty());
+                    });
+        } catch (Exception ex) {
+            // The lookup only decorates responses; never fail a request because of it.
+            logger.debug("Could not look up Keycloak user '{}': {}", key, ex.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    private List<UserMinimal> findMany(String sql, String... parameters) {
+        try {
+            return queryWithTransaction(
+                    sql,
+                    q -> {
+                        for (String parameter : parameters) {
+                            q.addParameter(parameter);
+                        }
                         return q.executeAndFetch(
                                 rs -> {
                                     List<UserMinimal> users = new ArrayList<>();
@@ -88,31 +112,7 @@ public class PostgresUserLookupDAO extends PostgresBaseDAO implements UserLookup
                                 });
                     });
         } catch (Exception ex) {
-            logger.debug(
-                    "Could not query keycloak.user_entity for realm '{}': {}",
-                    realmId,
-                    ex.getMessage());
-            return Collections.emptyList();
-        }
-    }
-
-    @Override
-    public List<UserMinimal> findAll() {
-        try {
-            String sql = "SELECT id, username, first_name, last_name, email FROM keycloak.user_entity";
-            return queryWithTransaction(
-                    sql,
-                    q ->
-                            q.executeAndFetch(
-                                    rs -> {
-                                        List<UserMinimal> users = new ArrayList<>();
-                                        while (rs.next()) {
-                                            users.add(mapUser(rs));
-                                        }
-                                        return users;
-                                    }));
-        } catch (Exception ex) {
-            logger.debug("Could not query keycloak.user_entity for all users: {}", ex.getMessage());
+            logger.debug("Could not list Keycloak users: {}", ex.getMessage());
             return Collections.emptyList();
         }
     }

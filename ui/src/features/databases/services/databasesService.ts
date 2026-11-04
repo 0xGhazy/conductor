@@ -51,6 +51,7 @@ export const normalizeDatasource = (datasource: any) => {
     status: String(normalizedStatus || ""),
     createdAt: datasource?.createdAt ?? datasource?.created_at ?? null,
     updatedAt: datasource?.updatedAt ?? datasource?.updated_at ?? null,
+    // { id, name, email } from the server (only the id when the user is unknown).
     createdBy: datasource?.createdBy ?? datasource?.created_by ?? "",
     updatedBy: datasource?.updatedBy ?? datasource?.updated_by ?? "",
     url:

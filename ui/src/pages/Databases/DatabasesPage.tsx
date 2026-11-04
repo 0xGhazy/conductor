@@ -6,9 +6,7 @@ import {
   FiDatabase,
   FiActivity,
   FiCopy,
-  FiRefreshCw,
   FiPlus,
-  FiDownload,
 } from "react-icons/fi";
 import { SiPostgresql, SiMysql } from "react-icons/si";
 
@@ -25,15 +23,16 @@ import {
   formatExactDateTime,
   formatTooltipDateTime,
 } from "@/utils/dateTime";
-import { downloadFile, PAGE_SIZE_OPTIONS } from "@/utils/data";
+import { PAGE_SIZE_OPTIONS } from "@/utils/data";
 import useDebounce from "@/hooks/useDebounce";
-import type { Datasource, DatasourceFleetStats } from "@/features/databases";
+import { getUserName } from "@/utils/user";
+import type { Datasource } from "@/features/databases";
 import {
   createDatasource,
   datasourceKeys,
   pingDatasource,
+  toStatusDetails,
   buildDatasourcePayload,
-  useDatasourceFleetStats,
   useDatasourcesList,
 } from "@/features/databases";
 
@@ -44,13 +43,6 @@ import "@/styles/definitionPages.css";
 const DatabaseViewPage = lazy(() => import("./DatabaseViewPage"));
 
 const EMPTY_DATASOURCES: Datasource[] = [];
-const EMPTY_FLEET_STATS: DatasourceFleetStats = {
-  total: 0,
-  active: 0,
-  postgres: 0,
-  mysql: 0,
-  oracle: 0,
-};
 const DEFAULT_VISIBLE_FIELDS = ["name", "type", "status", "createdAt", "actions"];
 const getDatasourceId = (r: Datasource) => r.id;
 const renderDatabaseCanvasIcon = () => (
@@ -86,9 +78,11 @@ export default function DatabasesPage() {
   const [pageState, setPageState] = useState({ page: 0, search: debouncedSearch });
   const page = pageState.search === debouncedSearch ? pageState.page : 0;
 
-  // Fleet Health & Engines Statistics (cached with a long staleTime under its own key)
-  const fleetStatsQuery = useDatasourceFleetStats();
-  const fleetStats = fleetStatsQuery.data ?? EMPTY_FLEET_STATS;
+  useEffect(() => {
+    if (!isCreating) {
+      document.title = "Weaver - Databases";
+    }
+  }, [isCreating]);
 
   // Sync external search prop from AppLayout
   useEffect(() => {
@@ -118,9 +112,6 @@ export default function DatabasesPage() {
     [baseItems, pingResults]
   );
 
-  const { refetch: refetchDatasources } = datasourcesQuery;
-  const loadDatasources = useCallback(() => refetchDatasources(), [refetchDatasources]);
-
   const paginationModel = useMemo(() => ({ page, pageSize }), [page, pageSize]);
   const handlePaginationChange = useCallback(
     ({ page: nextPage, pageSize: nextPageSize }: { page: number; pageSize: number }) => {
@@ -145,64 +136,6 @@ export default function DatabasesPage() {
     [navigate]
   );
 
-  const computedStats = useMemo(() => {
-    if (fleetStats.total === 0 && items.length > 0) {
-      let active = 0;
-      let postgres = 0;
-      let mysql = 0;
-      let oracle = 0;
-
-      items.forEach((item) => {
-        const pingResult = pingResults[item.id];
-        const rawStatus = pingResult
-          ? pingResult.status
-          : String(
-              typeof item.status === "object" && item.status
-                ? (item.status as any).status
-                : item.status || ""
-            ).toUpperCase();
-        if (rawStatus === "ACTIVE") active++;
-
-        const type = String(item.type || "").toUpperCase();
-        if (type.includes("POSTGRES")) postgres++;
-        else if (type.includes("MYSQL")) mysql++;
-        else if (type.includes("ORACLE")) oracle++;
-      });
-
-      return {
-        total: rowCount || items.length,
-        active,
-        postgres,
-        mysql,
-        oracle,
-      };
-    }
-
-    let adjustedActive = fleetStats.active;
-    Object.entries(pingResults).forEach(([id, res]) => {
-      const match = items.find((i) => i.id === id);
-      const originalStatus = String(
-        typeof match?.status === "object" && match?.status
-          ? (match.status as any).status
-          : match?.status || ""
-      ).toUpperCase();
-
-      if (res.status === "ACTIVE" && originalStatus !== "ACTIVE") {
-        adjustedActive++;
-      } else if (res.status === "ERROR" && originalStatus === "ACTIVE") {
-        adjustedActive = Math.max(0, adjustedActive - 1);
-      }
-    });
-
-    return {
-      total: Math.max(fleetStats.total, rowCount, items.length),
-      active: Math.max(0, adjustedActive),
-      postgres: fleetStats.postgres,
-      mysql: fleetStats.mysql,
-      oracle: fleetStats.oracle,
-    };
-  }, [fleetStats, items, pingResults, rowCount]);
-
   // Live Ping Handler with roundtrip latency tracking
   const handlePing = useCallback(
     async (id: string, name: string) => {
@@ -212,14 +145,9 @@ export default function DatabasesPage() {
       try {
         const response = await pingDatasource(id);
         const elapsed = Math.round(performance.now() - startTime);
-        const body = response?.data ?? response ?? {};
-        const results = (body as any)?.results ?? [];
-        const firstItem = results[0];
-        // Results are datasource entities; the ping outcome is in their nested status object.
-        const pingStatus = firstItem?.status && typeof firstItem.status === "object" ? firstItem.status : firstItem;
-        const isOk =
-          pingStatus?.status === "ACTIVE" ||
-          (body as any)?.success === true;
+        // `data` is the database; the ping outcome is its `status`.
+        const pingStatus = toStatusDetails(response?.data?.status);
+        const isOk = pingStatus?.status === "ACTIVE";
 
         if (isOk) {
           setPingResults((prev) => ({
@@ -231,7 +159,7 @@ export default function DatabasesPage() {
           const reason =
             pingStatus?.message ||
             pingStatus?.reason ||
-            (body as any)?.message ||
+            response?.message ||
             "Unable to connect to host.";
           setPingResults((prev) => ({
             ...prev,
@@ -284,29 +212,6 @@ export default function DatabasesPage() {
       }
     },
     [navigate, notify, queryClient]
-  );
-
-  // Export Helpers
-  const exportAsJson = useCallback(
-    (recordsToExport: Datasource[]) => {
-      if (!recordsToExport.length) {
-        notify.warning("No databases available to export.");
-        return;
-      }
-      const sanitized = recordsToExport.map((rec) => {
-        const copy = { ...rec };
-        delete copy.password;
-        if (copy.connection) {
-          copy.connection = { ...copy.connection };
-          delete copy.connection.password;
-        }
-        return copy;
-      });
-      const payload = JSON.stringify(sanitized, null, 2);
-      downloadFile("databases.json", payload, "application/json");
-      notify.success(`Exported ${recordsToExport.length} database(s) as JSON.`);
-    },
-    [notify]
   );
 
   // Helper: Engine badge styling
@@ -511,15 +416,18 @@ export default function DatabasesPage() {
       {
         key: "createdBy",
         label: "Created By",
-        getValue: (r) => {
-          if (!r.createdBy) return "-";
-          if (typeof r.createdBy === "object") {
-            return (r.createdBy as any).name || (r.createdBy as any).email || "-";
-          }
-          return String(r.createdBy) || "-";
-        },
+        getValue: (r) => getUserName(r.createdBy, "-"),
         visibleByDefault: false,
-        width: 130,
+        hideable: true,
+        width: 150,
+      },
+      {
+        key: "updatedBy",
+        label: "Updated By",
+        getValue: (r) => getUserName(r.updatedBy, "-"),
+        visibleByDefault: false,
+        hideable: true,
+        width: 150,
       },
       {
         key: "actions",
@@ -568,35 +476,20 @@ export default function DatabasesPage() {
     [handleDuplicate, handlePing, navigate, pingResults, pingingId]
   );
 
-  // Toolbar Actions
+  // The only toolbar action, shown as a button (so there is no table options menu).
   const toolbarActions = useMemo<WeaverDataAction<Datasource>[]>(
     () => [
       {
         id: "new",
         label: "New Database",
         icon: <FiPlus size={14} />,
+        asButton: true,
         onClick: () => {
           setIsCreating(true);
         },
       },
-      {
-        id: "refresh",
-        label: "Refresh",
-        icon: <FiRefreshCw size={14} />,
-        onClick: () => {
-          loadDatasources();
-        },
-      },
-      {
-        id: "export_all_json",
-        label: "Export JSON",
-        icon: <FiDownload size={14} />,
-        onClick: () => {
-          exportAsJson(items);
-        },
-      },
     ],
-    [exportAsJson, items, loadDatasources]
+    []
   );
 
   const canvas = useMemo(
@@ -688,124 +581,6 @@ export default function DatabasesPage() {
   return (
     <div className={styles.pageRoot}>
       <div className="definitions-content">
-        {/* Fleet Health & Engines Ribbon */}
-        <div className={styles.statsRibbon} role="region" aria-label="Database Fleet Metrics">
-          {/* Card 1: Total Active Databases */}
-          <div
-            className={`${styles.statCard} ${
-              searchQuery.toUpperCase() === "ACTIVE" ? styles.statCardSelected : ""
-            }`}
-            onClick={() => setSearchQuery((prev) => (prev.toUpperCase() === "ACTIVE" ? "" : "ACTIVE"))}
-            role="button"
-            tabIndex={0}
-            title="Filter by Active status"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setSearchQuery((prev) => (prev.toUpperCase() === "ACTIVE" ? "" : "ACTIVE"));
-              }
-            }}
-          >
-            <div className={styles.statCardTop}>
-              <span className={styles.statLabel}>Active Databases</span>
-              <div className={`${styles.statIconBox} ${styles.iconBoxGreen}`}>
-                <FiActivity size={16} />
-              </div>
-            </div>
-            <div className={styles.statValueRow}>
-              <span className={styles.statValue}>{computedStats.active}</span>
-              <span className={styles.statSubMeta}>
-                {computedStats.total > 0 ? `of ${computedStats.total} total` : "fleet"}
-              </span>
-            </div>
-          </div>
-
-          {/* Card 2: MySQL */}
-          <div
-            className={`${styles.statCard} ${
-              searchQuery.toUpperCase() === "MYSQL" ? styles.statCardSelected : ""
-            }`}
-            onClick={() => setSearchQuery((prev) => (prev.toUpperCase() === "MYSQL" ? "" : "MYSQL"))}
-            role="button"
-            tabIndex={0}
-            title="Filter by MySQL engine"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setSearchQuery((prev) => (prev.toUpperCase() === "MYSQL" ? "" : "MYSQL"));
-              }
-            }}
-          >
-            <div className={styles.statCardTop}>
-              <span className={styles.statLabel}>MySQL</span>
-              <div className={`${styles.statIconBox} ${styles.iconBoxAmber}`}>
-                <SiMysql size={17} />
-              </div>
-            </div>
-            <div className={styles.statValueRow}>
-              <span className={styles.statValue}>{computedStats.mysql}</span>
-              <span className={styles.statSubMeta}>instances</span>
-            </div>
-          </div>
-
-          {/* Card 3: Oracle */}
-          <div
-            className={`${styles.statCard} ${
-              searchQuery.toUpperCase() === "ORACLE" ? styles.statCardSelected : ""
-            }`}
-            onClick={() => setSearchQuery((prev) => (prev.toUpperCase() === "ORACLE" ? "" : "ORACLE"))}
-            role="button"
-            tabIndex={0}
-            title="Filter by Oracle engine"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setSearchQuery((prev) => (prev.toUpperCase() === "ORACLE" ? "" : "ORACLE"));
-              }
-            }}
-          >
-            <div className={styles.statCardTop}>
-              <span className={styles.statLabel}>Oracle</span>
-              <div className={`${styles.statIconBox} ${styles.iconBoxRed}`}>
-                <FiDatabase size={15} />
-              </div>
-            </div>
-            <div className={styles.statValueRow}>
-              <span className={styles.statValue}>{computedStats.oracle}</span>
-              <span className={styles.statSubMeta}>instances</span>
-            </div>
-          </div>
-
-          {/* Card 4: Postgres */}
-          <div
-            className={`${styles.statCard} ${
-              searchQuery.toUpperCase() === "POSTGRES" ? styles.statCardSelected : ""
-            }`}
-            onClick={() => setSearchQuery((prev) => (prev.toUpperCase() === "POSTGRES" ? "" : "POSTGRES"))}
-            role="button"
-            tabIndex={0}
-            title="Filter by Postgres engine"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                setSearchQuery((prev) => (prev.toUpperCase() === "POSTGRES" ? "" : "POSTGRES"));
-              }
-            }}
-          >
-            <div className={styles.statCardTop}>
-              <span className={styles.statLabel}>Postgres</span>
-              <div className={`${styles.statIconBox} ${styles.iconBoxBlue}`}>
-                <SiPostgresql size={15} />
-              </div>
-            </div>
-            <div className={styles.statValueRow}>
-              <span className={styles.statValue}>{computedStats.postgres}</span>
-              <span className={styles.statSubMeta}>instances</span>
-            </div>
-          </div>
-
-        </div>
-
         <WeaverDataExplorer<Datasource>
           records={items}
           getRecordId={getDatasourceId}
@@ -829,7 +604,7 @@ export default function DatabasesPage() {
           onPaginationChange={handlePaginationChange}
           canvas={canvas}
           onRecordClick={openDatabase}
-          height="calc(100vh - 276px)"
+          height="calc(100vh - 220px)"
         />
       </div>
     </div>

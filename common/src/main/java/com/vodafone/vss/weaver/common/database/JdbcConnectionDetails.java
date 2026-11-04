@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.*;
 
@@ -38,7 +39,12 @@ public class JdbcConnectionDetails implements Serializable {
 
     private String url;
     private String username;
+    /**
+     * Read from requests but never written to JSON (API responses, logs). The datasource DAO
+     * re-enables it when storing the connection; see PostgresDatasourceDAO.
+     */
     @ToString.Exclude
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Builder.Default private Integer minimumIdle = 0;

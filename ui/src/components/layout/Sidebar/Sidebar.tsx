@@ -16,8 +16,6 @@ import {
   FlaskConical,
   Languages,
   ArrowRightLeft,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { prefetchRoute } from "@/routes/routeModules";
@@ -49,8 +47,8 @@ const NAVIGATION_GROUPS: NavGroupDef[] = [
     label: "Definitions",
     items: [
       { label: "Databases", path: "/databases", icon: Database },
-      { label: "Redis Cache", path: "/redis", icon: Zap },
       { label: "Queries", path: "/queries", icon: Code },
+      { label: "Redis Cache", path: "/redis", icon: Zap },
       { label: "Collections", path: "/collections", icon: Folder },
       { label: "Scripts", path: "/scripts", icon: FileCode },
       { label: "Connections", path: "/connections", icon: Radio },
@@ -102,24 +100,23 @@ export const Sidebar: React.FC = () => {
   return (
     <aside className={sidebarClass} aria-label="Application sidebar">
       {/* Brand Header */}
+      {/* Clicking the logo opens / closes the sidebar (also Ctrl+B). */}
       <div className={styles.brandHeader}>
-        <Link to="/" className={styles.brandLink} title="Weaver Home">
-          <img src="/logo.png" alt="Weaver" className={styles.brandLogo} />
+        <button
+          type="button"
+          onClick={toggleSidebar}
+          className={styles.brandToggle}
+          title={collapsed ? "Expand sidebar (Ctrl+B)" : "Collapse sidebar (Ctrl+B)"}
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-expanded={!collapsed}
+        >
+          <img src="/logo.png" alt="" className={styles.brandLogo} />
           {!collapsed && (
             <div className={styles.brandInfo}>
               <span className={styles.brandName}>Weaver</span>
               <span className={styles.versionBadge}>v2.0</span>
             </div>
           )}
-        </Link>
-        <button
-          type="button"
-          onClick={toggleSidebar}
-          className={styles.collapseBtn}
-          title={collapsed ? "Expand sidebar (Ctrl+B)" : "Collapse sidebar (Ctrl+B)"}
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
       </div>
 

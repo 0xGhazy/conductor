@@ -118,9 +118,18 @@ export const Header: React.FC<HeaderProps> = ({ search = "", onSearchChange }) =
 
     if (pathname.startsWith("/queries")) {
       const id = pathname.replace("/queries/", "").replace("/queries", "");
-      return id && id !== "/"
-        ? [{ label: "Queries", path: "/queries" }, { label: decodeURIComponent(id) }]
-        : [{ label: "Queries" }];
+      if (!id || id === "/") {
+        return [{ label: "Queries" }];
+      }
+      if (id === "new") {
+        return [{ label: "Queries", path: "/queries" }, { label: "New Query" }];
+      }
+      // The query's name: announced by the query page once loaded, or passed when navigating.
+      const navStateName = (location.state as { name?: string } | null)?.name;
+      return [
+        { label: "Queries", path: "/queries" },
+        { label: dynamicTitle || navStateName || "Query" },
+      ];
     }
 
     if (pathname.startsWith("/collections")) {

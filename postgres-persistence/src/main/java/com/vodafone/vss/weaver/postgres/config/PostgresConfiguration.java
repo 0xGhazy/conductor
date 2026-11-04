@@ -12,6 +12,9 @@
  */
 package com.vodafone.vss.weaver.postgres.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariConfig;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,6 +28,7 @@ import org.conductoross.conductor.postgres.dao.PostgresSkillPackageDAO;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -176,12 +180,35 @@ public class PostgresConfiguration {
         return new PostgresSkillPackageDAO(retryTemplate, objectMapper, dataSource);
     }
 
-    @Bean
-    @DependsOn({"flywayForPrimaryDb"})
+    /** True when conductor.audit.user-lookup.url is set and not blank. */
+    static final String USER_LOOKUP_ENABLED = "!'${conductor.audit.user-lookup.url:}'.isBlank()";
+
+    /**
+     * Reads users from Keycloak's own database (conductor.audit.user-lookup.*) to show who created
+     * or updated a record. Uses a small read-only pool; when the URL is not set, users are not
+     * resolved. The server starts even if that database is unreachable.
+     */
+    @Bean(destroyMethod = "close")
+    @ConditionalOnExpression(USER_LOOKUP_ENABLED)
     public PostgresUserLookupDAO postgresUserLookupDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
-            ObjectMapper objectMapper) {
-        return new PostgresUserLookupDAO(retryTemplate, objectMapper, dataSource);
+            ObjectMapper objectMapper,
+            @Value("${conductor.audit.user-lookup.url}") String url,
+            @Value("${conductor.audit.user-lookup.username:}") String username,
+            @Value("${conductor.audit.user-lookup.password:}") String password,
+            @Value("${conductor.audit.user-lookup.schema:public}") String schema) {
+        HikariConfig config = new HikariConfig();
+        config.setPoolName("keycloak-user-lookup");
+        config.setJdbcUrl(url);
+        config.setUsername(username);
+        config.setPassword(password);
+        config.setSchema(schema);
+        config.setReadOnly(true);
+        config.setMinimumIdle(0);
+        config.setMaximumPoolSize(2);
+        config.setConnectionTimeout(3000);
+        config.setInitializationFailTimeout(-1);
+        return new PostgresUserLookupDAO(retryTemplate, objectMapper, new HikariDataSource(config));
     }
 
     @Bean

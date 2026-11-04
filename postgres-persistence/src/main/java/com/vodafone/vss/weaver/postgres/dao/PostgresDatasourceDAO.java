@@ -27,12 +27,15 @@ import javax.sql.DataSource;
 
 import org.springframework.retry.support.RetryTemplate;
 
+import com.vodafone.vss.weaver.common.audit.UserMinimal;
 import com.vodafone.vss.weaver.common.database.DatabaseType;
 import com.vodafone.vss.weaver.common.database.DatasourceModel;
 import com.vodafone.vss.weaver.common.database.JdbcConnectionDetails;
 import com.vodafone.vss.weaver.core.exception.NonTransientException;
 import com.vodafone.vss.weaver.dao.DatasourceDAO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -40,9 +43,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class PostgresDatasourceDAO extends PostgresBaseDAO implements DatasourceDAO {
 
+    /** Writes the connection with its (encrypted) password, which normal JSON leaves out. */
+    private final ObjectMapper storageMapper;
+
     public PostgresDatasourceDAO(
             RetryTemplate retryTemplate, ObjectMapper objectMapper, DataSource dataSource) {
         super(retryTemplate, objectMapper, dataSource);
+        this.storageMapper = storageMapper(objectMapper);
+    }
+
+    /** Overrides {@code WRITE_ONLY} on the password so it is kept in the stored JSON. */
+    abstract static class StoredConnectionMixin {
+        @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+        private String password;
+    }
+
+    static ObjectMapper storageMapper(ObjectMapper objectMapper) {
+        return objectMapper.copy().addMixIn(JdbcConnectionDetails.class, StoredConnectionMixin.class);
+    }
+
+    private String toStoredJson(JdbcConnectionDetails connection) {
+        try {
+            return storageMapper.writeValueAsString(connection);
+        } catch (JsonProcessingException ex) {
+            throw new NonTransientException(ex.getMessage(), ex);
+        }
     }
 
     @Override
@@ -61,7 +86,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         String sql =
                 "INSERT INTO conductor_datasources ("
                         + "id, name, version, type, connection, created_at, updated_at, created_by, updated_by"
-                        + ") VALUES (?::uuid, ?, ?, ?, ?::jsonb, ?, ?, ?, ?)";
+                        + ") VALUES (?::uuid, ?, ?, ?, ?::jsonb, ?, ?, ?::uuid, ?::uuid)";
 
         executeWithTransaction(
                 sql,
@@ -70,11 +95,11 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
                     q.addParameter(datasource.getName());
                     q.addParameter(datasource.getVersion());
                     q.addParameter(datasource.getType().name());
-                    q.addParameter(toJson(datasource.getConnection()));
+                    q.addParameter(toStoredJson(datasource.getConnection()));
                     q.addParameter(Timestamp.from(datasource.getCreatedAt()));
                     q.addParameter(Timestamp.from(datasource.getUpdatedAt()));
-                    q.addParameter(datasource.getCreatedBy());
-                    q.addParameter(datasource.getUpdatedBy());
+                    q.addParameter(uuidText(datasource.getCreatedBy()));
+                    q.addParameter(uuidText(datasource.getUpdatedBy()));
                     q.executeUpdate();
                 });
 
@@ -90,7 +115,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         String sql =
                 "UPDATE conductor_datasources SET "
                         + "name = ?, version = ?, type = ?, connection = ?::jsonb, "
-                        + "updated_at = ?, updated_by = ? "
+                        + "updated_at = ?, updated_by = ?::uuid "
                         + "WHERE id = ?::uuid AND version = ?";
 
         int rows =
@@ -100,9 +125,9 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
                             q.addParameter(datasource.getName());
                             q.addParameter(nextVersion);
                             q.addParameter(datasource.getType().name());
-                            q.addParameter(toJson(datasource.getConnection()));
+                            q.addParameter(toStoredJson(datasource.getConnection()));
                             q.addParameter(Timestamp.from(datasource.getUpdatedAt()));
-                            q.addParameter(datasource.getUpdatedBy());
+                            q.addParameter(uuidText(datasource.getUpdatedBy()));
                             q.addParameter(datasource.getId().toString());
                             q.addParameter(currentVersion);
                             return q.executeUpdate();
@@ -350,8 +375,18 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
                 .connection(connection)
                 .createdAt(createdTs != null ? createdTs.toInstant() : null)
                 .updatedAt(updatedTs != null ? updatedTs.toInstant() : null)
-                .createdBy(rs.getString("created_by"))
-                .updatedBy(rs.getString("updated_by"))
+                .createdBy(userRef(rs.getObject("created_by", UUID.class)))
+                .updatedBy(userRef(rs.getObject("updated_by", UUID.class)))
                 .build();
+    }
+
+    /** The user's Keycloak id as text for a {@code ?::uuid} parameter; only the id is stored. */
+    private static String uuidText(UserMinimal user) {
+        return user == null || user.getId() == null ? null : user.getId();
+    }
+
+    /** A stored Keycloak user id as an id-only user; the service fills in name and email. */
+    private static UserMinimal userRef(UUID id) {
+        return id == null ? null : UserMinimal.ofId(id.toString());
     }
 }

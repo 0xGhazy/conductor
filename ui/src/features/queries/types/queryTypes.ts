@@ -22,8 +22,9 @@ export interface QueryDefinition {
   timeoutMs?: number;
   parameters?: Record<string, string>;
   relatedWorkflows?: unknown[];
-  createdBy?: string | AuditFields["createdBy"];
-  updatedBy?: string | AuditFields["updatedBy"];
+  /** { id, name, email } from the server; only the id when the user is unknown. */
+  createdBy?: string | AuditFields["createdBy"] | { id: string; name?: string; email?: string } | null;
+  updatedBy?: string | AuditFields["updatedBy"] | { id: string; name?: string; email?: string } | null;
   createdAt?: string | null;
   updatedAt?: string | null;
   [key: string]: unknown;
@@ -38,6 +39,7 @@ export interface QueryPayload {
   dataSourceId?: string;
   datasourceId?: string;
   dataSource?: string;
+  datasource?: string;
   timeout?: number;
   timeoutMs?: number;
   parameters?: Record<string, string>;
@@ -55,6 +57,8 @@ export interface QueryExecutionPayload {
   sqlQuery?: string;
   timeout?: number;
   timeoutMs?: number;
+  /** Row limit; the server caps it with weaver.database.execute.max-rows. */
+  maxRows?: number;
   parameters?: Record<string, unknown>;
   [key: string]: unknown;
 }
@@ -71,5 +75,7 @@ export interface QueryExecutionResult {
   status?: "SUCCESS" | "FAILED" | string;
   parameters?: Record<string, unknown>;
   errorCode?: string;
+  /** True when the result had more rows than the row limit and was cut. */
+  truncated?: boolean;
   [key: string]: unknown;
 }

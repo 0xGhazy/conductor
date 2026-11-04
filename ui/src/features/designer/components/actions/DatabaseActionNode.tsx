@@ -234,7 +234,7 @@ export function DatabaseActionProps({
 
       logInfo(`Database queries: fetch started for datasource=${resolvedDatasourceId}`);
       logDebug(
-        `Database queries URL=/api/database/queries?datasource=${resolvedDatasourceId}&includeQuery=true`
+        `Database queries URL=/api/databases/${resolvedDatasourceId}/queries?includeSql=true`
       );
 
       setLoadingQueries(true);
@@ -242,7 +242,7 @@ export function DatabaseActionProps({
 
       try {
         const body = await fetchQueriesByDatasourceId(resolvedDatasourceId, {
-          includeQuery: true,
+          includeSql: true,
           size: 100,
         });
         if (signal?.aborted) return;
@@ -355,7 +355,7 @@ export function DatabaseActionProps({
 
         const msg =
           error?.message ||
-          `GET ${config.apiBaseUrl}/api/database/queries failed`;
+          `GET ${config.apiBaseUrl}/api/databases/${resolvedDatasourceId}/queries failed`;
         logError(`Database queries fetch error: ${msg}`);
         setQueriesError(msg);
       } finally {

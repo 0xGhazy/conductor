@@ -47,6 +47,9 @@ public class QueryExecutionResult implements Serializable {
     private List<Map<String, Object>> rows;
     private Integer rowCount;
 
+    /** True when the result set had more rows than the row limit and was cut. */
+    private Boolean truncated;
+
     public Integer getSize() {
         if (size != null) {
             return size;

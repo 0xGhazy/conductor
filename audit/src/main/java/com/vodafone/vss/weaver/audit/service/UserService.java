@@ -12,6 +12,7 @@
  */
 package com.vodafone.vss.weaver.audit.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.vodafone.vss.weaver.common.audit.UserAudited;
 import com.vodafone.vss.weaver.common.audit.UserMinimal;
 import com.vodafone.vss.weaver.dao.UserLookupDAO;
 
@@ -42,6 +44,8 @@ public class UserService {
 
     private final UserLookupDAO userLookupDAO;
     private final Cache<String, UserMinimal> userCache;
+    /** Values that matched no user (for example "system"), so they are not looked up on every request. */
+    private final Cache<String, Boolean> missCache;
 
     public void setRealmId(String realmId) {
         this.realmId = realmId;
@@ -61,6 +65,11 @@ public class UserService {
                 Caffeine.newBuilder()
                         .maximumSize(maxCacheSize)
                         .expireAfterWrite(cacheTtlHours, TimeUnit.HOURS)
+                        .build();
+        this.missCache =
+                Caffeine.newBuilder()
+                        .maximumSize(maxCacheSize)
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
                         .build();
         log.info(
                 "UserService initialized with Caffeine cache (maxSize={}, ttl={}h)",
@@ -94,9 +103,7 @@ public class UserService {
             }
 
             for (UserMinimal user : users) {
-                if (user != null && user.getId() != null) {
-                    userCache.put(user.getId(), user);
-                }
+                putUser(user);
             }
             log.info(
                     "Caffeine user cache successfully populated with {} user(s) for realm '{}'.",
@@ -156,6 +163,66 @@ public class UserService {
     public void putUser(UserMinimal user) {
         if (user != null && user.getId() != null) {
             userCache.put(user.getId(), user);
+            missCache.invalidate(user.getId());
+        }
+    }
+
+    /**
+     * Resolves a Keycloak user id (user_entity.id) to the user. Results and misses are cached.
+     *
+     * @param id Keycloak user id
+     * @return the user, or empty when Keycloak has no such user (or lookup is off)
+     */
+    public Optional<UserMinimal> resolve(String id) {
+        if (id == null || id.isBlank()) {
+            return Optional.empty();
+        }
+        String key = id.trim();
+        UserMinimal cached = userCache.getIfPresent(key);
+        if (cached != null) {
+            return Optional.of(cached);
+        }
+        if (userLookupDAO == null || missCache.getIfPresent(key) != null) {
+            return Optional.empty();
+        }
+        Optional<UserMinimal> found;
+        try {
+            found = userLookupDAO.findByIdAndRealm(key, realmId);
+        } catch (Exception ex) {
+            log.debug("Could not resolve user '{}': {}", key, ex.getMessage());
+            return Optional.empty();
+        }
+        if (found.isPresent()) {
+            putUser(found.get());
+        } else {
+            missCache.put(key, Boolean.TRUE);
+        }
+        return found;
+    }
+
+    /**
+     * Replaces the id-only {@code createdBy} / {@code updatedBy} users with the full users
+     * (name and email). Unknown ids stay as {@code {id}}.
+     */
+    public void fillUsers(UserAudited record) {
+        if (record == null) {
+            return;
+        }
+        record.setCreatedBy(withDetails(record.getCreatedBy()));
+        record.setUpdatedBy(withDetails(record.getUpdatedBy()));
+    }
+
+    private UserMinimal withDetails(UserMinimal user) {
+        if (user == null || user.getId() == null) {
+            return user;
+        }
+        return resolve(user.getId()).orElse(user);
+    }
+
+    /** {@link #fillUsers(UserAudited)} for each record. */
+    public void fillUsers(Collection<? extends UserAudited> records) {
+        if (records != null) {
+            records.forEach(this::fillUsers);
         }
     }
 
@@ -172,6 +239,7 @@ public class UserService {
      */
     public void clearCache() {
         userCache.invalidateAll();
+        missCache.invalidateAll();
     }
 
     /**

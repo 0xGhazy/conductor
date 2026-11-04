@@ -15,42 +15,54 @@
  */
 package com.vodafone.vss.weaver.rest.controllers;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.vodafone.vss.weaver.actions.database.dto.AdhocQueryExecutionRequest;
+import com.vodafone.vss.weaver.actions.database.dto.DatabaseConnectionTestRequest;
+import com.vodafone.vss.weaver.actions.database.dto.DatabaseRequest;
+import com.vodafone.vss.weaver.actions.database.dto.SqlExecutionRequest;
 import com.vodafone.vss.weaver.actions.database.service.DatasourceService;
 import com.vodafone.vss.weaver.actions.database.service.QueryService;
-import com.vodafone.vss.weaver.actions.database.validation.ApiInput;
 import com.vodafone.vss.weaver.common.database.DatasourceModel;
+import com.vodafone.vss.weaver.common.database.DatasourceStatus;
+import com.vodafone.vss.weaver.common.database.QueryExecutionResult;
 import com.vodafone.vss.weaver.common.database.QueryModel;
 import com.vodafone.vss.weaver.common.dto.AppResponse;
+import com.vodafone.vss.weaver.common.response.PaginatedResult;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * Databases (JDBC connections) used by DATABASE tasks and saved queries.
+ *
+ * <p>Writes, connection tests and SQL execution need the admin or operator role when security is
+ * enabled (see ConductorSecurityConfiguration). Passwords are never returned.
+ */
 @Validated
 @RestController
-@Tag(name = "Database Resource", description = "Managing RDBMS database instances and queries")
-@RequestMapping(value = "/api/database", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Databases", description = "Manage database connections and run SQL against them")
+@RequestMapping(value = "/api/databases", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DatabaseResource {
 
-    private static final Logger log = LoggerFactory.getLogger(DatabaseResource.class);
+    // Pickers in the UI load whole lists (up to 1000); these tables are small.
+    static final int MAX_PAGE_SIZE = 1000;
 
     private final QueryService queryService;
     private final DatasourceService datasourceService;
@@ -60,146 +72,157 @@ public class DatabaseResource {
         this.datasourceService = datasourceService;
     }
 
-    @PostMapping("/instances")
-    @Operation(summary = "Create database instance", description = "Create a new database instance. Password is required.", operationId = "createDatabaseInstance")
-    public ResponseEntity<AppResponse> createDatabaseInstance(@Validated(ApiInput.class) @RequestBody DatasourceModel payload) {
-        log.info("Create database instance {} request received", payload.getName());
-        ResponseEntity<AppResponse> response = datasourceService.createDatabase(payload);
-        log.info("Create database instance request completed successfully");
-        return response;
+    @GetMapping
+    @Operation(summary = "List databases", description = "Newest first, with connection status.", operationId = "listDatabases")
+    public ResponseEntity<AppResponse> listDatabases(
+            @Parameter(description = "Case-insensitive name search") @RequestParam(name = "search", required = false) String search,
+            @Parameter(description = "Page number, from 0") @RequestParam(name = "page", defaultValue = "0") @Min(0) int page,
+            @Parameter(description = "Page size, 1 to 1000") @RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(MAX_PAGE_SIZE) int size) {
+        return page(datasourceService.list(search, page, size), "Databases fetched successfully");
     }
 
-    @PutMapping("/instances/{id}")
-    @Operation(summary = "Update database instance by id", description = "Update an existing database instance. A blank or masked password keeps the stored one.", operationId = "updateDatabaseInstance")
-    public ResponseEntity<AppResponse> updateDatabase(@PathVariable("id") UUID id, @Validated(ApiInput.class) @RequestBody DatasourceModel payload) {
-        log.info("Update database instance {} request received - id={}", payload.getName(), id);
-        ResponseEntity<AppResponse> response = datasourceService.updateRest(id, payload);
-        log.info("Update database instance request completed successfully");
-        return response;
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Create database", description = "The password is required. Returns 201 with a Location header.", operationId = "createDatabase")
+    public ResponseEntity<AppResponse> createDatabase(@RequestBody DatabaseRequest payload) {
+        DatasourceModel created = datasourceService.create(payload);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(location).body(ok(HttpStatus.CREATED, "Database created successfully", created));
     }
 
-    @GetMapping("/instances")
-    @Operation(summary = "Find all databases instances (paginated)", description = "Find all database instances paginated, returned as models with connection status.", operationId = "findDatabaseInstancesPaginated")
-    public ResponseEntity<AppResponse> findAllDatabaseInstances(
-            @Parameter(description = "Optional case-insensitive database instance name search") @RequestParam(value = "search", required = false) String search,
-            @ParameterObject @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        log.info("Fetching paginated database instances request received - search={}, pageable={}", search, pageable);
-        ResponseEntity<AppResponse> response = datasourceService.findAllPaginatedRest(pageable, search);
-        log.info("Fetching paginated database instances request completed successfully");
-        return response;
+    @PostMapping(path = "/test", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Test a connection without saving",
+            description = "Tries to connect with the given definition and returns the status (ACTIVE or INACTIVE with the reason). "
+                    + "Nothing is saved. Include the id of a saved database to reuse its stored password.",
+            operationId = "testDatabaseConnection")
+    public ResponseEntity<AppResponse> testConnection(@RequestBody DatabaseConnectionTestRequest payload) {
+        DatasourceStatus status = datasourceService.testConnection(payload);
+        boolean reachable = "ACTIVE".equals(status.status());
+        AppResponse body = AppResponse.builder()
+                .message(reachable ? "Connection succeeded" : "Connection failed")
+                .reason(reachable ? null : status.reason())
+                .code(reachable ? null : status.errorCode())
+                .data(status)
+                .status(HttpStatus.OK)
+                .success(reachable)
+                .retryable(!reachable)
+                .build();
+        return ResponseEntity.ok(body);
     }
 
-    @GetMapping("/instances/{id}")
-    @Operation(summary = "Find database instance by id", description = "Find database instance by id with connection status", operationId = "findDatabaseInstanceById")
-    public ResponseEntity<AppResponse> findDatabaseInstanceById(
-            @Parameter(description = "Database instance id") @PathVariable("id") UUID id) {
-        log.info("Fetching datasource by id request received - id={}", id);
-        ResponseEntity<AppResponse> response = datasourceService.findByIdRest(id);
-        log.info("Fetching datasource by id request completed successfully");
-        return response;
+    @PostMapping(path = "/ping", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Ping several databases", description = "Body: JSON array of database ids. 404 lists any unknown ids.", operationId = "pingDatabases")
+    public ResponseEntity<AppResponse> pingDatabases(
+            @RequestBody @NotEmpty(message = "At least one database id is required") Set<@NotNull UUID> ids) {
+        List<DatasourceModel> results = datasourceService.ping(ids);
+        return ResponseEntity.ok(ok(HttpStatus.OK, "Ping completed", results));
     }
 
-    @DeleteMapping("/instances/{id}")
-    @Operation(summary = "Delete database instance by id", description = "Delete database instance by id", operationId = "deleteDatabaseInstanceById")
-    public ResponseEntity<AppResponse> deleteDatabaseInstance(@Parameter(description = "Database instance id") @PathVariable("id") UUID id) {
-        log.info("Deleting database instance by id request received - id={}", id);
-        ResponseEntity<AppResponse> response = datasourceService.deleteByIdRest(id);
-        log.info("Deleting database instance by id request completed successfully");
-        return response;
+    /** Queries returned by {@code ?withQueries=true}; the same first page the database page shows. */
+    static final int EMBEDDED_QUERIES = 100;
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Get database",
+            description = "With connection status. withQueries=true also returns its saved queries "
+                    + "(newest first, at most 100, without SQL), like GET /api/databases/{id}/queries?size=100.",
+            operationId = "getDatabase")
+    public ResponseEntity<AppResponse> getDatabase(
+            @Parameter(description = "Database id") @PathVariable("id") UUID id,
+            @Parameter(description = "Also return the database's saved queries")
+                    @RequestParam(name = "withQueries", defaultValue = "false") boolean withQueries) {
+        DatasourceModel database = datasourceService.get(id);
+        if (withQueries) {
+            database.setQueries(queryService.list(id, false, null, 0, EMBEDDED_QUERIES).getContent());
+        }
+        return ResponseEntity.ok(ok(HttpStatus.OK, "Database fetched successfully", database));
     }
 
-    @PostMapping("/instances/status")
-    @Operation(summary = "Get database instances statuses", description = "Check connection status for multiple datasources. Body: JSON array of datasource ids.", operationId = "bulkPingDatabaseInstances")
-    public ResponseEntity<AppResponse> bulkPingDatabaseInstances(@RequestBody @NotEmpty(message = "Requested IDs is required") Set<@NotNull UUID> ids) {
-        log.info("Bulk ping database instances request received - count={}", ids.size());
-        ResponseEntity<AppResponse> response = datasourceService.bulkPingRest(ids);
-        log.info("Bulk ping database instances request completed successfully");
-        return response;
+    @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Update database", description = "A blank or masked password keeps the stored one.", operationId = "updateDatabase")
+    public ResponseEntity<AppResponse> updateDatabase(
+            @Parameter(description = "Database id") @PathVariable("id") UUID id,
+            @RequestBody DatabaseRequest payload) {
+        return ResponseEntity.ok(ok(HttpStatus.OK, "Database updated successfully", datasourceService.update(id, payload)));
     }
 
-    @PostMapping("/instances/{id}/ping")
-    @Operation(summary = "Ping database instance by id", description = "Check connection status for a database instance", operationId = "pingDatabaseInstanceById")
-    public ResponseEntity<AppResponse> pingDatabaseInstance(@Parameter(description = "Database instance id") @PathVariable("id") UUID id) {
-        log.info("Ping database instance request received - id={}", id);
-        ResponseEntity<AppResponse> response = datasourceService.bulkPingRest(Set.of(id));
-        log.info("Ping database instance request completed successfully");
-        return response;
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Delete database", description = "204 on success; 409 while saved queries still use it.", operationId = "deleteDatabase")
+    public ResponseEntity<Void> deleteDatabase(@Parameter(description = "Database id") @PathVariable("id") UUID id) {
+        datasourceService.deleteDatabase(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // ----- Queries API ----- //
-
-    @GetMapping("/queries")
-    @Operation(summary = "Find all queries (paginated)", description = "Find all queries paginated with optional datasource and search filtering.", operationId = "findQueriesPaginated")
-    public ResponseEntity<AppResponse> findAllPageable(
-            @Parameter(description = "Optional datasource UUID filter") @RequestParam(value = "datasource", required = false) UUID datasource,
-            @Parameter(description = "If true, populates the SQL query in the response; if false, it is null.") @RequestParam(value = "includeQuery", defaultValue = "false") boolean includeQuery,
-            @Parameter(description = "Optional case-insensitive query name search") @RequestParam(value = "search", required = false) String search,
-            @ParameterObject @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        log.info("Query findAll pageable request received - datasource={}, includeQuery={}, search={}, pageable={}", datasource, includeQuery, search, pageable);
-        ResponseEntity<AppResponse> response = queryService.findAllPageableRest(datasource, includeQuery, search, pageable);
-        log.info("Query findAll pageable request completed successfully");
-        return response;
+    @PostMapping("/{id}/ping")
+    @Operation(summary = "Ping database", description = "Returns the database with a fresh connection status.", operationId = "pingDatabase")
+    public ResponseEntity<AppResponse> pingDatabase(@Parameter(description = "Database id") @PathVariable("id") UUID id) {
+        return ResponseEntity.ok(ok(HttpStatus.OK, "Ping completed", datasourceService.ping(id)));
     }
 
-    @GetMapping("/queries/{id}")
-    @Operation(summary = "Find query by id", description = "Find query by id with optional SQL query inclusion", operationId = "findQueryById")
-    public ResponseEntity<AppResponse> findQueryById(
-            @Parameter(description = "Query UUID") @PathVariable("id") UUID id,
-            @Parameter(description = "If true, populates the SQL query in the response; if false, it is null.") @RequestParam(value = "includeQuery", defaultValue = "false") boolean includeQuery) {
-        log.info("Query findById request received - {}, includeQuery={}", id, includeQuery);
-        ResponseEntity<AppResponse> response = queryService.findByIdRest(id, includeQuery);
-        log.info("Query findById request completed successfully");
-        return response;
+    @GetMapping("/{id}/queries")
+    @Operation(summary = "List the database's saved queries", description = "Same as GET /api/queries?databaseId={id}.", operationId = "listDatabaseQueries")
+    public ResponseEntity<AppResponse> listDatabaseQueries(
+            @Parameter(description = "Database id") @PathVariable("id") UUID id,
+            @Parameter(description = "Include each query's SQL") @RequestParam(name = "includeSql", defaultValue = "false") boolean includeSql,
+            @Parameter(description = "Case-insensitive name search") @RequestParam(name = "search", required = false) String search,
+            @Parameter(description = "Page number, from 0") @RequestParam(name = "page", defaultValue = "0") @Min(0) int page,
+            @Parameter(description = "Page size, 1 to 1000") @RequestParam(name = "size", defaultValue = "20") @Min(1) @Max(MAX_PAGE_SIZE) int size) {
+        datasourceService.get(id); // 404 for an unknown database instead of an empty page
+        Page<QueryModel> result = queryService.list(id, includeSql, search, page, size);
+        return page(result, "Queries fetched successfully");
     }
 
-    @PostMapping("/queries")
-    @Operation(summary = "Create query", description = "Create a new query definition.", operationId = "createQuery")
-    public ResponseEntity<AppResponse> createQuery(@Validated(ApiInput.class) @RequestBody QueryModel payload) {
-        log.info("Query create request received - {}", payload.getName());
-        ResponseEntity<AppResponse> response = queryService.createRest(payload);
-        log.info("Query create request completed successfully");
-        return response;
+    @PostMapping(path = "/{id}/execute", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Run SQL on the database",
+            description = "Runs the SQL in the body. Rows are capped by maxRows (and weaver.database.execute.max-rows); "
+                    + "the result has truncated=true when rows were cut. 422 when the database rejects the SQL.",
+            operationId = "executeSqlOnDatabase")
+    public ResponseEntity<AppResponse> executeSql(
+            @Parameter(description = "Database id") @PathVariable("id") UUID id,
+            @Valid @RequestBody SqlExecutionRequest payload) {
+        return executionResponse(queryService.runSql(id, payload));
     }
 
-    @PutMapping("/queries/{id}")
-    @Operation(summary = "Update query by id", description = "Update an existing query definition", operationId = "updateQueryById")
-    public ResponseEntity<AppResponse> updateQuery(
-            @Parameter(description = "Query UUID") @PathVariable("id") UUID id,
-            @Validated(ApiInput.class) @RequestBody QueryModel payload) {
-        log.info("Query update request received - {}", id);
-        ResponseEntity<AppResponse> response = queryService.updateRest(id, payload);
-        log.info("Query update request completed successfully");
-        return response;
+    /** 200 when the SQL ran, 422 with the database's error when it did not. */
+    static ResponseEntity<AppResponse> executionResponse(QueryExecutionResult result) {
+        boolean succeeded = "SUCCESS".equals(result.getStatus());
+        HttpStatus status = succeeded ? HttpStatus.OK : HttpStatus.UNPROCESSABLE_ENTITY;
+        AppResponse body = AppResponse.builder()
+                .message(succeeded ? "SQL executed successfully" : "SQL execution failed")
+                .reason(succeeded || result.getReason() == null ? null : String.valueOf(result.getReason()))
+                .code(succeeded ? null : result.getErrorCode())
+                .data(result)
+                .status(status)
+                .success(succeeded)
+                .retryable(false)
+                .build();
+        return ResponseEntity.status(status).body(body);
     }
 
-    @DeleteMapping("/queries/{id}")
-    @Operation(summary = "Delete query by id", description = "Delete a query definition by its unique identifier", operationId = "deleteQueryById")
-    public ResponseEntity<AppResponse> deleteQuery(
-            @Parameter(description = "Query UUID") @PathVariable("id") UUID id) {
-        log.info("Query delete request received - {}", id);
-        ResponseEntity<AppResponse> response = queryService.deleteByIdRest(id);
-        log.info("Query delete request completed successfully");
-        return response;
+    static AppResponse ok(HttpStatus status, String message, Object data) {
+        return AppResponse.builder()
+                .message(message)
+                .data(data)
+                .status(status)
+                .success(true)
+                .retryable(false)
+                .build();
     }
 
-    @DeleteMapping("/queries")
-    @Operation(summary = "Bulk delete queries", description = "Delete multiple queries. Body: JSON array of query ids.", operationId = "bulkDeleteQueries")
-    public ResponseEntity<AppResponse> bulkDeleteQueries(
-            @RequestBody @NotEmpty(message = "Requested IDs is required") Set<@NotNull UUID> ids) {
-        log.info("Bulk delete queries request received - count={}", ids.size());
-        ResponseEntity<AppResponse> response = queryService.bulkDeleteRest(ids);
-        log.info("Bulk delete queries request completed successfully");
-        return response;
-    }
-
-    @PostMapping("/queries/adhoc-executions")
-    @Operation(summary = "Execute query", description = "Execute the SQL statement sent in the request body against a datasource.", operationId = "executeAdhocQuery")
-    public ResponseEntity<AppResponse> executeAdhocQuery(
-            @Valid @RequestBody AdhocQueryExecutionRequest payload) {
-        log.info("Execute ad-hoc query request received - datasource={}", payload.getDatasource());
-        ResponseEntity<AppResponse> response = queryService.executeAdhocQueryRest(payload);
-        log.info("Execute ad-hoc query request completed successfully");
-        return response;
+    static ResponseEntity<AppResponse> page(Page<?> page, String message) {
+        PaginatedResult details = new PaginatedResult(
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.getNumberOfElements());
+        AppResponse body = AppResponse.builder()
+                .message(message)
+                .data(page.getContent())
+                .details(details)
+                .status(HttpStatus.OK)
+                .success(true)
+                .retryable(false)
+                .build();
+        return ResponseEntity.ok(body);
     }
 }
-

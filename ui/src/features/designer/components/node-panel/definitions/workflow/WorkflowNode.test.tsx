@@ -1,11 +1,11 @@
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
+import { render, renderHook, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import type { Node } from "@xyflow/react";
 import { WorkflowNodeDefinition } from "./WorkflowNodeDefinition";
 import { WorkflowNodeConfig } from "./WorkflowNodeConfig";
 import { serializeWorkflowNodeForJson } from "./serializeWorkflowNodeForJson";
-import { deriveWorkflowInputTemplate } from "./useWorkflowNodeOptions";
+import { deriveWorkflowInputTemplate, useWorkflowNodeOptions } from "./useWorkflowNodeOptions";
 import { nodeDefinitionRegistry, getNodeDefinition } from "../../nodeDefinitionRegistry";
 import apiClient from "@/services/apiClient";
 import * as designerApi from "@/features/designer/services/designerApi";
@@ -198,7 +198,7 @@ describe("Workflow Node Configuration Architecture", () => {
       // Options loaded from mock
       await waitFor(() => {
         expect(apiClient.get).toHaveBeenCalledWith(
-          expect.stringContaining("/api/workflows/list")
+          expect.stringContaining("/api/metadata/workflow/latest-versions")
         );
       });
     });
@@ -246,6 +246,20 @@ describe("Workflow Node Configuration Architecture", () => {
             },
           })
         );
+      });
+    });
+
+    it("reads Conductor's plain list of definitions and their input names", async () => {
+      (apiClient.get as any).mockResolvedValueOnce({
+        data: [{ name: "Billing", version: 3, inputParameters: ["accountId", "amount"] }],
+      });
+      const { result } = renderHook(() => useWorkflowNodeOptions(null, null));
+
+      await waitFor(() => expect(result.current.workflows.length).toBe(1));
+      expect(result.current.workflows[0]).toMatchObject({
+        name: "Billing",
+        version: 3,
+        input: { accountId: "", amount: "" },
       });
     });
 

@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 
 import org.springframework.retry.support.RetryTemplate;
 
+import com.vodafone.vss.weaver.common.audit.UserMinimal;
 import com.vodafone.vss.weaver.common.database.QueryModel;
 import com.vodafone.vss.weaver.common.database.QueryParameterDataType;
 import com.vodafone.vss.weaver.dao.QueryDAO;
@@ -63,7 +64,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
                 "INSERT INTO conductor_queries ("
                         + "id, name, description, sql_query, timeout, parameters, datasource_id, "
                         + "created_at, updated_at, created_by, updated_by"
-                        + ") VALUES (?::uuid, ?, ?, ?, ?, ?::jsonb, ?::uuid, ?, ?, ?, ?)";
+                        + ") VALUES (?::uuid, ?, ?, ?, ?, ?::jsonb, ?::uuid, ?, ?, ?::uuid, ?::uuid)";
 
         executeWithTransaction(
                 sql,
@@ -78,8 +79,8 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
                     q.addParameter(query.getDatasourceId().toString());
                     q.addParameter(Timestamp.from(query.getCreatedAt()));
                     q.addParameter(Timestamp.from(query.getUpdatedAt()));
-                    q.addParameter(query.getCreatedBy());
-                    q.addParameter(query.getUpdatedBy());
+                    q.addParameter(uuidText(query.getCreatedBy()));
+                    q.addParameter(uuidText(query.getUpdatedBy()));
                     q.executeUpdate();
                 });
 
@@ -93,7 +94,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         String sql =
                 "UPDATE conductor_queries SET "
                         + "name = ?, description = ?, sql_query = ?, timeout = ?, "
-                        + "parameters = ?::jsonb, datasource_id = ?::uuid, updated_at = ?, updated_by = ? "
+                        + "parameters = ?::jsonb, datasource_id = ?::uuid, updated_at = ?, updated_by = ?::uuid "
                         + "WHERE id = ?::uuid";
 
         int rows =
@@ -110,7 +111,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
                                             : null);
                             q.addParameter(query.getDatasourceId().toString());
                             q.addParameter(Timestamp.from(query.getUpdatedAt()));
-                            q.addParameter(query.getUpdatedBy());
+                            q.addParameter(uuidText(query.getUpdatedBy()));
                             q.addParameter(query.getId().toString());
                             return q.executeUpdate();
                         });
@@ -340,8 +341,18 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
                 .datasourceId(dsIdStr != null ? UUID.fromString(dsIdStr) : null)
                 .createdAt(createdTs != null ? createdTs.toInstant() : null)
                 .updatedAt(updatedTs != null ? updatedTs.toInstant() : null)
-                .createdBy(rs.getString("created_by"))
-                .updatedBy(rs.getString("updated_by"))
+                .createdBy(userRef(rs.getObject("created_by", UUID.class)))
+                .updatedBy(userRef(rs.getObject("updated_by", UUID.class)))
                 .build();
+    }
+
+    /** The user's Keycloak id as text for a {@code ?::uuid} parameter; only the id is stored. */
+    private static String uuidText(UserMinimal user) {
+        return user == null || user.getId() == null ? null : user.getId();
+    }
+
+    /** A stored Keycloak user id as an id-only user; the service fills in name and email. */
+    private static UserMinimal userRef(UUID id) {
+        return id == null ? null : UserMinimal.ofId(id.toString());
     }
 }

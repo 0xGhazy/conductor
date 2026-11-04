@@ -1,7 +1,6 @@
 import { config } from "@/config/appConfig";
 import apiClient from "@/services/apiClient";
 
-const EXPORT_ENDPOINT = `${config.apiBaseUrl}/api/executor`;
 const NEW_STRUCTURE_UPSERT_ENDPOINT = `${config.apiBaseUrl}/api/metadata/workflow`;
 const SAVE_ENDPOINT = `${config.apiBaseUrl}/api/metadata/workflow`;
 const METADATA_WORKFLOW_ENDPOINT = `${config.apiBaseUrl}/api/metadata/workflow`;

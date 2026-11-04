@@ -147,6 +147,7 @@ export const normalizeQuery = (query: any, index = 0) => {
       query?.usedByWorkflows ??
       query?.workflowNames ??
       [],
+    // { id, name, email } from the server (only the id when the user is unknown).
     createdBy: query?.createdBy ?? "",
     updatedBy: query?.updatedBy ?? "",
     createdAt: query?.createdAt ?? null,

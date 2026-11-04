@@ -74,6 +74,22 @@ class ConductorSecurityConfigurationTest {
         public Map<String, String> getWorkflow() {
             return Map.of("id", "12345");
         }
+
+        @GetMapping("/api/databases")
+        public Map<String, String> listDatabases() {
+            return Map.of("result", "listed");
+        }
+
+        @PostMapping({"/api/databases", "/api/databases/test", "/api/databases/ping",
+                "/api/databases/db1/ping", "/api/databases/db1/execute", "/api/queries", "/api/queries/q1/execute"})
+        public Map<String, String> databasePost() {
+            return Map.of("result", "ok");
+        }
+
+        @DeleteMapping("/api/queries/q1")
+        public Map<String, String> deleteQuery() {
+            return Map.of("result", "deleted");
+        }
     }
 
     @Nested
@@ -173,6 +189,41 @@ class ConductorSecurityConfigurationTest {
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.status").value(403))
                     .andExpect(jsonPath("$.error").value("Forbidden"));
+        }
+
+        @Test
+        void viewerCanReadAndPingDatabasesButNotChangeOrRunSql() throws Exception {
+            mockMvc.perform(get("/api/databases").header(HttpHeaders.AUTHORIZATION, "Bearer viewer-token"))
+                    .andExpect(status().isOk());
+            for (String path : new String[] {"/api/databases/ping", "/api/databases/db1/ping"}) {
+                mockMvc.perform(post(path).header(HttpHeaders.AUTHORIZATION, "Bearer viewer-token"))
+                        .andExpect(status().isOk());
+            }
+            for (String path : new String[] {"/api/databases", "/api/databases/test", "/api/databases/db1/execute",
+                    "/api/queries", "/api/queries/q1/execute"}) {
+                mockMvc.perform(post(path).header(HttpHeaders.AUTHORIZATION, "Bearer viewer-token"))
+                        .andExpect(status().isForbidden());
+            }
+            mockMvc.perform(delete("/api/queries/q1").header(HttpHeaders.AUTHORIZATION, "Bearer viewer-token"))
+                    .andExpect(status().isForbidden());
+        }
+
+        @Test
+        void operatorAndAdminCanRunSqlAndChangeDatabases() throws Exception {
+            for (String token : new String[] {"operator-token", "admin-token"}) {
+                mockMvc.perform(post("/api/databases/db1/execute").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .andExpect(status().isOk());
+                mockMvc.perform(post("/api/queries").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .andExpect(status().isOk());
+                mockMvc.perform(delete("/api/queries/q1").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+                        .andExpect(status().isOk());
+            }
+        }
+
+        @Test
+        void databaseEndpointsNeedAToken() throws Exception {
+            mockMvc.perform(get("/api/databases")).andExpect(status().isUnauthorized());
+            mockMvc.perform(post("/api/databases/db1/ping")).andExpect(status().isUnauthorized());
         }
     }
 

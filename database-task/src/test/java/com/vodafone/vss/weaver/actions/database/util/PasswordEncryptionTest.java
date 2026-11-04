@@ -122,7 +122,7 @@ class PasswordEncryptionTest {
     }
 
     @Test
-    @DisplayName("Jackson serialization and deserialization works with JdbcConnectionDetails")
+    @DisplayName("JdbcConnectionDetails JSON: password is read but never written (the DAO stores it separately)")
     void jacksonSerializationRoundTrip() throws Exception {
         String rawPassword = "DbMasterPassword!2026";
         JdbcConnectionDetails details =
@@ -134,10 +134,16 @@ class PasswordEncryptionTest {
                         .build();
 
         String json = objectMapper.writeValueAsString(details);
+        assertFalse(json.contains("password"), json);
         JdbcConnectionDetails restored = objectMapper.readValue(json, JdbcConnectionDetails.class);
-        assertEquals(rawPassword, restored.getPassword());
+        assertNull(restored.getPassword());
         assertEquals("weaver_user", restored.getUsername());
         assertEquals(10, restored.getMaxPoolSize());
+
+        // Requests still carry it in.
+        JdbcConnectionDetails fromRequest = objectMapper.readValue(
+                "{\"username\":\"weaver_user\",\"password\":\"" + rawPassword + "\"}", JdbcConnectionDetails.class);
+        assertEquals(rawPassword, fromRequest.getPassword());
     }
 }
 

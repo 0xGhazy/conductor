@@ -209,41 +209,7 @@ export const fetchWorkflowDetail = async (idOrName: string): Promise<WorkflowDet
   const trimmed = String(idOrName || "").trim();
   if (!trimmed) throw new Error("Workflow ID or name is required.");
 
-  if (isUuid(trimmed)) {
-    try {
-      const res = await apiClient.get(`${config.apiBaseUrl}/api/workflows/${encodeURIComponent(trimmed)}`);
-      const body = res?.data;
-      const entity = body?.data ?? body;
-      if (entity) {
-        const parsed = parseWorkflowDefinition(entity) || {};
-        return {
-          id: entity.id,
-          name: entity.workflowName || entity.name || parsed.name || "Workflow",
-          workflowName: entity.workflowName || entity.name || parsed.name,
-          description: entity.description ?? parsed.description ?? "",
-          version: entity.version ?? parsed.version ?? 1,
-          latest: entity.latest ?? true,
-          createdAt: entity.createdAt,
-          createdBy: entity.createdBy,
-          updatedAt: entity.updatedAt,
-          updatedBy: entity.updatedBy,
-          conductorDefinition: entity.conductorDefinition,
-          tasks: parsed.tasks || entity.tasks || [],
-          variables: entity.variables || parsed.variables || {},
-          inputs: entity.inputs || parsed.inputs || entity.inputParameters || parsed.inputParameters || {},
-          inputParameters: entity.inputParameters || parsed.inputParameters || entity.inputs || parsed.inputs || {},
-          timeoutPolicy: entity.timeoutPolicy || parsed.timeoutPolicy || "ALERT_ONLY",
-          timeoutSeconds: entity.timeoutSeconds ?? parsed.timeoutSeconds ?? 0,
-          supportedLanguages: entity.supportedLanguages || parsed.supportedLanguages || entity.workflowSupportedLanguages || [],
-          language: entity.language || parsed.language || entity.workflowLanguage || "en",
-          metadata: entity.metadata || parsed.metadata || {},
-        };
-      }
-    } catch {
-      // Fallback to name-based lookup
-    }
-  }
-
+  // Conductor looks workflows up by name (and optional version).
   const { name, version } = parseWorkflowRouteId(trimmed);
   const targetName = name || trimmed;
   const query = version != null ? `?version=${encodeURIComponent(String(version))}` : "";

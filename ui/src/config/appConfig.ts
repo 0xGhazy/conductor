@@ -6,7 +6,9 @@ const baseConfig = {
 export const config = {
   ...baseConfig,
   apiBaseUrl: import.meta?.env?.VITE_API_BASE_URL || "",
-  conductorApiBaseUrl: import.meta?.env?.VITE_CONDUCTOR_API_BASE_URL || "http://localhost:8080",
+  // Same server as apiBaseUrl; set only if workflow APIs are served from somewhere else.
+  conductorApiBaseUrl:
+    import.meta?.env?.VITE_CONDUCTOR_API_BASE_URL || import.meta?.env?.VITE_API_BASE_URL || "",
   restApiUrl: "",
   connectionsTtlMs: 300000,
   scriptsTtlMs: 300000,

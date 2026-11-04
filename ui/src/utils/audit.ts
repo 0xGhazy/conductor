@@ -22,6 +22,7 @@ export const getAuditFields = (
   fallbackUpdatedBy = "Not modified"
 ): AuditFields => ({
   createdAt: record?.createdAt || record?.createTime || "",
+  // createdBy / updatedBy may be a user object ({ id, name, email }) or a plain string.
   createdBy: {
     name: getUserName(record?.createdBy || record?.ownerEmail, fallbackCreatedBy),
     avatarUrl: getAvatarUrl(record?.createdBy),

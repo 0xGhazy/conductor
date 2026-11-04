@@ -14,7 +14,7 @@ export function deriveWorkflowInputTemplate(definition: any): Record<string, any
 
   const template: Record<string, any> = {};
 
-  // 1. Direct input map (from /api/workflows/list or NewShortDetailedWorkflow)
+  // 1. Direct input map (a definition already converted to { input: {...} })
   const directInput = definition.input ?? definition.inputs ?? definition.workflowInput;
   if (directInput && typeof directInput === "object" && !Array.isArray(directInput)) {
     Object.entries(directInput).forEach(([key, val]) => {
@@ -112,51 +112,27 @@ export function useWorkflowNodeOptions(
     setWorkflowError(null);
 
     try {
-      const res = await apiClient.get(`${config.apiBaseUrl}/api/workflows/list`);
+      // Latest version of every workflow definition (Conductor metadata API).
+      const res = await apiClient.get(`${config.apiBaseUrl}/api/metadata/workflow/latest-versions`);
       const body = res?.data;
-      const data = Array.isArray(body?.data)
-        ? body.data
-        : Array.isArray(body)
-        ? body
-        : [];
+      const data = Array.isArray(body) ? body : Array.isArray(body?.data) ? body.data : [];
 
-      const parsed: WorkflowSummaryItem[] = data.map((item: any) => ({
-        id: item.id ? String(item.id) : undefined,
-        name: String(item.name || item.workflowName || "").trim(),
-        version: Number(item.version) || 1,
-        input: item.input && typeof item.input === "object" ? item.input : {},
-        description: item.description ? String(item.description).trim() : undefined,
-      })).filter((item: WorkflowSummaryItem) => Boolean(item.name));
-
-      setWorkflows(parsed);
-    } catch (err: any) {
-      // Fallback: attempt /api/metadata/workflow
-      try {
-        const fallbackRes = await apiClient.get(
-          `${config.apiBaseUrl}/api/metadata/workflow`
-        );
-        const fallbackBody = fallbackRes?.data;
-        const fallbackData = Array.isArray(fallbackBody?.data)
-          ? fallbackBody.data
-          : Array.isArray(fallbackBody)
-          ? fallbackBody
-          : [];
-
-        const parsed: WorkflowSummaryItem[] = fallbackData.map((item: any) => ({
+      const parsed: WorkflowSummaryItem[] = (data as Record<string, unknown>[])
+        .map((item) => ({
           name: String(item.name || item.workflowName || "").trim(),
           version: Number(item.version) || 1,
+          input: deriveWorkflowInputTemplate(item),
           description: item.description ? String(item.description).trim() : undefined,
-        })).filter((item: WorkflowSummaryItem) => Boolean(item.name));
+        }))
+        .filter((item: WorkflowSummaryItem) => Boolean(item.name));
 
-        setWorkflows(parsed);
-      } catch (fallbackErr: any) {
-        const message =
-          err?.response?.data?.message ||
-          err?.message ||
-          "Failed to load workflows list.";
-        setWorkflowError(message);
-        setWorkflows([]);
-      }
+      setWorkflows(parsed);
+    } catch (err) {
+      const error = err as { response?: { data?: { message?: string } }; message?: string };
+      setWorkflowError(
+        error?.response?.data?.message || error?.message || "Failed to load workflows list."
+      );
+      setWorkflows([]);
     } finally {
       setLoadingWorkflows(false);
     }

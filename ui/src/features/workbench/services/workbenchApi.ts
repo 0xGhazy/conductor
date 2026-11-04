@@ -7,16 +7,28 @@ import {
   wrapWorkflowExecutePayload,
 } from "./workbenchService";
 
-const WORKFLOWS_LIST_URL = `${config.apiBaseUrl}/api/workflows/list`;
+/** Latest version of every workflow definition (Conductor metadata API). */
+const WORKFLOWS_LIST_URL = `${config.apiBaseUrl}/api/metadata/workflow/latest-versions`;
 
 // Uses window.fetch (auth is attached by the global fetch interceptor).
+
+/** Conductor lists a workflow's inputs as names; the Workbench edits them as { name: "" }. */
+const toInputTemplate = (definition: { inputParameters?: unknown }): Record<string, string> =>
+  Object.fromEntries(
+    (Array.isArray(definition.inputParameters) ? definition.inputParameters : [])
+      .map((name) => String(name ?? "").trim())
+      .filter(Boolean)
+      .map((name) => [name, ""])
+  );
 
 export const fetchWorkbenchWorkflows = async (): Promise<WorkbenchWorkflow[]> => {
   const res = await fetch(WORKFLOWS_LIST_URL);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const body = await res.json();
-  const data = body?.data ?? [];
-  return (Array.isArray(data) ? data : []).map(normalizeWorkflow);
+  const data = Array.isArray(body) ? body : body?.data ?? [];
+  return (Array.isArray(data) ? data : []).map((item: Record<string, unknown>, index: number) =>
+    normalizeWorkflow({ ...item, input: toInputTemplate(item) }, index)
+  );
 };
 
 /** Executes a workflow synchronously using Conductor's /api/workflow/execute endpoint. */
