@@ -113,8 +113,14 @@ public class PostgresConfiguration {
         return new PostgresPollDataDAO(retryTemplate, objectMapper, dataSource, properties);
     }
 
+    /**
+     * Only when queues are kept in Postgres. With a Redis queue type the Redis QueueDAO is used,
+     * and this DAO would otherwise still run its background unack/flush jobs against the queue
+     * tables.
+     */
     @Bean
     @DependsOn({"flywayForPrimaryDb"})
+    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "postgres", matchIfMissing = true)
     public QueueDAO postgresQueueDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
             ObjectMapper objectMapper,
