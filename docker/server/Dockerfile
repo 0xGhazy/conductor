@@ -47,7 +47,7 @@ WORKDIR /conductor/ui-next
 RUN if [ "$SKIP_UI" = "true" ]; then \
       mkdir -p dist && echo "UI build skipped (SKIP_UI=true)"; \
     elif [ "$PREBUILT" = "false" ]; then \
-      corepack enable && \
+      npm install -g pnpm && \
       pnpm install && \
       NODE_OPTIONS=--max-old-space-size=4096 pnpm build; \
     else \
@@ -61,7 +61,7 @@ FROM debian:stable-slim
 
 LABEL maintainer="Orkes OSS <oss@orkes.io>"
 
-RUN apt-get update \
+RUN apt-get -o Acquire::http::Pipeline-Depth=0 update \
     && apt-get install -y --no-install-recommends openjdk-21-jre-headless nginx curl ca-certificates \
     && rm -f /etc/nginx/sites-enabled/default \
     && rm -rf /var/lib/apt/lists/*

@@ -32,7 +32,7 @@ public class SecretResource {
         this.secretsDAO = secretsDAO;
     }
 
-    @GetMapping
+    @GetMapping("/names")
     @Operation(summary = "List secret names (values are never returned)")
     public List<String> listSecretNames() {
         return secretsDAO.listSecretNames();

@@ -262,7 +262,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.vodafone.vss.weaver.Conductor</mainClass>
+                    <mainClass>com.vodafone.vss.weaver.Weaver</mainClass>
                 </configuration>
                 <executions>
                     <execution>
