@@ -105,6 +105,6 @@ export const translationApi = {
   },
 
   async reloadCache(): Promise<void> {
-    await apiClient.post(`${TRANSLATIONS_API}/reload-cache`);
+    await apiClient.post(`${TRANSLATIONS_API}/cache/reload`);
   },
 };

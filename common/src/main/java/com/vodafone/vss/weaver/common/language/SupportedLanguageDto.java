@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -33,16 +32,6 @@ public class SupportedLanguageDto {
     @Size(max = 100, message = "Language name must not exceed 100 characters")
     private String name;
 
-    @Size(max = 100, message = "Native name must not exceed 100 characters")
-    private String nativeName;
-
-    @Builder.Default
-    private boolean rtl = false;
-
-    @Builder.Default
-    @JsonProperty("isDefault")
-    private boolean isDefault = false;
-
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -52,9 +41,6 @@ public class SupportedLanguageDto {
                 .id(model.getId())
                 .code(model.getCode())
                 .name(model.getName())
-                .nativeName(model.getNativeName())
-                .rtl(model.isRtl())
-                .isDefault(model.isDefault())
                 .createdAt(model.getCreatedAt())
                 .updatedAt(model.getUpdatedAt())
                 .build();
@@ -65,9 +51,6 @@ public class SupportedLanguageDto {
                 .id(this.id)
                 .code(this.code)
                 .name(this.name)
-                .nativeName(this.nativeName)
-                .rtl(this.rtl)
-                .isDefault(this.isDefault)
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
                 .build();

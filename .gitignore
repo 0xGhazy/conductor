@@ -26,6 +26,7 @@ buildscan.log
 # JS & UI Related
 node_modules
 /ui/build
+/ui/.vite
 /ui/public/monaco-editor
 
 # publishing secrets

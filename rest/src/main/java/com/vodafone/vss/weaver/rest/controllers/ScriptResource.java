@@ -104,9 +104,9 @@ public class ScriptResource {
     @Operation(summary = "List scripts", description = "Returns stored scripts with pagination, optional language filter, and optional search by name or description.")
     public ResponseEntity<ApiResponse> fetchScripts(
             @Parameter(description = "Optional script language filter", example = "JAVA_SCRIPT")
-            @RequestParam(required = false) Languages language,
+            @RequestParam(value = "language", required = false) Languages language,
             @Parameter(description = "Optional search term matched against script name or description", example = "sum")
-            @RequestParam(required = false) String search,
+            @RequestParam(value = "search", required = false) String search,
             @ParameterObject
             @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         long startedAt = System.nanoTime();
@@ -154,7 +154,7 @@ public class ScriptResource {
     @Operation(summary = "Get script by id", description = "Fetches a single stored script by UUID.")
     public ResponseEntity<ApiResponse> fetchScriptById(
             @Parameter(description = "Script UUID", example = "018f5c0a-2ab1-7b87-9a1d-2c4d5e6f7001")
-            @PathVariable UUID id) {
+            @PathVariable("id") UUID id) {
         long startedAt = System.nanoTime();
         String status = "success";
         log.info("Fetching script by id request received - id={}", id);
@@ -177,7 +177,7 @@ public class ScriptResource {
     @Operation(summary = "Update script by id", description = "Replaces a stored script definition by UUID.")
     public ResponseEntity<ApiResponse> updateScriptById(
             @Parameter(description = "Script UUID", example = "018f5c0a-2ab1-7b87-9a1d-2c4d5e6f7001")
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @Valid @RequestBody ScriptDefinitionRequest payload) {
         long startedAt = System.nanoTime();
         String status = "success";
@@ -223,7 +223,7 @@ public class ScriptResource {
     @Operation(summary = "Delete script by id", description = "Deletes a stored script definition by UUID.")
     public ResponseEntity<Void> deleteScriptById(
             @Parameter(description = "Script UUID", example = "018f5c0a-2ab1-7b87-9a1d-2c4d5e6f7001")
-            @PathVariable UUID id) {
+            @PathVariable("id") UUID id) {
         long startedAt = System.nanoTime();
         String status = "success";
         log.info("Deleting script by id request received - id={}", id);

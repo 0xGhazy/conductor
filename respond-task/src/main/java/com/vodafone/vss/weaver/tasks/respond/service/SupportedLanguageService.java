@@ -11,6 +11,7 @@ import com.vodafone.vss.weaver.common.language.SupportedLanguageDto;
 import com.vodafone.vss.weaver.common.language.SupportedLanguageModel;
 import com.vodafone.vss.weaver.common.response.ApiResponse;
 import com.vodafone.vss.weaver.dao.SupportedLanguageDAO;
+import com.vodafone.vss.weaver.dao.WorkflowTranslationDAO;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.extern.log4j.Log4j2;
 public class SupportedLanguageService {
 
     private final SupportedLanguageDAO dao;
+    private final WorkflowTranslationDAO translationDAO;
 
     @PostConstruct
     public void initDefaults() {
@@ -32,17 +34,11 @@ public class SupportedLanguageService {
                         SupportedLanguageModel.builder()
                                 .code("en")
                                 .name("English")
-                                .nativeName("English")
-                                .rtl(false)
-                                .isDefault(true)
                                 .build());
                 dao.create(
                         SupportedLanguageModel.builder()
                                 .code("ar")
                                 .name("Arabic")
-                                .nativeName("العربية")
-                                .rtl(true)
-                                .isDefault(false)
                                 .build());
                 log.info("Default supported languages initialized successfully.");
             }
@@ -87,10 +83,6 @@ public class SupportedLanguageService {
                     "Supported language already exists with code: " + normalizedCode);
         }
 
-        if (dto.isDefault()) {
-            dao.clearDefaultFlagExcept(null);
-        }
-
         SupportedLanguageModel model =
                 SupportedLanguageModel.builder()
                         .code(normalizedCode)
@@ -98,9 +90,6 @@ public class SupportedLanguageService {
                                 dto.getName() != null
                                         ? dto.getName().trim()
                                         : normalizedCode.toUpperCase())
-                        .nativeName(dto.getNativeName() != null ? dto.getNativeName().trim() : null)
-                        .rtl(dto.isRtl())
-                        .isDefault(dto.isDefault())
                         .build();
 
         SupportedLanguageModel saved = dao.create(model);
@@ -124,18 +113,6 @@ public class SupportedLanguageService {
         if (dto.getName() != null && !dto.getName().isBlank()) {
             model.setName(dto.getName().trim());
         }
-        if (dto.getNativeName() != null) {
-            model.setNativeName(dto.getNativeName().trim());
-        }
-        model.setRtl(dto.isRtl());
-
-        if (dto.isDefault() && !model.isDefault()) {
-            dao.clearDefaultFlagExcept(model.getId());
-            model.setDefault(true);
-        } else if (!dto.isDefault() && model.isDefault()) {
-            model.setDefault(false);
-        }
-
         SupportedLanguageModel saved = dao.update(model);
         log.info("Updated supported language: id={}, code={}", saved.getId(), saved.getCode());
 
@@ -154,10 +131,11 @@ public class SupportedLanguageService {
                                         ExceptionUtils.throwNotFound(
                                                 "Supported language not found with id: " + id));
 
-        if (model.isDefault()) {
+        long inUse = translationDAO.countByLanguage(model.getCode());
+        if (inUse > 0) {
             throw ExceptionUtils.throwBadInputs(
-                    "Cannot delete the default supported language. Please set another language as default first.",
-                    "Operation not allowed");
+                    "Language '" + model.getCode() + "' is used by " + inUse + " translation(s)",
+                    "Delete or move those translations before deleting the language");
         }
 
         dao.deleteById(id);

@@ -1,0 +1,39 @@
+{
+  "name": "translation-test",
+  "description": "Test workflow for translations: resolves one message code in the caller's language and returns it",
+  "version": 1,
+  "schemaVersion": 2,
+  "ownerEmail": "example@email.com",
+  "restartable": true,
+  "timeoutPolicy": "ALERT_ONLY",
+  "timeoutSeconds": 0,
+  "inputParameters": ["messageCode", "customerName", "orderId", "_language"],
+  "tasks": [
+    {
+      "name": "RespondWorker",
+      "taskReferenceName": "respond_ref",
+      "type": "SIMPLE",
+      "inputParameters": {
+        "messageCode": "${workflow.input.messageCode}",
+        "languageCode": "${workflow.input._language}",
+        "variables": {
+          "orderId": "${workflow.input.orderId}"
+        }
+      }
+    },
+    {
+      "name": "terminate",
+      "taskReferenceName": "terminate_ref",
+      "type": "TERMINATE",
+      "inputParameters": {
+        "terminationStatus": "COMPLETED",
+        "workflowOutput": "${respond_ref.output}"
+      }
+    }
+  ],
+  "outputParameters": {},
+  "metadata": {
+    "defaultLanguage": "en-US",
+    "supportedLanguages": ["en-US", "ar-EG"]
+  }
+}

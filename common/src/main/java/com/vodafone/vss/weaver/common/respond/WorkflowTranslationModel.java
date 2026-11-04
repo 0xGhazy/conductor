@@ -24,6 +24,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * All languages of one message code for one workflow version, grouped from the rows of the
+ * {@code translations} table (see {@link TranslationModel}).
+ *
+ * <p>{@code id} is the id of the message's earliest row and identifies the group in the API.
+ * {@code createdAt}/{@code createdBy} come from that earliest row; {@code updatedAt}/{@code
+ * updatedBy} from the most recently updated row.
+ */
 @Data
 @Builder
 @NoArgsConstructor
@@ -37,5 +45,7 @@ public class WorkflowTranslationModel {
     private Map<String, String> translations;
     private Instant createdAt;
     private Instant updatedAt;
+    private UUID createdBy;
+    private UUID updatedBy;
 }
 

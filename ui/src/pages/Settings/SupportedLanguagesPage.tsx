@@ -4,8 +4,6 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import {
   Languages,
   Plus,
@@ -28,15 +26,12 @@ import type { SupportedLanguage } from "@/features/settings";
 import styles from "./SupportedLanguagesPage.module.css";
 
 const EMPTY_LANGUAGES: SupportedLanguage[] = [];
-const DEFAULT_VISIBLE_FIELDS = ["code", "name", "nativeName", "rtl", "isDefault"];
+const DEFAULT_VISIBLE_FIELDS = ["code", "name"];
 const getLanguageRecordId = (r: SupportedLanguage) => r.id;
 
 interface LanguageFormData {
   code: string;
   name: string;
-  nativeName: string;
-  rtl: boolean;
-  isDefault: boolean;
 }
 
 export default function SupportedLanguagesPage() {
@@ -59,9 +54,6 @@ export default function SupportedLanguagesPage() {
   const [formData, setFormData] = useState<LanguageFormData>({
     code: "",
     name: "",
-    nativeName: "",
-    rtl: false,
-    isDefault: false,
   });
   const [saving, setSaving] = useState(false);
 
@@ -86,9 +78,6 @@ export default function SupportedLanguagesPage() {
     setFormData({
       code: "",
       name: "",
-      nativeName: "",
-      rtl: false,
-      isDefault: false,
     });
     setModalOpen(true);
   };
@@ -98,9 +87,6 @@ export default function SupportedLanguagesPage() {
     setFormData({
       code: item.code,
       name: item.name,
-      nativeName: item.nativeName || "",
-      rtl: Boolean(item.rtl),
-      isDefault: Boolean(item.isDefault),
     });
     setModalOpen(true);
   };
@@ -145,9 +131,6 @@ export default function SupportedLanguagesPage() {
   const handleSave = async () => {
     const code = formData.code.trim().toLowerCase();
     const name = formData.name.trim();
-    const nativeName = formData.nativeName.trim();
-    const rtl = Boolean(formData.rtl);
-    const isDefault = Boolean(formData.isDefault);
 
     if (!code) {
       showWarning("Language code is required (e.g. 'en', 'ar')");
@@ -161,21 +144,10 @@ export default function SupportedLanguagesPage() {
     setSaving(true);
     try {
       if (editingItem) {
-        await supportedLanguagesApi.update(editingItem.id, {
-          name,
-          nativeName: nativeName || undefined,
-          rtl,
-          isDefault,
-        });
+        await supportedLanguagesApi.update(editingItem.id, { name });
         showSuccess(`Language '${name}' updated successfully.`);
       } else {
-        await supportedLanguagesApi.create({
-          code,
-          name,
-          nativeName: nativeName || undefined,
-          rtl,
-          isDefault,
-        });
+        await supportedLanguagesApi.create({ code, name });
         showSuccess(`Language '${name}' (${code}) added successfully.`);
       }
       setModalOpen(false);
@@ -231,72 +203,6 @@ export default function SupportedLanguagesPage() {
         render: (val) => (
           <span style={{ fontWeight: 600 }}>{String(val || "-")}</span>
         ),
-      },
-      {
-        key: "nativeName",
-        label: "Native Name",
-        getValue: (r) => r.nativeName || "-",
-        searchable: true,
-        sortable: true,
-        width: 180,
-        render: (val) => (
-          <span style={{ color: "var(--color-fg-muted, #64748b)" }}>
-            {String(val || "-")}
-          </span>
-        ),
-      },
-      {
-        key: "rtl",
-        label: "Direction",
-        getValue: (r) => (r.rtl ? "RTL" : "LTR"),
-        sortable: true,
-        width: 120,
-        render: (_, r) => (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "2px 8px",
-              borderRadius: 6,
-              fontSize: "0.78rem",
-              fontWeight: 600,
-              backgroundColor: r.rtl
-                ? "rgba(229, 72, 77, 0.1)"
-                : "rgba(44, 140, 132, 0.1)",
-              color: r.rtl
-                ? "var(--color-accent-fg)"
-                : "var(--color-support-fg, #2C8C84)",
-            }}
-          >
-            {r.rtl ? "RTL" : "LTR"}
-          </span>
-        ),
-      },
-      {
-        key: "isDefault",
-        label: "Default",
-        getValue: (r) => (r.isDefault ? "Default" : "No"),
-        sortable: true,
-        width: 120,
-        render: (_, r) =>
-          r.isDefault ? (
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                padding: "2px 8px",
-                borderRadius: 6,
-                fontSize: "0.78rem",
-                fontWeight: 600,
-                backgroundColor: "rgba(44, 140, 132, 0.15)",
-                color: "var(--color-support-fg, #2C8C84)",
-              }}
-            >
-              Default
-            </span>
-          ) : (
-            <span style={{ color: "var(--color-fg-muted, #94a3b8)" }}>-</span>
-          ),
       },
       {
         key: "createdAt",
@@ -392,27 +298,7 @@ export default function SupportedLanguagesPage() {
             color: "var(--color-fg-muted, #64748b)",
           }}
         >
-          {r.nativeName && (
-            <div>
-              Native:{" "}
-              <strong style={{ color: "var(--color-fg-default, #1f2328)" }}>
-                {r.nativeName}
-              </strong>
-            </div>
-          )}
-          <div>
-            Direction: {r.rtl ? "Right-to-Left (RTL)" : "Left-to-Right (LTR)"}
-          </div>
-          {r.isDefault && (
-            <div
-              style={{
-                color: "var(--color-support-fg, #2C8C84)",
-                fontWeight: 600,
-              }}
-            >
-              Default System Language
-            </div>
-          )}
+          <div>Code: {r.code}</div>
         </div>
       ),
     }),
@@ -537,65 +423,6 @@ export default function SupportedLanguagesPage() {
                   }
                   required
                 />
-
-                <WeaverTextField
-                  label="Native Name"
-                  placeholder="e.g. English, العربية"
-                  value={formData.nativeName}
-                  onChange={(val) =>
-                    setFormData((prev) => ({ ...prev, nativeName: val }))
-                  }
-                />
-
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 24,
-                    paddingTop: 4,
-                  }}
-                >
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formData.rtl}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            rtl: e.target.checked,
-                          }))
-                        }
-                        size="small"
-                        color="error"
-                      />
-                    }
-                    label={
-                      <span style={{ fontSize: "0.85rem", fontWeight: 500 }}>
-                        Right-to-Left (RTL)
-                      </span>
-                    }
-                  />
-
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formData.isDefault}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            isDefault: e.target.checked,
-                          }))
-                        }
-                        size="small"
-                        color="error"
-                      />
-                    }
-                    label={
-                      <span style={{ fontSize: "0.85rem", fontWeight: 500 }}>
-                        Default Language
-                      </span>
-                    }
-                  />
-                </div>
               </div>
             </div>
 

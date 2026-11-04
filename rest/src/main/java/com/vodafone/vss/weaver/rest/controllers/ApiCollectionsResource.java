@@ -59,8 +59,8 @@ public class ApiCollectionsResource {
     @GetMapping
     @Operation(summary = "List API collections with pagination")
     public ResponseEntity<AppResponse> listCollections(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size) {
         PageResult<ApiCollectionModel> result = service.listCollections(page, size);
         AppResponse response =
                 AppResponse.builder()
@@ -75,7 +75,7 @@ public class ApiCollectionsResource {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get API collection by ID")
-    public ResponseEntity<AppResponse> getCollection(@PathVariable UUID id) {
+    public ResponseEntity<AppResponse> getCollection(@PathVariable("id") UUID id) {
         ApiCollectionModel collection = service.getCollection(id);
         AppResponse response =
                 AppResponse.builder()
@@ -104,7 +104,7 @@ public class ApiCollectionsResource {
     @PatchMapping("/{id}")
     @Operation(summary = "Update an API collection")
     public ResponseEntity<AppResponse> updateCollection(
-            @PathVariable UUID id, @Valid @RequestBody UpdateApiCollectionRequest payload) {
+            @PathVariable("id") UUID id, @Valid @RequestBody UpdateApiCollectionRequest payload) {
         ApiCollectionModel updated = service.updateCollection(id, payload);
         AppResponse response =
                 AppResponse.builder()
@@ -118,7 +118,7 @@ public class ApiCollectionsResource {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete an API collection and its endpoints")
-    public ResponseEntity<Void> deleteCollection(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteCollection(@PathVariable("id") UUID id) {
         service.deleteCollection(id);
         return ResponseEntity.noContent().build();
     }
@@ -140,9 +140,9 @@ public class ApiCollectionsResource {
     @GetMapping("/{id}/endpoints")
     @Operation(summary = "List endpoints within an API collection")
     public ResponseEntity<AppResponse> listEndpoints(
-            @PathVariable UUID id,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size) {
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "50") int size) {
         PageResult<ApiCollectionEndpointModel> result = service.listEndpoints(id, page, size);
         AppResponse response =
                 AppResponse.builder()
@@ -157,7 +157,7 @@ public class ApiCollectionsResource {
 
     @GetMapping("/{id}/endpoints/{endpointId}")
     @Operation(summary = "Get an endpoint by ID within a collection")
-    public ResponseEntity<AppResponse> getEndpoint(@PathVariable UUID id, @PathVariable UUID endpointId) {
+    public ResponseEntity<AppResponse> getEndpoint(@PathVariable("id") UUID id, @PathVariable("endpointId") UUID endpointId) {
         ApiCollectionEndpointModel endpoint = service.getEndpoint(id, endpointId);
         AppResponse response =
                 AppResponse.builder()
@@ -172,7 +172,7 @@ public class ApiCollectionsResource {
     @PostMapping("/{id}/endpoints")
     @Operation(summary = "Create an endpoint within a collection")
     public ResponseEntity<AppResponse> createEndpoint(
-            @PathVariable UUID id, @Valid @RequestBody CreateApiCollectionEndpointRequest payload) {
+            @PathVariable("id") UUID id, @Valid @RequestBody CreateApiCollectionEndpointRequest payload) {
         ApiCollectionEndpointModel created = service.createEndpoint(id, payload);
         AppResponse response =
                 AppResponse.builder()
@@ -187,7 +187,7 @@ public class ApiCollectionsResource {
     @PatchMapping("/endpoints/{endpointId}")
     @Operation(summary = "Update an endpoint")
     public ResponseEntity<AppResponse> updateEndpoint(
-            @PathVariable UUID endpointId, @Valid @RequestBody UpdateApiCollectionEndpointRequest payload) {
+            @PathVariable("endpointId") UUID endpointId, @Valid @RequestBody UpdateApiCollectionEndpointRequest payload) {
         ApiCollectionEndpointModel updated = service.updateEndpoint(endpointId, payload);
         AppResponse response =
                 AppResponse.builder()
@@ -201,7 +201,7 @@ public class ApiCollectionsResource {
 
     @DeleteMapping("/endpoints/{endpointId}")
     @Operation(summary = "Delete an endpoint")
-    public ResponseEntity<Void> deleteEndpoint(@PathVariable UUID endpointId) {
+    public ResponseEntity<Void> deleteEndpoint(@PathVariable("endpointId") UUID endpointId) {
         service.deleteEndpoint(endpointId);
         return ResponseEntity.noContent().build();
     }

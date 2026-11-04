@@ -16,34 +16,54 @@
 package com.vodafone.vss.weaver.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.vodafone.vss.weaver.common.respond.TranslationModel;
 import com.vodafone.vss.weaver.common.respond.WorkflowTranslationModel;
 import com.vodafone.vss.weaver.common.response.PageResult;
 
+/**
+ * Access to the {@code translations} table: one row per (workflow name, workflow version, message
+ * code, language). A "message" is the set of rows sharing workflow name, version and message code.
+ */
 public interface WorkflowTranslationDAO {
 
-    WorkflowTranslationModel create(WorkflowTranslationModel translation);
+    /** All rows of one workflow version, ordered by message code and language. */
+    List<TranslationModel> findByWorkflow(String workflowName, int workflowVersion);
 
-    WorkflowTranslationModel update(WorkflowTranslationModel translation);
+    /** All rows (languages) of one message, ordered by language. */
+    List<TranslationModel> findByMessage(String workflowName, int workflowVersion, String messageCode);
 
-    Optional<WorkflowTranslationModel> findById(UUID id);
+    Optional<TranslationModel> findById(UUID id);
 
-    List<WorkflowTranslationModel> findByWorkflowNameAndVersion(
-            String workflowName, Integer workflowVersion);
+    boolean messageExists(String workflowName, int workflowVersion, String messageCode);
 
-    Optional<WorkflowTranslationModel> findByWorkflowNameVersionAndMessageCode(
-            String workflowName, Integer workflowVersion, String messageCode);
+    /**
+     * Makes the stored languages of one message exactly {@code messages} (language code to text),
+     * in one transaction: languages not in the map are deleted, new ones inserted, changed ones
+     * updated. Rows whose text is unchanged are left untouched.
+     *
+     * @param actorId the user making the change, or {@code null}
+     */
+    void saveMessage(
+            String workflowName,
+            int workflowVersion,
+            String messageCode,
+            Map<String, String> messages,
+            UUID actorId);
 
-    boolean existsByWorkflowNameVersionAndMessageCode(
-            String workflowName, Integer workflowVersion, String messageCode);
+    /** Deletes every language of one message. Returns the number of rows deleted. */
+    int deleteMessage(String workflowName, int workflowVersion, String messageCode);
 
-    boolean deleteById(UUID id);
+    /** Number of rows using the given language code. */
+    long countByLanguage(String languageCode);
 
-    List<WorkflowTranslationModel> findAll();
+    List<TranslationModel> findAll();
 
-    PageResult<WorkflowTranslationModel> search(
+    /** Page of messages (grouped rows), filtered and sorted. */
+    PageResult<WorkflowTranslationModel> searchMessages(
             String workflowName,
             Integer workflowVersion,
             String search,
@@ -52,4 +72,3 @@ public interface WorkflowTranslationDAO {
             String sortBy,
             String sortOrder);
 }
-

@@ -49,8 +49,11 @@ public class WorkflowTranslationDto {
     @NotEmpty(message = "Translations map cannot be empty")
     private Map<String, String> translations;
 
+    // Set by the server; values sent by clients are ignored.
     private Instant createdAt;
     private Instant updatedAt;
+    private UUID createdBy;
+    private UUID updatedBy;
 
     public static WorkflowTranslationDto fromModel(WorkflowTranslationModel model) {
         if (model == null) {
@@ -64,18 +67,8 @@ public class WorkflowTranslationDto {
                 .translations(model.getTranslations())
                 .createdAt(model.getCreatedAt())
                 .updatedAt(model.getUpdatedAt())
-                .build();
-    }
-
-    public WorkflowTranslationModel toModel() {
-        return WorkflowTranslationModel.builder()
-                .id(this.id)
-                .workflowName(this.workflowName)
-                .workflowVersion(this.workflowVersion)
-                .messageCode(this.messageCode)
-                .translations(this.translations)
-                .createdAt(this.createdAt)
-                .updatedAt(this.updatedAt)
+                .createdBy(model.getCreatedBy())
+                .updatedBy(model.getUpdatedBy())
                 .build();
     }
 }

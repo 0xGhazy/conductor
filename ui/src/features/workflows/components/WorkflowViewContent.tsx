@@ -76,16 +76,16 @@ const EMPTY_LIST: RefEntity[] = [];
 const EMPTY_LANGUAGES: SupportedLanguage[] = [];
 
 const FALLBACK_LANGUAGES_FULL: SupportedLanguage[] = [
-  { id: "1", code: "en", name: "English", rtl: false, isDefault: true },
-  { id: "2", code: "ar", name: "Arabic", rtl: true, isDefault: false },
-  { id: "3", code: "fr", name: "French", rtl: false, isDefault: false },
-  { id: "4", code: "es", name: "Spanish", rtl: false, isDefault: false },
-  { id: "5", code: "de", name: "German", rtl: false, isDefault: false },
+  { id: "1", code: "en", name: "English" },
+  { id: "2", code: "ar", name: "Arabic" },
+  { id: "3", code: "fr", name: "French" },
+  { id: "4", code: "es", name: "Spanish" },
+  { id: "5", code: "de", name: "German" },
 ];
 
 const FALLBACK_LANGUAGES_SHORT: SupportedLanguage[] = [
-  { id: "1", code: "en", name: "English", rtl: false, isDefault: true },
-  { id: "2", code: "ar", name: "Arabic", rtl: true, isDefault: false },
+  { id: "1", code: "en", name: "English" },
+  { id: "2", code: "ar", name: "Arabic" },
 ];
 
 type WorkflowFormSnapshot = Pick<

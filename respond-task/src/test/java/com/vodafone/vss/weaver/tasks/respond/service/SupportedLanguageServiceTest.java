@@ -30,9 +30,12 @@ class SupportedLanguageServiceTest {
 
     private SupportedLanguageService service;
 
+    private com.vodafone.vss.weaver.dao.WorkflowTranslationDAO translationDAO;
+
     @BeforeEach
     void setUp() {
-        service = new SupportedLanguageService(dao);
+        translationDAO = org.mockito.Mockito.mock(com.vodafone.vss.weaver.dao.WorkflowTranslationDAO.class);
+        service = new SupportedLanguageService(dao, translationDAO);
     }
 
     @Test
@@ -51,7 +54,6 @@ class SupportedLanguageServiceTest {
                         .id(UUID.randomUUID())
                         .code("en")
                         .name("English")
-                        .isDefault(true)
                         .createdAt(Instant.now())
                         .build();
 
@@ -65,7 +67,7 @@ class SupportedLanguageServiceTest {
     @Test
     void testCreateLanguageSuccess() {
         SupportedLanguageDto dto =
-                SupportedLanguageDto.builder().code("fr").name("French").isDefault(false).build();
+                SupportedLanguageDto.builder().code("fr").name("French").build();
 
         when(dao.findByCode("fr")).thenReturn(Optional.empty());
         when(dao.create(any(SupportedLanguageModel.class)))
@@ -86,16 +88,33 @@ class SupportedLanguageServiceTest {
     }
 
     @Test
-    void testDeleteDefaultLanguageFails() {
+    void testDeleteLanguage() {
+        // There is no default language any more, so any language can be deleted.
         UUID id = UUID.randomUUID();
         when(dao.findById(id))
-                .thenReturn(
-                        Optional.of(
-                                SupportedLanguageModel.builder()
-                                        .id(id)
-                                        .code("en")
-                                        .isDefault(true)
-                                        .build()));
+                .thenReturn(Optional.of(SupportedLanguageModel.builder().id(id).code("en").build()));
+
+        ApiResponse response = service.deleteLanguage(id);
+
+        assertEquals(HttpStatus.OK, response.getStatus());
+        org.mockito.Mockito.verify(dao).deleteById(id);
+    }
+
+    @Test
+    void testDeleteLanguageInUseFails() {
+        UUID id = UUID.randomUUID();
+        when(dao.findById(id))
+                .thenReturn(Optional.of(SupportedLanguageModel.builder().id(id).code("ar-EG").build()));
+        when(translationDAO.countByLanguage("ar-EG")).thenReturn(3L);
+
+        assertThrows(BusinessException.class, () -> service.deleteLanguage(id));
+        org.mockito.Mockito.verify(dao, org.mockito.Mockito.never()).deleteById(id);
+    }
+
+    @Test
+    void testDeleteMissingLanguageFails() {
+        UUID id = UUID.randomUUID();
+        when(dao.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(BusinessException.class, () -> service.deleteLanguage(id));
     }

@@ -53,7 +53,7 @@ public class SupportedLanguageResource {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get supported language by ID")
-    public ResponseEntity<ApiResponse> getLanguageById(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse> getLanguageById(@PathVariable("id") UUID id) {
         ApiResponse response = languageService.getLanguageById(id);
         return new ResponseEntity<>(response, response.getStatus());
     }
@@ -68,14 +68,14 @@ public class SupportedLanguageResource {
     @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Update an existing supported language")
     public ResponseEntity<ApiResponse> updateLanguage(
-            @PathVariable UUID id, @Valid @RequestBody SupportedLanguageDto dto) {
+            @PathVariable("id") UUID id, @Valid @RequestBody SupportedLanguageDto dto) {
         ApiResponse response = languageService.updateLanguage(id, dto);
         return new ResponseEntity<>(response, response.getStatus());
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a supported language")
-    public ResponseEntity<ApiResponse> deleteLanguage(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse> deleteLanguage(@PathVariable("id") UUID id) {
         ApiResponse response = languageService.deleteLanguage(id);
         return new ResponseEntity<>(response, response.getStatus());
     }

@@ -18,39 +18,50 @@ package com.vodafone.vss.weaver.tasks.respond.service;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import com.vodafone.vss.weaver.common.respond.WorkflowTranslationModel;
+import com.vodafone.vss.weaver.common.respond.TranslationModel;
 import com.vodafone.vss.weaver.dao.WorkflowTranslationDAO;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
+/**
+ * Per-workflow-version cache of translations, shaped as message code to (language code to text).
+ *
+ * <p>Empty results are cached too, so workflows without translations don't query the database on
+ * every lookup. Changes made through the API refresh this node's entry immediately; other nodes
+ * see them when their entry expires ({@code weaver.translations.cache-ttl}).
+ */
 @Service
 public class WorkflowTranslationCacheService {
 
     private static final Logger log = LoggerFactory.getLogger(WorkflowTranslationCacheService.class);
-    private static final Duration DEFAULT_TTL = Duration.ofHours(24);
 
     private final WorkflowTranslationDAO translationDAO;
     private final Cache<String, Map<String, Map<String, String>>> cache;
 
-    public WorkflowTranslationCacheService(WorkflowTranslationDAO translationDAO) {
+    @Autowired
+    public WorkflowTranslationCacheService(
+            WorkflowTranslationDAO translationDAO,
+            @Value("${weaver.translations.cache-ttl:24h}") Duration ttl) {
         this.translationDAO = translationDAO;
-        this.cache =
-                Caffeine.newBuilder()
-                        .expireAfterWrite(DEFAULT_TTL)
-                        .maximumSize(10_000)
-                        .build();
+        this.cache = Caffeine.newBuilder().expireAfterWrite(ttl).maximumSize(10_000).build();
+    }
+
+    /** Uses the default 24 hour expiry. */
+    public WorkflowTranslationCacheService(WorkflowTranslationDAO translationDAO) {
+        this(translationDAO, Duration.ofHours(24));
     }
 
     public static String computeKey(String workflowName, Integer version) {
@@ -63,95 +74,68 @@ public class WorkflowTranslationCacheService {
         loadAllTranslationsToCache();
     }
 
+    /**
+     * Replaces the whole cache with the current table contents, so entries deleted from the
+     * table don't survive a reload. Synchronized with {@link #updateWorkflowCache} so a reload
+     * and an update can't interleave and leave older text behind.
+     */
     public synchronized void loadAllTranslationsToCache() {
         try {
-            List<WorkflowTranslationModel> all = translationDAO.findAll();
-            if (all.isEmpty()) {
-                log.info("No workflow translations found in database to cache");
-                return;
+            Map<String, Map<String, Map<String, String>>> byWorkflow = new HashMap<>();
+            for (TranslationModel row : translationDAO.findAll()) {
+                byWorkflow
+                        .computeIfAbsent(
+                                computeKey(row.getWorkflowName(), row.getWorkflowVersion()),
+                                k -> new LinkedHashMap<>())
+                        .computeIfAbsent(row.getMessageCode(), k -> new LinkedHashMap<>())
+                        .put(row.getLanguageCode(), row.getMessage());
             }
-
-            Map<String, List<WorkflowTranslationModel>> grouped =
-                    all.stream()
-                            .collect(
-                                    Collectors.groupingBy(
-                                            t -> computeKey(t.getWorkflowName(), t.getWorkflowVersion())));
-
-            for (Map.Entry<String, List<WorkflowTranslationModel>> entry : grouped.entrySet()) {
-                String cacheKey = entry.getKey();
-                Map<String, Map<String, String>> translationMap = new HashMap<>();
-
-                for (WorkflowTranslationModel wt : entry.getValue()) {
-                    if (wt.getMessageCode() != null && wt.getTranslations() != null) {
-                        translationMap.put(wt.getMessageCode(), wt.getTranslations());
-                    }
-                }
-
-                if (!translationMap.isEmpty()) {
-                    cache.put(cacheKey, translationMap);
-                }
-            }
-
-            log.info("Successfully loaded {} translation groups into cache", grouped.size());
+            cache.invalidateAll();
+            byWorkflow.forEach((key, messages) -> cache.put(key, freeze(messages)));
+            log.info("Loaded translations for {} workflow version(s) into cache", byWorkflow.size());
         } catch (Exception ex) {
-            log.error("Failed to load workflow translations to cache during startup", ex);
+            log.error("Failed to load workflow translations into cache", ex);
         }
     }
 
-    public void updateWorkflowCache(String workflowName, Integer version) {
+    /** Re-reads one workflow version from the database into this node's cache. */
+    public synchronized void updateWorkflowCache(String workflowName, Integer version) {
         if (workflowName == null || version == null) {
             return;
         }
-        String cacheKey = computeKey(workflowName, version);
-        List<WorkflowTranslationModel> list =
-                translationDAO.findByWorkflowNameAndVersion(workflowName, version);
-
-        if (list.isEmpty()) {
-            cache.invalidate(cacheKey);
-            log.debug("Evicted cache for key: {}", cacheKey);
-            return;
-        }
-
-        Map<String, Map<String, String>> translationMap = new HashMap<>();
-        for (WorkflowTranslationModel wt : list) {
-            if (wt.getMessageCode() != null && wt.getTranslations() != null) {
-                translationMap.put(wt.getMessageCode(), wt.getTranslations());
-            }
-        }
-
-        cache.put(cacheKey, translationMap);
-        log.debug("Updated cache for key: {}", cacheKey);
+        cache.put(computeKey(workflowName, version), load(workflowName, version));
     }
 
+    /** Message code to (language code to text) for one workflow version; empty if none. */
     public Map<String, Map<String, String>> getTranslations(String workflowName, Integer version) {
         if (workflowName == null || version == null) {
             return Collections.emptyMap();
         }
-        String cacheKey = computeKey(workflowName, version);
-        Map<String, Map<String, String>> cached = cache.getIfPresent(cacheKey);
-        if (cached != null) {
-            return cached;
-        }
-
-        List<WorkflowTranslationModel> list =
-                translationDAO.findByWorkflowNameAndVersion(workflowName, version);
-        if (list.isEmpty()) {
-            return Collections.emptyMap();
-        }
-
-        Map<String, Map<String, String>> translationMap = new HashMap<>();
-        for (WorkflowTranslationModel wt : list) {
-            if (wt.getMessageCode() != null && wt.getTranslations() != null) {
-                translationMap.put(wt.getMessageCode(), wt.getTranslations());
-            }
-        }
-
-        cache.put(cacheKey, translationMap);
-        return translationMap;
+        return cache.get(computeKey(workflowName, version), k -> load(workflowName, version));
     }
 
     public void clear() {
         cache.invalidateAll();
     }
-}
 
+    private Map<String, Map<String, String>> load(String workflowName, int version) {
+        List<TranslationModel> rows = translationDAO.findByWorkflow(workflowName, version);
+        return freeze(group(rows));
+    }
+
+    static Map<String, Map<String, String>> group(List<TranslationModel> rows) {
+        Map<String, Map<String, String>> messages = new LinkedHashMap<>();
+        for (TranslationModel row : rows) {
+            messages.computeIfAbsent(row.getMessageCode(), k -> new LinkedHashMap<>())
+                    .put(row.getLanguageCode(), row.getMessage());
+        }
+        return messages;
+    }
+
+    /** Cached maps are shared between callers, so they are made read-only. */
+    private static Map<String, Map<String, String>> freeze(Map<String, Map<String, String>> messages) {
+        Map<String, Map<String, String>> frozen = new LinkedHashMap<>();
+        messages.forEach((code, langs) -> frozen.put(code, Collections.unmodifiableMap(langs)));
+        return Collections.unmodifiableMap(frozen);
+    }
+}

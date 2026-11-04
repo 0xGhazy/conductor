@@ -24,7 +24,5 @@ public interface SupportedLanguageDAO {
     List<SupportedLanguageModel> findAll();
 
     long count();
-
-    void clearDefaultFlagExcept(UUID id);
 }
 
