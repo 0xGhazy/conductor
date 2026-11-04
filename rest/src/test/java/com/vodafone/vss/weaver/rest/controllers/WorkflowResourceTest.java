@@ -84,7 +84,90 @@ public class WorkflowResourceTest {
         String workflowID = "w112";
         when(mockWorkflowService.startWorkflow(any(StartWorkflowRequest.class)))
                 .thenReturn(workflowID);
-        assertEquals("w112", workflowResource.startWorkflow(startWorkflowRequest));
+        assertEquals("w112", workflowResource.startWorkflow(startWorkflowRequest, null));
+    }
+
+    @Test
+    public void startWorkflowAddsAcceptLanguageToInput() {
+        StartWorkflowRequest request = new StartWorkflowRequest();
+        request.setName("w123");
+        request.setInput(new HashMap<>(Map.of("1", "abc")));
+        when(mockWorkflowService.startWorkflow(any(StartWorkflowRequest.class))).thenReturn("w112");
+
+        workflowResource.startWorkflow(request, "ar-EG,ar;q=0.9,en;q=0.8");
+
+        org.mockito.ArgumentCaptor<StartWorkflowRequest> captor =
+                org.mockito.ArgumentCaptor.forClass(StartWorkflowRequest.class);
+        verify(mockWorkflowService).startWorkflow(captor.capture());
+        assertEquals("ar-EG", captor.getValue().getInput().get("_language"));
+        assertEquals("abc", captor.getValue().getInput().get("1"));
+    }
+
+    @Test
+    public void startWorkflowByNameAddsAcceptLanguageToInput() {
+        Map<String, Object> input = new HashMap<>(Map.of("1", "abc"));
+        when(mockWorkflowService.startWorkflow(anyString(), anyInt(), anyString(), anyInt(), anyMap()))
+                .thenReturn("w112");
+
+        workflowResource.startWorkflow("test1", 1, "c123", 0, input, "en");
+
+        @SuppressWarnings("unchecked")
+        org.mockito.ArgumentCaptor<Map<String, Object>> captor =
+                org.mockito.ArgumentCaptor.forClass(Map.class);
+        verify(mockWorkflowService)
+                .startWorkflow(eq("test1"), eq(1), eq("c123"), eq(0), captor.capture());
+        assertEquals("en", captor.getValue().get("_language"));
+        // the caller's map is not mutated
+        assertNull(input.get("_language"));
+    }
+
+    @Test
+    public void executeWorkflowAddsAcceptLanguageToInput() {
+        StartWorkflowRequest request = new StartWorkflowRequest();
+        request.setInput(new HashMap<>());
+        String workflowId = "workflow123";
+        when(mockWorkflowService.startWorkflow(any(StartWorkflowRequest.class))).thenReturn(workflowId);
+        when(mockWorkflowService.getWorkflowModel(eq(workflowId), eq(true)))
+                .thenReturn(toWorkflowModel(createWorkflow(workflowId, Workflow.WorkflowStatus.COMPLETED)));
+
+        StepVerifier.create(
+                        workflowResource.executeWorkflow(
+                                "testWorkflow",
+                                1,
+                                "req123",
+                                null,
+                                10,
+                                "DURABLE",
+                                WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
+                                request,
+                                "ar"))
+                .expectNextCount(1)
+                .verifyComplete();
+
+        org.mockito.ArgumentCaptor<StartWorkflowRequest> captor =
+                org.mockito.ArgumentCaptor.forClass(StartWorkflowRequest.class);
+        verify(mockWorkflowService).startWorkflow(captor.capture());
+        assertEquals("ar", captor.getValue().getInput().get("_language"));
+    }
+
+    @Test
+    public void requestLanguageRules() {
+        // highest quality weight wins, regardless of order
+        assertEquals(
+                "en",
+                WorkflowResource.withRequestLanguage(Map.of(), "ar;q=0.5, en;q=0.9").get("_language"));
+        // an explicit _language in the body wins over the header
+        assertEquals(
+                "fr",
+                WorkflowResource.withRequestLanguage(Map.of("_language", "fr"), "ar").get("_language"));
+        // no header, blank header, wildcard only, or malformed header: input unchanged
+        Map<String, Object> input = Map.of("k", "v");
+        assertTrue(WorkflowResource.withRequestLanguage(input, null) == input);
+        assertTrue(WorkflowResource.withRequestLanguage(input, "  ") == input);
+        assertTrue(WorkflowResource.withRequestLanguage(input, "*") == input);
+        assertTrue(WorkflowResource.withRequestLanguage(input, "not a language!!") == input);
+        // a null body still gets the language
+        assertEquals("ar", WorkflowResource.withRequestLanguage(null, "ar").get("_language"));
     }
 
     @Test
@@ -95,7 +178,7 @@ public class WorkflowResourceTest {
         when(mockWorkflowService.startWorkflow(
                         anyString(), anyInt(), anyString(), anyInt(), anyMap()))
                 .thenReturn(workflowID);
-        assertEquals("w112", workflowResource.startWorkflow("test1", 1, "c123", 0, input));
+        assertEquals("w112", workflowResource.startWorkflow("test1", 1, "c123", 0, input, null));
     }
 
     @Test
@@ -389,7 +472,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -433,7 +516,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.BLOCKING_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -477,7 +560,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.BLOCKING_TASK,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -522,7 +605,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.BLOCKING_TASK_INPUT,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -578,7 +661,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.BLOCKING_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -619,7 +702,7 @@ public class WorkflowResourceTest {
                         1, // 1 second timeout
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -660,7 +743,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -708,7 +791,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -749,7 +832,7 @@ public class WorkflowResourceTest {
                         0, // Should default to 10
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -793,7 +876,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then - should not try to fetch sub-workflow since SUB_WORKFLOW task is terminal
         StepVerifier.create(result)
@@ -842,7 +925,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then - should complete without trying to fetch null sub-workflow
         StepVerifier.create(result)
@@ -892,7 +975,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then - should complete gracefully, ignoring the sub-workflow exception
         StepVerifier.create(result)
@@ -932,7 +1015,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.BLOCKING_TASK,
-                        request);
+                        request, null);
 
         // Then - should trim and match correctly
         StepVerifier.create(result)
@@ -982,7 +1065,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.TARGET_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then
         StepVerifier.create(result)
@@ -1053,7 +1136,7 @@ public class WorkflowResourceTest {
                         10,
                         "DURABLE",
                         WorkflowSignalReturnStrategy.BLOCKING_WORKFLOW,
-                        request);
+                        request, null);
 
         // Then - should find the WAIT task in the nested sub-workflow
         StepVerifier.create(result)

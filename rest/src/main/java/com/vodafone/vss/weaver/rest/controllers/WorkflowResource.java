@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.conductoross.conductor.model.SignalResponse;
 import org.conductoross.conductor.model.WorkflowSignalReturnStrategy;
 import org.conductoross.conductor.model.WorkflowStatus;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -68,11 +71,22 @@ public class WorkflowResource {
         this.workflowTestService = workflowTestService;
     }
 
+    /**
+     * Workflow input key that carries the caller's preferred language, taken from the optional
+     * {@code Accept-Language} request header. Workflows read it as {@code
+     * ${workflow.input._language}} (the Respond task's default language expression).
+     */
+    static final String LANGUAGE_INPUT_KEY = "_language";
+
     @PostMapping(produces = TEXT_PLAIN_VALUE)
     @Operation(
             summary =
                     "Start a new workflow with StartWorkflowRequest, which allows task to be executed in a domain")
-    public String startWorkflow(@RequestBody StartWorkflowRequest request) {
+    public String startWorkflow(
+            @RequestBody StartWorkflowRequest request,
+            @RequestHeader(value = HttpHeaders.ACCEPT_LANGUAGE, required = false)
+                    String acceptLanguage) {
+        request.setInput(withRequestLanguage(request.getInput(), acceptLanguage));
         return workflowService.startWorkflow(request);
     }
 
@@ -85,8 +99,11 @@ public class WorkflowResource {
             @RequestParam(value = "version", required = false) Integer version,
             @RequestParam(value = "correlationId", required = false) String correlationId,
             @RequestParam(value = "priority", defaultValue = "0", required = false) int priority,
-            @RequestBody Map<String, Object> input) {
-        return workflowService.startWorkflow(name, version, correlationId, priority, input);
+            @RequestBody Map<String, Object> input,
+            @RequestHeader(value = HttpHeaders.ACCEPT_LANGUAGE, required = false)
+                    String acceptLanguage) {
+        return workflowService.startWorkflow(
+                name, version, correlationId, priority, withRequestLanguage(input, acceptLanguage));
     }
 
     @SneakyThrows
@@ -106,7 +123,11 @@ public class WorkflowResource {
                             required = false,
                             defaultValue = "TARGET_WORKFLOW")
                     WorkflowSignalReturnStrategy returnStrategy,
-            @RequestBody StartWorkflowRequest request) {
+            @RequestBody StartWorkflowRequest request,
+            @RequestHeader(value = HttpHeaders.ACCEPT_LANGUAGE, required = false)
+                    String acceptLanguage) {
+
+        request.setInput(withRequestLanguage(request.getInput(), acceptLanguage));
 
         if (version == 0) {
             version = null;
@@ -471,6 +492,52 @@ public class WorkflowResource {
     @Operation(summary = "Test workflow execution using mock data")
     public Workflow testWorkflow(@RequestBody WorkflowTestRequest request) {
         return workflowTestService.testWorkflow(request);
+    }
+
+    /**
+     * Adds the caller's preferred language from the {@code Accept-Language} header to the workflow
+     * input as {@value #LANGUAGE_INPUT_KEY}.
+     *
+     * <ul>
+     *   <li>The highest-priority language is used, e.g. {@code "ar-EG,ar;q=0.9,en;q=0.8"} gives
+     *       {@code "ar-EG"}. A wildcard ({@code *}) or a malformed header is ignored.
+     *   <li>An explicit {@value #LANGUAGE_INPUT_KEY} in the request body wins over the header.
+     *   <li>Without the header the input is returned unchanged.
+     * </ul>
+     *
+     * Returns a new map when the language is added, so the caller's map is never mutated.
+     */
+    static Map<String, Object> withRequestLanguage(
+            Map<String, Object> input, String acceptLanguage) {
+        String language = preferredLanguage(acceptLanguage);
+        if (language == null) {
+            return input;
+        }
+        if (input != null && input.get(LANGUAGE_INPUT_KEY) != null) {
+            return input;
+        }
+        Map<String, Object> withLanguage = input == null ? new HashMap<>() : new HashMap<>(input);
+        withLanguage.put(LANGUAGE_INPUT_KEY, language);
+        return withLanguage;
+    }
+
+    private static String preferredLanguage(String acceptLanguage) {
+        if (StringUtils.isBlank(acceptLanguage)) {
+            return null;
+        }
+        try {
+            // parse() returns the ranges ordered by quality weight, highest first.
+            for (Locale.LanguageRange range : Locale.LanguageRange.parse(acceptLanguage)) {
+                String tag = range.getRange();
+                if (range.getWeight() > 0 && !tag.startsWith("*")) {
+                    // Restore conventional casing (parse() lower-cases), e.g. "ar-eg" -> "ar-EG".
+                    return Locale.forLanguageTag(tag).toLanguageTag();
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            log.debug("Ignoring malformed Accept-Language header '{}': {}", acceptLanguage, e.getMessage());
+        }
+        return null;
     }
 
     private static void markAsDynamicWorkflow(Map<String, Object> workflowInput) {
