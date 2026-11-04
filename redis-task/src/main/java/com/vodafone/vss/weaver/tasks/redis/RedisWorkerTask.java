@@ -15,9 +15,6 @@
  */
 package com.vodafone.vss.weaver.tasks.redis;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.redis.RedisCommandRequestDto;
 import com.vodafone.vss.weaver.common.redis.RedisCommandResponseDto;
 import com.vodafone.vss.weaver.common.redis.RedisDatasourceModel;
@@ -52,9 +48,6 @@ public class RedisWorkerTask extends WorkflowSystemTask {
     private final RedisService redisService;
     private final ObjectMapper objectMapper;
 
-    @Autowired(required = false)
-    private VariableResolver variableResolver;
-
     @Autowired
     public RedisWorkerTask(RedisService redisService, ObjectMapper objectMapper) {
         this(TASK_TYPE, redisService, objectMapper);
@@ -68,10 +61,6 @@ public class RedisWorkerTask extends WorkflowSystemTask {
         this.redisService = redisService;
         this.objectMapper = objectMapper;
         log.info("{} system task initialized...", getTaskType());
-    }
-
-    public void setVariableResolver(VariableResolver variableResolver) {
-        this.variableResolver = variableResolver;
     }
 
     @Override
@@ -104,19 +93,19 @@ public class RedisWorkerTask extends WorkflowSystemTask {
         try {
             UUID datasourceId = inputs.getDatasourceId();
             if (datasourceId == null && inputs.getDatasourceName() != null) {
-                RedisDatasourceModel ds = redisService.findByName(resolveString(inputs.getDatasourceName()));
+                RedisDatasourceModel ds = redisService.findByName(inputs.getDatasourceName());
                 datasourceId = ds.getId();
             }
 
             RedisCommandRequestDto request = RedisCommandRequestDto.builder()
-                    .action(resolveString(inputs.getAction()))
-                    .key(resolveString(inputs.getKey()))
-                    .value(resolveString(inputs.getValue()))
-                    .field(resolveString(inputs.getField()))
+                    .action(inputs.getAction())
+                    .key(inputs.getKey())
+                    .value(inputs.getValue())
+                    .field(inputs.getField())
                     .ttlSeconds(inputs.getTtlSeconds())
                     .delta(inputs.getDelta())
-                    .keys(resolveStringList(inputs.getKeys()))
-                    .hashValues(resolveStringMap(inputs.getHashValues()))
+                    .keys(inputs.getKeys())
+                    .hashValues(inputs.getHashValues())
                     .build();
 
             RedisCommandResponseDto response = redisService.executeCommand(datasourceId, request);
@@ -148,8 +137,8 @@ public class RedisWorkerTask extends WorkflowSystemTask {
             rawInput = inputData;
         }
 
-        Object resolvedInput = resolveRawInput(rawInput);
-        Object normalizedInput = normalizeInput(resolvedInput);
+        // Placeholders were resolved before start(); the task does not resolve them itself.
+        Object normalizedInput = normalizeInput(rawInput);
         return objectMapper.convertValue(normalizedInput, RedisWorkerTaskDto.class);
     }
 
@@ -235,40 +224,6 @@ public class RedisWorkerTask extends WorkflowSystemTask {
         task.setReasonForIncompletion(reason);
         task.getOutputData().put("result", reason);
         task.getOutputData().put("error", reason);
-    }
-
-    private String resolveString(String value) {
-        if (value == null || variableResolver == null) {
-            return value;
-        }
-        return variableResolver.resolve(value);
-    }
-
-    private List<String> resolveStringList(List<String> list) {
-        if (list == null || variableResolver == null) {
-            return list;
-        }
-        List<String> resolved = new ArrayList<>(list.size());
-        for (String item : list) {
-            resolved.add(resolveString(item));
-        }
-        return resolved;
-    }
-
-    private Map<String, String> resolveStringMap(Map<String, String> map) {
-        if (map == null || variableResolver == null) {
-            return map;
-        }
-        Map<String, String> resolved = new LinkedHashMap<>();
-        map.forEach((k, v) -> resolved.put(
-                resolveString(k),
-                resolveString(v)
-        ));
-        return resolved;
-    }
-
-    private Object resolveRawInput(Object input) {
-        return variableResolver == null ? input : variableResolver.resolveDeep(input, true);
     }
 }
 

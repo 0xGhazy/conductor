@@ -25,7 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.http.HttpRequest;
 import com.vodafone.vss.weaver.common.http.HttpResponse;
 import com.vodafone.vss.weaver.common.http.HttpWorkerTaskDto;
@@ -52,9 +51,6 @@ public class HttpWorkerTask extends WorkflowSystemTask {
     private final ObjectMapper objectMapper;
 
     @Autowired(required = false)
-    private VariableResolver variableResolver;
-
-    @Autowired(required = false)
     private MeterRegistry meterRegistry;
 
     @Value("${weaver.default.http.request.timeout:3000}")
@@ -70,12 +66,10 @@ public class HttpWorkerTask extends WorkflowSystemTask {
     public HttpWorkerTask(
             HttpExecutorService httpExecutorService,
             ObjectMapper objectMapper,
-            VariableResolver variableResolver,
             MeterRegistry meterRegistry) {
         super(TASK_TYPE);
         this.httpExecutorService = httpExecutorService;
         this.objectMapper = objectMapper;
-        this.variableResolver = variableResolver;
         this.meterRegistry = meterRegistry;
     }
 
@@ -106,10 +100,13 @@ public class HttpWorkerTask extends WorkflowSystemTask {
             return;
         }
 
-        String resolvedUrl = resolveString(dto.getUrl());
-        String resolvedConnection = resolveString(dto.getConnection());
-        Map<String, String> resolvedHeaders = resolveStringMap(dto.getHeaders());
-        Object resolvedBody = resolveBody(dto.getBody());
+        // Placeholders are already resolved: ${weaver.env...} when the task was scheduled and
+        // ${weaver.secrets...} right before start(). The task must not resolve anything itself,
+        // otherwise placeholder text arriving through workflow input would be expanded.
+        String resolvedUrl = dto.getUrl();
+        String resolvedConnection = dto.getConnection();
+        Map<String, String> resolvedHeaders = dto.getHeaders();
+        Object resolvedBody = dto.getBody();
         int timeout = dto.getTimeout() != null && dto.getTimeout() > 0 ? dto.getTimeout() : defaultHttpRequestTimeoutMs;
 
         HttpRequest request =
@@ -172,26 +169,6 @@ public class HttpWorkerTask extends WorkflowSystemTask {
         task.setReasonForIncompletion(reason);
         task.setStatus(TaskModel.Status.FAILED_WITH_TERMINAL_ERROR);
         task.getOutputData().put("error", reason);
-    }
-
-    private String resolveString(String value) {
-        if (value == null || variableResolver == null) {
-            return value;
-        }
-        return variableResolver.resolve(value);
-    }
-
-    private Map<String, String> resolveStringMap(Map<String, String> map) {
-        if (map == null || variableResolver == null) {
-            return map;
-        }
-        Map<String, String> resolved = new HashMap<>();
-        map.forEach((k, v) -> resolved.put(resolveString(k), resolveString(v)));
-        return resolved;
-    }
-
-    private Object resolveBody(Object body) {
-        return variableResolver == null ? body : variableResolver.resolveDeep(body, true);
     }
 
     private void recordMetric(String status) {

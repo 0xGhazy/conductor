@@ -27,9 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.env.MockEnvironment;
 
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.http.HttpRequest;
 import com.vodafone.vss.weaver.common.http.HttpResponse;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
@@ -57,41 +55,28 @@ class HttpWorkerTaskTest {
     private ArgumentCaptor<HttpRequest> requestCaptor;
 
     private ObjectMapper objectMapper;
-    private MockEnvironment environment;
-    private VariableResolver variableResolver;
     private HttpWorkerTask httpWorkerTask;
 
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        environment = new MockEnvironment();
-        variableResolver = new VariableResolver(environment);
-        httpWorkerTask = new HttpWorkerTask(
-                httpExecutorService,
-                objectMapper,
-                variableResolver,
-                new SimpleMeterRegistry()
-        );
+        httpWorkerTask = new HttpWorkerTask(httpExecutorService, objectMapper, new SimpleMeterRegistry());
     }
 
     @Test
-    void execute_resolves_url_and_headers_and_completes_successfully() {
-        environment.setProperty("api.base", "https://api.vodafone.com");
-        environment.setProperty("api.version", "v2");
-        environment.setProperty("auth.token", "secret-token-xyz");
-
+    void execute_sends_input_as_given_and_completes_successfully() {
         TaskModel task = new TaskModel();
         task.setTaskId("http-task-1");
         task.setStatus(TaskModel.Status.IN_PROGRESS);
 
         Map<String, Object> inputData = new HashMap<>();
-        inputData.put("url", "#{P:api.base}/#{P:api.version}/users/#{USER_ID:1001}");
+        inputData.put("url", "https://api.vodafone.com/v2/users/1001");
         inputData.put("method", "GET");
-        inputData.put("connection", "#{HTTP_CONN:custom-conn}");
+        inputData.put("connection", "custom-conn");
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("Authorization", "Bearer #{P:auth.token}");
-        headers.put("X-Tenant", "#{TENANT_ID:default-tenant}");
+        headers.put("Authorization", "Bearer secret-token-xyz");
+        headers.put("X-Tenant", "default-tenant");
         inputData.put("headers", headers);
 
         task.setInputData(inputData);
@@ -99,8 +84,7 @@ class HttpWorkerTaskTest {
         HttpResponse mockResponse = new HttpResponse(HttpStatus.OK, Map.of("status", "ok"), new HttpHeaders());
         when(httpExecutorService.execute(any())).thenReturn(mockResponse);
 
-        WorkflowModel workflow = new WorkflowModel();
-        httpWorkerTask.start(workflow, task, workflowExecutor);
+        httpWorkerTask.start(new WorkflowModel(), task, workflowExecutor);
 
         assertEquals(TaskModel.Status.COMPLETED, task.getStatus());
         verify(httpExecutorService).execute(requestCaptor.capture());
@@ -111,6 +95,34 @@ class HttpWorkerTaskTest {
         assertEquals("Bearer secret-token-xyz", captured.getHeaders().get("Authorization"));
         assertEquals("default-tenant", captured.getHeaders().get("X-Tenant"));
         assertNotNull(task.getOutputData().get("result"));
+    }
+
+    @Test
+    void execute_never_expands_placeholder_text_found_in_input() {
+        // Placeholders are resolved by the engine before start(). Text that still looks like a
+        // placeholder at this point came from workflow data and must be sent as-is.
+        TaskModel task = new TaskModel();
+        task.setTaskId("http-task-injection");
+        task.setStatus(TaskModel.Status.IN_PROGRESS);
+
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put("url", "https://api.example.com/echo");
+        inputData.put("method", "POST");
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Name", "#{S:DB_PASSWORD}");
+        inputData.put("headers", headers);
+        inputData.put("body", Map.of("name", "${weaver.env.DB_PASSWORD}"));
+        task.setInputData(inputData);
+
+        when(httpExecutorService.execute(any()))
+                .thenReturn(new HttpResponse(HttpStatus.OK, Map.of(), new HttpHeaders()));
+
+        httpWorkerTask.start(new WorkflowModel(), task, workflowExecutor);
+
+        verify(httpExecutorService).execute(requestCaptor.capture());
+        HttpRequest captured = requestCaptor.getValue();
+        assertEquals("#{S:DB_PASSWORD}", captured.getHeaders().get("X-Name"));
+        assertEquals(Map.of("name", "${weaver.env.DB_PASSWORD}"), captured.getBody());
     }
 
     @Test

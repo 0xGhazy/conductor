@@ -22,10 +22,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.scripting.Languages;
 import com.vodafone.vss.weaver.common.scripting.ScriptEngineTaskDto;
 import com.vodafone.vss.weaver.common.scripting.ScriptEngineTaskResult;
@@ -54,36 +52,25 @@ public class ScriptWorkerTask extends WorkflowSystemTask {
     private final ObjectMapper objectMapper;
     private final ScriptExecutorService scriptExecutorService;
     private final ScriptMetricsService scriptMetricsService;
-    private final boolean resolveSourceVariables;
-
-    @Autowired(required = false)
-    private VariableResolver variableResolver;
 
     @Autowired
     public ScriptWorkerTask(
             ScriptExecutorService scriptExecutorService,
             ObjectMapper objectMapper,
-            @Autowired(required = false) ScriptMetricsService scriptMetricsService,
-            @Value("${weaver.scripting.resolve-source-variables:true}") boolean resolveSourceVariables) {
-        this(TASK_TYPE, scriptExecutorService, objectMapper, scriptMetricsService, resolveSourceVariables);
+            @Autowired(required = false) ScriptMetricsService scriptMetricsService) {
+        this(TASK_TYPE, scriptExecutorService, objectMapper, scriptMetricsService);
     }
 
     public ScriptWorkerTask(
             String taskType,
             ScriptExecutorService scriptExecutorService,
             ObjectMapper objectMapper,
-            ScriptMetricsService scriptMetricsService,
-            boolean resolveSourceVariables) {
+            ScriptMetricsService scriptMetricsService) {
         super(taskType);
         this.scriptExecutorService = scriptExecutorService;
         this.objectMapper = objectMapper;
         this.scriptMetricsService = scriptMetricsService;
-        this.resolveSourceVariables = resolveSourceVariables;
         log.info("{} system task initialized...", getTaskType());
-    }
-
-    public void setVariableResolver(VariableResolver variableResolver) {
-        this.variableResolver = variableResolver;
     }
 
     @Override
@@ -125,10 +112,6 @@ public class ScriptWorkerTask extends WorkflowSystemTask {
             }
 
             language = cfg.getLanguage();
-            cfg.setVariables(resolveVariablesMap(cfg.getVariables()));
-            if (resolveSourceVariables) {
-                cfg.setScript(resolveString(cfg.getScript()));
-            }
 
             log.debug("worker_input_parsed worker={} taskId={} taskRef={} language={} timeoutMs={} scriptLength={} inputKeys={}",
                     worker, taskId, taskRef, language, cfg.getTimeout(), cfg.getScript().length(), sortedKeys(cfg.getVariables()));
@@ -182,8 +165,8 @@ public class ScriptWorkerTask extends WorkflowSystemTask {
             rawInput = inputData;
         }
 
-        Object resolvedInput = resolveRawInput(rawInput);
-        Object normalizedInput = normalizeInput(resolvedInput);
+        // Placeholders were resolved before start(); the task does not resolve them itself.
+        Object normalizedInput = normalizeInput(rawInput);
         return objectMapper.convertValue(normalizedInput, ScriptEngineTaskDto.class);
     }
 
@@ -248,18 +231,6 @@ public class ScriptWorkerTask extends WorkflowSystemTask {
         task.setOutputData(errorResult);
         task.setReasonForIncompletion(safeReason);
         task.setStatus(TaskModel.Status.FAILED_WITH_TERMINAL_ERROR);
-    }
-
-    private String resolveString(String value) {
-        return value == null || variableResolver == null ? value : variableResolver.resolve(value);
-    }
-
-    private Map<String, Object> resolveVariablesMap(Map<String, Object> variables) {
-        return variables == null || variableResolver == null ? variables : variableResolver.resolveMap(variables);
-    }
-
-    private Object resolveRawInput(Object input) {
-        return variableResolver == null ? input : variableResolver.resolveDeep(input, true);
     }
 }
 

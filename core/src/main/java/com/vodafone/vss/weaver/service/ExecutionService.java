@@ -194,7 +194,7 @@ public class ExecutionService {
                 // a different field and this substitution silently becomes a no-op.
                 if (taskModel.getExternalInputPayloadStoragePath() != null) {
                     LOGGER.warn(
-                            "Task {} has externalized input; ${{workflow.secrets.*}} references are not resolved for external payload storage",
+                            "Task {} has externalized input; ${{weaver.secrets.*}} references are not resolved for external payload storage",
                             taskModel.getTaskId());
                 }
                 // Stopgap: keep a resolution error off the outer catch (which re-enqueues and, with

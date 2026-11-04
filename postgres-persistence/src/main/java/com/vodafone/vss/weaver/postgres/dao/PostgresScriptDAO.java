@@ -77,6 +77,7 @@ public class PostgresScriptDAO extends PostgresBaseDAO implements ScriptDAO {
                     q.addTimestampParameter(toTimestamp(script.getUpdatedAt()));
                     q.addParameter(script.getCreatedBy() != null ? script.getCreatedBy().toString() : null);
                     q.addParameter(script.getUpdatedBy() != null ? script.getUpdatedBy().toString() : null);
+                    q.executeUpdate();
                 });
 
         return script;
@@ -104,6 +105,7 @@ public class PostgresScriptDAO extends PostgresBaseDAO implements ScriptDAO {
                     q.addTimestampParameter(toTimestamp(script.getUpdatedAt()));
                     q.addParameter(script.getUpdatedBy() != null ? script.getUpdatedBy().toString() : null);
                     q.addParameter(script.getId().toString());
+                    q.executeUpdate();
                 });
 
         return script;

@@ -89,6 +89,17 @@ public abstract class WorkflowSystemTask {
     }
 
     /**
+     * Whether {@code ${weaver.secrets.*}} references in this task's input are resolved before it
+     * runs. Resolved values in task output are masked before the task is persisted, so this is
+     * safe for most tasks. Tasks that persist workflow state themselves during start/execute (for
+     * example SET_VARIABLE writing workflow variables) must return {@code false}: they would store
+     * the plain value before masking could happen, so they receive the literal reference instead.
+     */
+    public boolean resolvesSecrets() {
+        return true;
+    }
+
+    /**
      * @return True to keep task in 'IN_PROGRESS' state, and 'COMPLETE' later by an external
      *     message.
      */

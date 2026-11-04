@@ -11,13 +11,16 @@ describe("formatSql", () => {
   });
 
   it("keeps Weaver placeholders exactly as written", () => {
-    const formatted = formatSql("SELECT * FROM #{S:SCHEMA}.users WHERE x = ${weaver.env.LIMIT}");
-    expect(formatted).toContain("#{S:SCHEMA}.users");
+    const formatted = formatSql(
+      "SELECT * FROM ${weaver.env.SCHEMA:public}.users WHERE x = ${weaver.env.LIMIT} AND t = '${weaver.secrets.token}'"
+    );
+    expect(formatted).toContain("${weaver.env.SCHEMA:public}.users");
     expect(formatted).toContain("${weaver.env.LIMIT}");
+    expect(formatted).toContain("'${weaver.secrets.token}'");
   });
 
   it("never changes string literals", () => {
-    expect(formatSql("SELECT 'a   #{x}   b' FROM t")).toContain("'a   #{x}   b'");
+    expect(formatSql("SELECT 'a   ${weaver.env.X}   b' FROM t")).toContain("'a   ${weaver.env.X}   b'");
   });
 
   it("returns unparseable SQL unchanged", () => {

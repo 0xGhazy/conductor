@@ -53,6 +53,15 @@ public class SetVariable extends WorkflowSystemTask {
         this.executionDAOFacade = executionDAOFacade;
     }
 
+    /**
+     * SET_VARIABLE persists the workflow (and its variables) inside execute(), before any masking
+     * could run, so it keeps secret references literal instead of storing the plain values.
+     */
+    @Override
+    public boolean resolvesSecrets() {
+        return false;
+    }
+
     private boolean validateVariablesSize(
             WorkflowModel workflow, TaskModel task, Map<String, Object> variables) {
         String workflowId = workflow.getWorkflowId();

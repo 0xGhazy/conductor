@@ -74,6 +74,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
                     q.addTimestampParameter(toTimestamp(connection.getUpdatedAt()));
                     q.addTimestampParameter(toTimestamp(connection.getLastCheck()));
                     q.addParameter(connection.getError());
+                    q.executeUpdate();
                 });
 
         return connection;
@@ -98,6 +99,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
                     q.addTimestampParameter(toTimestamp(connection.getLastCheck()));
                     q.addParameter(connection.getError());
                     q.addParameter(connection.getId().toString());
+                    q.executeUpdate();
                 });
 
         return connection;

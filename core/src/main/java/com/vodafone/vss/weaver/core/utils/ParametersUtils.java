@@ -13,7 +13,7 @@
 package com.vodafone.vss.weaver.core.utils;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +36,7 @@ import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.utils.EnvUtils;
 import com.vodafone.vss.weaver.common.utils.TaskUtils;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.dao.EnvironmentDAO;
 import com.vodafone.vss.weaver.model.TaskModel;
 import com.vodafone.vss.weaver.model.WorkflowModel;
@@ -57,28 +57,35 @@ public class ParametersUtils {
             Pattern.compile(
                     "(?=(?<!\\$)\\$\\{)(?:(?=.*?\\{(?!.*?\\1)(.*\\}(?!.*\\2).*))(?=.*?\\}(?!.*?\\2)(.*)).)+?.*?(?=\\1)[^{]*(?=\\2$)",
                     Pattern.DOTALL);
-    private static final Pattern SECRET_PATTERN =
-            Pattern.compile("\\$\\{workflow\\.secrets\\.([^}]+)\\}");
-    private static final String SECRETS_PREFIX = "workflow.secrets.";
-    private static final String ENV_PREFIX = "workflow.env.";
+    /**
+     * Unescapes {@code $${} in text written in the workflow definition, except for escaped secret
+     * references: those stay escaped so the execution-time secret pass keeps them literal and
+     * unescapes them itself (see {@link WeaverPlaceholderResolver#resolveSecrets}).
+     */
+    private static final Pattern TEMPLATE_ESCAPE =
+            Pattern.compile("\\$\\$\\{(?!" + Pattern.quote(WeaverPlaceholderResolver.SECRETS_PREFIX) + ")");
 
     private final ObjectMapper objectMapper;
     private final TypeReference<Map<String, Object>> map = new TypeReference<>() {};
-    @Nullable private final EnvironmentDAO environmentDAO;
-    @Nullable private final SecretsDAO secretsDAO;
+    @Nullable private final WeaverPlaceholderResolver placeholders;
 
     public ParametersUtils(ObjectMapper objectMapper) {
-        this(objectMapper, null, null);
+        this(objectMapper, (WeaverPlaceholderResolver) null);
     }
 
-    @Autowired
+    /** Convenience for tests and callers without Spring: no secret cache. */
     public ParametersUtils(
             ObjectMapper objectMapper,
             @Nullable EnvironmentDAO environmentDAO,
             @Nullable SecretsDAO secretsDAO) {
+        this(objectMapper, new WeaverPlaceholderResolver(environmentDAO, secretsDAO, Duration.ZERO));
+    }
+
+    @Autowired
+    public ParametersUtils(
+            ObjectMapper objectMapper, @Nullable WeaverPlaceholderResolver placeholders) {
         this.objectMapper = objectMapper;
-        this.environmentDAO = environmentDAO;
-        this.secretsDAO = secretsDAO;
+        this.placeholders = placeholders;
     }
 
     public Map<String, Object> getTaskInput(
@@ -261,28 +268,59 @@ public class ParametersUtils {
             var start = matcher.start();
             var end = matcher.end();
             var match = paramString.substring(start, end);
-            String paramPath = match.substring(2, match.length() - 1);
-            paramPath = replaceVariables(paramPath, documentContext, taskId, depth + 1).toString();
+            String rawPath = match.substring(2, match.length() - 1);
+            String trimmedRaw = rawPath.trim();
+            boolean weaverEnv = trimmedRaw.startsWith(WeaverPlaceholderResolver.ENV_PREFIX);
+            boolean weaverSecret = trimmedRaw.startsWith(WeaverPlaceholderResolver.SECRETS_PREFIX);
+            if ((weaverEnv || weaverSecret) && rawPath.contains("${")) {
+                // A nested name would let workflow data choose which variable or secret is read.
+                LOGGER.warn("Nested placeholders are not allowed in '{}'; resolving to null", match);
+                replacements.add(new Replacement(null, start, end));
+                continue;
+            }
+            if (weaverSecret) {
+                // Deferred: keep the literal reference. It is resolved on an in-memory copy right
+                // before the task runs and is never written to the store resolved.
+                replacements.add(new Replacement(match, start, end));
+                continue;
+            }
+            if (weaverEnv) {
+                Object envValue =
+                        placeholders == null
+                                ? null
+                                : placeholders.resolveEnv(
+                                        trimmedRaw.substring(
+                                                WeaverPlaceholderResolver.ENV_PREFIX.length()));
+                replacements.add(
+                        new Replacement(
+                                WeaverPlaceholderResolver.escapeSecretReferences(envValue),
+                                start,
+                                end));
+                continue;
+            }
+            String paramPath =
+                    replaceVariables(rawPath, documentContext, taskId, depth + 1).toString();
             // if the paramPath is blank, meaning no value in between ${ and }
             // like ${}, ${  } etc, set the value to empty string
             if (StringUtils.isBlank(paramPath)) {
                 replacements.add(new Replacement("", start, end));
                 continue;
             }
-            if (paramPath.startsWith(SECRETS_PREFIX)) {
-                // Deferred: leave the literal; resolved at task hand-off via substituteSecrets.
-                replacements.add(new Replacement(match, start, end));
-            } else if (environmentDAO != null && paramPath.startsWith(ENV_PREFIX)) {
-                Object envValue = resolveEnvVariable(paramPath.substring(ENV_PREFIX.length()));
-                replacements.add(new Replacement(envValue, start, end));
-            } else if (EnvUtils.isEnvironmentVariable(paramPath)) {
+            if (EnvUtils.isEnvironmentVariable(paramPath)) {
                 String sysValue = EnvUtils.getSystemParametersValue(paramPath, taskId);
                 if (sysValue != null) {
                     replacements.add(new Replacement(sysValue, start, end));
                 }
             } else {
                 try {
-                    replacements.add(new Replacement(documentContext.read(paramPath), start, end));
+                    // Values taken from workflow data are inserted as data: any secret reference
+                    // text inside them is escaped so it is never resolved later.
+                    replacements.add(
+                            new Replacement(
+                                    WeaverPlaceholderResolver.escapeSecretReferences(
+                                            documentContext.read(paramPath)),
+                                    start,
+                                    end));
                 } catch (Exception e) {
                     LOGGER.warn(
                             "Error reading documentContext for paramPath: {}. Exception: {}",
@@ -299,15 +337,23 @@ public class ParametersUtils {
             return replacements.get(0).getReplacement();
         }
         Collections.sort(replacements);
-        var builder = new StringBuilder(paramString);
-        for (int i = replacements.size() - 1; i >= 0; i--) {
-            var replacement = replacements.get(i);
-            builder.replace(
-                    replacement.getStartIndex(),
-                    replacement.getEndIndex(),
-                    Objects.toString(replacement.getReplacement()));
+        // Rebuild the string segment by segment. Escapes ($${) are removed from the definition's
+        // own text only; inserted values are kept exactly as they are.
+        var builder = new StringBuilder();
+        int cursor = 0;
+        for (var replacement : replacements) {
+            builder.append(unescapeTemplate(paramString.substring(cursor, replacement.getStartIndex())));
+            builder.append(Objects.toString(replacement.getReplacement()));
+            cursor = replacement.getEndIndex();
         }
-        return builder.toString().replaceAll("\\$\\$\\{", "\\${");
+        builder.append(unescapeTemplate(paramString.substring(cursor)));
+        return builder.toString();
+    }
+
+    private static String unescapeTemplate(String text) {
+        return text.indexOf("$${") < 0
+                ? text
+                : TEMPLATE_ESCAPE.matcher(text).replaceAll(Matcher.quoteReplacement("${"));
     }
 
     @Deprecated
@@ -359,108 +405,31 @@ public class ParametersUtils {
         return inputParams;
     }
 
-    private Object resolveEnvVariable(String ref) {
-        return resolveWithOptionalJsonPath(ref, environmentDAO::getEnvVariable);
-    }
-
     /**
-     * Resolves any {@code ${workflow.secrets.*}} references in the given input, returning a new
-     * structure. The input map is not mutated. Returns the input unchanged when no secrets provider
-     * is configured.
+     * Resolves {@code ${weaver.secrets.NAME}} references in the given input for execution,
+     * returning a new structure. The input map is not mutated. Returns the input unchanged when no
+     * secrets provider is configured or no reference is present.
      */
-    @SuppressWarnings("unchecked")
     public Map<String, Object> substituteSecrets(Map<String, Object> input) {
-        if (secretsDAO == null || input == null) {
-            return input;
-        }
-        return (Map<String, Object>) substituteSecretsValue(input);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Object substituteSecretsValue(Object value) {
-        if (value instanceof String) {
-            return resolveSecretString((String) value);
-        } else if (value instanceof Map) {
-            Map<String, Object> src = (Map<String, Object>) value;
-            Map<String, Object> result = null;
-            for (Map.Entry<String, Object> e : src.entrySet()) {
-                Object original = e.getValue();
-                Object substituted = substituteSecretsValue(original);
-                if (substituted != original) {
-                    if (result == null) {
-                        result = new HashMap<>(src);
-                    }
-                    result.put(e.getKey(), substituted);
-                }
-            }
-            return result == null ? src : result;
-        } else if (value instanceof List) {
-            List<Object> src = (List<Object>) value;
-            List<Object> result = null;
-            for (int i = 0; i < src.size(); i++) {
-                Object original = src.get(i);
-                Object substituted = substituteSecretsValue(original);
-                if (substituted != original) {
-                    if (result == null) {
-                        result = new ArrayList<>(src);
-                    }
-                    result.set(i, substituted);
-                }
-            }
-            return result == null ? src : result;
-        }
-        return value;
-    }
-
-    private Object resolveSecretString(String str) {
-        if (str.indexOf("${workflow.secrets.") < 0) {
-            return str; // no secret reference — return the same instance, no regex, no allocation
-        }
-        Matcher whole = SECRET_PATTERN.matcher(str);
-        if (whole.matches()) {
-            return resolveSecretRef(whole.group(1));
-        }
-        Matcher m = SECRET_PATTERN.matcher(str);
-        StringBuilder sb = new StringBuilder();
-        while (m.find()) {
-            Object resolved = resolveSecretRef(m.group(1));
-            m.appendReplacement(sb, Matcher.quoteReplacement(Objects.toString(resolved, "")));
-        }
-        m.appendTail(sb);
-        return sb.toString();
-    }
-
-    private Object resolveSecretRef(String ref) {
-        return resolveWithOptionalJsonPath(ref, secretsDAO::getSecret);
+        return resolveSecretsForExecution(input).input();
     }
 
     /**
-     * Splits {@code ref} on the first '.' into a name and an optional JSON path, looks up the name
-     * via {@code lookup}, and if a JSON path is present, reads it out of the looked-up value.
-     * Returns null if the looked-up value is null, or if the JSON path cannot be read from it (e.g.
-     * the value is not valid JSON) -- in which case a warning is logged instead of throwing.
+     * Like {@link #substituteSecrets} but also returns the secret values that were used, so the
+     * caller can mask them in task output before anything is persisted.
      */
-    private Object resolveWithOptionalJsonPath(String ref, Function<String, String> lookup) {
-        int dot = ref.indexOf('.');
-        if (dot < 0) {
-            return lookup.apply(ref);
+    public WeaverPlaceholderResolver.SecretResolution resolveSecretsForExecution(
+            Map<String, Object> input) {
+        if (placeholders == null) {
+            return WeaverPlaceholderResolver.SecretResolution.unchanged(input);
         }
-        String name = ref.substring(0, dot);
-        String jsonPath = ref.substring(dot + 1);
-        String value = lookup.apply(name);
-        if (value == null) {
-            return null;
-        }
-        try {
-            return JsonPath.parse(value).read(jsonPath);
-        } catch (Exception e) {
-            LOGGER.warn(
-                    "Failed to extract JSON path '{}' from reference '{}': {}",
-                    jsonPath,
-                    ref,
-                    e.toString());
-            return null;
-        }
+        return placeholders.resolveSecrets(input);
+    }
+
+    /** The shared placeholder resolver, or {@code null} when none is configured. */
+    @Nullable
+    public WeaverPlaceholderResolver getPlaceholders() {
+        return placeholders;
     }
 
     private static class Replacement implements Comparable<Replacement> {

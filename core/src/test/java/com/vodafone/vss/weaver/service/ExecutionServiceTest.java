@@ -394,7 +394,7 @@ public class ExecutionServiceTest {
         taskModel.setTaskType(taskType);
         taskModel.setStatus(TaskModel.Status.SCHEDULED);
         Map<String, Object> literal = new HashMap<>();
-        literal.put("pwd", "${workflow.secrets.DB_PASSWORD}");
+        literal.put("pwd", "${weaver.secrets.DB_PASSWORD}");
         taskModel.setInputData(literal);
 
         when(queueDAO.pop(anyString(), anyInt(), anyInt())).thenReturn(List.of(taskId));
@@ -408,7 +408,7 @@ public class ExecutionServiceTest {
         assertEquals(1, polled.size());
         assertEquals("s3cr3t", polled.get(0).getInputData().get("pwd"));
         // persisted model keeps the literal
-        assertEquals("${workflow.secrets.DB_PASSWORD}", taskModel.getInputData().get("pwd"));
+        assertEquals("${weaver.secrets.DB_PASSWORD}", taskModel.getInputData().get("pwd"));
     }
 
     @Test

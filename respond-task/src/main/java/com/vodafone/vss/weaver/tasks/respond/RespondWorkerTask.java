@@ -26,11 +26,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.respond.RespondWorkerTaskDto;
 import com.vodafone.vss.weaver.common.utils.WorkerUtils;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
 import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.model.TaskModel;
 import com.vodafone.vss.weaver.model.WorkflowModel;
 import com.vodafone.vss.weaver.tasks.respond.contract.WorkflowMetadataProvider;
@@ -52,7 +52,7 @@ public class RespondWorkerTask extends WorkflowSystemTask {
     private WorkflowMetadataProvider workflowMetadataProvider;
 
     @Autowired(required = false)
-    private VariableResolver variableResolver;
+    private WeaverPlaceholderResolver placeholders;
 
     @Autowired
     public RespondWorkerTask(
@@ -93,8 +93,9 @@ public class RespondWorkerTask extends WorkflowSystemTask {
                 return;
             }
 
-            String messageCode = resolveString(dto.getMessageCode());
-            String rawLanguageCode = resolveString(dto.getLanguageCode());
+            // Task input is already resolved (env at schedule time, secrets before start()).
+            String messageCode = dto.getMessageCode();
+            String rawLanguageCode = dto.getLanguageCode();
             String languageCode = (rawLanguageCode != null && !rawLanguageCode.isBlank())
                     ? rawLanguageCode.trim()
                     : null;
@@ -150,13 +151,18 @@ public class RespondWorkerTask extends WorkflowSystemTask {
 
             if (template == null) {
                 template = messageCode;
+            } else if (placeholders != null) {
+                // Translation templates are admin-authored and returned to clients: resolve
+                // ${weaver.env...} only (never secrets), and before workflow values are filled in,
+                // so placeholder text inside workflow data is never expanded.
+                template = placeholders.resolveEnvOnly(template);
             }
 
-            Map<String, Object> resolvedVariables = resolveVariablesMap(dto.getVariables());
+            Map<String, Object> resolvedVariables =
+                    dto.getVariables() != null ? dto.getVariables() : Collections.emptyMap();
             Map<String, Object> context = buildContext(workflow, task, resolvedVariables);
 
             String resolvedMessage = interpolatePlaceholders(template, context);
-            resolvedMessage = resolveString(resolvedMessage);
 
             task.getOutputData().put("responseCode", messageCode);
             task.getOutputData().put("languageCode", resolvedLanguage);
@@ -242,20 +248,6 @@ public class RespondWorkerTask extends WorkflowSystemTask {
             }
         }
         return current;
-    }
-
-    private String resolveString(String value) {
-        if (value == null || variableResolver == null) {
-            return value;
-        }
-        return variableResolver.resolve(value);
-    }
-
-    private Map<String, Object> resolveVariablesMap(Map<String, Object> variables) {
-        if (variables == null || variableResolver == null) {
-            return variables != null ? variables : Collections.emptyMap();
-        }
-        return variableResolver.resolveMap(variables);
     }
 
     private void fail(TaskModel task, String reason) {

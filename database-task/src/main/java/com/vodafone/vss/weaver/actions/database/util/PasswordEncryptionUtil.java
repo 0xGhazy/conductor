@@ -60,8 +60,7 @@ public final class PasswordEncryptionUtil {
     }
 
     public static boolean isPlaceholder(String value) {
-        return value != null && ((value.startsWith("#{") && value.endsWith("}"))
-                || (value.startsWith("${") && value.endsWith("}")));
+        return value != null && value.startsWith("${") && value.endsWith("}");
     }
 
     private static Encryption requireEncryption() {

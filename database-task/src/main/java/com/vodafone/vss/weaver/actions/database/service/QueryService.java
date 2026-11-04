@@ -39,7 +39,6 @@ import com.vodafone.vss.weaver.actions.database.util.QueryParamTypeConverter;
 import com.vodafone.vss.weaver.actions.database.util.SqlMinifier;
 import com.vodafone.vss.weaver.audit.service.AuditSecurityHelper;
 import com.vodafone.vss.weaver.common.ExceptionUtils;
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.database.DatasourceModel;
 import com.vodafone.vss.weaver.common.database.QueryExecutionResult;
 import com.vodafone.vss.weaver.common.database.QueryModel;
@@ -47,6 +46,7 @@ import com.vodafone.vss.weaver.common.database.QueryParameterDataType;
 import com.vodafone.vss.weaver.common.dto.AppResponse;
 import com.vodafone.vss.weaver.common.exceptions.BusinessExceptionBuilder;
 import com.vodafone.vss.weaver.common.response.PaginatedResult;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.dao.DatasourceDAO;
 import com.vodafone.vss.weaver.dao.QueryDAO;
 
@@ -65,7 +65,7 @@ public class QueryService {
     private AuditSecurityHelper auditSecurityHelper;
 
     @Autowired(required = false)
-    private VariableResolver variableResolver;
+    private WeaverPlaceholderResolver placeholders;
 
     private record PaginatedCacheEntry(List<?> data, PaginatedResult details) {}
 
@@ -285,15 +285,19 @@ public class QueryService {
         QueryModel query = findById(queryId);
         DatasourceModel datasource = loadDatasource(query.getDatasourceId());
         Map<String, Object> parameters = QueryParamTypeConverter.parseQueryParameters(
-                resolveVariables(arguments), query.getParameters(), datasource.getType());
-        return executeSql(datasource.getId(), resolveVariables(query.getSql()), parameters, query.getTimeout(), query.getName());
+                arguments, query.getParameters(), datasource.getType());
+        // Saved SQL is admin configuration and may use ${weaver.env...} / ${weaver.secrets...}.
+        // Arguments are caller data and are bound as parameters, never resolved.
+        return executeSql(datasource.getId(), resolveConfig(query.getSql()), parameters, query.getTimeout(), query.getName());
     }
 
     public QueryExecutionResult executeTaskSql(@NotNull UUID datasourceId,
                                                @NotNull String sql,
                                                Map<String, Object> parameters,
                                                String name) {
-        return executeSql(datasourceId, resolveVariables(sql), resolveVariables(parameters), null, name);
+        // Inline task SQL and parameters come from task input, which is already resolved
+        // (env at schedule time, secrets before the task runs).
+        return executeSql(datasourceId, sql, parameters, null, name);
     }
 
     public QueryExecutionResult executeSql(@NotNull UUID datasourceId,
@@ -333,12 +337,8 @@ public class QueryService {
         ));
     }
 
-    private String resolveVariables(String sql) {
-        return sql == null || variableResolver == null ? sql : variableResolver.resolve(sql);
-    }
-
-    private Map<String, Object> resolveVariables(Map<String, Object> parameters) {
-        return parameters == null || variableResolver == null ? parameters : variableResolver.resolveMap(parameters);
+    private String resolveConfig(String sql) {
+        return sql == null || placeholders == null ? sql : placeholders.resolveConfig(sql);
     }
 
     private static String normalizeDescription(String description) {

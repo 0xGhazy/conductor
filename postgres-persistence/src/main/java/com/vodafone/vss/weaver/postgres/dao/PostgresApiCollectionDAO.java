@@ -79,6 +79,7 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
                     q.addParameter(collection.getCreatedBy() != null ? collection.getCreatedBy().toString() : null);
                     q.addTimestampParameter(toTimestamp(collection.getUpdatedAt()));
                     q.addParameter(collection.getUpdatedBy() != null ? collection.getUpdatedBy().toString() : null);
+                    q.executeUpdate();
                 });
 
         return collection;
@@ -103,6 +104,7 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
                     q.addTimestampParameter(toTimestamp(collection.getUpdatedAt()));
                     q.addParameter(collection.getUpdatedBy() != null ? collection.getUpdatedBy().toString() : null);
                     q.addParameter(collection.getId().toString());
+                    q.executeUpdate();
                 });
 
         return collection;
@@ -246,6 +248,7 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
                     q.addParameter(endpoint.getCreatedBy() != null ? endpoint.getCreatedBy().toString() : null);
                     q.addTimestampParameter(toTimestamp(endpoint.getUpdatedAt()));
                     q.addParameter(endpoint.getUpdatedBy() != null ? endpoint.getUpdatedBy().toString() : null);
+                    q.executeUpdate();
                 });
 
         return endpoint;
@@ -270,6 +273,7 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
                     q.addTimestampParameter(toTimestamp(endpoint.getUpdatedAt()));
                     q.addParameter(endpoint.getUpdatedBy() != null ? endpoint.getUpdatedBy().toString() : null);
                     q.addParameter(endpoint.getId().toString());
+                    q.executeUpdate();
                 });
 
         return endpoint;

@@ -24,7 +24,6 @@ import org.springframework.stereotype.Component;
 import com.vodafone.vss.weaver.actions.database.annotations.ValidJdbcUrl;
 import com.vodafone.vss.weaver.actions.database.dialect.DatabaseDialect;
 import com.vodafone.vss.weaver.actions.database.dialect.DialectRegistry;
-import com.vodafone.vss.weaver.common.VariableResolver;
 
 @Component
 public class ValidJdbcUrlValidator implements ConstraintValidator<ValidJdbcUrl, Object> {
@@ -82,7 +81,7 @@ public class ValidJdbcUrlValidator implements ConstraintValidator<ValidJdbcUrl, 
         }
 
         // The format can only be checked once placeholders are resolved; the connection probe covers that.
-        if (url.contains("#{S:") || url.contains("#{P:") || url.contains("${")) {
+        if (url.contains("${")) {
             return true;
         }
 

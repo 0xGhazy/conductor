@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.vodafone.vss.weaver.common.config.TestObjectMapperConfiguration;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.dao.EnvironmentDAO;
 import com.vodafone.vss.weaver.model.WorkflowModel;
 
@@ -44,7 +46,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = {TestObjectMapperConfiguration.class})
@@ -383,124 +388,223 @@ public class ParametersUtilsTest {
         assertEquals("supplied_value", workflowInput.get(keyName));
     }
 
+    private static WorkflowModel emptyWorkflow() {
+        WorkflowModel wf = new WorkflowModel();
+        wf.setWorkflowDefinition(new WorkflowDef());
+        return wf;
+    }
+
     @Test
-    public void testWorkflowEnvResolvesEagerly() {
+    public void testWeaverEnvResolvesAtScheduleTime() {
         EnvironmentDAO env = mock(EnvironmentDAO.class);
         when(env.getEnvVariable("REGION")).thenReturn("us-east-1");
-        SecretsDAO secrets = mock(SecretsDAO.class);
-        ParametersUtils pu = new ParametersUtils(objectMapper, env, secrets);
+        ParametersUtils pu = new ParametersUtils(objectMapper, env, mock(SecretsDAO.class));
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("region", "${weaver.env.REGION}");
+        input.put("url", "https://${weaver.env.REGION}.example.com");
+
+        Map<String, Object> out = pu.getTaskInput(input, emptyWorkflow(), null, "t1");
+
+        assertEquals("us-east-1", out.get("region"));
+        assertEquals("https://us-east-1.example.com", out.get("url"));
+    }
+
+    @Test
+    public void testWeaverEnvDefaultAndMissing() {
+        EnvironmentDAO env = mock(EnvironmentDAO.class);
+        ParametersUtils pu = new ParametersUtils(objectMapper, env, mock(SecretsDAO.class));
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("withDefault", "${weaver.env.MISSING:fallback}");
+        input.put("urlDefault", "${weaver.env.MISSING:http://localhost:8080}");
+        input.put("noDefault", "${weaver.env.MISSING}");
+
+        Map<String, Object> out = pu.getTaskInput(input, emptyWorkflow(), null, "t1");
+
+        assertEquals("fallback", out.get("withDefault"));
+        // Only the first colon separates the default, so URLs keep their colons.
+        assertEquals("http://localhost:8080", out.get("urlDefault"));
+        assertNull(out.get("noDefault"));
+    }
+
+    @Test
+    public void testWeaverEnvJsonPathFallsBackToDefault() {
+        EnvironmentDAO env = mock(EnvironmentDAO.class);
+        when(env.getEnvVariable("CONFIG"))
+                .thenReturn("{\"host\":\"db.example.com\",\"port\":5432}");
+        when(env.getEnvVariable("NOT_JSON")).thenReturn("plain");
+        ParametersUtils pu = new ParametersUtils(objectMapper, env, mock(SecretsDAO.class));
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("host", "${weaver.env.CONFIG.host}");
+        input.put("port", "${weaver.env.CONFIG.port}");
+        input.put("missingField", "${weaver.env.CONFIG.user:admin}");
+        input.put("missingVar", "${weaver.env.NOPE.user:admin}");
+        input.put("notJson", "${weaver.env.NOT_JSON.user:admin}");
+        input.put("missingFieldNoDefault", "${weaver.env.CONFIG.user}");
+
+        Map<String, Object> out = pu.getTaskInput(input, emptyWorkflow(), null, "t1");
+
+        assertEquals("db.example.com", out.get("host"));
+        assertEquals(5432, out.get("port"));
+        assertEquals("admin", out.get("missingField"));
+        assertEquals("admin", out.get("missingVar"));
+        assertEquals("admin", out.get("notJson"));
+        assertNull(out.get("missingFieldNoDefault"));
+    }
+
+    @Test
+    public void testOldWorkflowEnvSyntaxNoLongerResolves() {
+        EnvironmentDAO env = mock(EnvironmentDAO.class);
+        when(env.getEnvVariable("REGION")).thenReturn("us-east-1");
+        ParametersUtils pu = new ParametersUtils(objectMapper, env, mock(SecretsDAO.class));
 
         Map<String, Object> input = new HashMap<>();
         input.put("region", "${workflow.env.REGION}");
 
-        WorkflowModel wf = new WorkflowModel();
-        wf.setWorkflowDefinition(new WorkflowDef());
-        Map<String, Object> out = pu.getTaskInput(input, wf, null, "t1");
+        Map<String, Object> out = pu.getTaskInput(input, emptyWorkflow(), null, "t1");
 
-        assertEquals("us-east-1", out.get("region"));
+        // Treated as an ordinary (missing) workflow path now.
+        assertNull(out.get("region"));
     }
 
     @Test
-    public void testWorkflowEnvResolvesJsonPath() {
+    public void testNestedWeaverPlaceholderNamesAreRejected() {
         EnvironmentDAO env = mock(EnvironmentDAO.class);
-        when(env.getEnvVariable("CONFIG"))
-                .thenReturn("{\"host\":\"db.example.com\",\"port\":5432}");
-        SecretsDAO secrets = mock(SecretsDAO.class);
-        ParametersUtils pu = new ParametersUtils(objectMapper, env, secrets);
+        when(env.getEnvVariable("DB_PASSWORD")).thenReturn("should-not-leak");
+        ParametersUtils pu = new ParametersUtils(objectMapper, env, mock(SecretsDAO.class));
 
+        WorkflowModel wf = emptyWorkflow();
+        wf.setInput(Map.of("name", "DB_PASSWORD"));
         Map<String, Object> input = new HashMap<>();
-        input.put("host", "${workflow.env.CONFIG.host}");
+        input.put("v", "${weaver.env.${workflow.input.name}}");
+        input.put("s", "${weaver.secrets.${workflow.input.name}}");
 
-        WorkflowModel wf = new WorkflowModel();
-        wf.setWorkflowDefinition(new WorkflowDef());
         Map<String, Object> out = pu.getTaskInput(input, wf, null, "t1");
 
-        assertEquals("db.example.com", out.get("host"));
+        assertNull(out.get("v"));
+        assertNull(out.get("s"));
     }
 
     @Test
-    public void testWorkflowSecretsLeftLiteralDuringNormalResolution() {
-        EnvironmentDAO env = mock(EnvironmentDAO.class);
-        SecretsDAO secrets = mock(SecretsDAO.class);
-        ParametersUtils pu = new ParametersUtils(objectMapper, env, secrets);
-
-        Map<String, Object> input = new HashMap<>();
-        input.put("pwd", "${workflow.secrets.DB_PASSWORD}");
-
-        WorkflowModel wf = new WorkflowModel();
-        wf.setWorkflowDefinition(new WorkflowDef());
-        Map<String, Object> out = pu.getTaskInput(input, wf, null, "t1");
-
-        assertEquals("${workflow.secrets.DB_PASSWORD}", out.get("pwd"));
-    }
-
-    @Test
-    public void testSubstituteSecretsResolvesPlainAndJsonPath() {
-        EnvironmentDAO env = mock(EnvironmentDAO.class);
+    public void testWeaverSecretsLeftLiteralAtScheduleTime() {
         SecretsDAO secrets = mock(SecretsDAO.class);
         when(secrets.getSecret("DB_PASSWORD")).thenReturn("s3cr3t");
-        when(secrets.getSecret("CREDS")).thenReturn("{\"user\":\"neo\",\"pass\":\"zion\"}");
-        ParametersUtils pu = new ParametersUtils(objectMapper, env, secrets);
+        ParametersUtils pu = new ParametersUtils(objectMapper, mock(EnvironmentDAO.class), secrets);
 
         Map<String, Object> input = new HashMap<>();
-        input.put("pwd", "${workflow.secrets.DB_PASSWORD}");
-        input.put("user", "${workflow.secrets.CREDS.user}");
-        input.put("header", "Bearer ${workflow.secrets.DB_PASSWORD}");
+        input.put("pwd", "${weaver.secrets.DB_PASSWORD}");
+        input.put("header", "Bearer ${weaver.secrets.DB_PASSWORD}");
 
-        Map<String, Object> out = pu.substituteSecrets(input);
+        Map<String, Object> out = pu.getTaskInput(input, emptyWorkflow(), null, "t1");
 
-        assertEquals("s3cr3t", out.get("pwd"));
-        assertEquals("neo", out.get("user"));
-        assertEquals("Bearer s3cr3t", out.get("header"));
+        assertEquals("${weaver.secrets.DB_PASSWORD}", out.get("pwd"));
+        assertEquals("Bearer ${weaver.secrets.DB_PASSWORD}", out.get("header"));
+        verify(secrets, never()).getSecret(any());
+    }
+
+    @Test
+    public void testSecretReferenceInWorkflowInputIsNeverResolved() {
+        SecretsDAO secrets = mock(SecretsDAO.class);
+        when(secrets.getSecret("DB_PASSWORD")).thenReturn("s3cr3t");
+        ParametersUtils pu = new ParametersUtils(objectMapper, mock(EnvironmentDAO.class), secrets);
+
+        // A caller tries to smuggle a secret reference in through workflow input.
+        WorkflowModel wf = emptyWorkflow();
+        wf.setInput(
+                Map.of(
+                        "name", "${weaver.secrets.DB_PASSWORD}",
+                        "nested", Map.of("x", "a ${weaver.secrets.DB_PASSWORD} b")));
+        Map<String, Object> input = new HashMap<>();
+        input.put("whole", "${workflow.input.name}");
+        input.put("inline", "Hello ${workflow.input.name}");
+        input.put("object", "${workflow.input.nested}");
+
+        Map<String, Object> scheduled = pu.getTaskInput(input, wf, null, "t1");
+        Map<String, Object> executed = pu.substituteSecrets(scheduled);
+
+        assertEquals("${weaver.secrets.DB_PASSWORD}", executed.get("whole"));
+        assertEquals("Hello ${weaver.secrets.DB_PASSWORD}", executed.get("inline"));
+        assertEquals(Map.of("x", "a ${weaver.secrets.DB_PASSWORD} b"), executed.get("object"));
+        verify(secrets, never()).getSecret(any());
+    }
+
+    @Test
+    public void testEscapedSecretReferenceInDefinitionStaysLiteral() {
+        SecretsDAO secrets = mock(SecretsDAO.class);
+        when(secrets.getSecret("DB_PASSWORD")).thenReturn("s3cr3t");
+        ParametersUtils pu = new ParametersUtils(objectMapper, mock(EnvironmentDAO.class), secrets);
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("doc", "Use $${weaver.secrets.DB_PASSWORD} to reference it");
+
+        Map<String, Object> executed =
+                pu.substituteSecrets(pu.getTaskInput(input, emptyWorkflow(), null, "t1"));
+
+        assertEquals("Use ${weaver.secrets.DB_PASSWORD} to reference it", executed.get("doc"));
+        verify(secrets, never()).getSecret(any());
+    }
+
+    @Test
+    public void testSubstituteSecretsResolvesWholeAndInline() {
+        SecretsDAO secrets = mock(SecretsDAO.class);
+        when(secrets.getSecret("DB_PASSWORD")).thenReturn("s3cr3t");
+        ParametersUtils pu = new ParametersUtils(objectMapper, mock(EnvironmentDAO.class), secrets);
+
+        Map<String, Object> input = new HashMap<>();
+        input.put("pwd", "${weaver.secrets.DB_PASSWORD}");
+        input.put("header", "Bearer ${weaver.secrets.DB_PASSWORD}");
+
+        WeaverPlaceholderResolver.SecretResolution resolution =
+                pu.resolveSecretsForExecution(input);
+
+        assertEquals("s3cr3t", resolution.input().get("pwd"));
+        assertEquals("Bearer s3cr3t", resolution.input().get("header"));
+        assertEquals(Set.of("s3cr3t"), resolution.secretValues());
         // original input unmutated
-        assertEquals("${workflow.secrets.DB_PASSWORD}", input.get("pwd"));
+        assertEquals("${weaver.secrets.DB_PASSWORD}", input.get("pwd"));
     }
 
     @Test
     public void testSubstituteSecretsResolvesInsideList() {
-        EnvironmentDAO env = mock(EnvironmentDAO.class);
         SecretsDAO secrets = mock(SecretsDAO.class);
         when(secrets.getSecret("TOKEN")).thenReturn("tkn");
-        ParametersUtils pu = new ParametersUtils(objectMapper, env, secrets);
+        ParametersUtils pu = new ParametersUtils(objectMapper, mock(EnvironmentDAO.class), secrets);
 
         Map<String, Object> input = new HashMap<>();
-        input.put("headers", List.of("Bearer ${workflow.secrets.TOKEN}", "static"));
+        input.put("headers", List.of("Bearer ${weaver.secrets.TOKEN}", "static"));
 
         Map<String, Object> out = pu.substituteSecrets(input);
 
         assertEquals(List.of("Bearer tkn", "static"), out.get("headers"));
-        // original input unmutated
-        assertEquals(List.of("Bearer ${workflow.secrets.TOKEN}", "static"), input.get("headers"));
+        assertEquals(List.of("Bearer ${weaver.secrets.TOKEN}", "static"), input.get("headers"));
     }
 
     @Test
-    public void testSubstituteSecretsMalformedJsonResolvesToNull() {
-        EnvironmentDAO env = mock(EnvironmentDAO.class);
+    public void testOldWorkflowSecretsSyntaxIsNotResolved() {
         SecretsDAO secrets = mock(SecretsDAO.class);
-        when(secrets.getSecret("CREDS")).thenReturn("not-json");
-        ParametersUtils pu = new ParametersUtils(objectMapper, env, secrets);
+        when(secrets.getSecret("DB_PASSWORD")).thenReturn("s3cr3t");
+        ParametersUtils pu = new ParametersUtils(objectMapper, mock(EnvironmentDAO.class), secrets);
 
         Map<String, Object> input = new HashMap<>();
-        input.put("v", "${workflow.secrets.CREDS.field}");
+        input.put("pwd", "x ${workflow.secrets.DB_PASSWORD}");
 
-        Map<String, Object> out = pu.substituteSecrets(input);
-
-        assertNull(out.get("v"));
+        assertEquals("x ${workflow.secrets.DB_PASSWORD}", pu.substituteSecrets(input).get("pwd"));
     }
 
     @Test
     public void testSubstituteSecretsNullDaoReturnsInput() {
         ParametersUtils pu = new ParametersUtils(objectMapper);
         Map<String, Object> input = new HashMap<>();
-        input.put("pwd", "${workflow.secrets.DB_PASSWORD}");
+        input.put("pwd", "${weaver.secrets.DB_PASSWORD}");
         assertTrue(pu.substituteSecrets(input) == input);
     }
 
     @Test
     public void testSubstituteSecretsReturnsSameInstanceWhenNoSecretRef() {
-        EnvironmentDAO env = mock(EnvironmentDAO.class);
-        SecretsDAO secrets = mock(SecretsDAO.class);
-        ParametersUtils pu = new ParametersUtils(objectMapper, env, secrets);
+        ParametersUtils pu =
+                new ParametersUtils(objectMapper, mock(EnvironmentDAO.class), mock(SecretsDAO.class));
 
         Map<String, Object> input = new HashMap<>();
         input.put("a", "plain");

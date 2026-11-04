@@ -72,6 +72,7 @@ public class PostgresRedisDatasourceDAO extends PostgresBaseDAO implements Redis
                     q.addTimestampParameter(toTimestamp(datasource.getUpdatedAt()));
                     q.addParameter(datasource.getCreatedBy() != null ? datasource.getCreatedBy().toString() : null);
                     q.addParameter(datasource.getUpdatedBy() != null ? datasource.getUpdatedBy().toString() : null);
+                    q.executeUpdate();
                 });
 
         return datasource;
@@ -102,6 +103,7 @@ public class PostgresRedisDatasourceDAO extends PostgresBaseDAO implements Redis
                     q.addTimestampParameter(toTimestamp(datasource.getUpdatedAt()));
                     q.addParameter(datasource.getUpdatedBy() != null ? datasource.getUpdatedBy().toString() : null);
                     q.addParameter(datasource.getId().toString());
+                    q.executeUpdate();
                 });
 
         return datasource;

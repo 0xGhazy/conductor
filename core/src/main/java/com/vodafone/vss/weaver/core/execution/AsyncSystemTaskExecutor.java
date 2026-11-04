@@ -22,6 +22,7 @@ import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.core.config.ConductorProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.core.utils.ParametersUtils;
 import com.vodafone.vss.weaver.core.utils.QueueUtils;
 import com.vodafone.vss.weaver.dao.MetadataDAO;
@@ -183,29 +184,46 @@ public class AsyncSystemTaskExecutor {
                         return;
                     }
                     Map<String, Object> literalInput = task.getInputData();
+                    if (scheduled) {
+                        task.setStartTime(System.currentTimeMillis());
+                        // Persist startTime before invoking so a redelivery can detect an
+                        // overrun (status left unchanged for start()'s SCHEDULED branch).
+                        // This must happen before secrets are substituted below, otherwise the
+                        // resolved secret values would be written to the store in plain text.
+                        executionDAOFacade.updateTask(task);
+                        Monitors.recordQueueWaitTime(task.getTaskType(), task.getQueueWaitTime());
+                    }
                     // Secrets substitution only sees task.getInputData(); when input has been
                     // offloaded to external payload storage, getInputData()/setInputData() operate
                     // on a different field and this substitution silently becomes a no-op.
                     if (task.getExternalInputPayloadStoragePath() != null) {
                         LOGGER.warn(
-                                "Task {} has externalized input; ${{workflow.secrets.*}} references are not resolved for external payload storage",
+                                "Task {} has externalized input; ${{weaver.secrets.*}} references are not resolved for external payload storage",
                                 task.getTaskId());
                     }
-                    task.setInputData(parametersUtils.substituteSecrets(literalInput));
+                    WeaverPlaceholderResolver.SecretResolution resolution =
+                            systemTask.resolvesSecrets()
+                                    ? parametersUtils.resolveSecretsForExecution(literalInput)
+                                    : null;
+                    if (resolution == null) {
+                        resolution =
+                                WeaverPlaceholderResolver.SecretResolution.unchanged(literalInput);
+                    }
+                    task.setInputData(resolution.input());
                     try {
                         if (scheduled) {
-                            task.setStartTime(System.currentTimeMillis());
-                            // Persist startTime before invoking so a redelivery can detect an
-                            // overrun (status left unchanged for start()'s SCHEDULED branch).
-                            executionDAOFacade.updateTask(task);
-                            Monitors.recordQueueWaitTime(
-                                    task.getTaskType(), task.getQueueWaitTime());
                             systemTask.start(workflow, task, workflowExecutor);
                         } else {
                             systemTask.execute(workflow, task, workflowExecutor);
                         }
                     } finally {
                         task.setInputData(literalInput);
+                        // Mask resolved values the task copied into its output or failure reason
+                        // before the final write in the outer finally block persists them.
+                        WeaverPlaceholderResolver placeholders = parametersUtils.getPlaceholders();
+                        if (placeholders != null) {
+                            placeholders.maskTask(task, resolution.secretValues());
+                        }
                     }
                 }
             }

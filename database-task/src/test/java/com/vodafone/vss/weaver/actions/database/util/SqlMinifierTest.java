@@ -77,8 +77,9 @@ class SqlMinifierTest {
     @Test
     void keepsVariablePlaceholders() {
         assertEquals(
-                "SELECT * FROM #{S:SCHEMA}.users WHERE id = :id",
-                SqlMinifier.minify("SELECT *\nFROM   #{S:SCHEMA}.users\nWHERE id = :id"));
+                "SELECT * FROM ${weaver.env.SCHEMA:public}.users WHERE token = '${weaver.secrets.api_token}' AND id = :id",
+                SqlMinifier.minify(
+                        "SELECT *\nFROM   ${weaver.env.SCHEMA:public}.users\nWHERE token = '${weaver.secrets.api_token}'\n  AND id = :id"));
     }
 
     @Test

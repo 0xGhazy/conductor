@@ -16,7 +16,6 @@
 package com.vodafone.vss.weaver.tasks.scripting;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.tasks.scripting.metrics.ScriptMetricsService;
@@ -33,9 +32,8 @@ public class ScriptSystemTask extends ScriptWorkerTask {
     public ScriptSystemTask(
             ScriptExecutorService scriptExecutorService,
             ObjectMapper objectMapper,
-            @Autowired(required = false) ScriptMetricsService scriptMetricsService,
-            @Value("${weaver.scripting.resolve-source-variables:true}") boolean resolveSourceVariables) {
-        super(TASK_TYPE_SCRIPT, scriptExecutorService, objectMapper, scriptMetricsService, resolveSourceVariables);
+            @Autowired(required = false) ScriptMetricsService scriptMetricsService) {
+        super(TASK_TYPE_SCRIPT, scriptExecutorService, objectMapper, scriptMetricsService);
     }
 }
 

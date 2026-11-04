@@ -1,8 +1,8 @@
 import { formatDialect, postgresql } from "sql-formatter";
 
-// Weaver variable placeholders (#{NAME}, #{S:NAME:default}, ${weaver.env.NAME}) are not SQL, so the formatter
+// Weaver placeholders (${weaver.env.NAME[:default]}, ${weaver.secrets.NAME}) are not SQL, so the formatter
 // cannot parse them; they are swapped for plain identifiers while formatting and restored afterwards.
-const PLACEHOLDER_PATTERN = /#\{[^}]*\}|\$\{[^}]*\}/g;
+const PLACEHOLDER_PATTERN = /\$\{[^}]*\}/g;
 const MASK_PATTERN = /__weaver_ph_(\d+)__/g;
 
 /**

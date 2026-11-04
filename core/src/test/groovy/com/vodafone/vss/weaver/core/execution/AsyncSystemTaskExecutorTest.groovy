@@ -18,6 +18,7 @@ import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef
 import com.vodafone.vss.weaver.core.config.ConductorProperties
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade
 import com.vodafone.vss.weaver.core.execution.tasks.SubWorkflow
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver
 import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask
 import com.vodafone.vss.weaver.core.utils.IDGenerator
 import com.vodafone.vss.weaver.core.utils.ParametersUtils
@@ -61,7 +62,7 @@ class AsyncSystemTaskExecutorTest extends Specification {
         properties.taskExecutionPostponeDuration = Duration.ofSeconds(1)
         properties.systemTaskWorkerCallbackDuration = Duration.ofSeconds(1)
 
-        parametersUtils.substituteSecrets(_) >> { args -> args[0] }
+        parametersUtils.resolveSecretsForExecution(_) >> { args -> WeaverPlaceholderResolver.SecretResolution.unchanged(args[0]) }
 
         executor = new AsyncSystemTaskExecutor(executionDAOFacade, queueDAO, metadataDAO, properties, workflowExecutor, parametersUtils)
     }
@@ -585,13 +586,14 @@ class AsyncSystemTaskExecutorTest extends Specification {
         WorkflowSystemTask systemTask = Mock(WorkflowSystemTask.class) {
             getTaskType() >> "HTTP"
             isAsyncComplete(_) >> false
+            resolvesSecrets() >> true
         }
         TaskModel task = new TaskModel()
         task.setTaskId(taskId)
         task.setTaskType("HTTP")
         task.setStatus(TaskModel.Status.SCHEDULED)
         task.setWorkflowInstanceId(workflowId)
-        def literal = [pwd: '${workflow.secrets.DB_PASSWORD}'] as Map
+        def literal = [pwd: '${weaver.secrets.DB_PASSWORD}'] as Map
         task.setInputData(literal)
 
         WorkflowModel workflow = new WorkflowModel()
@@ -606,7 +608,7 @@ class AsyncSystemTaskExecutorTest extends Specification {
         then:
         1 * executionDAOFacade.getTaskModel(taskId) >> task
         1 * executionDAOFacade.getWorkflowModel(workflowId, _) >> workflow
-        1 * parametersUtils.substituteSecrets(literal) >> resolved
+        1 * parametersUtils.resolveSecretsForExecution(literal) >> new WeaverPlaceholderResolver.SecretResolution(resolved, [] as Set)
         1 * systemTask.start(workflow, task, _) >> { args ->
             seenDuringStart = (args[1] as TaskModel).getInputData()
         }

@@ -66,21 +66,13 @@ public final class SqlMinifier {
                 continue;
             }
 
-            // #{placeholder} (kept) or # up to end of line (kept with its line break)
+            // MySQL # comment up to end of line (kept with its line break)
             if (c == '#') {
-                if (next(sql, i) == '{') {
-                    int end = sql.indexOf('}', i);
-                    int stop = end < 0 ? n : end + 1;
-                    appendToken(out, sql.substring(i, stop), pendingSpace);
-                    pendingSpace = false;
-                    i = stop;
-                } else {
-                    int end = sql.indexOf('\n', i);
-                    int stop = end < 0 ? n : end + 1;
-                    appendToken(out, sql.substring(i, stop), pendingSpace);
-                    pendingSpace = false;
-                    i = stop;
-                }
+                int end = sql.indexOf('\n', i);
+                int stop = end < 0 ? n : end + 1;
+                appendToken(out, sql.substring(i, stop), pendingSpace);
+                pendingSpace = false;
+                i = stop;
                 continue;
             }
 

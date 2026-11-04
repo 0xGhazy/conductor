@@ -25,9 +25,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.env.MockEnvironment;
 
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.scripting.Languages;
 import com.vodafone.vss.weaver.common.scripting.ScriptEngineTaskDto;
 import com.vodafone.vss.weaver.common.scripting.ScriptEngineTaskResult;
@@ -56,21 +54,12 @@ class ScriptWorkerTaskTest {
     private ArgumentCaptor<ScriptEngineTaskDto> taskDtoCaptor;
 
     private ObjectMapper objectMapper;
-    private MockEnvironment environment;
-    private VariableResolver variableResolver;
     private ScriptWorkerTask scriptWorkerTask;
 
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
-        environment = new MockEnvironment();
-        variableResolver = new VariableResolver(environment);
-        scriptWorkerTask = new ScriptWorkerTask(
-                scriptExecutorService,
-                objectMapper,
-                scriptMetricsService,
-                true);
-        scriptWorkerTask.setVariableResolver(variableResolver);
+        scriptWorkerTask = new ScriptWorkerTask(scriptExecutorService, objectMapper, scriptMetricsService);
     }
 
     @Test
@@ -79,8 +68,9 @@ class ScriptWorkerTaskTest {
     }
 
     @Test
-    void start_resolves_variables_and_executes_successfully() {
-        environment.setProperty("app.multiplier", "5");
+    void start_passes_variables_through_and_executes_successfully() {
+        // Input arrives already resolved by the engine; placeholder-looking text from workflow
+        // data (the "name" variable) must reach the script unchanged.
 
         TaskModel task = new TaskModel();
         task.setStatus(TaskModel.Status.IN_PROGRESS);
@@ -92,7 +82,8 @@ class ScriptWorkerTaskTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("x", 10);
-        variables.put("mult", "#{P:app.multiplier}");
+        variables.put("mult", "5");
+        variables.put("name", "#{S:DB_PASSWORD}");
         inputData.put("variables", variables);
 
         task.setInputData(inputData);
@@ -113,6 +104,7 @@ class ScriptWorkerTaskTest {
         ScriptEngineTaskDto captured = taskDtoCaptor.getValue();
         assertEquals(Languages.JEXL, captured.getLanguage());
         assertEquals("5", captured.getVariables().get("mult"));
+        assertEquals("#{S:DB_PASSWORD}", captured.getVariables().get("name"));
     }
 
     @Test

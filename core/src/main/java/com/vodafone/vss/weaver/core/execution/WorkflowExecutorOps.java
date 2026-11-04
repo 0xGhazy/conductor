@@ -47,6 +47,7 @@ import com.vodafone.vss.weaver.core.listener.TaskStatusListener;
 import com.vodafone.vss.weaver.core.listener.WorkflowStatusListener;
 import com.vodafone.vss.weaver.core.listener.WorkflowStatusListener.WorkflowEventType;
 import com.vodafone.vss.weaver.core.metadata.MetadataMapperService;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.core.utils.IDGenerator;
 import com.vodafone.vss.weaver.core.utils.ParametersUtils;
 import com.vodafone.vss.weaver.core.utils.QueueUtils;
@@ -986,6 +987,12 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
         task.setCallbackAfterSeconds(taskResult.getCallbackAfterSeconds());
         task.setOutputData(taskResult.getOutputData());
         task.setSubWorkflowId(taskResult.getSubWorkflowId());
+        // External workers received the secret-resolved input at poll time; mask any of those
+        // values they echo back before the result is stored. The stored input is still literal.
+        WeaverPlaceholderResolver placeholders = parametersUtils.getPlaceholders();
+        if (placeholders != null) {
+            placeholders.maskTask(task, placeholders.referencedSecretValues(task.getInputData()));
+        }
 
         if (StringUtils.isNotBlank(taskResult.getExternalOutputPayloadStoragePath())) {
             task.setExternalOutputPayloadStoragePath(
@@ -2085,20 +2092,20 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
      * Runs a synchronous system task's {@code start(...)} (e.g. JSON_JQ_TRANSFORM, WAIT, HUMAN)
      * against a secret-resolved view of its input, while keeping the persisted task input literal.
      *
-     * <p>{@code ${workflow.secrets.X}} references are deferred at schedule time and are normally
+     * <p>{@code ${weaver.secrets.X}} references are deferred at schedule time and are normally
      * only resolved at task hand-off (worker poll or async system task execution). Synchronous
      * system tasks execute inline in the decide loop and never go through those hand-off points, so
      * without this substitution they would see the literal, unresolved secret reference.
+     *
+     * <p>After the task runs, any resolved secret value that ended up in its output, failure reason
+     * or the workflow variables is masked, before the decide loop persists them.
      */
     private void startSyncSystemTaskWithSecrets(
             WorkflowSystemTask systemTask, WorkflowModel workflow, TaskModel task) {
-        Map<String, Object> literalInput = task.getInputData();
-        try {
-            task.setInputData(parametersUtils.substituteSecrets(literalInput));
+        runWithResolvedSecrets(systemTask, workflow, task, () -> {
             systemTask.start(workflow, task, this);
-        } finally {
-            task.setInputData(literalInput);
-        }
+            return null;
+        });
     }
 
     /**
@@ -2113,13 +2120,46 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
      */
     private boolean executeSyncSystemTaskWithSecrets(
             WorkflowSystemTask systemTask, WorkflowModel workflow, TaskModel task) {
+        return runWithResolvedSecrets(
+                systemTask, workflow, task, () -> systemTask.execute(workflow, task, this));
+    }
+
+    /**
+     * Swaps in a secret-resolved copy of the task input for the duration of {@code action}, then
+     * restores the literal input and masks resolved values in the task and workflow variables.
+     * Tasks that opt out ({@link WorkflowSystemTask#resolvesSecrets()}) run with the literal input.
+     */
+    private <T> T runWithResolvedSecrets(
+            WorkflowSystemTask systemTask,
+            WorkflowModel workflow,
+            TaskModel task,
+            java.util.function.Supplier<T> action) {
+        if (!systemTask.resolvesSecrets()) {
+            return action.get();
+        }
         Map<String, Object> literalInput = task.getInputData();
+        WeaverPlaceholderResolver.SecretResolution resolution =
+                parametersUtils.resolveSecretsForExecution(literalInput);
+        if (resolution == null) {
+            resolution = WeaverPlaceholderResolver.SecretResolution.unchanged(literalInput);
+        }
         try {
-            task.setInputData(parametersUtils.substituteSecrets(literalInput));
-            return systemTask.execute(workflow, task, this);
+            task.setInputData(resolution.input());
+            return action.get();
         } finally {
             task.setInputData(literalInput);
+            maskResolvedSecrets(workflow, task, resolution.secretValues());
         }
+    }
+
+    private void maskResolvedSecrets(
+            WorkflowModel workflow, TaskModel task, java.util.Set<String> secretValues) {
+        WeaverPlaceholderResolver placeholders = parametersUtils.getPlaceholders();
+        if (placeholders == null || secretValues == null || secretValues.isEmpty()) {
+            return;
+        }
+        placeholders.maskTask(task, secretValues);
+        placeholders.maskVariables(workflow, secretValues);
     }
 
     private void addTaskToQueue(final List<TaskModel> tasks) {

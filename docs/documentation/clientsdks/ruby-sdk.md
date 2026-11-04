@@ -145,7 +145,7 @@ human :approval, display_name: 'Manager Approval', form_template: 'approval_form
 http :call_api,
   url: 'https://api.example.com/users',
   method: :post,
-  headers: { 'Authorization' => 'Bearer ${workflow.secrets.api_token}' },
+  headers: { 'Authorization' => 'Bearer ${weaver.secrets.api_token}' },
   body: { name: wf[:name], email: wf[:email] }
 
 # HTTP polling (wait for condition)

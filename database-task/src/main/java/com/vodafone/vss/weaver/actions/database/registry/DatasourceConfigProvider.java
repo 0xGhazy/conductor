@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
-import org.conductoross.conductor.dao.SecretsDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +29,10 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.vodafone.vss.weaver.actions.database.dto.DatasourceConfig;
 import com.vodafone.vss.weaver.actions.database.util.PasswordEncryptionUtil;
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.database.DatasourceModel;
 import com.vodafone.vss.weaver.common.database.JdbcConnectionDetails;
 import com.vodafone.vss.weaver.common.database.PoolSettings;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.dao.DatasourceDAO;
 
 @Component
@@ -47,10 +46,7 @@ public class DatasourceConfigProvider {
     private final long versionCheckIntervalMs;
 
     @Autowired(required = false)
-    private SecretsDAO secretsDAO;
-
-    @Autowired(required = false)
-    private VariableResolver variableResolver;
+    private WeaverPlaceholderResolver placeholders;
 
     @Autowired
     public DatasourceConfigProvider(
@@ -186,20 +182,14 @@ public class DatasourceConfigProvider {
         );
     }
 
+    /**
+     * Datasource settings are admin configuration: ${weaver.env.NAME[:default]} and
+     * ${weaver.secrets.NAME} are resolved here and kept only in the in-memory config cache.
+     */
     private String resolve(String text) {
-        if (text == null || text.isBlank()) {
+        if (text == null || text.isBlank() || placeholders == null) {
             return text;
         }
-        if (variableResolver != null) {
-            text = variableResolver.resolve(text);
-        }
-        if (secretsDAO != null && text.startsWith("#{S:") && text.endsWith("}")) {
-            String secretName = text.substring(4, text.length() - 1).trim();
-            String val = secretsDAO.getSecret(secretName);
-            if (val != null) {
-                return val;
-            }
-        }
-        return text;
+        return placeholders.resolveConfig(text);
     }
 }

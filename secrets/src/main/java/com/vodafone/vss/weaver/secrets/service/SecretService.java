@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.vodafone.vss.weaver.common.Encryption;
 import com.vodafone.vss.weaver.common.secrets.*;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.dao.SecretDAO;
 import com.vodafone.vss.weaver.secrets.spi.SecretUsageProvider;
 
@@ -32,6 +33,24 @@ public class SecretService {
         this.secretDAO = secretDAO;
         this.encryption = encryption;
         this.usageProviders = usageProviders != null ? usageProviders : List.of();
+    }
+
+    /** Cache of resolved secrets used by workflows and configuration; optional. */
+    private WeaverPlaceholderResolver placeholders;
+
+    @Autowired(required = false)
+    public void setPlaceholders(WeaverPlaceholderResolver placeholders) {
+        this.placeholders = placeholders;
+    }
+
+    /**
+     * Drops the secret from this node's resolution cache so the change is seen immediately here.
+     * Other nodes pick it up when their cache entry expires (conductor.secrets.cache-ttl).
+     */
+    private void evictFromCache(String name) {
+        if (placeholders != null) {
+            placeholders.invalidateSecret(name);
+        }
     }
 
     public SecretResponse create(@Valid SecretRequest request) {
@@ -103,6 +122,7 @@ public class SecretService {
         }
 
         SecretModel saved = secretDAO.update(secret);
+        evictFromCache(saved.getName());
 
         if (valueChanged) {
             log.info(
@@ -124,6 +144,7 @@ public class SecretService {
             throw SecretException.inUse(secret.getName(), usages);
         }
         secretDAO.deleteById(id);
+        evictFromCache(secret.getName());
         log.info("Secret [{}] deleted", secret.getName());
     }
 

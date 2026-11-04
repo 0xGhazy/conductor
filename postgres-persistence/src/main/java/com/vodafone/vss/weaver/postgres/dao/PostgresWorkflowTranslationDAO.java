@@ -72,6 +72,7 @@ public class PostgresWorkflowTranslationDAO extends PostgresBaseDAO
                     q.addParameter(toJson(translation.getTranslations()));
                     q.addTimestampParameter(toTimestamp(translation.getCreatedAt()));
                     q.addTimestampParameter(toTimestamp(translation.getUpdatedAt()));
+                    q.executeUpdate();
                 });
 
         return translation;
@@ -95,6 +96,7 @@ public class PostgresWorkflowTranslationDAO extends PostgresBaseDAO
                     q.addParameter(toJson(translation.getTranslations()));
                     q.addTimestampParameter(toTimestamp(translation.getUpdatedAt()));
                     q.addParameter(translation.getId().toString());
+                    q.executeUpdate();
                 });
 
         return translation;

@@ -59,6 +59,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
                     q.addParameter(model.getCreatedBy() != null ? model.getCreatedBy().toString() : null);
                     q.addTimestampParameter(toTimestamp(model.getCreatedAt()));
                     q.addTimestampParameter(toTimestamp(model.getUpdatedAt()));
+                    q.executeUpdate();
                 });
         return model;
     }
@@ -99,6 +100,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
                         q.addTimestampParameter(toTimestamp(model.getUpdatedAt()));
                         q.addParameter(model.getId().toString());
                     }
+                    q.executeUpdate();
                 });
         model.setVersion(newVersion);
         return model;
@@ -110,7 +112,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
             return false;
         }
         String sql = "DELETE FROM secrets WHERE id = ?::uuid";
-        executeWithTransaction(sql, q -> q.addParameter(id.toString()));
+        executeWithTransaction(sql, q -> q.addParameter(id.toString()).executeUpdate());
         return true;
     }
 
@@ -120,7 +122,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
             return false;
         }
         String sql = "DELETE FROM secrets WHERE name = ?";
-        executeWithTransaction(sql, q -> q.addParameter(name));
+        executeWithTransaction(sql, q -> q.addParameter(name).executeUpdate());
         return true;
     }
 

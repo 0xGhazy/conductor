@@ -50,6 +50,7 @@ public class PostgresSupportedLanguageDAO extends PostgresBaseDAO implements Sup
                     q.addParameter(model.isDefault());
                     q.addTimestampParameter(toTimestamp(model.getCreatedAt()));
                     q.addTimestampParameter(toTimestamp(model.getUpdatedAt()));
+                    q.executeUpdate();
                 });
         return model;
     }
@@ -72,6 +73,7 @@ public class PostgresSupportedLanguageDAO extends PostgresBaseDAO implements Sup
                     q.addParameter(model.isDefault());
                     q.addTimestampParameter(toTimestamp(model.getUpdatedAt()));
                     q.addParameter(model.getId().toString());
+                    q.executeUpdate();
                 });
         return model;
     }
@@ -82,7 +84,7 @@ public class PostgresSupportedLanguageDAO extends PostgresBaseDAO implements Sup
             return false;
         }
         String sql = "DELETE FROM supported_languages WHERE id = ?::uuid";
-        executeWithTransaction(sql, q -> q.addParameter(id.toString()));
+        executeWithTransaction(sql, q -> q.addParameter(id.toString()).executeUpdate());
         return true;
     }
 
@@ -179,6 +181,7 @@ public class PostgresSupportedLanguageDAO extends PostgresBaseDAO implements Sup
                     if (id != null) {
                         q.addParameter(id.toString());
                     }
+                    q.executeUpdate();
                 });
     }
 

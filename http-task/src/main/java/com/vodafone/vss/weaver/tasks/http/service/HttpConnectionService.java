@@ -28,12 +28,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.vodafone.vss.weaver.common.VariableResolver;
 import com.vodafone.vss.weaver.common.http.AuthenticationStrategy;
 import com.vodafone.vss.weaver.common.http.CreateConnectionRequest;
 import com.vodafone.vss.weaver.common.http.HttpConnectionModel;
 import com.vodafone.vss.weaver.common.http.ShortDetailedHttpConnection;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
+import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
 import com.vodafone.vss.weaver.dao.HttpConnectionDAO;
 import com.vodafone.vss.weaver.tasks.http.security.ApiKey;
 import com.vodafone.vss.weaver.tasks.http.security.AuthStrategy;
@@ -51,7 +51,7 @@ public class HttpConnectionService {
     private final ConcurrentHashMap<String, AuthStrategy> connectionsPool = new ConcurrentHashMap<>();
 
     @Autowired(required = false)
-    private VariableResolver variableResolver;
+    private WeaverPlaceholderResolver placeholders;
 
     public HttpConnectionService(HttpConnectionDAO repository) {
         this.repository = repository;
@@ -224,10 +224,12 @@ public class HttpConnectionService {
 
     @SuppressWarnings("unchecked")
     private HttpConnectionModel withResolvedSecrets(HttpConnectionModel connection) {
-        if (variableResolver == null || connection.getAuthConfig() == null) {
+        if (placeholders == null || connection.getAuthConfig() == null) {
             return connection;
         }
-        Object resolved = variableResolver.resolveDeep(connection.getAuthConfig(), true);
+        // Connection settings are admin configuration: ${weaver.env...} and ${weaver.secrets...}
+        // are resolved here, once, and kept only in memory.
+        Object resolved = placeholders.resolveConfigDeep(connection.getAuthConfig());
         return HttpConnectionModel.builder()
                 .id(connection.getId())
                 .name(connection.getName())

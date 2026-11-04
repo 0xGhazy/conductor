@@ -33,7 +33,7 @@ public class EnvVariableEnvironmentDAO implements EnvironmentDAO {
     private final String prefix;
 
     public EnvVariableEnvironmentDAO(
-            @Value("${conductor.environment.env.prefix:CONDUCTOR_ENV_}") String prefix) {
+            @Value("${conductor.environment.env.prefix:WEAVER_ENV_}") String prefix) {
         this.prefix = prefix;
     }
 
