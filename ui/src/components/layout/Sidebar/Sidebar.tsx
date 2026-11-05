@@ -15,7 +15,7 @@ import {
   Globe,
   FlaskConical,
   Languages,
-  ArrowRightLeft,
+  Settings as SettingsIcon,
 } from "lucide-react";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { prefetchRoute } from "@/routes/routeModules";
@@ -26,6 +26,8 @@ interface NavItemDef {
   path: string;
   icon: React.ComponentType<{ size?: number; className?: string }>;
   exact?: boolean;
+  /** Paths that also mark this item active (when they are not under `path`). */
+  activePaths?: string[];
 }
 
 interface NavGroupDef {
@@ -61,7 +63,18 @@ const NAVIGATION_GROUPS: NavGroupDef[] = [
     items: [
       { label: "Workbench", path: "/workbench", icon: FlaskConical },
       { label: "Languages", path: "/settings/languages", icon: Languages },
-      { label: "Migration", path: "/settings/migration", icon: ArrowRightLeft },
+      {
+        label: "Settings",
+        path: "/settings",
+        icon: SettingsIcon,
+        exact: true,
+        activePaths: [
+          "/settings/migrations",
+          "/settings/configurations",
+          "/settings/audit-logs",
+          "/settings/identity",
+        ],
+      },
     ],
   },
 ];
@@ -86,6 +99,9 @@ export const Sidebar: React.FC = () => {
   const isItemActive = useMemo(() => {
     return (item: NavItemDef) => {
       const current = location.pathname;
+      if (item.activePaths?.some((p) => current === p || current.startsWith(p + "/"))) {
+        return true;
+      }
       if (item.exact) {
         return current === item.path;
       }
@@ -111,12 +127,10 @@ export const Sidebar: React.FC = () => {
           aria-expanded={!collapsed}
         >
           <img src="/logo.png" alt="" className={styles.brandLogo} />
-          {!collapsed && (
-            <div className={styles.brandInfo}>
-              <span className={styles.brandName}>Weaver</span>
-              <span className={styles.versionBadge}>v2.0</span>
-            </div>
-          )}
+          <div className={styles.brandInfo} aria-hidden={collapsed}>
+            <span className={styles.brandName}>Weaver</span>
+            <span className={styles.versionBadge}>v2.0</span>
+          </div>
         </button>
       </div>
 
@@ -124,11 +138,12 @@ export const Sidebar: React.FC = () => {
       <nav className={styles.navContainer}>
         {NAVIGATION_GROUPS.map((group, groupIndex) => (
           <div key={group.label} className={styles.navGroup}>
-            {collapsed ? (
-              groupIndex > 0 && <div className={styles.groupDivider} />
-            ) : (
-              <h3 className={styles.groupLabel}>{group.label}</h3>
+            {groupIndex > 0 && (
+              <div className={styles.groupDivider} aria-hidden="true" />
             )}
+            <h3 className={styles.groupLabel} aria-hidden={collapsed}>
+              {group.label}
+            </h3>
 
             {group.items.map((item) => {
               const active = isItemActive(item);
@@ -137,12 +152,13 @@ export const Sidebar: React.FC = () => {
                 ? `${styles.navItem} ${styles.navItemActive}`
                 : styles.navItem;
 
-              const navLink = (
+              return (
                 <Link
                   key={item.path}
                   to={item.path}
                   className={itemClass}
                   aria-current={active ? "page" : undefined}
+                  aria-label={item.label}
                   onMouseEnter={() => prefetchRoute(item.path)}
                   onFocus={() => prefetchRoute(item.path)}
                 >
@@ -150,22 +166,14 @@ export const Sidebar: React.FC = () => {
                   <span className={styles.navIcon} aria-hidden="true">
                     <Icon size={17} />
                   </span>
-                  {!collapsed && <span className={styles.navLabel}>{item.label}</span>}
+                  <span className={styles.navLabel} aria-hidden="true">
+                    {item.label}
+                  </span>
+                  <span className={styles.tooltipBubble} role="tooltip" aria-hidden="true">
+                    {item.label}
+                  </span>
                 </Link>
               );
-
-              if (collapsed) {
-                return (
-                  <div key={item.path} className={styles.tooltipWrapper}>
-                    {navLink}
-                    <div className={styles.tooltipBubble} role="tooltip">
-                      {item.label}
-                    </div>
-                  </div>
-                );
-              }
-
-              return navLink;
             })}
           </div>
         ))}

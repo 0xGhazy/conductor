@@ -28,6 +28,7 @@ node_modules
 /ui/build
 /ui/.vite
 /test-exports
+/.impeccable/review
 /ui/public/monaco-editor
 
 # publishing secrets

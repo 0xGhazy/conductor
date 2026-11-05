@@ -55,7 +55,7 @@ class ConductorSecurityConfigurationTest {
             return Map.of("openapi", "3.0.1");
         }
 
-        @GetMapping("/api/admin/users")
+        @GetMapping({"/api/admin/users", "/api/admin/audit", "/api/admin/audit/facets"})
         public Map<String, String> adminUsers() {
             return Map.of("role", "admin");
         }
@@ -171,6 +171,19 @@ class ConductorSecurityConfigurationTest {
                     .andExpect(status().isForbidden())
                     .andExpect(jsonPath("$.status").value(403))
                     .andExpect(jsonPath("$.error").value("Forbidden"));
+        }
+
+        @Test
+        void onlyAdminsCanReadTheAuditLog() throws Exception {
+            for (String path : List.of("/api/admin/audit", "/api/admin/audit/facets")) {
+                mockMvc.perform(get(path)).andExpect(status().isUnauthorized());
+                mockMvc.perform(get(path).header(HttpHeaders.AUTHORIZATION, "Bearer viewer-token"))
+                        .andExpect(status().isForbidden());
+                mockMvc.perform(get(path).header(HttpHeaders.AUTHORIZATION, "Bearer operator-token"))
+                        .andExpect(status().isForbidden());
+                mockMvc.perform(get(path).header(HttpHeaders.AUTHORIZATION, "Bearer admin-token"))
+                        .andExpect(status().isOk());
+            }
         }
 
         @Test

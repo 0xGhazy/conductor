@@ -66,6 +66,8 @@ public class DatabaseConnectionRequest {
     @Schema(description = "Milliseconds to wait for a connection (default 10000)", example = "10000")
     private Integer connectionTimeout;
 
+    // May hold credentials; keep it out of logs and audit records.
+    @ToString.Exclude
     @Schema(description = "Extra JDBC driver properties", example = "{\"sslmode\": \"disable\"}")
     private Map<String, String> properties;
 

@@ -161,9 +161,13 @@ export interface WeaverDataExplorerProps<TRecord> {
   defaultSearchValue?: string;
   onSearchChange?: (value: string) => void;
   searchPlaceholder?: string;
+  /** Width of the search box; 240px by default. */
+  searchWidth?: number | string;
   searchDebounceMs?: number;
 
   // Filtering
+  /** Show the filter builder (default true). Turn off when the page has its own filters. */
+  filterable?: boolean;
   filterModel?: WeaverFilterModel;
   defaultFilterModel?: WeaverFilterModel;
   onFilterChange?: (model: WeaverFilterModel) => void;

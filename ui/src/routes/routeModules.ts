@@ -23,7 +23,11 @@ export const pageLoaders = {
   executionView: () => import("@/pages/WorkflowMonitoring/WorkflowExecutionViewPage"),
   workbench: () => import("@/pages/Workbench/WorkbenchPage"),
   notFound: () => import("@/pages/Errors/NotFoundPage"),
-  migration: () => import("@/pages/Migration/MigrationPage"),
+  settingsMigrations: () => import("@/pages/Settings/SettingsMigrationsPage"),
+  settingsConfigurations: () => import("@/pages/Settings/SettingsConfigurationsPage"),
+  settingsAuditLogs: () => import("@/pages/Settings/SettingsAuditLogsPage"),
+  settingsUsers: () => import("@/pages/Settings/SettingsUsersPage"),
+  settingsRoles: () => import("@/pages/Settings/SettingsRolesPage"),
   translations: () => import("@/pages/Translations/TranslationsPage"),
   supportedLanguages: () => import("@/pages/Settings/SupportedLanguagesPage"),
 } as const;
@@ -46,7 +50,7 @@ const PREFETCH_BY_PATH: Record<string, PageKey[]> = {
   "/translations": ["translations"],
   "/workbench": ["workbench"],
   "/settings/languages": ["supportedLanguages"],
-  "/settings/migration": ["migration"],
+  "/settings": ["settingsMigrations", "settingsConfigurations", "settingsAuditLogs", "settingsUsers", "settingsRoles"],
 };
 
 const prefetched = new Set<PageKey>();

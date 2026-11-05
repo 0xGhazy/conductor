@@ -1,0 +1,512 @@
+/* Shared styles for the Settings pages (Configurations, Users, Roles & Permissions). */
+
+.muted {
+  color: var(--color-fg-muted);
+}
+
+.settingKey,
+.settingValue,
+.permissionScope {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.settingKey {
+  color: var(--color-fg-default);
+  font-weight: 500;
+}
+
+.settingValue {
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--color-fg-default);
+  background-color: var(--color-surface-soft);
+}
+
+/* Users */
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-accent-fg);
+  background-color: var(--color-accent-subtle);
+}
+
+.userText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 12.5px;
+}
+
+.userName {
+  font-weight: 600;
+  color: var(--color-fg-default);
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-fg-soft);
+}
+
+.statusDotOn {
+  background-color: var(--color-status-success);
+}
+
+/* Roles & Permissions */
+.roleGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.roleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background-color: var(--color-canvas-default);
+}
+
+.roleLabel {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-fg-default);
+}
+
+.roleDescription {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--color-fg-muted);
+}
+
+.matrixWrapper {
+  overflow-x: auto;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background-color: var(--color-canvas-default);
+}
+
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.matrix th,
+.matrix td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border-default);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.matrix tbody tr:last-child th,
+.matrix tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.matrix thead th {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-fg-muted);
+  background-color: var(--color-surface-soft);
+}
+
+.matrix tbody tr:hover {
+  background-color: var(--color-surface-soft);
+}
+
+.permissionHeader {
+  min-width: 320px;
+}
+
+.roleHeader,
+.grantCell {
+  width: 110px;
+  text-align: center !important;
+}
+
+.permissionCell {
+  font-weight: 400;
+}
+
+.permissionText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.permissionLabel {
+  font-weight: 600;
+  color: var(--color-fg-default);
+}
+
+.permissionScope {
+  color: var(--color-fg-muted);
+}
+
+.permissionNote {
+  font-size: 12px;
+  color: var(--color-status-warn);
+}
+
+.granted {
+  color: var(--color-status-success);
+}
+
+.denied {
+  color: var(--color-fg-soft);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Audit Logs */
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* Matches the 40px Weaver fields beside it. */
+.actionFilter {
+  width: 240px;
+}
+
+/* Doubled class: outranks MUI's own wrapping rule, so the field stays one line. */
+.actionFilter.actionFilter :global(.MuiAutocomplete-inputRoot) {
+  min-height: 40px;
+  flex-wrap: nowrap;
+}
+
+.actionFilter.actionFilter :global(.MuiAutocomplete-input) {
+  min-width: 24px;
+}
+
+/* Second row: the Filters toggle, the active filter chips, Reset. */
+.filterActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterActions .filterChips {
+  padding: 0;
+}
+
+.filtersButton {
+  height: 40px;
+  white-space: nowrap;
+}
+
+.resetButton {
+  height: 30px;
+  white-space: nowrap;
+}
+
+/* Search leads the filter row: the widest control, first. */
+.searchField {
+  width: 300px;
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  margin-right: 6px;
+  color: var(--color-fg-muted);
+}
+
+/* Event cell: the action as a sentence, what it acted on, and why it failed. */
+.eventCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 2px 0;
+}
+
+.eventButton {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-fg-default);
+  text-align: left;
+  cursor: pointer;
+}
+
+.eventButton:hover {
+  color: var(--color-accent-fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.eventButton:focus-visible {
+  outline: none;
+  border-radius: 3px;
+  box-shadow: var(--color-focus-ring);
+}
+
+/* The event open in the panel. */
+.eventButtonOpen {
+  margin: -1px -6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--color-accent-fg);
+  background-color: var(--color-accent-subtle);
+}
+
+.eventSubject {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  font-size: 12.5px;
+  color: var(--color-fg-muted);
+}
+
+.eventSubject > span:first-child {
+  flex-shrink: 0;
+}
+
+.eventSubject > span + span::before {
+  content: "·";
+  margin-right: 6px;
+  color: var(--color-fg-soft);
+}
+
+.eventSubjectName,
+.eventSubjectId {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eventSubjectName {
+  color: var(--color-fg-default);
+}
+
+.eventSubjectId {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+}
+
+.eventError {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12.5px;
+  color: var(--color-status-danger);
+}
+
+.numeric {
+  display: block;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.actionValue {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+  padding-left: 6px;
+  font-size: 14px;
+}
+
+.rangeError {
+  margin: -4px 0 0 0;
+  font-size: 12.5px;
+  color: var(--color-status-danger);
+}
+
+/* The Filters panel: the less common filters, applied together. */
+.advancedFilters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background-color: var(--color-canvas-default);
+}
+
+.advancedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.advancedActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .actionFilter,
+  .searchField {
+    width: 100%;
+  }
+}
+
+.resourceCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.resourceId {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--color-fg-muted);
+}
+
+.statusDotFailed {
+  background-color: var(--color-status-danger);
+}
+
+/* Filters set from the event panel (actor, resource) */
+.filterChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 4px 0;
+  list-style: none;
+}
+
+.filterChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 4px 0 10px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 999px;
+  background-color: var(--color-canvas-default);
+  font-size: 12.5px;
+}
+
+.filterChipLabel {
+  color: var(--color-fg-muted);
+}
+
+.filterChipValue {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--color-fg-default);
+}
+
+.filterChip button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-fg-muted);
+  cursor: pointer;
+}
+
+.filterChip button:hover {
+  color: var(--color-fg-default);
+  background-color: var(--color-surface-soft);
+}
+
+.filterChip button:focus-visible {
+  outline: none;
+  box-shadow: var(--color-focus-ring);
+}
+
+.linkButton {
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent-fg);
+  text-align: left;
+  cursor: pointer;
+}
+
+/* The event open in the panel. */
+.linkButtonOpen {
+  margin: -2px -6px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--color-accent-fg) 14%, transparent);
+}
+
+.linkButton:hover {
+  text-decoration: underline;
+}
+
+.linkButton:focus-visible {
+  outline: none;
+  border-radius: 3px;
+  box-shadow: var(--color-focus-ring);
+}

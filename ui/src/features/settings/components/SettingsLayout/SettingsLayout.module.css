@@ -1,0 +1,18 @@
+.layout {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: calc(100vh - 56px); /* below the app header */
+  background-color: var(--color-canvas-subtle);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    flex-direction: column;
+  }
+}

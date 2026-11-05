@@ -39,6 +39,7 @@ import com.vodafone.vss.weaver.actions.database.dto.SqlExecutionRequest;
 import com.vodafone.vss.weaver.actions.database.util.QueryParamTypeConverter;
 import com.vodafone.vss.weaver.actions.database.util.SqlMinifier;
 import com.vodafone.vss.weaver.annotations.Audit;
+import com.vodafone.vss.weaver.annotations.AuditContext;
 import com.vodafone.vss.weaver.audit.service.AuditSecurityHelper;
 import com.vodafone.vss.weaver.audit.service.UserService;
 import com.vodafone.vss.weaver.common.ExceptionUtils;
@@ -103,7 +104,9 @@ public class QueryService {
 
     // ----- CRUD ----- //
 
+    @Audit(action = "createQuery", resourceType = "QUERY", captureArguments = false)
     public QueryModel create(@NotNull QueryModel payload) {
+        AuditContext.put("name", payload.getName());
         validate(payload);
         String name = payload.getName().trim();
         DatasourceModel datasource = loadDatasource(payload.getDatasourceId());
@@ -121,11 +124,14 @@ public class QueryService {
                 .updatedBy(actor)
                 .build());
         queryCache.put(saved.getId(), saved);
+        AuditContext.recordChanges(Map.of(), auditFields(saved));
         log.info("Query {} created with id {}", name, saved.getId());
         return toResponse(saved, true);
     }
 
+    @Audit(action = "updateQuery", resourceType = "QUERY", captureArguments = false)
     public QueryModel update(@NotNull UUID id, @NotNull QueryModel payload) {
+        AuditContext.put("name", payload.getName());
         validate(payload);
         String name = payload.getName().trim();
         QueryModel existing = get(id);
@@ -144,6 +150,7 @@ public class QueryService {
                 .updatedBy(currentUser())
                 .build());
         queryCache.put(updated.getId(), updated);
+        AuditContext.recordChanges(auditFields(existing), auditFields(updated));
         log.info("Query {} updated (id {})", name, id);
         return toResponse(updated, true);
     }
@@ -195,7 +202,7 @@ public class QueryService {
     // ----- Execution from the REST API (audited, row and time limited) ----- //
 
     /** Runs SQL sent by the caller against a database. */
-    @Audit
+    @Audit(action = "executeSql", resourceType = "DATABASE")
     public QueryExecutionResult runSql(@NotNull UUID databaseId, @NotNull SqlExecutionRequest request) {
         loadDatasource(databaseId);
         int timeoutMs = effectiveTimeoutMs(request.getTimeout());
@@ -212,7 +219,7 @@ public class QueryService {
     }
 
     /** Runs a saved query with the caller's arguments. */
-    @Audit
+    @Audit(action = "executeQuery", resourceType = "QUERY")
     public QueryExecutionResult runQuery(@NotNull UUID queryId, QueryExecutionRequest request) {
         QueryModel query = get(queryId);
         int maxRows = effectiveMaxRows(request != null ? request.getMaxRows() : null);
@@ -331,6 +338,18 @@ public class QueryService {
 
     private String resolveConfig(String sql) {
         return sql == null || placeholders == null ? sql : placeholders.resolveConfig(sql);
+    }
+
+    /** The fields of a query shown in audit changes. */
+    private static Map<String, Object> auditFields(QueryModel query) {
+        Map<String, Object> fields = new LinkedHashMap<>();
+        fields.put("name", query.getName());
+        fields.put("description", query.getDescription());
+        fields.put("sql", query.getSql());
+        fields.put("timeout", query.getTimeout());
+        fields.put("parameters", query.getParameters());
+        fields.put("datasourceId", query.getDatasourceId());
+        return fields;
     }
 
     private static String normalizeDescription(String description) {

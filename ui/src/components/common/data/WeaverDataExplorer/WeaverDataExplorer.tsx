@@ -13,7 +13,9 @@ export function WeaverDataExplorer<TRecord>(props: WeaverDataExplorerProps<TReco
   const {
     getRecordId,
     searchable = true,
+    filterable = true,
     searchPlaceholder,
+    searchWidth,
     toolbarActions,
     rowActions,
     bulkActions,
@@ -64,6 +66,8 @@ export function WeaverDataExplorer<TRecord>(props: WeaverDataExplorerProps<TReco
         searchValue={state.searchValue}
         onSearchChange={state.setSearch}
         searchPlaceholder={searchPlaceholder}
+        searchWidth={searchWidth}
+        filterable={filterable}
         filterModel={state.filterModel}
         onFilterChange={state.setFilterModel}
         view={state.view}

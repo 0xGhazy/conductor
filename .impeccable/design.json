@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-05T12:00:00Z",
+  "title": "Design System: Weaver",
+  "extensions": {
+    "colorMeta": {
+      "accent-solid": { "role": "primary", "displayName": "Weaver Red", "canonical": "var(--color-accent-solid)", "dark": "#D9102B", "note": "Light-theme accent text (--color-accent-fg) equals this value; dark-theme accent text is #FF6B78.", "tonalRamp": ["#3D0510", "#640816", "#8E0B1E", "#BD0D25", "#D9102B", "#EE4A5D", "#F79AA4", "#FCDDE1"] },
+      "accent-hover": { "role": "primary", "displayName": "Pressed Red", "canonical": "var(--color-accent-hover)", "dark": "#EE2A40", "tonalRamp": ["#36040D", "#5A0714", "#820A1C", "#BD0D25", "#D63347", "#E8707E", "#F4AEB6", "#FBE2E5"] },
+      "accent-subtle": { "role": "primary", "displayName": "Red Wash", "canonical": "color-mix(in srgb, var(--color-accent-fg) 12%, transparent)", "dark": "color-mix(in srgb, #FF6B78 14%, transparent)", "tonalRamp": ["#8E0B1E", "#BD0D25", "#D9102B", "#EE4A5D", "#F79AA4", "#FAC2C8", "#FCDDE1", "#FEF0F2"] },
+      "canvas-subtle": { "role": "neutral", "displayName": "Desk Grey", "canonical": "var(--color-canvas-subtle)", "dark": "#141A27", "tonalRamp": ["#151B2B", "#35405A", "#4A5468", "#7E899E", "#D8DDE8", "#E1E6EF", "#E9EDF4", "#F3F5F9"] },
+      "canvas-default": { "role": "neutral", "displayName": "Sheet White", "canonical": "var(--color-canvas-default)", "dark": "#1C2433", "tonalRamp": ["#151B2B", "#35405A", "#5B667C", "#7E899E", "#D8DDE8", "#E9EDF4", "#F3F5F9", "#FFFFFF"] },
+      "surface-soft": { "role": "neutral", "displayName": "Soft Slate", "canonical": "var(--color-surface-soft)", "dark": "#252E42", "tonalRamp": ["#151B2B", "#252E42", "#4A5468", "#7E899E", "#D8DDE8", "#E1E6EF", "#E9EDF4", "#F3F5F9"] },
+      "surface-sunken": { "role": "neutral", "displayName": "Sunken Slate", "canonical": "var(--color-surface-sunken)", "dark": "#10151F", "tonalRamp": ["#10151F", "#252E42", "#4A5468", "#7E899E", "#D8DDE8", "#E1E6EF", "#E9EDF4", "#F3F5F9"] },
+      "fg-default": { "role": "neutral", "displayName": "Ink", "canonical": "var(--color-fg-default)", "dark": "#E9ECF4", "tonalRamp": ["#0B0F19", "#151B2B", "#2A3347", "#4A5468", "#5B667C", "#8E98AE", "#AAB3C6", "#E9ECF4"] },
+      "fg-muted": { "role": "neutral", "displayName": "Muted Ink", "canonical": "var(--color-fg-muted)", "dark": "#AAB3C6", "tonalRamp": ["#151B2B", "#2A3347", "#4A5468", "#5B667C", "#7E899E", "#AAB3C6", "#D8DDE8", "#F3F5F9"] },
+      "fg-soft": { "role": "neutral", "displayName": "Soft Ink", "canonical": "var(--color-fg-soft)", "dark": "#8E98AE", "tonalRamp": ["#151B2B", "#35405A", "#4A5468", "#5B667C", "#7E899E", "#8E98AE", "#D8DDE8", "#F3F5F9"] },
+      "border-default": { "role": "neutral", "displayName": "Hairline", "canonical": "var(--color-border-default)", "dark": "#35405A", "tonalRamp": ["#151B2B", "#35405A", "#5B667C", "#7E899E", "#B4BCCC", "#D8DDE8", "#E9EDF4", "#F3F5F9"] },
+      "border-strong": { "role": "neutral", "displayName": "Field Edge", "canonical": "var(--color-border-strong)", "dark": "#6A7794", "tonalRamp": ["#151B2B", "#35405A", "#5B667C", "#6A7794", "#7E899E", "#AAB3C6", "#D8DDE8", "#F3F5F9"] },
+      "status-success": { "role": "status", "displayName": "Success Green", "canonical": "var(--color-status-success)", "dark": "#4ADE80", "tonalRamp": ["#052E16", "#14532D", "#166534", "#15803D", "#16A34A", "#4ADE80", "#BBF7D0", "#F0FDF4"] },
+      "status-danger": { "role": "status", "displayName": "Danger Red", "canonical": "var(--color-status-danger)", "dark": "#FF7A85", "tonalRamp": ["#3B060B", "#6B0D16", "#9A1622", "#C81E2D", "#E04452", "#FF7A85", "#FFC2C7", "#FFF0F1"] },
+      "status-warn": { "role": "status", "displayName": "Warn Amber", "canonical": "var(--color-status-warn)", "dark": "#FFC15A", "tonalRamp": ["#2E1B00", "#5A3500", "#7A4800", "#9A5A00", "#C77A0A", "#FFC15A", "#FFE2B0", "#FFF7EA"] },
+      "status-info": { "role": "status", "displayName": "Info Blue", "canonical": "var(--color-status-info)", "dark": "#7FB0FF", "tonalRamp": ["#0B1A45", "#132C77", "#1A3FA8", "#1D4ED8", "#3B6FF0", "#7FB0FF", "#C7DBFF", "#EFF5FF"] }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Title", "purpose": "Detail panel sentence title (\"Updated query\"); balanced wrap." },
+      "subtitle": { "displayName": "Subtitle", "purpose": "Subject line under a title, in Muted Ink." },
+      "section-title": { "displayName": "Section Title", "purpose": "Panel section headings: Changes, Context, Error, Recorded arguments." },
+      "body": { "displayName": "Body", "purpose": "Rows, values, descriptions, error text." },
+      "body-small": { "displayName": "Body Small", "purpose": "Meta lines, notes, filter chips, card descriptions." },
+      "caption": { "displayName": "Caption", "purpose": "Before / After captions and secondary lines (email under a name)." },
+      "mono": { "displayName": "Mono", "purpose": "Only machine-written text: code, ids, action names, IPs, recorded values." },
+      "column-header": { "displayName": "Column Header", "purpose": "Uppercase table column heads only; not for section labels." }
+    },
+    "shadows": [
+      { "name": "shadow-sm", "value": "0 1px 3px rgba(21, 27, 43, .08)", "dark": "0 2px 8px rgba(0, 0, 0, .35)", "purpose": "Slightly lifted surfaces." },
+      { "name": "shadow-md", "value": "0 1px 3px rgba(21, 27, 43, .08), 0 4px 12px rgba(21, 27, 43, .06)", "dark": "0 2px 8px rgba(0, 0, 0, .35)", "purpose": "Floating cards and overlays." },
+      { "name": "focus-ring", "value": "0 0 0 3px color-mix(in srgb, var(--color-accent-fg) 35%, transparent)", "purpose": "Every custom focus-visible state and focused inputs (--color-focus-ring)." }
+    ],
+    "motion": [
+      { "name": "state-transition", "value": "0.2s ease", "purpose": "Background, border, colour and box-shadow changes on buttons, tabs and inputs." },
+      { "name": "disclosure", "value": "transform 120ms ease-out", "purpose": "Disclosure chevron rotating 90deg; removed under prefers-reduced-motion." },
+      { "name": "skeleton-shimmer", "value": "1.4s ease-in-out infinite", "purpose": "Loading skeleton bars; static under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "compact", "value": "600px", "purpose": "Panel insets tighten to 16px; label/value grids stack; Action filter goes full width." }
+    ],
+    "layout": {
+      "fieldHeight": "40px (--weaver-field-height)",
+      "detailPanelWidth": "min(540px, 100vw)",
+      "labelColumn": "minmax(110px, 34%)",
+      "knownLimitations": [
+        "At 390px the global app header and main sidebar make every page wider than the viewport (788px with the sidebar open, 592px collapsed). App-shell limitation, out of scope; not a rule."
+      ]
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Committing action or a toggle that is on (Apply, Filters (3)).",
+      "html": "<button class=\"ds-btn-primary\">Apply</button>",
+      "css": ".ds-btn-primary { background: var(--color-accent-solid, #D9102B); color: #FFFFFF; border: none; border-radius: 8px; padding: 4px 10px; font: 600 13px/1.75 'Open Sans', sans-serif; cursor: pointer; box-shadow: none; transition: background-color 0.2s ease, box-shadow 0.2s ease; } .ds-btn-primary:hover { background: var(--color-accent-hover, #BD0D25); } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, #D9102B 35%, transparent); }"
+    },
+    {
+      "name": "Outlined Button",
+      "kind": "button",
+      "refersTo": "button-outlined",
+      "description": "Secondary actions and pivots, optionally with a 14px line icon.",
+      "html": "<button class=\"ds-btn-outlined\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polygon points=\"22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3\"/></svg>Show all by this actor</button>",
+      "css": ".ds-btn-outlined { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--color-accent-fg, #D9102B); border: 1px solid var(--color-accent-fg, #D9102B); border-radius: 8px; padding: 3px 9px; font: 600 13px/1.75 'Open Sans', sans-serif; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; } .ds-btn-outlined:hover { border-color: var(--color-accent-hover, #BD0D25); background: color-mix(in srgb, #D9102B 12%, transparent); } .ds-btn-outlined:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, #D9102B 35%, transparent); }"
+    },
+    {
+      "name": "Text Button",
+      "kind": "button",
+      "refersTo": "button-outlined",
+      "description": "Dismissive or resetting actions: Reset filters, Clear these, Cancel.",
+      "html": "<button class=\"ds-btn-text\">Reset filters</button>",
+      "css": ".ds-btn-text { background: transparent; color: var(--color-accent-fg, #D9102B); border: none; border-radius: 8px; padding: 4px 5px; font: 600 13px/1.75 'Open Sans', sans-serif; cursor: pointer; transition: background-color 0.2s ease; } .ds-btn-text:hover { background: color-mix(in srgb, #D9102B 8%, transparent); } .ds-btn-text:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, #D9102B 35%, transparent); }"
+    },
+    {
+      "name": "Outlined Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "40px outlined text field with a floating label, as in the filter toolbar.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Client IP</span><input class=\"ds-field-input\" placeholder=\"e.g. 10.20.4.17\"></label>",
+      "css": ".ds-field { position: relative; display: inline-block; width: 200px; } .ds-field-label { position: absolute; top: -8px; left: 10px; padding: 0 4px; background: var(--color-canvas-default, #FFFFFF); color: var(--color-fg-muted, #4A5468); font: 400 12px 'Open Sans', sans-serif; } .ds-field-input { box-sizing: border-box; width: 100%; height: 40px; padding: 0 14px; border: 1px solid var(--color-border-strong, #7E899E); border-radius: 8px; background: var(--color-canvas-default, #FFFFFF); color: var(--color-fg-default, #151B2B); font: 400 14px 'Open Sans', sans-serif; transition: border-color 0.2s ease, box-shadow 0.2s ease; } .ds-field-input:hover { border-color: var(--color-fg-muted, #4A5468); } .ds-field-input:focus { outline: none; border: 1.5px solid var(--color-accent-fg, #D9102B); box-shadow: 0 0 0 3px color-mix(in srgb, #D9102B 35%, transparent); }"
+    },
+    {
+      "name": "Removable Filter Chip",
+      "kind": "chip",
+      "refersTo": "filter-chip",
+      "description": "Active filter: muted label, emphasised value, round remove button.",
+      "html": "<span class=\"ds-filter-chip\"><span class=\"ds-filter-chip-label\">Client IP</span><span class=\"ds-filter-chip-value\">10.20.4.17</span><button class=\"ds-filter-chip-remove\" aria-label=\"Remove client ip filter 10.20.4.17\"><svg width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg></button></span>",
+      "css": ".ds-filter-chip { display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 4px 0 10px; border: 1px solid var(--color-border-default, #D8DDE8); border-radius: 999px; background: var(--color-canvas-default, #FFFFFF); font: 400 12.5px 'Open Sans', sans-serif; } .ds-filter-chip-label { color: var(--color-fg-muted, #4A5468); } .ds-filter-chip-value { max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: var(--color-fg-default, #151B2B); } .ds-filter-chip-remove { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; padding: 0; border: none; border-radius: 50%; background: transparent; color: var(--color-fg-muted, #4A5468); cursor: pointer; } .ds-filter-chip-remove:hover { color: var(--color-fg-default, #151B2B); background: var(--color-surface-soft, #E9EDF4); } .ds-filter-chip-remove:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, #D9102B 35%, transparent); }"
+    },
+    {
+      "name": "Status",
+      "kind": "custom",
+      "refersTo": "status-success",
+      "description": "Outcome as a 7px dot plus a word; never colour alone.",
+      "html": "<span class=\"ds-status\"><span class=\"ds-status-dot\"></span>Success</span> <span class=\"ds-status\"><span class=\"ds-status-dot ds-status-dot-failed\"></span>Failed</span>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 6px; font: 400 12.5px 'Open Sans', sans-serif; color: var(--color-fg-muted, #4A5468); margin-right: 12px; } .ds-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--color-status-success, #15803D); } .ds-status-dot-failed { background: var(--color-status-danger, #C81E2D); }"
+    },
+    {
+      "name": "Change Row",
+      "kind": "custom",
+      "refersTo": "detail-panel",
+      "description": "Field-by-field change: muted label, struck-through Before, soft arrow, emphasised After; rows divided by hairlines.",
+      "html": "<dl class=\"ds-changes\"><div class=\"ds-change-row\"><dt>Timeout (ms)</dt><dd><span class=\"ds-before\">1000</span><svg class=\"ds-arrow\" width=\"13\" height=\"13\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg><span class=\"ds-after\">5000</span></dd></div><div class=\"ds-change-row\"><dt>Password</dt><dd><span class=\"ds-secret\">Changed (hidden)</span></dd></div></dl>",
+      "css": ".ds-changes { margin: 0; width: 420px; font: 400 13px 'Open Sans', sans-serif; } .ds-change-row { display: grid; grid-template-columns: minmax(110px, 34%) 1fr; gap: 12px; align-items: baseline; padding: 10px 0; } .ds-change-row + .ds-change-row { border-top: 1px solid var(--color-border-default, #D8DDE8); } .ds-change-row dt { color: var(--color-fg-muted, #4A5468); } .ds-change-row dd { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 0; } .ds-before { color: var(--color-fg-muted, #4A5468); text-decoration: line-through; } .ds-arrow { align-self: center; color: var(--color-fg-soft, #5B667C); } .ds-after { font-weight: 600; color: var(--color-fg-default, #151B2B); } .ds-secret { display: inline-flex; align-items: center; padding: 1px 8px; border: 1px solid var(--color-border-default, #D8DDE8); border-radius: 999px; font-size: 12px; color: var(--color-fg-muted, #4A5468); }"
+    },
+    {
+      "name": "Code Block",
+      "kind": "custom",
+      "refersTo": "code-block",
+      "description": "Long values as stacked Before / After blocks; Before sits on Desk Grey in Muted Ink.",
+      "html": "<figure class=\"ds-block\"><figcaption>Before</figcaption><pre class=\"ds-code ds-code-before\">SELECT status, COUNT(*) AS total\nFROM workflow_index</pre></figure><figure class=\"ds-block\"><figcaption>After</figcaption><pre class=\"ds-code\">SELECT status, COUNT(*) AS total\nFROM workflow_index\nWHERE start_time >= NOW() - INTERVAL '1 hour'</pre></figure>",
+      "css": ".ds-block { margin: 0 0 8px 0; width: 420px; } .ds-block figcaption { margin-bottom: 4px; font: 400 12px 'Open Sans', sans-serif; color: var(--color-fg-muted, #4A5468); } .ds-code { margin: 0; padding: 10px 12px; max-height: 260px; overflow: auto; border: 1px solid var(--color-border-default, #D8DDE8); border-radius: 6px; background: var(--color-surface-soft, #E9EDF4); color: var(--color-fg-default, #151B2B); font: 400 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; white-space: pre-wrap; } .ds-code-before { color: var(--color-fg-muted, #4A5468); background: var(--color-canvas-subtle, #F3F5F9); }"
+    },
+    {
+      "name": "Error Box",
+      "kind": "card",
+      "refersTo": "error-box",
+      "description": "Failed events only: the error, first, in a danger-tinted frame.",
+      "html": "<section class=\"ds-error-box\"><h3>Error</h3><p>A query named 'workflow-status-summary' already exists on this database</p></section>",
+      "css": ".ds-error-box { width: 400px; padding: 12px 14px; border: 1px solid color-mix(in srgb, #C81E2D 45%, #D8DDE8); border-radius: 8px; background: color-mix(in srgb, #C81E2D 7%, #FFFFFF); font-family: 'Open Sans', sans-serif; } .ds-error-box h3 { margin: 0 0 4px 0; font-size: 13px; font-weight: 650; color: var(--color-status-danger, #C81E2D); } .ds-error-box p { margin: 0; font-size: 13px; line-height: 1.5; color: var(--color-fg-default, #151B2B); }"
+    },
+    {
+      "name": "Container Card",
+      "kind": "card",
+      "refersTo": "container-card",
+      "description": "Flat white card with a hairline, e.g. role cards and the advanced filters form.",
+      "html": "<div class=\"ds-card\"><span class=\"ds-card-title\">conductor_operator</span><p class=\"ds-card-text\">Runs and monitors workflows.</p></div>",
+      "css": ".ds-card { display: flex; flex-direction: column; gap: 6px; width: 240px; padding: 14px 16px; border: 1px solid var(--color-border-default, #D8DDE8); border-radius: 8px; background: var(--color-canvas-default, #FFFFFF); font-family: 'Open Sans', sans-serif; } .ds-card-title { font-size: 14px; font-weight: 700; color: var(--color-fg-default, #151B2B); } .ds-card-text { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--color-fg-muted, #4A5468); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Quiet Ledger",
+    "overview": "Weaver is an operator's console. Its surfaces read like a well-kept ledger: white or near-white sheets on a cool grey desk, divided by single hairline rules, with ink in three strengths (default, muted, soft). Nothing is framed that a rule can separate, and nothing is coloured that does not need to be acted on or judged. The one loud colour, Weaver red, belongs to the things you can do and the thing you are looking at; green and red status inks belong to outcomes. Everything else is greyscale and type weight.\n\nDensity is deliberate. Body copy runs at 13px, metadata at 12.5px, captions and identifiers at 12px, and hierarchy comes from weight (400 / 500 / 600 / 650) and ink strength rather than size jumps. Monospace is reserved for what a machine wrote: code, ids, actions, IP addresses and recorded values. The system ships light and dark themes from the same token names (`html[data-theme]`); every rule below holds in both.\n\nThe audit event panel is the clearest expression of the world: a right-side sheet that opens on a plain sentence (\"Updated query\"), puts the field-by-field change first, and keeps the who/when/outcome on one quiet meta line.",
+    "keyCharacteristics": [
+      "Cool grey desk (canvas-subtle) under white sheets (canvas-default), separated by 1px border-default rules.",
+      "One accent, Weaver red, for actions and current focus only.",
+      "Status colour only on outcomes and errors.",
+      "Hierarchy by weight and ink strength at small, dense sizes.",
+      "Monospace only for machine-written text.",
+      "Flat surfaces; depth by tone and hairlines, with soft shadows held for floating layers."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Weaver red marks what you can do or what you are looking at (a button, a link-action, the open row, the focused field). It never decorates a heading, a section or a container.", "section": "colors" },
+      { "name": "The Outcome Ink Rule", "body": "Green and red status inks appear only on outcomes and errors, as a 7px dot beside a plain word (\"Success\", \"Failed\") or inside the error box. Status is never conveyed by colour alone.", "section": "colors" },
+      { "name": "The Weight Ladder Rule", "body": "Rank by weight before size: 650 for titles and section headings, 600 for emphasised values (\"After\", chip values, names), 500 for a field name that heads its own block, 400 for everything else. A field name must never match the weight of the section title above it.", "section": "typography" },
+      { "name": "The Machine Voice Rule", "body": "Monospace only for code, identifiers, action names and recorded values; never for labels, headings or prose (a description shows in the UI face even inside a code-style frame).", "section": "typography" },
+      { "name": "The Hairline Rule", "body": "Separate with a single 1px border-default rule before reaching for a frame; separate with a frame before reaching for a shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the token names (`var(--color-*)`) rather than literal hex, so both themes hold.",
+      "Do separate rows with a single 1px border-default rule and let the values carry the weight.",
+      "Do rank text with the weight ladder (650 / 600 / 500 / 400) at 13px and below before adding size.",
+      "Do pair every status colour with a word: a 7px dot plus \"Success\" or \"Failed\".",
+      "Do show secrets only as a hidden-value chip (\"Changed (hidden)\"); name JDBC property keys, never their values.",
+      "Do give every custom interactive element the shared focus ring and honour `prefers-reduced-motion`.",
+      "Do collapse label/value grids to one column below 600px."
+    ],
+    "donts": [
+      "Don't use Weaver red on headings, section titles, borders of passive containers or decoration.",
+      "Don't use green or red status inks for anything but outcomes and errors.",
+      "Don't set labels, headings or prose in monospace.",
+      "Don't add shadows to cards, chips or inline boxes; flat surfaces with hairlines are the default.",
+      "Don't let a field name match the 650 weight of its section title."
+    ]
+  }
+}

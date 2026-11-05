@@ -41,6 +41,8 @@ import com.vodafone.vss.weaver.actions.database.dto.DatasourceConfig;
 import com.vodafone.vss.weaver.actions.database.event.DatasourceChangedEvent;
 import com.vodafone.vss.weaver.actions.database.registry.DataSourceLease;
 import com.vodafone.vss.weaver.actions.database.util.PasswordEncryptionUtil;
+import com.vodafone.vss.weaver.annotations.Audit;
+import com.vodafone.vss.weaver.annotations.AuditContext;
 import com.vodafone.vss.weaver.audit.service.AuditSecurityHelper;
 import com.vodafone.vss.weaver.audit.service.UserService;
 import com.vodafone.vss.weaver.common.ExceptionUtils;
@@ -153,7 +155,9 @@ public class DatasourceService {
 
     // ----- REST operations: return models; the REST layer decides the HTTP status ----- //
 
+    @Audit(action = "createDatabase", resourceType = "DATABASE", captureArguments = false)
     public DatasourceModel create(@NotNull DatabaseRequest request) {
+        AuditContext.put("name", request.getName());
         DatasourceModel payload = request.toModel();
         validate(payload, true);
         String normalizedName = payload.getName().trim();
@@ -188,13 +192,18 @@ public class DatasourceService {
         DatasourceModel saved = datasourceDAO.create(datasource);
         eventPublisher.publishEvent(DatasourceChangedEvent.changed(saved.getId(), saved.getVersion()));
         log.info("Database [{}] created with id {}", normalizedName, saved.getId());
+        Map<String, Object> created = auditFields(saved);
+        created.put("connection.password", MASK);
+        AuditContext.recordChanges(Map.of(), created);
 
         // The password stays in the entity; JSON never includes it (see JdbcConnectionDetails).
         saved.setStatus(recordProbe(saved.getId(), probe));
         return withUsers(saved);
     }
 
+    @Audit(action = "updateDatabase", resourceType = "DATABASE", captureArguments = false)
     public DatasourceModel update(@NotNull UUID id, @NotNull DatabaseRequest request) {
+        AuditContext.put("name", request.getName());
         DatasourceModel payload = request.toModel();
         validate(payload, false);
         String normalizedName = payload.getName().trim();
@@ -231,6 +240,22 @@ public class DatasourceService {
         DatasourceModel updated = datasourceDAO.update(candidate);
         eventPublisher.publishEvent(DatasourceChangedEvent.changed(updated.getId(), updated.getVersion()));
         log.info("Database {} updated", id);
+        Map<String, Object> before = auditFields(current);
+        Map<String, Object> after = auditFields(updated);
+        // Encryption is randomised, so a change is "a new password was given"; never the value.
+        if (!isPasswordBlankOrMasked(payload.getConnection().getPassword())) {
+            before.put("connection.password", MASK);
+            after.put("connection.password", MASK + " (changed)");
+        }
+        // Property values are never shown; a value change with the same names is still noted.
+        Map<String, String> oldProperties = current.getConnection() != null ? current.getConnection().getProperties() : null;
+        Map<String, String> newProperties = updated.getConnection() != null ? updated.getConnection().getProperties() : null;
+        if (!java.util.Objects.equals(emptyIfNull(oldProperties), emptyIfNull(newProperties))
+                && java.util.Objects.equals(before.get("connection.properties"), after.get("connection.properties"))) {
+            after.put("connection.properties",
+                    String.join(", ", new java.util.TreeSet<>(emptyIfNull(newProperties).keySet())) + " (values changed)");
+        }
+        AuditContext.recordChanges(before, after);
 
         updated.setStatus(recordProbe(id, probe));
         return withUsers(updated);
@@ -472,6 +497,37 @@ public class DatasourceService {
                 .connectionTimeout(conn.getConnectionTimeout() != null ? conn.getConnectionTimeout() : 10000)
                 .properties(conn.getProperties())
                 .build();
+    }
+
+    private static final String MASK = "******";
+
+    /**
+     * The fields of a database shown in audit changes. No secrets: the password is handled by
+     * the caller, and for JDBC properties (which may hold credentials) only the names are kept.
+     */
+    private static Map<String, Object> auditFields(DatasourceModel datasource) {
+        Map<String, Object> fields = new LinkedHashMap<>();
+        fields.put("name", datasource.getName());
+        fields.put("type", datasource.getType());
+        JdbcConnectionDetails connection = datasource.getConnection();
+        if (connection != null) {
+            fields.put("connection.url", connection.getUrl());
+            fields.put("connection.username", connection.getUsername());
+            fields.put("connection.schema", connection.getSchema());
+            fields.put("connection.minimumIdle", connection.getMinimumIdle());
+            fields.put("connection.maxPoolSize", connection.getMaxPoolSize());
+            fields.put("connection.idleTimeout", connection.getIdleTimeout());
+            fields.put("connection.maxLifetime", connection.getMaxLifetime());
+            fields.put("connection.connectionTimeout", connection.getConnectionTimeout());
+            if (connection.getProperties() != null && !connection.getProperties().isEmpty()) {
+                fields.put("connection.properties", new java.util.TreeSet<>(connection.getProperties().keySet()));
+            }
+        }
+        return fields;
+    }
+
+    private static Map<String, String> emptyIfNull(Map<String, String> map) {
+        return map != null ? map : Map.of();
     }
 
     private static boolean isPasswordBlankOrMasked(String password) {

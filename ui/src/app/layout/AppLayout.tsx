@@ -31,7 +31,8 @@ const IDLE_PREFETCH_PATHS = [
 const routePatternKey = (pathname: string): string => {
   const segments = pathname.split("/").filter(Boolean);
   if (segments.length === 0) return "/";
-  if (segments[0] === "settings") return pathname;
+  // One key for the Settings area, so its layout (and sidebar) stays mounted between pages.
+  if (segments[0] === "settings") return segments[1] === "languages" ? pathname : "settings";
   return segments
     .map((segment, index) => {
       if (index === 0 || segment === "new" || segment === "endpoints") return segment;

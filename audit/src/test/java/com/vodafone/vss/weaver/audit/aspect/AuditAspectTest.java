@@ -139,4 +139,27 @@ public class AuditAspectTest {
         assertEquals("skipped", result);
         verify(auditDAO, never()).log(any());
     }
+
+    @Test
+    public void resourceIdComesFromAStringOrAGetIdOnTheResult() {
+        java.util.UUID id = java.util.UUID.randomUUID();
+        assertEquals("wf-1", AuditAspect.resourceIdOf("wf-1"));
+        assertEquals(id.toString(), AuditAspect.resourceIdOf(new WithId(id)));
+        assertNull(AuditAspect.resourceIdOf(new WithId(null)));
+        assertNull(AuditAspect.resourceIdOf(42));
+        assertNull(AuditAspect.resourceIdOf(" "));
+        assertNull(AuditAspect.resourceIdOf(null));
+    }
+
+    public static class WithId {
+        private final java.util.UUID id;
+
+        WithId(java.util.UUID id) {
+            this.id = id;
+        }
+
+        public java.util.UUID getId() {
+            return id;
+        }
+    }
 }

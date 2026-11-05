@@ -47,4 +47,10 @@ public class AuditEvent implements Serializable {
     private String errorMessage;
     private Map<String, Object> details;
     private String clientIp;
+
+    /**
+     * Name of the resource when the event recorded one (details.name); read with list rows so
+     * they can name what changed without loading details. Never stored separately.
+     */
+    private String resourceName;
 }

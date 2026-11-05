@@ -20,11 +20,14 @@ interface DataExplorerToolbarProps<TRecord> {
   searchValue: string;
   onSearchChange: (value: string) => void;
   searchPlaceholder?: string;
+  searchWidth?: number | string;
   filterModel: WeaverFilterModel;
   onFilterChange: (model: WeaverFilterModel) => void;
   view: WeaverDataView;
   onViewChange: (view: WeaverDataView) => void;
   toolbarActions?: WeaverDataAction<TRecord>[];
+  /** Show the filter builder (default true). */
+  filterable?: boolean;
   bulkActions?: WeaverDataAction<TRecord>[];
   selectedIds: Array<string | number>;
   onClearSelection: () => void;
@@ -39,11 +42,13 @@ export function DataExplorerToolbar<TRecord>({
   searchValue,
   onSearchChange,
   searchPlaceholder = "Search records...",
+  searchWidth,
   filterModel,
   onFilterChange,
   view,
   onViewChange,
   toolbarActions,
+  filterable = true,
   bulkActions,
   selectedIds,
   onClearSelection,
@@ -62,7 +67,7 @@ export function DataExplorerToolbar<TRecord>({
       {/* Left controls: Search, Filters, Fields, Selection pill */}
       <div className={styles.leftControls}>
         {searchable && (
-          <div className={styles.searchContainer}>
+          <div className={styles.searchContainer} style={searchWidth !== undefined ? { width: searchWidth } : undefined}>
             <span className={styles.searchIcon}>
               <Search size={15} />
             </span>
@@ -88,11 +93,13 @@ export function DataExplorerToolbar<TRecord>({
           </div>
         )}
 
-        <FilterBuilder
-          fields={fields}
-          filterModel={filterModel}
-          onChange={onFilterChange}
-        />
+        {filterable && (
+          <FilterBuilder
+            fields={fields}
+            filterModel={filterModel}
+            onChange={onFilterChange}
+          />
+        )}
 
         <FieldManager
           fields={fields}

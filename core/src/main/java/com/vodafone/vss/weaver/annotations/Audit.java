@@ -19,7 +19,23 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/** Mark service or method for custom audit implementation */
+/**
+ * Records an audit event for each call of the annotated method (or of every public method of the
+ * annotated class): who, when, outcome, duration and, optionally, the arguments.
+ */
 @Target({TYPE, METHOD})
 @Retention(RUNTIME)
-public @interface Audit {}
+public @interface Audit {
+
+    /** Action name in the audit log, e.g. "createDatabase". Default: the method name. */
+    String action() default "";
+
+    /** Resource type in the audit log, e.g. "DATABASE". Default: derived from the class name. */
+    String resourceType() default "";
+
+    /**
+     * Store the call's arguments (their toString) in the event details, when payload capture is
+     * on. Turn off for methods that record their own details with {@link AuditContext}.
+     */
+    boolean captureArguments() default true;
+}

@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import PageLoadingSpinner from "@/components/common/feedback/PageLoadingSpinner";
 import AppLayout from "@/app/layout/AppLayout";
 import ProtectedRoute from "@/routes/ProtectedRoute";
+import { SettingsLayout } from "@/features/settings";
 import { setNavigator } from "@/services/navigation";
 import { pageLoaders } from "@/routes/routeModules";
 
@@ -30,7 +31,11 @@ const WorkflowExecutionViewPage = React.lazy(pageLoaders.executionView);
 const WorkbenchPage = React.lazy(pageLoaders.workbench);
 
 const NotFoundPage = React.lazy(pageLoaders.notFound);
-const MigrationPage = React.lazy(pageLoaders.migration);
+const SettingsMigrationsPage = React.lazy(pageLoaders.settingsMigrations);
+const SettingsConfigurationsPage = React.lazy(pageLoaders.settingsConfigurations);
+const SettingsAuditLogsPage = React.lazy(pageLoaders.settingsAuditLogs);
+const SettingsUsersPage = React.lazy(pageLoaders.settingsUsers);
+const SettingsRolesPage = React.lazy(pageLoaders.settingsRoles);
 const TranslationsPage = React.lazy(pageLoaders.translations);
 const SupportedLanguagesPage = React.lazy(pageLoaders.supportedLanguages);
 
@@ -75,9 +80,18 @@ export default function AppRoutes() {
             <Route path="/executions" element={<WorkflowMonitoringPage />} />
             <Route path="/executions/:workflowId" element={<WorkflowExecutionViewPage />} />
             <Route path="/workbench" element={<WorkbenchPage />} />
-            <Route path="/settings" element={<Navigate to="/settings/languages" replace />} />
+            {/* Settings area: its own sidebar next to the selected page. */}
+            <Route path="/settings" element={<SettingsLayout />}>
+              <Route index element={<Navigate to="migrations" replace />} />
+              <Route path="migrations" element={<SettingsMigrationsPage />} />
+              <Route path="configurations" element={<SettingsConfigurationsPage />} />
+              <Route path="audit-logs" element={<SettingsAuditLogsPage />} />
+              <Route path="identity" element={<Navigate to="users" replace />} />
+              <Route path="identity/users" element={<SettingsUsersPage />} />
+              <Route path="identity/roles" element={<SettingsRolesPage />} />
+            </Route>
+            <Route path="/settings/migration" element={<Navigate to="/settings/migrations" replace />} />
             <Route path="/settings/languages" element={<SupportedLanguagesPage />} />
-            <Route path="/settings/migration" element={<MigrationPage />} />
           </Route>
 
           <Route path="/designer" element={<DesignerPage />} />

@@ -1,0 +1,207 @@
+/* Settings sidebar: a lighter, inset panel next to the page, distinct from the app's main sidebar
+   (which is the full-height bar with the logo and an accent stripe on the active item). */
+.sidebar {
+  position: sticky;
+  top: 56px; /* below the app header */
+  align-self: start;
+  width: 240px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  padding: 20px 12px;
+  background-color: var(--color-canvas-subtle);
+  border-right: 1px solid var(--color-border-default);
+  flex-shrink: 0;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px 14px 10px;
+}
+
+.headingIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  color: var(--color-accent-fg);
+  background-color: var(--color-accent-subtle);
+}
+
+.headingText {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-fg-default);
+  letter-spacing: -0.01em;
+}
+
+.list,
+.childList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.childList {
+  margin: 2px 0 4px 18px;
+  padding-left: 8px;
+  border-left: 1px solid var(--color-border-default);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--color-fg-muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.item:hover {
+  color: var(--color-fg-default);
+  background-color: var(--color-surface-soft);
+}
+
+.item:focus-visible {
+  outline: none;
+  box-shadow: var(--color-focus-ring);
+}
+
+.child {
+  height: 32px;
+  font-size: 12.5px;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Active page: filled with the accent tint (the main sidebar uses a stripe instead). */
+.active,
+.active:hover {
+  color: var(--color-accent-fg);
+  background-color: var(--color-accent-subtle);
+  font-weight: 600;
+}
+
+.groupActive {
+  color: var(--color-fg-default);
+  font-weight: 600;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--color-fg-soft);
+  transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* Smooth open/close of a group's pages. */
+.collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.collapseOpen {
+  grid-template-rows: 1fr;
+}
+
+.collapse > .childList {
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Collapsed pages are out of the tab order and hidden from screen readers, after the animation. */
+.collapse:not(.collapseOpen) > .childList {
+  visibility: hidden;
+  transition: visibility 0s linear 0.2s;
+}
+
+.mobileToggle {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .chevron,
+  .collapse {
+    transition: none;
+  }
+}
+
+/* Narrow screens: the panel sits above the page and the list opens from a toggle. */
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 12px 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border-default);
+  }
+
+  .heading {
+    padding: 0 0 10px 0;
+  }
+
+  .mobileToggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .mobileToggle:focus-visible {
+    outline: none;
+    box-shadow: var(--color-focus-ring);
+  }
+
+  .list {
+    display: none;
+    margin-top: 8px;
+  }
+
+  .listMobileOpen {
+    display: flex;
+  }
+}

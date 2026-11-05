@@ -12,6 +12,7 @@
  */
 package com.vodafone.vss.weaver.audit.aspect;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -20,11 +21,15 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.vodafone.vss.weaver.annotations.Audit;
+import com.vodafone.vss.weaver.annotations.AuditContext;
 import com.vodafone.vss.weaver.audit.config.AuditProperties;
 import com.vodafone.vss.weaver.audit.service.AuditSecurityHelper;
 import com.vodafone.vss.weaver.audit.service.AuditSecurityHelper.ActorContext;
@@ -73,19 +78,31 @@ public class AuditAspect {
         ActorContext actor = securityHelper.resolveCurrentActor();
         enrichArguments(joinPoint.getArgs(), actor);
 
-        String action = joinPoint.getSignature().getName();
-        String resourceType = determineResourceType(joinPoint.getTarget().getClass().getSimpleName());
+        Audit audit = findAnnotation(joinPoint);
+        String action = audit != null && !audit.action().isBlank()
+                ? audit.action()
+                : joinPoint.getSignature().getName();
+        String resourceType = audit != null && !audit.resourceType().isBlank()
+                ? audit.resourceType()
+                : determineResourceType(joinPoint.getTarget().getClass().getSimpleName());
         String initialResourceId = extractResourceId(joinPoint.getArgs());
+
+        boolean captureArguments = audit == null || audit.captureArguments();
 
         long startTime = System.currentTimeMillis();
         Object result = null;
+        AuditContext.open();
+        boolean contextOpen = true;
         try {
             result = joinPoint.proceed();
+            Map<String, Object> ownDetails = AuditContext.close();
+            contextOpen = false;
             long durationMs = System.currentTimeMillis() - startTime;
 
             String finalResourceId = initialResourceId;
-            if ((finalResourceId == null || finalResourceId.isBlank()) && result instanceof String strRes) {
-                finalResourceId = strRes;
+            if (finalResourceId == null || finalResourceId.isBlank()) {
+                // e.g. a create: the id exists only once the record is saved.
+                finalResourceId = resourceIdOf(result);
             }
 
             recordAuditEvent(
@@ -96,11 +113,14 @@ public class AuditAspect {
                     AuditEvent.STATUS_SUCCESS,
                     durationMs,
                     null,
-                    joinPoint.getArgs());
+                    detailsFor(ownDetails, captureArguments, joinPoint.getArgs()));
 
             return result;
         } catch (Throwable th) {
             long durationMs = System.currentTimeMillis() - startTime;
+            // What the method recorded before failing (e.g. the name it was given).
+            Map<String, Object> ownDetails = contextOpen ? AuditContext.close() : Map.of();
+            contextOpen = false;
             recordAuditEvent(
                     actor,
                     action,
@@ -109,9 +129,33 @@ public class AuditAspect {
                     AuditEvent.STATUS_FAILED,
                     durationMs,
                     th.getMessage(),
-                    joinPoint.getArgs());
+                    detailsFor(ownDetails, captureArguments, joinPoint.getArgs()));
             throw th;
+        } finally {
+            if (contextOpen) {
+                AuditContext.close();
+            }
         }
+    }
+
+    /**
+     * Event details: what the method recorded itself (AuditContext), else its arguments when
+     * payload capture is on and the method allows it.
+     */
+    Map<String, Object> detailsFor(Map<String, Object> ownDetails, boolean captureArguments, Object[] args) {
+        if (ownDetails != null && !ownDetails.isEmpty()) {
+            return ownDetails;
+        }
+        if (!captureArguments || !properties.isCapturePayloads() || args == null || args.length == 0) {
+            return null;
+        }
+        Map<String, Object> details = new HashMap<>();
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] != null) {
+                details.put("arg" + i, args[i].toString());
+            }
+        }
+        return details;
     }
 
     /**
@@ -148,21 +192,11 @@ public class AuditAspect {
             String status,
             long durationMs,
             String errorMessage,
-            Object[] args) {
+            Map<String, Object> details) {
         if (auditDAO == null) {
             return;
         }
         try {
-            Map<String, Object> details = null;
-            if (properties.isCapturePayloads() && args != null && args.length > 0) {
-                details = new HashMap<>();
-                for (int i = 0; i < args.length; i++) {
-                    Object arg = args[i];
-                    if (arg != null) {
-                        details.put("arg" + i, arg.toString());
-                    }
-                }
-            }
 
             AuditEvent event =
                     AuditEvent.builder()
@@ -210,10 +244,54 @@ public class AuditAspect {
         for (Object arg : args) {
             if (arg instanceof String str && !str.isBlank()) {
                 return str;
+            } else if (arg instanceof UUID uuid) {
+                return uuid.toString();
             } else if (arg instanceof StartWorkflowRequest swr) {
                 return swr.getName();
             }
         }
         return null;
+    }
+
+    /** The id of what a call returned: a String, or a public no-argument getId(). */
+    static String resourceIdOf(Object result) {
+        if (result == null) {
+            return null;
+        }
+        if (result instanceof String str) {
+            return str.isBlank() ? null : str;
+        }
+        try {
+            Method getId = result.getClass().getMethod("getId");
+            if (getId.getParameterCount() == 0) {
+                Object id = getId.invoke(result);
+                return id != null ? String.valueOf(id) : null;
+            }
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            // no usable id
+        }
+        return null;
+    }
+
+    /** @Audit on the called method, else on its class; null when the signature hides the method. */
+    private static Audit findAnnotation(ProceedingJoinPoint joinPoint) {
+        if (joinPoint.getSignature() instanceof MethodSignature signature && signature.getMethod() != null) {
+            Method method = signature.getMethod();
+            Object target = joinPoint.getTarget();
+            if (target != null) {
+                try {
+                    // The method on the actual class carries the annotation (not an interface method).
+                    method = target.getClass().getMethod(method.getName(), method.getParameterTypes());
+                } catch (NoSuchMethodException e) {
+                    // keep the signature's method
+                }
+            }
+            Audit onMethod = AnnotationUtils.findAnnotation(method, Audit.class);
+            if (onMethod != null) {
+                return onMethod;
+            }
+        }
+        Object target = joinPoint.getTarget();
+        return target != null ? AnnotationUtils.findAnnotation(target.getClass(), Audit.class) : null;
     }
 }

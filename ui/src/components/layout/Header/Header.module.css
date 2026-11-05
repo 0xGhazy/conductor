@@ -4,66 +4,30 @@
   height: 56px;
   background-color: var(--color-canvas-default);
   border-bottom: 1px solid var(--color-border-default);
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr minmax(280px, 480px) 1fr;
   align-items: center;
-  justify-content: space-between;
   padding: 0 20px;
   gap: 16px;
   z-index: 90;
+  box-sizing: border-box;
 }
 
-/* Left: Dynamic Breadcrumbs */
+/* Left spacer: balances the right telemetry section so the center remains dead-centered */
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 8px;
   min-width: 0;
-  flex: 1;
+  grid-column: 1;
 }
 
-.breadcrumbs {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--color-fg-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.crumbLink {
-  color: var(--color-fg-muted);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.15s ease;
-  display: inline-flex;
-  align-items: center;
-}
-
-.crumbLink:hover {
-  color: var(--color-fg-default);
-}
-
-.crumbDivider {
-  color: var(--color-border-strong);
-  display: inline-flex;
-  align-items: center;
-  opacity: 0.6;
-}
-
-.crumbActive {
-  font-weight: 700;
-  color: var(--color-fg-default);
-}
-
-/* Center: Quick Search Trigger */
+/* Center: Global Quick Search Trigger */
 .headerCenter {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 1;
-  max-width: 420px;
+  width: 100%;
+  grid-column: 2;
 }
 
 .searchTrigger {
@@ -80,6 +44,7 @@
   cursor: text;
   transition: all 0.15s ease;
   position: relative;
+  box-sizing: border-box;
 }
 
 .searchTrigger:focus-within {
@@ -129,8 +94,11 @@
 .headerRight {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
   flex-shrink: 0;
+  min-width: 0;
+  grid-column: 3;
 }
 
 .clusterStatus {

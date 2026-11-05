@@ -1,52 +1,60 @@
 import { describe, it, expect, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Header } from "./Header";
 
+const mockToggleMode = vi.fn();
+
 vi.mock("@/features/home", () => ({
-  useBackendHealthChecks: () => ({ weaver: { data: null }, conductor: { data: null } }),
+  useBackendHealthChecks: () => ({ weaver: { data: { healthy: true } }, conductor: { data: { healthy: true } } }),
 }));
-vi.mock("@/features/auth", () => ({ UserMenu: () => null }));
+vi.mock("@/features/auth", () => ({ UserMenu: () => <div data-testid="user-menu" /> }));
 vi.mock("@/context/ThemeModeContext", () => ({
-  useThemeMode: () => ({ mode: "light", toggleMode: vi.fn() }),
+  useThemeMode: () => ({ mode: "light", toggleMode: mockToggleMode }),
 }));
 
-const QUERY_ID = "6f1c2a7e-0d2b-4b8e-9c1a-0000000000a1";
-
-const renderAt = (entry: string | { pathname: string; state?: unknown }) =>
+const renderHeader = (props = {}) =>
   render(
-    <MemoryRouter initialEntries={[entry]}>
-      <Header />
+    <MemoryRouter>
+      <Header {...props} />
     </MemoryRouter>
   );
 
-const breadcrumb = () => screen.getByRole("navigation", { name: "Breadcrumb" });
-
-describe("Header breadcrumb for a query", () => {
-  it("never shows the query id", () => {
-    renderAt(`/queries/${QUERY_ID}`);
-    expect(breadcrumb()).not.toHaveTextContent(QUERY_ID);
+describe("Header", () => {
+  it("does not render breadcrumb navigation in the header", () => {
+    renderHeader();
+    expect(screen.queryByRole("navigation", { name: "Breadcrumb" })).not.toBeInTheDocument();
   });
 
-  it("uses the name passed when navigating", () => {
-    renderAt({ pathname: `/queries/${QUERY_ID}`, state: { name: "workflow-status-latest" } });
-    expect(breadcrumb()).toHaveTextContent("workflow-status-latest");
+  it("renders the centered search input and triggers onSearchChange", () => {
+    const onSearchChange = vi.fn();
+    renderHeader({ search: "workflow", onSearchChange });
+
+    const searchInput = screen.getByRole("searchbox", { name: "Quick search" });
+    expect(searchInput).toHaveValue("workflow");
+
+    fireEvent.change(searchInput, { target: { value: "database" } });
+    expect(onSearchChange).toHaveBeenCalledWith("database");
   });
 
-  it("shows the name the query page announces once loaded", () => {
-    renderAt(`/queries/${QUERY_ID}`);
-    act(() => {
-      window.dispatchEvent(
-        new CustomEvent("weaver:breadcrumb-title", {
-          detail: { title: "workflow-status-summary", pathname: `/queries/${QUERY_ID}` },
-        })
-      );
-    });
-    expect(breadcrumb()).toHaveTextContent("workflow-status-summary");
+  it("focuses search input when Ctrl+K is pressed", () => {
+    renderHeader();
+    const searchInput = screen.getByRole("searchbox", { name: "Quick search" });
+    expect(document.activeElement).not.toBe(searchInput);
+
+    fireEvent.keyDown(window, { key: "k", ctrlKey: true });
+    expect(document.activeElement).toBe(searchInput);
   });
 
-  it("labels the create page", () => {
-    renderAt("/queries/new");
-    expect(breadcrumb()).toHaveTextContent("New Query");
+  it("renders cluster health status indicator", () => {
+    renderHeader();
+    expect(screen.getByText("Cluster UP")).toBeInTheDocument();
+  });
+
+  it("calls toggleMode when the theme toggle button is clicked", () => {
+    renderHeader();
+    const themeBtn = screen.getByRole("button", { name: "Switch to dark mode" });
+    fireEvent.click(themeBtn);
+    expect(mockToggleMode).toHaveBeenCalledTimes(1);
   });
 });

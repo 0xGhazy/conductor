@@ -13,8 +13,12 @@
 package com.vodafone.vss.weaver.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import com.vodafone.vss.weaver.common.audit.AuditEvent;
+import com.vodafone.vss.weaver.common.audit.AuditEventQuery;
+import com.vodafone.vss.weaver.common.audit.AuditHistogramBucket;
 
 /**
  * Data Access Object for persisting and querying audit events.
@@ -37,4 +41,40 @@ public interface AuditDAO {
      * @return List of matching audit events
      */
     List<AuditEvent> getAuditEvents(String resourceId, String resourceType, int limit);
+
+    /** Whether events can be read back (false for log-only storage). */
+    default boolean supportsQueries() {
+        return false;
+    }
+
+    /** One page of events matching the query, newest first, without their details. */
+    default List<AuditEvent> searchAuditEvents(AuditEventQuery query, int offset, int limit) {
+        return List.of();
+    }
+
+    /** Number of events matching the query. */
+    default long countAuditEvents(AuditEventQuery query) {
+        return 0;
+    }
+
+    /** One event, with its details. */
+    default Optional<AuditEvent> getAuditEvent(String id) {
+        return Optional.empty();
+    }
+
+    /**
+     * Matching events per time bucket, oldest first; only buckets holding events are returned.
+     *
+     * @param query filters; its from/to bound the buckets
+     * @param origin start of the first bucket, epoch milliseconds
+     * @param bucketMs bucket width in milliseconds
+     */
+    default List<AuditHistogramBucket> getAuditHistogram(AuditEventQuery query, long origin, long bucketMs) {
+        return List.of();
+    }
+
+    /** Values seen in the log, for filters: resource types, statuses and actions. */
+    default Map<String, List<String>> getAuditFacets() {
+        return Map.of("resourceTypes", List.of(), "statuses", List.of(), "actions", List.of());
+    }
 }
