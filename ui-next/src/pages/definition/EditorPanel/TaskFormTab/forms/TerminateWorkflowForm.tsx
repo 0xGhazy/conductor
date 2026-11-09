@@ -1,7 +1,7 @@
-import { Box, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, FormControlLabel, Grid } from "@mui/material";
 import MuiCheckbox from "components/ui/MuiCheckbox";
-import { AutocompleteArrayField } from "components/FlatMapForm/ConductorAutocompleteArrayField";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { AutocompleteArrayField } from "components/FlatMapForm/WeaverAutocompleteArrayField";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { TaskType } from "types/common";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
@@ -50,7 +50,7 @@ export const TerminateWorkflowForm = (props: TaskFormProps) => {
       <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
         <Grid container sx={{ width: "100%" }} spacing={2} mt={4}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={terminationReason}
               label="Termination reason:"
               onChange={setTerminationReason}

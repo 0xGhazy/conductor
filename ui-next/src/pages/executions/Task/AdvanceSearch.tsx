@@ -1,10 +1,10 @@
-import { Monaco } from "@monaco-editor/react";
+﻿import { Monaco } from "@monaco-editor/react";
 import { Box, Grid } from "@mui/material";
 import { Button } from "components";
 import MuiTypography from "components/ui/MuiTypography";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import SplitButton from "components/ui/buttons/ConductorSplitButton";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import SplitButton from "components/ui/buttons/WeaverSplitButton";
 import ResetIcon from "components/icons/ResetIcon";
 import SearchIcon from "components/icons/SearchIcon";
 import { Dispatch, useEffect, useRef } from "react";
@@ -102,7 +102,7 @@ export const AdvanceSearch = ({
   return (
     <Grid container sx={{ width: "100%" }} spacing={3} px={6} pb={6} pt={2}>
       <Grid size={12}>
-        <ConductorCodeBlockInput
+        <WeaverCodeBlockInput
           label="Search"
           language="sql"
           minHeight={30}
@@ -181,7 +181,7 @@ export const AdvanceSearch = ({
         }}
         sx={{ order: { xs: 0, lg: 2 } }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Free text search"
           value={freeText}

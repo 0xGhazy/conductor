@@ -22,7 +22,7 @@ import com.vodafone.vss.weaver.core.listener.TaskStatusListener;
 
 @Configuration
 @EnableConfigurationProperties(StatusNotifierNotificationProperties.class)
-@ConditionalOnProperty(name = "conductor.task-status-listener.type", havingValue = "task_publisher")
+@ConditionalOnProperty(name = "weaver.task-status-listener.type", havingValue = "task_publisher")
 public class TaskStatusPublisherConfiguration {
 
     @Bean

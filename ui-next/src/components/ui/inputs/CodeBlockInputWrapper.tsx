@@ -1,4 +1,4 @@
-import { Editor, EditorProps, Monaco, OnMount } from "@monaco-editor/react";
+﻿import { Editor, EditorProps, Monaco, OnMount } from "@monaco-editor/react";
 import {
   Box,
   BoxProps,
@@ -13,10 +13,10 @@ import { ArrowsInSimple } from "@phosphor-icons/react";
 import IconButton from "components/ui/buttons/MuiIconButton";
 import MuiTypography from "components/ui/MuiTypography";
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
-import { MaybeTooltipLabel } from "components/ui/inputs/ConductorInput";
+import { MaybeTooltipLabel } from "components/ui/inputs/WeaverInput";
 import { labelScale } from "theme/styles";
 import CopyIcon from "components/icons/CopyIcon";
-import { ConductorTooltipProps } from "components/ui/ConductorTooltip";
+import { WeaverTooltipProps } from "components/ui/WeaverTooltip";
 import _isEmpty from "lodash/isEmpty";
 import {
   ReactNode,
@@ -57,7 +57,7 @@ const MaybeLabel = ({
 }: {
   label?: ReactNode;
   required?: boolean;
-  tooltip?: Omit<ConductorTooltipProps, "children">;
+  tooltip?: Omit<WeaverTooltipProps, "children">;
 }) => (
   <MaybeTooltipLabel
     label={required ? `${label} *` : label}
@@ -104,7 +104,7 @@ interface CodeBlockInputWrapperProps {
   minHeight: number;
   disabled?: boolean;
   required?: boolean;
-  tooltip?: Omit<ConductorTooltipProps, "children">;
+  tooltip?: Omit<WeaverTooltipProps, "children">;
   enableCopy?: boolean;
   onChange?: (value: string) => void;
   onMount?: OnMount;

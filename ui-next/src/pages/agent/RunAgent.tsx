@@ -1,11 +1,11 @@
-import { Alert, Box, Grid } from "@mui/material";
+﻿import { Alert, Box, Grid } from "@mui/material";
 import { Button, DataTable, NavLink, Paper } from "components";
 import PlayIcon from "components/icons/PlayIcon";
 import ResetIcon from "components/icons/ResetIcon";
 import XCloseIcon from "components/icons/XCloseIcon";
 import SectionHeader from "components/layout/SectionHeader";
-import { ConductorAutoComplete } from "components/ui/inputs/ConductorAutoComplete";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import { WeaverAutoComplete } from "components/ui/inputs/WeaverAutoComplete";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import SectionContainer from "components/ui/layout/SectionContainer";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
@@ -186,7 +186,7 @@ export default function RunAgent() {
             <Paper variant="outlined" sx={{ p: 4 }}>
               <Grid container spacing={3}>
                 <Grid size={12}>
-                  <ConductorAutoComplete
+                  <WeaverAutoComplete
                     id="run-agent-name"
                     fullWidth
                     label="Agent"
@@ -201,7 +201,7 @@ export default function RunAgent() {
                   />
                 </Grid>
                 <Grid size={12}>
-                  <ConductorAutoComplete
+                  <WeaverAutoComplete
                     id="run-agent-model"
                     fullWidth
                     freeSolo
@@ -220,7 +220,7 @@ export default function RunAgent() {
                   />
                 </Grid>
                 <Grid size={12}>
-                  <ConductorInput
+                  <WeaverInput
                     id="run-agent-prompt"
                     fullWidth
                     required

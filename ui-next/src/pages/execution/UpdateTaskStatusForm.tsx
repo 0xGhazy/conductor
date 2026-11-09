@@ -1,8 +1,8 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { Button, Text } from "components";
-import { ConductorSelect } from "components/ui/inputs";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
+import { WeaverSelect } from "components/ui/inputs";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
 import debounce from "lodash/debounce";
 import _isEmpty from "lodash/isEmpty";
 import sharedStyles from "pages/styles";
@@ -166,7 +166,7 @@ export const UpdateTaskStatusForm: FunctionComponent<
           </Text>
         </Grid>
         <Grid sx={{ display: "flex", alignItems: "center" }} size={10}>
-          <ConductorSelect
+          <WeaverSelect
             label="Status"
             value={selected}
             onChange={handleSelectChange}
@@ -181,10 +181,10 @@ export const UpdateTaskStatusForm: FunctionComponent<
               Select Status
             </MenuItem>
             {taskMenuItems}
-          </ConductorSelect>
+          </WeaverSelect>
         </Grid>
         <Grid size={12}>
-          <ConductorCodeBlockInput
+          <WeaverCodeBlockInput
             value={params}
             onChange={handleInputChange}
             error={!isValidJson}

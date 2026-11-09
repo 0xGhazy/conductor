@@ -49,7 +49,7 @@ def _check_via_socket(host, port, username, password, ssl_enabled, connect_timeo
         conn.close()
 
 
-LOCAL_HOSTS = {"rs", "conductor-redis", "redis", "localhost", "127.0.0.1", "0.0.0.0"}
+LOCAL_HOSTS = {"rs", "weaver-redis", "conductor-redis", "redis", "localhost", "127.0.0.1", "0.0.0.0"}
 
 
 def _find_redis_containers(host=None):

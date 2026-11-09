@@ -1,4 +1,4 @@
-import Stack from "@mui/material/Stack";
+﻿import Stack from "@mui/material/Stack";
 import _isEmpty from "lodash/isEmpty";
 import { FunctionComponent, useState } from "react";
 import { ActorRef } from "xstate";
@@ -22,7 +22,7 @@ import {
   WorkflowDefinitionEvents,
 } from "../state/types";
 import { useWorkflowChanges } from "../state/useMadeChanges";
-import SplitButton from "components/ui/buttons/ConductorSplitButton";
+import SplitButton from "components/ui/buttons/WeaverSplitButton";
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
 import { HOT_KEYS_WORKFLOW_DEFINITION } from "utils/constants/common";
 import { UnderlinedText } from "components/ui/UnderlinedText";

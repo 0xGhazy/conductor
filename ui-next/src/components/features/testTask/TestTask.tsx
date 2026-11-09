@@ -1,4 +1,4 @@
-import { RocketLaunch } from "@mui/icons-material";
+﻿import { RocketLaunch } from "@mui/icons-material";
 import {
   Box,
   FormControlLabel,
@@ -25,8 +25,8 @@ import {
 } from "types/TestTaskTypes";
 import { extractVariablesFromJSON } from "utils/json";
 import { tryToJson } from "utils/utils";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import XCloseIcon from "components/icons/XCloseIcon";
 
 const CustomisedTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -88,7 +88,7 @@ const FormSection: FunctionComponent<FormSectionProps> = ({
           ) || "";
         return (
           <Box key={val} sx={{ padding: "10px 0 0 0" }}>
-            <ConductorInput
+            <WeaverInput
               id={`variable-substitue-for-${val?.replaceAll(".", "-")}`}
               label={`Variable substitute for \${${val}}`}
               required
@@ -106,7 +106,7 @@ const FormSection: FunctionComponent<FormSectionProps> = ({
         );
       })}
       <Box sx={{ padding: "10px 0 20px 0" }}>
-        <ConductorInput
+        <WeaverInput
           label="Domain"
           fullWidth
           value={domain ?? ""}
@@ -127,7 +127,7 @@ const JsonSection: FunctionComponent<JsonSectionProps> = ({
 }) => {
   return (
     <Box>
-      <ConductorCodeBlockInput
+      <WeaverCodeBlockInput
         label="Input Parameters"
         onChange={(val) => handleJSONChange(val)}
         value={JSON.stringify({ ...taskModel, ...value }, null, 2)}
@@ -138,7 +138,7 @@ const JsonSection: FunctionComponent<JsonSectionProps> = ({
         }}
       />
       <Box sx={{ padding: "20px 0" }}>
-        <ConductorInput
+        <WeaverInput
           label="Domain"
           fullWidth
           value={domain ?? ""}
@@ -304,7 +304,7 @@ const TestOutput: FunctionComponent<TestOutputProps> = ({
           marginBottom: "10px",
         }}
       >
-        <ConductorCodeBlockInput
+        <WeaverCodeBlockInput
           label="Output"
           onChange={(val) => handleJSONChange(val)}
           value={JSON.stringify(

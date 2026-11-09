@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.execution.AsyncSystemTaskExecutor;
 import com.vodafone.vss.weaver.core.utils.SemaphoreUtil;
 import com.vodafone.vss.weaver.dao.QueueDAO;
@@ -54,7 +54,7 @@ public class TestSystemTaskWorker {
 
     private AsyncSystemTaskExecutor asyncSystemTaskExecutor;
     private QueueDAO queueDAO;
-    private ConductorProperties properties;
+    private WeaverProperties properties;
 
     private SystemTaskWorker systemTaskWorker;
 
@@ -62,7 +62,7 @@ public class TestSystemTaskWorker {
     public void setUp() {
         asyncSystemTaskExecutor = mock(AsyncSystemTaskExecutor.class);
         queueDAO = mock(QueueDAO.class);
-        properties = mock(ConductorProperties.class);
+        properties = mock(WeaverProperties.class);
 
         when(properties.getSystemTaskWorkerThreadCount()).thenReturn(10);
         when(properties.getIsolatedSystemTaskWorkerThreadCount()).thenReturn(10);
@@ -159,10 +159,10 @@ public class TestSystemTaskWorker {
     @Test
     public void testPerTaskDedicatedPoolOverride() {
         when(properties.getSystemTaskWorkerThreadCount()).thenReturn(10);
-        ConductorProperties.TaskWorkerConfig httpConfig =
-                new ConductorProperties.TaskWorkerConfig();
+        WeaverProperties.TaskWorkerConfig httpConfig =
+                new WeaverProperties.TaskWorkerConfig();
         httpConfig.setThreadCount(20);
-        Map<String, ConductorProperties.TaskWorkerConfig> configs = new HashMap<>();
+        Map<String, WeaverProperties.TaskWorkerConfig> configs = new HashMap<>();
         configs.put("HTTP", httpConfig);
         when(properties.getTaskWorkerConfigs()).thenReturn(configs);
         systemTaskWorker = new SystemTaskWorker(queueDAO, asyncSystemTaskExecutor, properties);
@@ -184,9 +184,9 @@ public class TestSystemTaskWorker {
         // An entry without a positive threadCount is a no-op (warned at startup): the type shares
         // the common pool with the default permit budget, exactly as if it had no entry at all.
         when(properties.getSystemTaskWorkerThreadCount()).thenReturn(10);
-        ConductorProperties.TaskWorkerConfig emptyConfig =
-                new ConductorProperties.TaskWorkerConfig();
-        Map<String, ConductorProperties.TaskWorkerConfig> configs = new HashMap<>();
+        WeaverProperties.TaskWorkerConfig emptyConfig =
+                new WeaverProperties.TaskWorkerConfig();
+        Map<String, WeaverProperties.TaskWorkerConfig> configs = new HashMap<>();
         configs.put("HTTP", emptyConfig);
         when(properties.getTaskWorkerConfigs()).thenReturn(configs);
         systemTaskWorker = new SystemTaskWorker(queueDAO, asyncSystemTaskExecutor, properties);
@@ -474,9 +474,9 @@ public class TestSystemTaskWorker {
     public void testPerTaskThreadCountEnforcedDuringPolling() throws Exception {
         // system_task configured with a dedicated pool of 2 threads (== 2 permits) — after 2
         // in-flight tasks the next poll is skipped.
-        ConductorProperties.TaskWorkerConfig cfg = new ConductorProperties.TaskWorkerConfig();
+        WeaverProperties.TaskWorkerConfig cfg = new WeaverProperties.TaskWorkerConfig();
         cfg.setThreadCount(2);
-        Map<String, ConductorProperties.TaskWorkerConfig> configs = new HashMap<>();
+        Map<String, WeaverProperties.TaskWorkerConfig> configs = new HashMap<>();
         configs.put(TEST_TASK, cfg);
         when(properties.getTaskWorkerConfigs()).thenReturn(configs);
         when(properties.getSystemTaskWorkerThreadCount()).thenReturn(10);
@@ -519,9 +519,9 @@ public class TestSystemTaskWorker {
     @Test
     public void testCaseInsensitiveTaskWorkerConfigLookup() {
         // Config keyed with uppercase "SYSTEM_TASK" must apply to a queue named "system_task".
-        ConductorProperties.TaskWorkerConfig cfg = new ConductorProperties.TaskWorkerConfig();
+        WeaverProperties.TaskWorkerConfig cfg = new WeaverProperties.TaskWorkerConfig();
         cfg.setThreadCount(4);
-        Map<String, ConductorProperties.TaskWorkerConfig> configs = new HashMap<>();
+        Map<String, WeaverProperties.TaskWorkerConfig> configs = new HashMap<>();
         configs.put("SYSTEM_TASK", cfg);
         when(properties.getTaskWorkerConfigs()).thenReturn(configs);
         when(properties.getSystemTaskWorkerThreadCount()).thenReturn(10);
@@ -612,10 +612,10 @@ public class TestSystemTaskWorker {
 
     @Test
     public void testDoStopShutsDownSharedAndDedicatedPools() {
-        ConductorProperties.TaskWorkerConfig httpConfig =
-                new ConductorProperties.TaskWorkerConfig();
+        WeaverProperties.TaskWorkerConfig httpConfig =
+                new WeaverProperties.TaskWorkerConfig();
         httpConfig.setThreadCount(2);
-        Map<String, ConductorProperties.TaskWorkerConfig> configs = new HashMap<>();
+        Map<String, WeaverProperties.TaskWorkerConfig> configs = new HashMap<>();
         configs.put("HTTP", httpConfig);
         when(properties.getTaskWorkerConfigs()).thenReturn(configs);
         when(properties.getSystemTaskWorkerCallbackDuration()).thenReturn(Duration.ofSeconds(5));

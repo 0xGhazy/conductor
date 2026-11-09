@@ -1,4 +1,4 @@
-import {
+﻿import {
   Alert,
   Box,
   CircularProgress,
@@ -7,12 +7,12 @@ import {
   Switch,
   Typography,
 } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { AgentSnapshotDetails } from "components/features/agents/AgentSnapshotDetails";
 import Button from "components/ui/buttons/MuiButton";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
 import { path as _path } from "lodash/fp";
 import { AgentSummary } from "pages/agent/types";
@@ -31,8 +31,8 @@ import {
 import { WORKFLOW_DEFINITION_URL } from "utils/constants/route";
 import { updateField } from "utils/fieldHelpers";
 import { useAuthHeaders, useFetch } from "utils/query";
-import { ConductorAdditionalHeadersBase } from "./HTTPTaskForm/ConductorAdditionalHeaders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverAdditionalHeadersBase } from "./HTTPTaskForm/WeaverAdditionalHeaders";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -216,7 +216,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
           {isConductor ? (
             <>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Agent name"
                   value={get("inputParameters.name") as string}
                   onChange={(v) => setSource("inputParameters.name", v)}
@@ -226,7 +226,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Version (optional)"
                   value={get("inputParameters.version") as number}
                   coerceTo="integer"
@@ -250,7 +250,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
                 </Button>
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Model override (optional)"
                   value={get("inputParameters.model") as string}
                   onChange={(v) => set("inputParameters.model", v)}
@@ -265,7 +265,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Prompt"
                   name="prompt"
                   value={(get("inputParameters.prompt") as string) || ""}
@@ -280,7 +280,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
           ) : (
             <>
               <Grid size={12}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Agent URL"
                   value={get("inputParameters.agentUrl") as string}
                   onChange={(v) => setSource("inputParameters.agentUrl", v)}
@@ -288,7 +288,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Message text"
                   name="text"
                   value={(get("inputParameters.text") as string) || ""}
@@ -346,7 +346,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
 
       {isConductor && (
         <TaskFormSection title="Context">
-          <ConductorFlatMapFormBase
+          <WeaverFlatMapFormBase
             keyColumnLabel="Key"
             valueColumnLabel="Value"
             addItemLabel="Add context value"
@@ -386,7 +386,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
           </Box>
           <Grid container spacing={3} sx={{ width: "100%" }}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="Push backstop poll (seconds)"
                 value={get("inputParameters.pushBackstopPollSeconds") as number}
                 coerceTo="integer"
@@ -402,7 +402,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection title="Polling and limits">
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={{ xs: 12, md: 6 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Poll interval (seconds)"
               value={get("inputParameters.pollIntervalSeconds") as number}
               coerceTo="integer"
@@ -410,7 +410,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Max duration (seconds)"
               value={get("inputParameters.maxDurationSeconds") as number}
               coerceTo="integer"
@@ -418,7 +418,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Max poll failures"
               value={get("inputParameters.maxPollFailures") as number}
               coerceTo="integer"
@@ -427,7 +427,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
           </Grid>
           {!isConductor && (
             <Grid size={{ xs: 12, md: 6 }}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="History length"
                 value={get("inputParameters.historyLength") as number}
                 coerceTo="integer"
@@ -442,7 +442,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
         <TaskFormSection title="Headers">
           <Grid container spacing={2} sx={{ width: "100%" }}>
             <Grid size={12}>
-              <ConductorAdditionalHeadersBase
+              <WeaverAdditionalHeadersBase
                 headers={headers}
                 onChangeHeaders={(h) => set("inputParameters.headers", h)}
               />
@@ -461,7 +461,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
               </Typography>
             </Grid>
             <Grid size={12}>
-              <ConductorCodeBlockInput
+              <WeaverCodeBlockInput
                 label="Message (JSON)"
                 language="json"
                 minHeight={140}
@@ -471,7 +471,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
               />
             </Grid>
             <Grid size={12}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="Parts (variable reference)"
                 value={get("inputParameters.parts") as string}
                 onChange={(v) => set("inputParameters.parts", v || undefined)}
@@ -486,21 +486,21 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
         <TaskFormSection title="Advanced">
           <Grid container spacing={2} sx={{ width: "100%" }}>
             <Grid size={{ xs: 12, md: 6 }}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="Context ID"
                 value={get("inputParameters.contextId") as string}
                 onChange={(v) => set("inputParameters.contextId", v)}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="Task ID"
                 value={get("inputParameters.taskId") as string}
                 onChange={(v) => set("inputParameters.taskId", v)}
               />
             </Grid>
             <Grid size={12}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="Metadata"
                 value={get("inputParameters.metadata") as string}
                 onChange={(v) => set("inputParameters.metadata", v)}
@@ -512,7 +512,7 @@ export const AgentTaskForm = ({ task, onChange }: TaskFormProps) => {
 
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

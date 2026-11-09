@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+﻿import { Grid } from "@mui/material";
 import { Theme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useActor, useSelector } from "@xstate/react";
@@ -6,7 +6,7 @@ import { FunctionComponent } from "react";
 import { ActorRef } from "xstate";
 
 import { Button } from "components";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import {
   TaskFormHeaderEventTypes,
   TaskHeaderMachineEvents,
@@ -60,7 +60,7 @@ export const TaskFormHeaderTasks: FunctionComponent<
       sx={{ width: "100%" }}
     >
       <Grid flexGrow={2}>
-        <ConductorInput
+        <WeaverInput
           id="task-form-header-task-name-field"
           label="Task definition"
           fullWidth
@@ -77,7 +77,7 @@ export const TaskFormHeaderTasks: FunctionComponent<
         />
       </Grid>
       <Grid flexGrow={2}>
-        <ConductorInput
+        <WeaverInput
           id="task-form-header-task-reference-field"
           label="Reference name"
           fullWidth

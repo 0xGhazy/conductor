@@ -28,7 +28,7 @@ import com.vodafone.vss.weaver.annotations.VisibleForTesting;
 import com.vodafone.vss.weaver.common.run.ExternalStorageLocation;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage.PayloadType;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.NonTransientException;
 import com.vodafone.vss.weaver.core.exception.TerminateWorkflowException;
 import com.vodafone.vss.weaver.core.exception.TransientException;
@@ -45,12 +45,12 @@ public class ExternalPayloadStorageUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExternalPayloadStorageUtils.class);
 
     private final ExternalPayloadStorage externalPayloadStorage;
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final ObjectMapper objectMapper;
 
     public ExternalPayloadStorageUtils(
             ExternalPayloadStorage externalPayloadStorage,
-            ConductorProperties properties,
+            WeaverProperties properties,
             ObjectMapper objectMapper) {
         this.externalPayloadStorage = externalPayloadStorage;
         this.properties = properties;
@@ -86,7 +86,7 @@ public class ExternalPayloadStorageUtils {
      * @param <T> {@link TaskModel} or {@link WorkflowModel}
      * @throws NonTransientException in case of JSON parsing errors or upload errors
      * @throws TerminateWorkflowException if the payload size is bigger than permissible limit as
-     *     per {@link ConductorProperties}
+     *     per {@link WeaverProperties}
      */
     public <T> void verifyAndUpload(T entity, PayloadType payloadType) {
         if (!shouldUpload(entity, payloadType)) return;

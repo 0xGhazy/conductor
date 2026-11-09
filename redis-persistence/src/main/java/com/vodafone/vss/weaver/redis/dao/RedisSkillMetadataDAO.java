@@ -17,12 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.conductoross.conductor.dao.SkillMetadataDAO;
+import com.vodafone.vss.weaver.dao.SkillMetadataDAO;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.redis.config.AnyRedisCondition;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
 import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Component
 @Conditional(AnyRedisCondition.class)
-@ConditionalOnProperty(name = "conductor.integrations.ai.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.integrations.ai.enabled", havingValue = "true")
 public class RedisSkillMetadataDAO extends BaseDynoDAO implements SkillMetadataDAO {
 
     private static final String SKILL_META = "SKILL_META";
@@ -48,9 +48,9 @@ public class RedisSkillMetadataDAO extends BaseDynoDAO implements SkillMetadataD
     public RedisSkillMetadataDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties) {
-        super(jedisProxy, objectMapper, conductorProperties, properties);
+        super(jedisProxy, objectMapper, WeaverProperties, properties);
     }
 
     private static String field(String name, String version) {

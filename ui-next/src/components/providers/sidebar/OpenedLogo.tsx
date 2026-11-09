@@ -1,15 +1,15 @@
-import Stack, { StackProps } from "@mui/material/Stack";
+﻿import Stack, { StackProps } from "@mui/material/Stack";
 import OrkesLogo from "images/svg/orkes-logo.svg";
 import { featureFlags, FEATURES } from "utils/flags";
 
 // Logos
-const ConductorOSSLogo = "https://assets.conductor-oss.org/logo.png";
+const WeaverOSSLogo = "https://assets.conductor-oss.org/logo.png";
 
 // Determine which logo to use based on ACCESS_MANAGEMENT feature flag
 // Enterprise (ACCESS_MANAGEMENT enabled) uses Orkes logo
 // OSS (ACCESS_MANAGEMENT disabled) uses Conductor OSS logo
 const isEnterprise = featureFlags.isEnabled(FEATURES.ACCESS_MANAGEMENT);
-const defaultLogo = isEnterprise ? OrkesLogo : ConductorOSSLogo;
+const defaultLogo = isEnterprise ? OrkesLogo : WeaverOSSLogo;
 const defaultAltText = isEnterprise ? "Orkes logo" : "Conductor OSS logo";
 
 export const OpenedLogo = ({

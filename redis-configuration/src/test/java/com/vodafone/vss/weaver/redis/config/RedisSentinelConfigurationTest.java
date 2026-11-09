@@ -15,7 +15,7 @@ package com.vodafone.vss.weaver.redis.config;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 
 import redis.clients.jedis.JedisClientConfig;
 
@@ -29,7 +29,7 @@ class RedisSentinelConfigurationTest {
     @BeforeEach
     void setUp() {
         configuration = new RedisSentinelConfiguration();
-        properties = new RedisProperties(new ConductorProperties());
+        properties = new RedisProperties(new WeaverProperties());
     }
 
     @Test

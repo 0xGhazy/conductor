@@ -21,7 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.vodafone.vss.weaver.ConductorTestApp;
+import com.vodafone.vss.weaver.WeaverTestApp;
 import com.vodafone.vss.weaver.client.grpc.EventClient;
 import com.vodafone.vss.weaver.client.grpc.MetadataClient;
 import com.vodafone.vss.weaver.client.grpc.TaskClient;
@@ -49,11 +49,11 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
-        classes = ConductorTestApp.class,
+        classes = WeaverTestApp.class,
         properties = {
-            "conductor.grpc-server.enabled=true",
-            "conductor.grpc-server.port=8092",
-            "conductor.app.sweeper.enabled=false"
+            "weaver.grpc-server.enabled=true",
+            "weaver.grpc-server.port=8092",
+            "weaver.app.sweeper.enabled=false"
         })
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public abstract class AbstractGrpcEndToEndTest extends AbstractEndToEndTest {

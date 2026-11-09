@@ -1,6 +1,6 @@
-import { Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+﻿import { Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { TaskDef } from "types";
 
 type PromptVariablesProps = {
@@ -24,7 +24,7 @@ const PromptVariables = ({
     <>
       {typeof currentVariables === "string" ? (
         <Grid size={6}>
-          <ConductorAutocompleteVariables
+          <WeaverAutocompleteVariables
             openOnFocus
             onChange={(value: string) =>
               onChange(
@@ -37,7 +37,7 @@ const PromptVariables = ({
         </Grid>
       ) : (
         <Grid size={12}>
-          <ConductorFlatMapFormBase
+          <WeaverFlatMapFormBase
             showFieldTypes={true}
             keyColumnLabel="Key"
             valueColumnLabel="Value"

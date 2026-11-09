@@ -1,9 +1,9 @@
-import { Grid } from "@mui/material";
+﻿import { Grid } from "@mui/material";
 import IconButton from "components/ui/buttons/MuiIconButton";
 import MuiTypography from "components/ui/MuiTypography";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import XCloseIcon from "components/icons/XCloseIcon";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
@@ -87,7 +87,7 @@ export const StartWorkflowActionForm = ({
           md: 9,
         }}
       >
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           label="Workflow name"
           freeSolo
           fullWidth
@@ -111,7 +111,7 @@ export const StartWorkflowActionForm = ({
               },
             });
           }}
-          conductorInputProps={{
+          WeaverInputProps={{
             placeholder: `\${event.payload.workflow_name}`,
           }}
         />
@@ -123,7 +123,7 @@ export const StartWorkflowActionForm = ({
           md: 3,
         }}
       >
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           label="Workflow version"
           freeSolo
           fullWidth
@@ -147,7 +147,7 @@ export const StartWorkflowActionForm = ({
               },
             });
           }}
-          conductorInputProps={{
+          WeaverInputProps={{
             placeholder: "latest",
           }}
         />
@@ -158,7 +158,7 @@ export const StartWorkflowActionForm = ({
           md: 6,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Workflow correlation id"
           placeholder={`\${event.payload.correlation_id}`}
@@ -186,7 +186,7 @@ export const StartWorkflowActionForm = ({
         </Grid>
       </Grid>
       <Grid size={12}>
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           onChange={(newValues) => {
             handleChangeAction(index, {
               ...payload,
@@ -207,7 +207,7 @@ export const StartWorkflowActionForm = ({
         />
       </Grid>
       <Grid size={12}>
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           onChange={(newValues) => {
             handleChangeAction(index, {
               ...payload,

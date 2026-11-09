@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.common.metadata.events.EventExecution;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.TransientException;
 import com.vodafone.vss.weaver.core.utils.QueueUtils;
 import com.vodafone.vss.weaver.dao.ConcurrentExecutionLimitDAO;
@@ -66,10 +66,10 @@ public class RedisExecutionDAO extends BaseDynoDAO
     public RedisExecutionDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties,
             QueueDAO queueDAO) {
-        super(jedisProxy, objectMapper, conductorProperties, properties);
+        super(jedisProxy, objectMapper, WeaverProperties, properties);
 
         ttlEventExecutionSeconds = (int) properties.getEventExecutionPersistenceTTL().getSeconds();
         this.queueDAO = queueDAO;

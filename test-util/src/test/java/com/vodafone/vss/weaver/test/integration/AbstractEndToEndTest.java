@@ -48,7 +48,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 @TestPropertySource(
-        properties = {"conductor.indexing.enabled=true", "conductor.elasticsearch.version=7"})
+        properties = {"weaver.indexing.enabled=true", "weaver.elasticsearch.version=7"})
 public abstract class AbstractEndToEndTest {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractEndToEndTest.class);
@@ -73,8 +73,8 @@ public abstract class AbstractEndToEndTest {
     static {
         container.start();
         String httpHostAddress = container.getHttpHostAddress();
-        System.setProperty("conductor.elasticsearch.url", "http://" + httpHostAddress);
-        System.setProperty("conductor.elasticsearch.url", "http://" + httpHostAddress);
+        System.setProperty("weaver.elasticsearch.url", "http://" + httpHostAddress);
+        System.setProperty("weaver.elasticsearch.url", "http://" + httpHostAddress);
         log.info("Initialized Elasticsearch {}", container.getContainerId());
     }
 

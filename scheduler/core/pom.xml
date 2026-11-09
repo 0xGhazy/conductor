@@ -5,24 +5,24 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>conductor-scheduler-core</artifactId>
-    <name>conductor-scheduler-core</name>
-    <description>Scheduler core for Conductor</description>
+    <artifactId>weaver-scheduler-core</artifactId>
+    <name>weaver-scheduler-core</name>
+    <description>Scheduler core for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.retry</groupId>

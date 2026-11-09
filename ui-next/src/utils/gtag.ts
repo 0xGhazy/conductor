@@ -1,4 +1,4 @@
-// This util means to replace gtag
+﻿// This util means to replace gtag
 import { useEffect } from "react";
 import { featureFlags, FEATURES } from "utils/flags";
 
@@ -39,15 +39,15 @@ const gtagAbstract = (event_name: string, event_params: EventParams) => {
 };
 
 export const useConfigureGtagUserIdIfPlayground = (
-  conductorUser?: SimpleUserInfo,
+  WeaverUser?: SimpleUserInfo,
 ) => {
   useEffect(() => {
-    if (isPlayground && window && window.gtag && conductorUser?.id) {
+    if (isPlayground && window && window.gtag && WeaverUser?.id) {
       window.gtag("config", GTAG_LABEL, {
-        user_id: conductorUser.id,
+        user_id: WeaverUser.id,
       });
     }
-  }, [conductorUser?.id]);
+  }, [WeaverUser?.id]);
 };
 // flatten a given nested object
 type FlattenedObject = Record<string, any>;

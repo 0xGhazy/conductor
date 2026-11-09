@@ -1,5 +1,5 @@
 syntax = "proto3";
-package conductor.grpc.workflows;
+package weaver.grpc.workflows;
 
 import "grpc/search.proto";
 import "model/workflow.proto";
@@ -10,17 +10,17 @@ import "model/rerunworkflowrequest.proto";
 
 option java_package = "com.vodafone.vss.weaver.grpc";
 option java_outer_classname = "WorkflowServicePb";
-option go_package = "github.com/netflix/conductor/client/gogrpc/conductor/grpc/workflows";
+option go_package = "github.com/conductor-oss/conductor/client/gogrpc/weaver/grpc/workflows";
 
 service WorkflowService {
     // POST /
-    rpc StartWorkflow(conductor.proto.StartWorkflowRequest) returns (StartWorkflowResponse);
+    rpc StartWorkflow(weaver.proto.StartWorkflowRequest) returns (StartWorkflowResponse);
 
     // GET /{name}/correlated/{correlationId}
     rpc GetWorkflows(GetWorkflowsRequest) returns (GetWorkflowsResponse);
 
     // GET /{workflowId}
-    rpc GetWorkflowStatus(GetWorkflowStatusRequest) returns (conductor.proto.Workflow);
+    rpc GetWorkflowStatus(GetWorkflowStatusRequest) returns (weaver.proto.Workflow);
 
     // DELETE /{workflodId}/remove
     rpc RemoveWorkflow(RemoveWorkflowRequest) returns (RemoveWorkflowResponse);
@@ -41,7 +41,7 @@ service WorkflowService {
     rpc SkipTaskFromWorkflow(SkipTaskRequest) returns (SkipTaskResponse);
 
     // POST /{workflowId}/rerun
-    rpc RerunWorkflow(conductor.proto.RerunWorkflowRequest) returns (RerunWorkflowResponse);
+    rpc RerunWorkflow(weaver.proto.RerunWorkflowRequest) returns (RerunWorkflowResponse);
 
     // POST /{workflowId}/restart
     rpc RestartWorkflow(RestartWorkflowRequest) returns (RestartWorkflowResponse);
@@ -56,12 +56,12 @@ service WorkflowService {
     rpc TerminateWorkflow(TerminateWorkflowRequest) returns (TerminateWorkflowResponse);
 
     // GET /search
-    rpc Search(conductor.grpc.search.Request) returns (WorkflowSummarySearchResult);
-    rpc SearchByTasks(conductor.grpc.search.Request) returns (WorkflowSummarySearchResult);
+    rpc Search(weaver.grpc.search.Request) returns (WorkflowSummarySearchResult);
+    rpc SearchByTasks(weaver.grpc.search.Request) returns (WorkflowSummarySearchResult);
 
     // GET /searchV2
-    rpc SearchV2(conductor.grpc.search.Request) returns (WorkflowSearchResult);
-    rpc SearchByTasksV2(conductor.grpc.search.Request) returns (WorkflowSearchResult);
+    rpc SearchV2(weaver.grpc.search.Request) returns (WorkflowSearchResult);
+    rpc SearchByTasksV2(weaver.grpc.search.Request) returns (WorkflowSearchResult);
 }
 
 message StartWorkflowResponse {
@@ -77,7 +77,7 @@ message GetWorkflowsRequest {
 
 message GetWorkflowsResponse {
     message Workflows {
-        repeated conductor.proto.Workflow workflows = 1;
+        repeated weaver.proto.Workflow workflows = 1;
     }
     map<string, Workflows> workflows_by_id = 1;
 }
@@ -88,7 +88,7 @@ message GetWorkflowStatusRequest {
 }
 
 message GetWorkflowStatusResponse {
-    conductor.proto.Workflow workflow = 1;
+    weaver.proto.Workflow workflow = 1;
 }
 
 message RemoveWorkflowRequest {
@@ -130,7 +130,7 @@ message ResumeWorkflowResponse {}
 message SkipTaskRequest {
     string workflow_id = 1;
     string task_reference_name = 2;
-    conductor.proto.SkipTaskRequest request = 3;
+    weaver.proto.SkipTaskRequest request = 3;
 }
 
 message SkipTaskResponse {}
@@ -168,10 +168,10 @@ message TerminateWorkflowResponse {}
 
 message WorkflowSummarySearchResult {
     int64 total_hits = 1;
-    repeated conductor.proto.WorkflowSummary results = 2;
+    repeated weaver.proto.WorkflowSummary results = 2;
 }
 
 message WorkflowSearchResult {
     int64 total_hits = 1;
-    repeated conductor.proto.Workflow results = 2;
+    repeated weaver.proto.Workflow results = 2;
 }

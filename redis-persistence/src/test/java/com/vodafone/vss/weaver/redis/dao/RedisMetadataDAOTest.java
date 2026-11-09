@@ -34,7 +34,7 @@ import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef.RetryLogic;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef.TimeoutPolicy;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.ConflictException;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
@@ -68,12 +68,12 @@ class RedisMetadataDAOTest {
         jedisPool = new JedisPool(config, redis.getHost(), redis.getFirstMappedPort());
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
 
         redisMetadataDAO =
                 new RedisMetadataDAO(
-                        jedisProxy, objectMapper, conductorProperties, redisProperties);
+                        jedisProxy, objectMapper, WeaverProperties, redisProperties);
     }
 
     @AfterAll
@@ -89,11 +89,11 @@ class RedisMetadataDAOTest {
         // Re-create the DAO to reset the internal taskDefCache after flush
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
         redisMetadataDAO =
                 new RedisMetadataDAO(
-                        jedisProxy, objectMapper, conductorProperties, redisProperties);
+                        jedisProxy, objectMapper, WeaverProperties, redisProperties);
     }
 
     @Test
@@ -371,10 +371,10 @@ class RedisMetadataDAOTest {
     private RedisMetadataDAO newCacheEnabledDAO() {
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
         redisProperties.setWorkflowDefCacheEnabled(true);
-        return new RedisMetadataDAO(jedisProxy, objectMapper, conductorProperties, redisProperties);
+        return new RedisMetadataDAO(jedisProxy, objectMapper, WeaverProperties, redisProperties);
     }
 
     @Test

@@ -29,7 +29,7 @@ import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage.Operation;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage.PayloadType;
 import com.vodafone.vss.weaver.common.utils.TaskUtils;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.events.queue.Message;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
@@ -54,7 +54,7 @@ public class ExecutionService {
     private final WorkflowExecutor workflowExecutor;
     private final ExecutionDAOFacade executionDAOFacade;
     private final QueueDAO queueDAO;
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final ExternalPayloadStorage externalPayloadStorage;
     private final SystemTaskRegistry systemTaskRegistry;
     private final TaskStatusListener taskStatusListener;
@@ -71,7 +71,7 @@ public class ExecutionService {
             WorkflowExecutor workflowExecutor,
             ExecutionDAOFacade executionDAOFacade,
             QueueDAO queueDAO,
-            ConductorProperties properties,
+            WeaverProperties properties,
             ExternalPayloadStorage externalPayloadStorage,
             SystemTaskRegistry systemTaskRegistry,
             TaskStatusListener taskStatusListener,

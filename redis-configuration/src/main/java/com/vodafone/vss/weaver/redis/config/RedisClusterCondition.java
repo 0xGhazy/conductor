@@ -26,9 +26,9 @@ public class RedisClusterCondition extends AnyNestedCondition {
         super(ConfigurationPhase.PARSE_CONFIGURATION);
     }
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_cluster")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_cluster")
     static class DbRedisCluster {}
 
-    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "redis_cluster")
+    @ConditionalOnProperty(name = "weaver.queue.type", havingValue = "redis_cluster")
     static class QueueRedisCluster {}
 }

@@ -18,7 +18,7 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /** Configuration properties for composite workflow status listener. */
-@ConfigurationProperties("conductor.workflow-status-listener.composite")
+@ConfigurationProperties("weaver.workflow-status-listener.composite")
 public class CompositeWorkflowStatusListenerProperties {
 
     /**

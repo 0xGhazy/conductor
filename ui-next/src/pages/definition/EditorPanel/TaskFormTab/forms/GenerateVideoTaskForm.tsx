@@ -1,13 +1,13 @@
-import { Box, FormControlLabel, Grid, Switch } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Box, FormControlLabel, Grid, Switch } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { path as _path } from "lodash/fp";
 import { UiIntegrationsFieldType } from "types/FormFieldTypes";
 import {
   fieldsToFieldsFieldsComponents,
   updateField,
 } from "utils/fieldHelpers";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { LLMFormFields } from "./LLMFormFields/LLMFormFields";
 import LLMFormFieldsWrapper from "./LLMFormFields/LLMFormFieldsWrapper";
 import { Optional } from "./OptionalFieldForm";
@@ -54,7 +54,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
           >
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Prompt"
                   name="prompt"
                   value={(get("inputParameters.prompt") as string) || ""}
@@ -66,7 +66,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={12}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Input image (optional)"
                   value={get("inputParameters.inputImage") as string}
                   onChange={(v) => set("inputParameters.inputImage", v)}
@@ -78,7 +78,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
           <TaskFormSection title="Dimensions">
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Aspect ratio"
                   value={get("inputParameters.aspectRatio") as string}
                   onChange={(v) => set("inputParameters.aspectRatio", v)}
@@ -86,7 +86,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Resolution"
                   value={get("inputParameters.resolution") as string}
                   onChange={(v) => set("inputParameters.resolution", v)}
@@ -94,7 +94,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Size"
                   value={get("inputParameters.size") as string}
                   onChange={(v) => set("inputParameters.size", v)}
@@ -102,7 +102,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Width"
                   value={get("inputParameters.width") as number}
                   coerceTo="integer"
@@ -110,7 +110,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Height"
                   value={get("inputParameters.height") as number}
                   coerceTo="integer"
@@ -118,7 +118,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="FPS"
                   value={get("inputParameters.fps") as number}
                   coerceTo="integer"
@@ -131,7 +131,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
           <TaskFormSection title="Output">
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Duration (seconds)"
                   value={get("inputParameters.duration") as number}
                   coerceTo="integer"
@@ -139,7 +139,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Output format"
                   value={get("inputParameters.outputFormat") as string}
                   onChange={(v) => set("inputParameters.outputFormat", v)}
@@ -147,7 +147,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Seed"
                   value={get("inputParameters.seed") as number}
                   coerceTo="integer"
@@ -155,7 +155,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Number of outputs (n)"
                   value={get("inputParameters.n") as number}
                   coerceTo="integer"
@@ -163,7 +163,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Thumbnail timestamp (seconds)"
                   value={get("inputParameters.thumbnailTimestamp") as number}
                   coerceTo="double"
@@ -203,7 +203,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
           <TaskFormSection title="Advanced">
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Style"
                   value={get("inputParameters.style") as string}
                   onChange={(v) => set("inputParameters.style", v)}
@@ -211,7 +211,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Motion"
                   value={get("inputParameters.motion") as string}
                   onChange={(v) => set("inputParameters.motion", v)}
@@ -219,7 +219,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Guidance scale"
                   value={get("inputParameters.guidanceScale") as number}
                   coerceTo="double"
@@ -227,7 +227,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Person generation"
                   value={get("inputParameters.personGeneration") as string}
                   onChange={(v) => set("inputParameters.personGeneration", v)}
@@ -235,7 +235,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Max duration (seconds)"
                   value={get("inputParameters.maxDurationSeconds") as number}
                   coerceTo="integer"
@@ -243,7 +243,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Max cost (dollars)"
                   value={get("inputParameters.maxCostDollars") as number}
                   coerceTo="double"
@@ -251,7 +251,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Negative prompt"
                   name="negativePrompt"
                   value={
@@ -270,7 +270,7 @@ export const GenerateVideoTaskForm = ({ task, onChange }: TaskFormProps) => {
 
           <TaskFormSection>
             <Box display="flex" flexDirection="column" gap={3}>
-              <ConductorCacheOutput onChange={onChange} taskJson={task} />
+              <WeaverCacheOutput onChange={onChange} taskJson={task} />
               <Optional onChange={onChange} taskJson={task} />
             </Box>
           </TaskFormSection>

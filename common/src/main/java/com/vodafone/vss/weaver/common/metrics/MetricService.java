@@ -33,7 +33,7 @@ public class MetricService {
 
     private final MeterRegistry mr;
 
-    @Value("${metrics.prefix:conductor}")
+    @Value("${metrics.prefix:weaver}")
     private String prefix = "conductor";
 
     public void increment(Metrics name, String... tags) {

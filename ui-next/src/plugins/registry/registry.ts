@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Plugin Registry Implementation
  *
  * Singleton registry that manages all registered plugins and provides
@@ -9,7 +9,7 @@ import { ComponentType, ReactNode } from "react";
 import { RouteObject } from "react-router-dom";
 import {
   AuthProviderProps,
-  ConductorPlugin,
+  WeaverPlugin,
   DependencySectionRegistration,
   GeneratedKeyDialogProps,
   NewIntegrationModalProps,
@@ -32,7 +32,7 @@ import type { ValidationError } from "pages/definition/errorInspector/state/type
  */
 function createPluginRegistry(): PluginRegistry {
   // Storage for registered plugins
-  const plugins: ConductorPlugin[] = [];
+  const plugins: WeaverPlugin[] = [];
 
   // Cached lookups for performance
   const taskFormCache = new Map<string, ComponentType<PluginTaskFormProps>>();
@@ -82,7 +82,7 @@ function createPluginRegistry(): PluginRegistry {
     /**
      * Register a plugin with the registry
      */
-    register(plugin: ConductorPlugin): void {
+    register(plugin: WeaverPlugin): void {
       // Check for duplicate plugin IDs
       const existing = plugins.find((p) => p.id === plugin.id);
       if (existing) {
@@ -111,7 +111,7 @@ function createPluginRegistry(): PluginRegistry {
     /**
      * Get all registered plugins
      */
-    getPlugins(): ConductorPlugin[] {
+    getPlugins(): WeaverPlugin[] {
       return [...plugins];
     },
 
@@ -438,6 +438,6 @@ export const pluginRegistry = createPluginRegistry();
 /**
  * Convenience function to register a plugin
  */
-export function registerPlugin(plugin: ConductorPlugin): void {
+export function registerPlugin(plugin: WeaverPlugin): void {
   pluginRegistry.register(plugin);
 }

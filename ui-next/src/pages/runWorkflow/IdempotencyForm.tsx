@@ -1,7 +1,7 @@
-import { FormControlLabel, Grid } from "@mui/material";
+﻿import { FormControlLabel, Grid } from "@mui/material";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
 import Text from "components/ui/Text";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { colors } from "theme/tokens/variables";
 
 const style = {
@@ -43,7 +43,7 @@ export default function IdempotencyForm({
   return (
     <>
       <Grid size={12}>
-        <ConductorInput
+        <WeaverInput
           id="idempotency-key-field"
           fullWidth
           label="Idempotency key"

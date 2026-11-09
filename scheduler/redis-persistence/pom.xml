@@ -5,36 +5,36 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>conductor-scheduler-redis-persistence</artifactId>
-    <name>conductor-scheduler-redis-persistence</name>
-    <description>Scheduler Redis persistence for Conductor</description>
+    <artifactId>weaver-scheduler-redis-persistence</artifactId>
+    <name>weaver-scheduler-redis-persistence</name>
+    <description>Scheduler Redis persistence for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-scheduler-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-scheduler-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-redis-configuration</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-redis-configuration</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-redis-persistence</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-redis-persistence</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -58,15 +58,15 @@
 
         <!-- Test Dependencies -->
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-scheduler-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-scheduler-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-redis-api</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-redis-api</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

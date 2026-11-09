@@ -18,7 +18,7 @@ import java.time.temporal.ChronoUnit;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.convert.DurationUnit;
 
-@ConfigurationProperties("conductor.postgres")
+@ConfigurationProperties("weaver.postgres")
 public class PostgresProperties {
 
     /** The time in seconds after which the in-memory task definitions cache will be refreshed */

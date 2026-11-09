@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Minimal auth state types for OSS mode (no authentication).
  * Full auth implementation has been moved to the enterprise package.
  */
@@ -49,7 +49,7 @@ export interface AuthProviderMachineContext {
   provider: SupportedProviders;
   error?: unknown;
   providerUser?: unknown;
-  conductorUser?: { id: string };
+  WeaverUser?: { id: string };
   isTrialExpired: boolean;
   trialExpiryDate?: number | Date;
   limits?: unknown;

@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.conductoross.conductor.dao.SecretsDAO;
+import com.vodafone.vss.weaver.dao.SecretsDAO;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

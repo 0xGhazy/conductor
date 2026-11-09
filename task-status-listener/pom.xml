@@ -5,31 +5,31 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-task-status-listener</artifactId>
-    <name>conductor-task-status-listener</name>
-    <description>Task status listener for Conductor</description>
+    <artifactId>weaver-task-status-listener</artifactId>
+    <name>weaver-task-status-listener</name>
+    <description>Task status listener for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-redis-persistence</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-redis-persistence</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-annotations</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.inject</groupId>
@@ -69,8 +69,8 @@
 
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-test-util</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-test-util</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

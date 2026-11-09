@@ -30,7 +30,7 @@ import com.vodafone.vss.weaver.dao.WorkflowMessageQueueDAO;
  * fallback unnecessary.
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "conductor.workflow-message-queue.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.workflow-message-queue.enabled", havingValue = "true")
 @EnableConfigurationProperties(WorkflowMessageQueueProperties.class)
 public class WorkflowMessageQueueConfiguration {
 

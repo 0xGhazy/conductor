@@ -56,11 +56,11 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @TestPropertySource(
         properties = {
-            "conductor.app.asyncIndexingEnabled=false",
-            "conductor.elasticsearch.version=0",
-            "conductor.indexing.type=postgres",
-            "conductor.postgres.pollDataFlushInterval=200",
-            "conductor.postgres.pollDataCacheValidityPeriod=100",
+            "weaver.app.asyncIndexingEnabled=false",
+            "weaver.elasticsearch.version=0",
+            "weaver.indexing.type=postgres",
+            "weaver.postgres.pollDataFlushInterval=200",
+            "weaver.postgres.pollDataCacheValidityPeriod=100",
             "spring.flyway.clean-disabled=false"
         })
 @SpringBootTest

@@ -1,17 +1,17 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import _get from "lodash/get";
 
-import { ConductorArrayField } from "components/ui/inputs/ConductorArrayField";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapForm } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverArrayField } from "components/ui/inputs/WeaverArrayField";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapForm } from "components/FlatMapForm/WeaverFlatMapForm";
 import { TaskType } from "types";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { updateField } from "utils/fieldHelpers";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
 import { useGetSetHandler } from "./useGetSetHandler";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 
 const EXECUTION_STRATEGY_OPTIONS = ["FIRE_FIRST", "FIRE_ALL"];
 
@@ -47,7 +47,7 @@ export const BusinessRuleForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={_get(task, ruleFileLocationPath)}
               label="Rule file location"
               onChange={(changes) =>
@@ -62,7 +62,7 @@ export const BusinessRuleForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlerExecutionStrategy}
               value={executionStrategy}
               label="Execution strategy"
@@ -97,7 +97,7 @@ export const BusinessRuleForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorInput
+            <WeaverInput
               label="Refresh Interval (Minutes)"
               type="number"
               value={_get(task, cacheTimeoutMinutesPath)}
@@ -116,7 +116,7 @@ export const BusinessRuleForm = (props: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapForm
+            <WeaverFlatMapForm
               showFieldTypes={true}
               keyColumnLabel="Key"
               valueColumnLabel="Value"
@@ -132,7 +132,7 @@ export const BusinessRuleForm = (props: TaskFormProps) => {
       <TaskFormSection title="Output columns">
         <Grid container sx={{ width: "100%" }} spacing={1}>
           <Grid size={12}>
-            <ConductorArrayField
+            <WeaverArrayField
               value={outputColumns}
               onChange={handleOutputColumns}
               taskType={TaskType.BUSINESS_RULE}
@@ -145,7 +145,7 @@ export const BusinessRuleForm = (props: TaskFormProps) => {
       </TaskFormSection>
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

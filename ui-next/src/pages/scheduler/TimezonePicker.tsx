@@ -1,4 +1,4 @@
-import { ConductorAutoComplete } from "components/ui/inputs/ConductorAutoComplete";
+﻿import { WeaverAutoComplete } from "components/ui/inputs/WeaverAutoComplete";
 import timezones from "./timezones.json";
 
 type TimezonePickerProps = {
@@ -15,7 +15,7 @@ export const TimezonePicker = ({
   helperText,
 }: TimezonePickerProps) => {
   return (
-    <ConductorAutoComplete
+    <WeaverAutoComplete
       id="scheduler-timezone-picker"
       label="Select Timezone"
       required

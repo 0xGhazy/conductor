@@ -56,9 +56,9 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @TestPropertySource(
         properties = {
-            "conductor.app.asyncIndexingEnabled=false",
-            "conductor.elasticsearch.version=0",
-            "conductor.indexing.type=postgres"
+            "weaver.app.asyncIndexingEnabled=false",
+            "weaver.elasticsearch.version=0",
+            "weaver.indexing.type=postgres"
         })
 @SpringBootTest
 public class PostgresIndexDAOTest {

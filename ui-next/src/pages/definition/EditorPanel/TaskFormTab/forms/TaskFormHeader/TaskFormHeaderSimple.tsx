@@ -1,10 +1,10 @@
-import { Grid, Paper } from "@mui/material";
+﻿import { Grid, Paper } from "@mui/material";
 import { useSelector } from "@xstate/react";
 import { FunctionComponent } from "react";
 import { ActorRef } from "xstate";
 
 import { Button } from "components";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import SimpleTaskNameInput from "../SimpleTaskNameInput";
 import {
   TaskFormHeaderEventTypes,
@@ -88,7 +88,7 @@ export const TaskFormHeaderSimple: FunctionComponent<
             lg: 5,
           }}
         >
-          <ConductorInput
+          <WeaverInput
             id="task-form-header-simple-reference-name-field"
             fullWidth
             showClearButton

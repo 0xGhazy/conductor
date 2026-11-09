@@ -1,4 +1,4 @@
-export type AgentRuntimeType = "a2a" | "conductor";
+﻿export type AgentRuntimeType = "a2a" | "conductor";
 
 export interface A2AAgentInterface {
   url?: string;
@@ -85,7 +85,7 @@ export interface A2AAgentTaskInput {
   headers?: Record<string, string>;
 }
 
-export interface ConductorAgentTaskInput {
+export interface WeaverAgentTaskInput {
   agentType: "conductor";
   name: string;
   version?: number;
@@ -98,7 +98,7 @@ export interface ConductorAgentTaskInput {
   maxPollFailures?: number;
 }
 
-export type AgentTaskInput = A2AAgentTaskInput | ConductorAgentTaskInput;
+export type AgentTaskInput = A2AAgentTaskInput | WeaverAgentTaskInput;
 
 export interface AgentSnapshotSource {
   name?: string;
@@ -107,7 +107,7 @@ export interface AgentSnapshotSource {
   expression?: string;
 }
 
-export interface ConductorAgentSnapshot {
+export interface WeaverAgentSnapshot {
   name: string;
   requestedVersion?: number;
   resolvedVersion?: number;
@@ -128,7 +128,7 @@ export interface AgentMetadataSnapshot {
   displayName: string;
   source: AgentSnapshotSource;
   resolved: boolean;
-  conductor?: ConductorAgentSnapshot;
+  conductor?: WeaverAgentSnapshot;
   a2a?: A2AAgentSnapshot;
 }
 

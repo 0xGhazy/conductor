@@ -45,8 +45,8 @@ public class UserLookupConditionTest {
     @Test
     public void onlyAUrlTurnsItOn() {
         expect(0);
-        expect(0, "conductor.audit.user-lookup.url=");
-        expect(0, "conductor.audit.user-lookup.url=   ");
-        expect(1, "conductor.audit.user-lookup.url=jdbc:postgresql://localhost:5432/keycloak");
+        expect(0, "weaver.audit.user-lookup.url=");
+        expect(0, "weaver.audit.user-lookup.url=   ");
+        expect(1, "weaver.audit.user-lookup.url=jdbc:postgresql://localhost:5432/keycloak");
     }
 }

@@ -1,12 +1,12 @@
-import { Box, Button, Grid, Stack } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+﻿import { Box, Button, Grid, Stack } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import React, { ReactElement, useState } from "react";
 import { useServiceMethodsDefinition } from "./state/hook";
 import { ActorRef } from "xstate";
 import { ServiceMethodsMachineEvents } from "./state/types";
 import UIModal from "components/ui/dialogs/UIModal";
 import { Edit } from "@mui/icons-material";
-import ConductorInputNumber from "components/ui/inputs/ConductorInputNumber";
+import WeaverInputNumber from "components/ui/inputs/WeaverInputNumber";
 import MuiTypography from "components/ui/MuiTypography";
 
 import XCloseIcon from "components/icons/XCloseIcon";
@@ -56,7 +56,7 @@ const EditTaskDefConfigModal = ({
             <Box mt={4}>
               <Grid container sx={{ width: "100%" }}>
                 <Grid size={12}>
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     disabled
                     onChange={() => {}}
                     value={currentTaskDefinition?.retryCount}
@@ -85,7 +85,7 @@ const EditTaskDefConfigModal = ({
             <Grid size={12}>
               <Grid container sx={{ width: "100%" }} spacing={3}>
                 <Grid size={6}>
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     disabled
                     onChange={() => {}}
                     value={currentTaskDefinition?.rateLimitPerFrequency}
@@ -93,7 +93,7 @@ const EditTaskDefConfigModal = ({
                   />
                 </Grid>
                 <Grid size={6}>
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     disabled
                     onChange={() => {}}
                     value={currentTaskDefinition?.rateLimitFrequencyInSeconds}
@@ -116,7 +116,7 @@ const EditTaskDefConfigModal = ({
         <Box>
           <Grid container sx={{ width: "100%" }} spacing={3}>
             <Grid size={12}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 disabled
                 onChange={() => {}}
                 value={currentTaskDefinition?.name}
@@ -132,7 +132,7 @@ const EditTaskDefConfigModal = ({
             <Grid size={12}>
               <Grid container sx={{ width: "100%" }} spacing={3}>
                 <Grid size={6}>
-                  <ConductorInputNumber
+                  <WeaverInputNumber
                     fullWidth
                     onChange={(value) =>
                       handleChangeTaskConfig("rateLimitPerFrequency", value)
@@ -150,7 +150,7 @@ const EditTaskDefConfigModal = ({
                   />
                 </Grid>
                 <Grid size={6}>
-                  <ConductorInputNumber
+                  <WeaverInputNumber
                     fullWidth
                     onChange={(value) =>
                       handleChangeTaskConfig(
@@ -180,7 +180,7 @@ const EditTaskDefConfigModal = ({
               </MuiTypography>
             </Grid>
             <Grid size={6}>
-              <ConductorInputNumber
+              <WeaverInputNumber
                 fullWidth
                 onChange={(value) =>
                   handleChangeTaskConfig("retryCount", value)

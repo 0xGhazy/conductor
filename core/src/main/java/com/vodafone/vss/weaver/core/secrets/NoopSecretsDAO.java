@@ -15,13 +15,13 @@ package com.vodafone.vss.weaver.core.secrets;
 import java.util.Collections;
 import java.util.List;
 
-import org.conductoross.conductor.dao.SecretsDAO;
-import org.conductoross.conductor.model.secret.CredentialMeta;
+import com.vodafone.vss.weaver.dao.SecretsDAO;
+import com.vodafone.vss.weaver.model.secret.CredentialMeta;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(name = "conductor.secrets.type", havingValue = "noop")
+@ConditionalOnProperty(name = "weaver.secrets.type", havingValue = "noop")
 public class NoopSecretsDAO implements SecretsDAO {
 
     @Override

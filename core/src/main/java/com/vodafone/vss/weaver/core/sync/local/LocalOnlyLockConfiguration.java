@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import com.vodafone.vss.weaver.core.sync.Lock;
 
 @Configuration
-@ConditionalOnProperty(name = "conductor.workflow-execution-lock.type", havingValue = "local_only")
+@ConditionalOnProperty(name = "weaver.workflow-execution-lock.type", havingValue = "local_only")
 public class LocalOnlyLockConfiguration {
 
     @Bean

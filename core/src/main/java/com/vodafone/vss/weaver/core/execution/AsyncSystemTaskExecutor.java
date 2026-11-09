@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
 import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver;
@@ -48,7 +48,7 @@ public class AsyncSystemTaskExecutor {
             ExecutionDAOFacade executionDAOFacade,
             QueueDAO queueDAO,
             MetadataDAO metadataDAO,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             WorkflowExecutor workflowExecutor,
             ParametersUtils parametersUtils) {
         this.executionDAOFacade = executionDAOFacade;
@@ -56,9 +56,9 @@ public class AsyncSystemTaskExecutor {
         this.metadataDAO = metadataDAO;
         this.workflowExecutor = workflowExecutor;
         this.systemTaskCallbackTime =
-                conductorProperties.getSystemTaskWorkerCallbackDuration().getSeconds();
+                WeaverProperties.getSystemTaskWorkerCallbackDuration().getSeconds();
         this.queueTaskMessagePostponeSecs =
-                conductorProperties.getTaskExecutionPostponeDuration().getSeconds();
+                WeaverProperties.getTaskExecutionPostponeDuration().getSeconds();
         this.parametersUtils = parametersUtils;
     }
 

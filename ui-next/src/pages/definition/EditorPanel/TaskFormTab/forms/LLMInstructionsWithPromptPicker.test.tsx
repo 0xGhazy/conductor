@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+﻿import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { queryClient } from "queryClient";
 import { TaskDef } from "types";
@@ -19,8 +19,8 @@ vi.mock("utils/query", () => ({
   useAuthHeaders: () => ({}),
 }));
 
-vi.mock("components/FlatMapForm/ConductorAutocompleteVariables", () => ({
-  ConductorAutocompleteVariables: ({
+vi.mock("components/FlatMapForm/WeaverAutocompleteVariables", () => ({
+  WeaverAutocompleteVariables: ({
     label,
     value,
     onChange,
@@ -37,7 +37,7 @@ vi.mock("components/FlatMapForm/ConductorAutocompleteVariables", () => ({
   ),
 }));
 
-vi.mock("components/ui/inputs/ConductorInput", () => ({
+vi.mock("components/ui/inputs/WeaverInput", () => ({
   default: ({ label, value, onTextInputChange, placeholder }: any) => (
     <textarea
       aria-label={label}
@@ -55,13 +55,13 @@ vi.mock("components/PromptVariables", () => ({
 }));
 
 vi.mock(
-  "pages/definition/EditorPanel/TaskFormTab/forms/LLMFormFields/ConductorArrayMapForm",
-  () => ({ ConductorArrayMapFormBase: () => null }),
+  "pages/definition/EditorPanel/TaskFormTab/forms/LLMFormFields/WeaverArrayMapForm",
+  () => ({ WeaverArrayMapFormBase: () => null }),
 );
 
 vi.mock(
-  "pages/definition/EditorPanel/TaskFormTab/forms/ConductorValueInput",
-  () => ({ ConductorValueInput: () => null }),
+  "pages/definition/EditorPanel/TaskFormTab/forms/WeaverValueInput",
+  () => ({ WeaverValueInput: () => null }),
 );
 
 const instructionsField = fieldsToFieldsFieldsComponents([

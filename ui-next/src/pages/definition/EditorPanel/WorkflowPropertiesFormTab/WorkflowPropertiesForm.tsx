@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   FormControlLabel,
   Grid,
@@ -9,11 +9,11 @@ import {
   Tabs,
 } from "@mui/material";
 import { PanelAccordion } from "components/ui/PanelAccordion";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorStringArrayFormField } from "components/ui/inputs/ConductorStringArrayFormField";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverStringArrayFormField } from "components/ui/inputs/WeaverStringArrayFormField";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import _clone from "lodash/clone";
 import { pluginRegistry } from "plugins/registry";
 import {
@@ -235,7 +235,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                       <Grid size={12}>
                         <ActorToHandlerValue actor={nameFieldActor}>
                           {({ onChange, value: name }) => (
-                            <ConductorInput
+                            <WeaverInput
                               required
                               label="Name"
                               value={name ? name : ""}
@@ -250,7 +250,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                       <Grid size={12}>
                         <ActorToHandlerValue actor={descriptionFieldActor}>
                           {({ onChange, value: description }) => (
-                            <ConductorInput
+                            <WeaverInput
                               id="workflow-description-field"
                               label="Description"
                               value={description ? description : ""}
@@ -292,7 +292,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                       >
                         <ActorToHandlerValue actor={inputParametersActor}>
                           {({ onChange, value: inputParameters, someKey }) => (
-                            <ConductorStringArrayFormField
+                            <WeaverStringArrayFormField
                               inputParameters={_clone(inputParameters)}
                               onChange={onChange}
                               someKey={someKey}
@@ -310,7 +310,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                       >
                         <ActorToHandlerValue actor={outputParametersActors}>
                           {({ onChange, value: outputParameters, someKey }) => (
-                            <ConductorFlatMapFormBase
+                            <WeaverFlatMapFormBase
                               value={
                                 _clone(outputParameters) as Record<
                                   string,
@@ -385,7 +385,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                             actor={workflowStatusListenerSinkActor}
                           >
                             {({ onChange, value: workflowListenerSink }) => (
-                              <ConductorAutocompleteVariables
+                              <WeaverAutocompleteVariables
                                 onChange={onChange}
                                 value={workflowListenerSink}
                                 otherOptions={workflowListenerSinkSuggestions}
@@ -414,7 +414,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                       <Grid sx={{ minWidth: minWidthTimeout }}>
                         <ActorToHandlerValue actor={timeoutSecondsActors}>
                           {({ onChange, value: timeoutSeconds }) => (
-                            <ConductorInput
+                            <WeaverInput
                               label="Timeout seconds"
                               type="number"
                               value={timeoutSeconds > -1 ? timeoutSeconds : ""}
@@ -428,7 +428,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                       <Grid flexGrow={1}>
                         <ActorToHandlerValue actor={timeoutPolicyActors}>
                           {({ onChange, value: timeoutPolicy }) => (
-                            <ConductorAutoComplete
+                            <WeaverAutoComplete
                               fullWidth
                               value={timeoutPolicy}
                               onChange={(_evt, val) => {
@@ -490,7 +490,7 @@ export const WorkflowPropertiesForm: FunctionComponent<
                       <Box>
                         <ActorToHandlerValue actor={failureWorkflowActors}>
                           {({ onChange, value: failureWorkflow }) => (
-                            <ConductorAutocompleteVariables
+                            <WeaverAutocompleteVariables
                               onChange={onChange}
                               value={failureWorkflow}
                               otherOptions={wfNameOptions}

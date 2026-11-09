@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.conductoross.conductor.common.metadata.agent.AgentStartRequest;
-import org.conductoross.conductor.common.metadata.agent.AgentStartResponse;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartRequest;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -113,8 +113,8 @@ public class TestSimpleActionProcessor {
         assertEquals("test_1", capturedValue.getWorkflowInput().get("testInput"));
         assertEquals("test-id", capturedValue.getCorrelationId());
         assertEquals(
-                "testMessage", capturedValue.getWorkflowInput().get("conductor.event.messageId"));
-        assertEquals("testEvent", capturedValue.getWorkflowInput().get("conductor.event.name"));
+                "testMessage", capturedValue.getWorkflowInput().get("weaver.event.messageId"));
+        assertEquals("testEvent", capturedValue.getWorkflowInput().get("weaver.event.name"));
         assertEquals(taskToDomain, capturedValue.getTaskToDomain());
     }
 
@@ -157,8 +157,8 @@ public class TestSimpleActionProcessor {
         assertEquals("test_1", capturedValue.getWorkflowInput().get("testInput"));
         assertEquals(taskToDomain, capturedValue.getTaskToDomain());
         assertEquals(
-                "testMessage", capturedValue.getWorkflowInput().get("conductor.event.messageId"));
-        assertEquals("testEvent", capturedValue.getWorkflowInput().get("conductor.event.name"));
+                "testMessage", capturedValue.getWorkflowInput().get("weaver.event.messageId"));
+        assertEquals("testEvent", capturedValue.getWorkflowInput().get("weaver.event.name"));
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -199,8 +199,8 @@ public class TestSimpleActionProcessor {
         assertNull(capturedArgument.getCorrelationId());
         assertEquals(
                 "testMessage",
-                capturedArgument.getWorkflowInput().get("conductor.event.messageId"));
-        assertEquals("testEvent", capturedArgument.getWorkflowInput().get("conductor.event.name"));
+                capturedArgument.getWorkflowInput().get("weaver.event.messageId"));
+        assertEquals("testEvent", capturedArgument.getWorkflowInput().get("weaver.event.name"));
         assertEquals(taskToDomain, capturedArgument.getTaskToDomain());
     }
 
@@ -236,9 +236,9 @@ public class TestSimpleActionProcessor {
         assertEquals(Status.COMPLETED, argumentCaptor.getValue().getStatus());
         assertEquals(
                 "testMessage",
-                argumentCaptor.getValue().getOutputData().get("conductor.event.messageId"));
+                argumentCaptor.getValue().getOutputData().get("weaver.event.messageId"));
         assertEquals(
-                "testEvent", argumentCaptor.getValue().getOutputData().get("conductor.event.name"));
+                "testEvent", argumentCaptor.getValue().getOutputData().get("weaver.event.name"));
         assertEquals("workflow_1", argumentCaptor.getValue().getOutputData().get("workflowId"));
         assertEquals("testTask", argumentCaptor.getValue().getOutputData().get("taskRefName"));
         assertEquals("someData", argumentCaptor.getValue().getOutputData().get("someKey"));
@@ -283,9 +283,9 @@ public class TestSimpleActionProcessor {
         assertEquals(Status.COMPLETED, argumentCaptor.getValue().getStatus());
         assertEquals(
                 "testMessage",
-                argumentCaptor.getValue().getOutputData().get("conductor.event.messageId"));
+                argumentCaptor.getValue().getOutputData().get("weaver.event.messageId"));
         assertEquals(
-                "testEvent", argumentCaptor.getValue().getOutputData().get("conductor.event.name"));
+                "testEvent", argumentCaptor.getValue().getOutputData().get("weaver.event.name"));
         assertEquals("workflow_1", argumentCaptor.getValue().getOutputData().get("workflowId"));
         assertEquals("testTask", argumentCaptor.getValue().getOutputData().get("taskRefName"));
         assertEquals("someData", argumentCaptor.getValue().getOutputData().get("someKey"));
@@ -325,9 +325,9 @@ public class TestSimpleActionProcessor {
         assertEquals(Status.COMPLETED, argumentCaptor.getValue().getStatus());
         assertEquals(
                 "testMessage",
-                argumentCaptor.getValue().getOutputData().get("conductor.event.messageId"));
+                argumentCaptor.getValue().getOutputData().get("weaver.event.messageId"));
         assertEquals(
-                "testEvent", argumentCaptor.getValue().getOutputData().get("conductor.event.name"));
+                "testEvent", argumentCaptor.getValue().getOutputData().get("weaver.event.name"));
         assertEquals("workflow_1", argumentCaptor.getValue().getOutputData().get("workflowId"));
         assertEquals("task_1", argumentCaptor.getValue().getOutputData().get("taskId"));
     }
@@ -416,8 +416,8 @@ public class TestSimpleActionProcessor {
                 argumentCaptor.getValue().getOutputData().get("actuatorError"));
         assertEquals(
                 "testMessage",
-                argumentCaptor.getValue().getOutputData().get("conductor.event.messageId"));
+                argumentCaptor.getValue().getOutputData().get("weaver.event.messageId"));
         assertEquals(
-                "testEvent", argumentCaptor.getValue().getOutputData().get("conductor.event.name"));
+                "testEvent", argumentCaptor.getValue().getOutputData().get("weaver.event.name"));
     }
 }

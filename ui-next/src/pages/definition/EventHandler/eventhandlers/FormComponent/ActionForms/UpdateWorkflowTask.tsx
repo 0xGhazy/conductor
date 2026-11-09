@@ -1,10 +1,10 @@
-import { FormControlLabel, Grid } from "@mui/material";
+﻿import { FormControlLabel, Grid } from "@mui/material";
 import HelperText from "components/ui/inputs/HelperText";
 import MuiCheckbox from "components/ui/MuiCheckbox";
 import IconButton from "components/ui/buttons/MuiIconButton";
 import MuiTypography from "components/ui/MuiTypography";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import XCloseIcon from "components/icons/XCloseIcon";
 import { Props } from "./common";
 
@@ -29,7 +29,7 @@ export const UpdateWorkflowForm = ({
         </MuiTypography>
       </Grid>
       <Grid size={12}>
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Workflow ID"
           placeholder={`\${event.payload.workflow_id}`}
@@ -72,7 +72,7 @@ export const UpdateWorkflowForm = ({
         </HelperText>
       </Grid>
       <Grid size={12}>
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           onChange={(newValues) => {
             handleChangeAction(index, {
               ...payload,

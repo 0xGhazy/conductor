@@ -26,9 +26,9 @@ public class RedisStandaloneCondition extends AnyNestedCondition {
         super(ConfigurationPhase.PARSE_CONFIGURATION);
     }
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_standalone")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_standalone")
     static class DbRedisStandalone {}
 
-    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "redis_standalone")
+    @ConditionalOnProperty(name = "weaver.queue.type", havingValue = "redis_standalone")
     static class QueueRedisStandalone {}
 }

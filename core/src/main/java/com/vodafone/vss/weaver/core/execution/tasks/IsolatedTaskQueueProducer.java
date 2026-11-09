@@ -38,7 +38,7 @@ import static com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry.AS
 
 @Component
 @ConditionalOnProperty(
-        name = "conductor.system-task-workers.enabled",
+        name = "weaver.system-task-workers.enabled",
         havingValue = "true",
         matchIfMissing = true)
 public class IsolatedTaskQueueProducer {
@@ -54,9 +54,9 @@ public class IsolatedTaskQueueProducer {
             MetadataService metadataService,
             @Qualifier(ASYNC_SYSTEM_TASKS_QUALIFIER) Set<WorkflowSystemTask> asyncSystemTasks,
             SystemTaskWorker systemTaskWorker,
-            @Value("${conductor.app.isolatedSystemTaskEnabled:false}")
+            @Value("${weaver.app.isolatedSystemTaskEnabled:false}")
                     boolean isolatedSystemTaskEnabled,
-            @Value("${conductor.app.isolatedSystemTaskQueuePollInterval:10s}")
+            @Value("${weaver.app.isolatedSystemTaskQueuePollInterval:10s}")
                     Duration isolatedSystemTaskQueuePollInterval) {
 
         this.metadataService = metadataService;

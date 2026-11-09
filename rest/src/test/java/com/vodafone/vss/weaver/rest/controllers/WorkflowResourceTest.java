@@ -17,11 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.conductoross.conductor.model.SignalResponse;
-import org.conductoross.conductor.model.TaskRun;
-import org.conductoross.conductor.model.WorkflowRun;
-import org.conductoross.conductor.model.WorkflowSignalReturnStrategy;
-import org.conductoross.conductor.model.WorkflowStatus;
+import com.vodafone.vss.weaver.model.SignalResponse;
+import com.vodafone.vss.weaver.model.TaskRun;
+import com.vodafone.vss.weaver.model.WorkflowRun;
+import com.vodafone.vss.weaver.model.WorkflowSignalReturnStrategy;
+import com.vodafone.vss.weaver.model.WorkflowStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

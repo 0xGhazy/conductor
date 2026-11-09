@@ -14,7 +14,7 @@ package com.vodafone.vss.weaver.common.metadata.agent;
 
 import java.util.List;
 
-import org.conductoross.conductor.common.metadata.agent.*;
+import com.vodafone.vss.weaver.common.metadata.agent.*;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

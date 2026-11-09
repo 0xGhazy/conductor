@@ -35,7 +35,7 @@ import com.vodafone.vss.weaver.model.WorkflowModel;
  * PullWorkflowMessages#execute} on each poll cycle until messages arrive.
  */
 @Component
-@ConditionalOnProperty(name = "conductor.workflow-message-queue.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.workflow-message-queue.enabled", havingValue = "true")
 public class PullWorkflowMessagesTaskMapper implements TaskMapper {
 
     private static final Logger LOGGER =

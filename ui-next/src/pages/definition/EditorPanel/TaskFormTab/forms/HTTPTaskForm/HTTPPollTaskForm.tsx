@@ -1,10 +1,10 @@
-import { Box, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, FormControlLabel, Grid } from "@mui/material";
 import { useInterpret } from "@xstate/react";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { assoc as _assoc, path as _path, pipe as _pipe } from "lodash/fp";
 import { mock } from "mock-json-schema";
 import { ServiceType } from "types/RemoteServiceTypes";
@@ -20,12 +20,12 @@ import { updateField } from "utils/fieldHelpers";
 import { featureFlags, FEATURES } from "utils/flags";
 import { useAuthHeaders } from "utils/query";
 import { getBaseUrl } from "utils/utils";
-import { ConductorCacheOutput } from "../ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "../WeaverCacheOutputForm";
 import { MaybeVariable } from "../MaybeVariable";
 import { Optional } from "../OptionalFieldForm";
 import ServiceRegistryPopulator from "../ServiceRegistrySelector";
 import TaskFormSection from "../TaskFormSection";
-import { ConductorAdditionalHeaders } from "./ConductorAdditionalHeaders";
+import { WeaverAdditionalHeaders } from "./WeaverAdditionalHeaders";
 import { Encode } from "./Encode";
 import { useCreateHttpRequestHandlers } from "./common";
 import { useServiceMethodsDefinition } from "./state/hook";
@@ -185,7 +185,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                     sm: 12,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     openOnFocus
                     onChange={onChangeMethod}
                     value={method}
@@ -199,7 +199,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                     md: 8,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     fullWidth
                     label="URL"
                     value={_path(httpRequestUriPath, currentTask)}
@@ -220,7 +220,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                     md: 6,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     openOnFocus
                     onChange={onChangeAccept}
                     value={accept}
@@ -234,7 +234,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                     md: 6,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     openOnFocus
                     onChange={onChangeContentType}
                     value={contentType}
@@ -247,7 +247,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
             <Grid size={12}>
               <Grid container sx={{ width: "100%" }} spacing={3}>
                 <Grid size={12}>
-                  <ConductorCodeBlockInput
+                  <WeaverCodeBlockInput
                     label={"Termination condition"}
                     tooltip={{
                       title: "Termination condition",
@@ -283,7 +283,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                     md: 6,
                   }}
                 >
-                  <ConductorInput
+                  <WeaverInput
                     fullWidth
                     label="Polling interval"
                     value={_path(httpRequestPollingIntervalPath, currentTask)}
@@ -304,7 +304,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                     md: 6,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     openOnFocus
                     onChange={onChangePollingStrategy}
                     value={pollingStrategy}
@@ -323,7 +323,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
         >
           <Grid container sx={{ width: "100%" }} spacing={1}>
             <Grid size={12}>
-              <ConductorAdditionalHeaders
+              <WeaverAdditionalHeaders
                 headers={httpHeaders}
                 onChangeHeaders={onChangeHeaders}
                 value={httpHeaders}
@@ -369,7 +369,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                 }}
               />
               {bodyViewType === "JSON" ? (
-                <ConductorCodeBlockInput
+                <WeaverCodeBlockInput
                   onChange={onChangeHttpRequestBody}
                   value={JSON.stringify(httpRequestBody || {}, null, 2)}
                   containerProps={{ sx: { width: "100%" } }}
@@ -377,7 +377,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
                   autoformat={false}
                 />
               ) : (
-                <ConductorFlatMapFormBase
+                <WeaverFlatMapFormBase
                   title=""
                   keyColumnLabel="Key"
                   valueColumnLabel="Value"
@@ -395,7 +395,7 @@ export const HTTPPollTaskForm = ({ task, onChange }: HttpTaskFormProps) => {
       </MaybeVariable>
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={currentTask} />
+          <WeaverCacheOutput onChange={onChange} taskJson={currentTask} />
           <Optional onChange={onChange} taskJson={task} />
           <Encode value={httpRequestEncode} onChange={onChangeEncode} />
         </Box>

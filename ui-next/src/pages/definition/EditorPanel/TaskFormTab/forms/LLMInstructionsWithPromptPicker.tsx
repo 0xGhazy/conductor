@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Prompt-first Instructions section for LLM_CHAT_COMPLETE (enterprise).
  *
  * Primary action: select a saved AI Prompt from the prompt registry.
@@ -16,8 +16,8 @@
 
 import { Box, Collapse, Divider, Grid, Link, Typography } from "@mui/material";
 import { CaretDown, CaretRight } from "@phosphor-icons/react";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import MuiTypography from "components/ui/MuiTypography";
 import PromptVariables from "components/PromptVariables";
 import { path as _path } from "lodash/fp";
@@ -115,7 +115,7 @@ export const LLMInstructionsWithPromptPicker = ({
             create a new one.
           </Link>
         </MuiTypography>
-        <ConductorAutocompleteVariables
+        <WeaverAutocompleteVariables
           openOnFocus
           onChange={handleSelectPrompt}
           value={isUsingPrompt ? instructions : ""}
@@ -179,7 +179,7 @@ export const LLMInstructionsWithPromptPicker = ({
           </MuiTypography>
         </Box>
         <Collapse in={customExpanded}>
-          <ConductorInput
+          <WeaverInput
             label="Instructions"
             name="custom-instructions"
             value={isUsingPrompt ? "" : instructions}

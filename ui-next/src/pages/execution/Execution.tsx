@@ -1,4 +1,4 @@
-import LaunchIcon from "@mui/icons-material/Launch";
+﻿import LaunchIcon from "@mui/icons-material/Launch";
 import { Box, Stack, Tooltip } from "@mui/material";
 import { AutoRefreshButton, Button, Heading, LinearProgress } from "components";
 import StatusBadge from "components/StatusBadge";
@@ -12,7 +12,7 @@ import {
 import { Flow } from "components/features/flow/Flow";
 import OpenIcon from "components/icons/OpenIcon";
 import ButtonLinks from "components/layout/header/ButtonLinks";
-import { ConductorSectionHeader } from "components/layout/section/ConductorSectionHeader";
+import { WeaverSectionHeader } from "components/layout/section/WeaverSectionHeader";
 import { SidebarContext } from "components/providers/sidebar/context/SidebarContext";
 import Error from "components/ui/Error";
 import MuiAlert from "components/ui/MuiAlert";
@@ -668,7 +668,7 @@ export default function Execution() {
 
         {execution && (
           <Box>
-            <ConductorSectionHeader
+            <WeaverSectionHeader
               id="workflow-execution-header-section"
               sx={{ minHeight: "65px" }}
               title={

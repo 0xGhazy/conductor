@@ -1,14 +1,14 @@
-import { Monaco } from "@monaco-editor/react";
+﻿import { Monaco } from "@monaco-editor/react";
 import { Box, Grid } from "@mui/material";
 import { Button, Paper } from "components";
 import { DEFAULT_ROWS_PER_PAGE } from "components/ui/DataTable/DataTable";
 import MuiTypography from "components/ui/MuiTypography";
 import StatusBadge from "components/StatusBadge";
 import { renderStatusTagChip } from "components/StatusTagChip";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import SplitButton from "components/ui/buttons/ConductorSplitButton";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import SplitButton from "components/ui/buttons/WeaverSplitButton";
 import ResetIcon from "components/icons/ResetIcon";
 import SearchIcon from "components/icons/SearchIcon";
 import _isEmpty from "lodash/isEmpty";
@@ -372,7 +372,7 @@ export default function AdvancedSearch({
           )}
           <Grid container sx={{ width: "100%" }} spacing={3} p={6} pt={2}>
             <Grid size={12}>
-              <ConductorCodeBlockInput
+              <WeaverCodeBlockInput
                 label="Search"
                 language="sql"
                 minHeight={30}
@@ -489,7 +489,7 @@ export default function AdvancedSearch({
                 lg: 2.5,
               }}
             >
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Free text search"
                 value={freeText}
@@ -506,7 +506,7 @@ export default function AdvancedSearch({
                 lg: 2,
               }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 id="workflow-search-status"
                 label="Status"
                 disabled={queryText.includes("status")}

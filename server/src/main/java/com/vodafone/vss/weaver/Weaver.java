@@ -41,12 +41,7 @@ import org.springframework.core.io.FileSystemResource;
 @Slf4j
 @RequiredArgsConstructor
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, MongoAutoConfiguration.class})
-@ComponentScan(
-        basePackages = {
-            "com.vodafone.vss.weaver",
-            "io.orkes.conductor",
-            "org.conductoross.conductor"
-        })
+@ComponentScan(basePackages = {"com.vodafone.vss.weaver"})
 public class Weaver implements ApplicationRunner {
 
     private final Environment environment;
@@ -59,9 +54,9 @@ public class Weaver implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        String dbType = environment.getProperty("conductor.db.type", "memory");
-        String queueType = environment.getProperty("conductor.queue.type", "memory");
-        String indexingType = environment.getProperty("conductor.indexing.type", "memory");
+        String dbType = environment.getProperty("weaver.db.type", "memory");
+        String queueType = environment.getProperty("weaver.queue.type", "memory");
+        String indexingType = environment.getProperty("weaver.indexing.type", "memory");
         String port = environment.getProperty("server.port", "8080");
         String contextPath = environment.getProperty("server.servlet.context-path", "");
         String hostname = getHostName();
@@ -79,7 +74,7 @@ public class Weaver implements ApplicationRunner {
                         environment.getProperty(
                                 "weaver.ui.url",
                                 environment.getProperty(
-                                        "conductor.ui.url",
+                                        "weaver.ui.url",
                                         String.format("http://%s:%s", hostname, managementUiPort))));
 
         String keycloakPort =

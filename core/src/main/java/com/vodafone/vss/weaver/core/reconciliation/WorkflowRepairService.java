@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 import com.vodafone.vss.weaver.annotations.VisibleForTesting;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry;
 import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
@@ -47,13 +47,13 @@ import com.vodafone.vss.weaver.model.WorkflowModel;
 @Service
 // Deprecated and replaced by new workflow sweeper
 @Deprecated
-@ConditionalOnProperty(name = "conductor.workflow-repair-service.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.workflow-repair-service.enabled", havingValue = "true")
 public class WorkflowRepairService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowRepairService.class);
     private final ExecutionDAO executionDAO;
     private final QueueDAO queueDAO;
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private SystemTaskRegistry systemTaskRegistry;
 
     /*
@@ -80,7 +80,7 @@ public class WorkflowRepairService {
     public WorkflowRepairService(
             ExecutionDAO executionDAO,
             QueueDAO queueDAO,
-            ConductorProperties properties,
+            WeaverProperties properties,
             SystemTaskRegistry systemTaskRegistry) {
         this.executionDAO = executionDAO;
         this.queueDAO = queueDAO;

@@ -1,6 +1,6 @@
-import { Box, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, FormControlLabel, Grid } from "@mui/material";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import _path from "lodash/fp/path";
 import { colors } from "theme/tokens/variables";
 import { InlineTaskDef } from "types";
@@ -52,7 +52,7 @@ export const INLINETaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               autoFocusField={false}
               showFieldTypes={true}
               keyColumnLabel="Key"

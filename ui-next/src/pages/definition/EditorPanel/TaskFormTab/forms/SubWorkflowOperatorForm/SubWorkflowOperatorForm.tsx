@@ -1,10 +1,10 @@
-import { Box, CircularProgress, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, CircularProgress, FormControlLabel, Grid } from "@mui/material";
 import { useInterpret } from "@xstate/react";
 import Button from "components/ui/buttons/MuiButton";
 import MuiCheckbox from "components/ui/MuiCheckbox";
-import { ConductorAutoComplete } from "components/ui/inputs/ConductorAutoComplete";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutoComplete } from "components/ui/inputs/WeaverAutoComplete";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { path as _path } from "lodash/fp";
 import _isEmpty from "lodash/isEmpty";
 import _isNil from "lodash/isNil";
@@ -22,7 +22,7 @@ import {
   handleChangeIdempotencyValues,
   updateInputParametersCommon,
 } from "../../helpers";
-import { ConductorObjectOrStringInput } from "../ConductorObjectOrStringInput";
+import { WeaverObjectOrStringInput } from "../WeaverObjectOrStringInput";
 import { Optional } from "../OptionalFieldForm";
 import {
   StartSubWfNameVersionMachineContext,
@@ -139,7 +139,7 @@ export const SubWorkflowOperatorForm = ({
                   md: 6,
                 }}
               >
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   id="sub-workflow-main-form-workflow-name-field"
                   openOnFocus
                   onChange={(val) => {
@@ -165,7 +165,7 @@ export const SubWorkflowOperatorForm = ({
                   sm: 12,
                 }}
               >
-                <ConductorAutoComplete
+                <WeaverAutoComplete
                   id="sub-workflow-main-form-workflow-version-field"
                   fullWidth
                   onChange={(_, val) => {
@@ -221,7 +221,7 @@ export const SubWorkflowOperatorForm = ({
             <Grid size={12} pt={3}>
               <Grid container sx={{ width: "100%" }} spacing={2}>
                 <Grid size={{ sm: 12, md: 9 }}>
-                  <ConductorObjectOrStringInput
+                  <WeaverObjectOrStringInput
                     valueLabel="Workflow definition"
                     value={task?.subWorkflowParam?.workflowDefinition ?? ""}
                     onChangeValue={(val) => {
@@ -255,7 +255,7 @@ export const SubWorkflowOperatorForm = ({
                     sm: 6,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     id=""
                     fullWidth
                     label="Priority"
@@ -332,7 +332,7 @@ export const SubWorkflowOperatorForm = ({
         title="Input parameters"
         accordionAdditionalProps={{ defaultExpanded: true }}
       >
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           showFieldTypes={true}
           keyColumnLabel="Key"
           valueColumnLabel="Value"
@@ -350,7 +350,7 @@ export const SubWorkflowOperatorForm = ({
         title="Task to domain"
         accordionAdditionalProps={{ defaultExpanded: true }}
       >
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           keyColumnLabel="Key"
           valueColumnLabel="Value"
           addItemLabel="Add mapping"

@@ -1,4 +1,4 @@
-import { Monaco } from "@monaco-editor/react";
+﻿import { Monaco } from "@monaco-editor/react";
 import {
   Box,
   CircularProgress,
@@ -13,9 +13,9 @@ import {
 import { LinearProgress } from "components";
 import { DocLink } from "components/ui/DocLink";
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { MessageContext } from "components/providers/messageContext";
-import { ConductorSectionHeader } from "components/layout/section/ConductorSectionHeader";
+import { WeaverSectionHeader } from "components/layout/section/WeaverSectionHeader";
 import { IdempotencyStrategyEnum } from "pages/runWorkflow/types";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
@@ -555,7 +555,7 @@ export function Schedule() {
       </Helmet>
       <SectionContainer
         header={
-          <ConductorSectionHeader
+          <WeaverSectionHeader
             title={scheduleNameFromUrl ? scheduleNameFromUrl : "New Scheduler"}
             breadcrumbItems={[
               { label: "Schedulers", to: SCHEDULER_DEFINITION_URL.BASE },
@@ -642,7 +642,7 @@ export function Schedule() {
                     <Box sx={{ ...containerStyle }}>
                       <Grid container spacing={4} pt={3} sx={{ width: "100%" }}>
                         <Grid size={12}>
-                          <ConductorInput
+                          <WeaverInput
                             fullWidth
                             required
                             label="Name"
@@ -660,7 +660,7 @@ export function Schedule() {
                           />
                         </Grid>
                         <Grid size={12}>
-                          <ConductorInput
+                          <WeaverInput
                             id="schedule-description-field"
                             label="Description"
                             name="description"

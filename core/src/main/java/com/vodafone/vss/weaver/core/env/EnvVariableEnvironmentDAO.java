@@ -25,7 +25,7 @@ import com.vodafone.vss.weaver.dao.EnvironmentDAO;
 
 @Component
 @ConditionalOnProperty(
-        name = "conductor.environment.type",
+        name = "weaver.environment.type",
         havingValue = "env",
         matchIfMissing = true)
 public class EnvVariableEnvironmentDAO implements EnvironmentDAO {
@@ -33,7 +33,7 @@ public class EnvVariableEnvironmentDAO implements EnvironmentDAO {
     private final String prefix;
 
     public EnvVariableEnvironmentDAO(
-            @Value("${conductor.environment.env.prefix:WEAVER_ENV_}") String prefix) {
+            @Value("${weaver.environment.env.prefix:WEAVER_ENV_}") String prefix) {
         this.prefix = prefix;
     }
 

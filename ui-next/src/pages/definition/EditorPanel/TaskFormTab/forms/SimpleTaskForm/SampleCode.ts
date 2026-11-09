@@ -1,4 +1,4 @@
-const formatInputParams = (inputParamKeys: string[]): string => {
+﻿const formatInputParams = (inputParamKeys: string[]): string => {
   if (!inputParamKeys?.length) return "";
   return inputParamKeys
     .map((key) => `@InputParam("${key}") Object ${key}`)
@@ -439,7 +439,7 @@ export const sampleTypeScriptCode = ({
  */
 
 import {
-  ConductorWorker,
+  WeaverWorker,
   orkesConductorClient,
   TaskManager,
 } from "@io-orkes/conductor-javascript";
@@ -454,7 +454,7 @@ async function test() {
 
   const client = await clientPromise;
 
-  const customWorker: ConductorWorker = {
+  const customWorker: WeaverWorker = {
     taskDefName: "${taskDefName}",
     execute: async ({ inputData${
       inputParamKeys && inputParamKeys?.length > 0

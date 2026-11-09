@@ -1,10 +1,10 @@
-import { Box, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, FormControlLabel, Grid } from "@mui/material";
 import { useSelector } from "@xstate/react";
 import MuiCheckbox from "components/ui/MuiCheckbox";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
 import ConfirmChoiceDialog from "components/ui/dialogs/ConfirmChoiceDialog";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import _path from "lodash/fp/path";
 import _isEmpty from "lodash/isEmpty";
 import _nth from "lodash/nth";
@@ -102,7 +102,7 @@ export const SwitchOperatorForm = (props: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               autoFocusField={false}
               key={isSingleInputParam ? task?.expression : null}
               keyColumnLabel="Key"
@@ -178,7 +178,7 @@ export const SwitchOperatorForm = (props: TaskFormProps) => {
                 />
               </>
             ) : (
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Value"
                 value={_path(EXPRESSION_PATH, task)}
@@ -195,7 +195,7 @@ export const SwitchOperatorForm = (props: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               keyColumnLabel="Key"
               hideValue
               addItemLabel="Add more switch cases"

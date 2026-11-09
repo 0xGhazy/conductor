@@ -43,8 +43,8 @@ public class DefaultRestTemplateProvider implements RestTemplateProvider {
     private final int defaultConnectTimeout;
 
     public DefaultRestTemplateProvider(
-            @Value("${conductor.tasks.http.readTimeout:150ms}") Duration readTimeout,
-            @Value("${conductor.tasks.http.connectTimeout:100ms}") Duration connectTimeout) {
+            @Value("${weaver.tasks.http.readTimeout:150ms}") Duration readTimeout,
+            @Value("${weaver.tasks.http.connectTimeout:100ms}") Duration connectTimeout) {
         this.threadLocalRestTemplateBuilder = ThreadLocal.withInitial(RestTemplateBuilder::new);
         this.defaultReadTimeout = (int) readTimeout.toMillis();
         this.defaultConnectTimeout = (int) connectTimeout.toMillis();

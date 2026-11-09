@@ -1,4 +1,4 @@
-import {
+﻿import {
   FieldPath,
   FieldValues,
   PathValue,
@@ -7,19 +7,19 @@ import {
 } from "react-hook-form";
 
 import {
-  ConductorCheckbox,
-  ConductorCheckboxProps,
-} from "components/ui/inputs/ConductorCheckbox";
+  WeaverCheckbox,
+  WeaverCheckboxProps,
+} from "components/ui/inputs/WeaverCheckbox";
 
 type ReactHookFormCheckboxProps<
   T extends FieldValues,
   U extends FieldPath<T>,
-> = ConductorCheckboxProps &
+> = WeaverCheckboxProps &
   UseControllerProps<T, U> & {
     inputTransform?: (
       value: PathValue<T, U>,
       lastFormValues?: T,
-    ) => ConductorCheckboxProps["value"];
+    ) => WeaverCheckboxProps["value"];
     outputTransform?: (value: boolean, lastFormValues: T) => PathValue<T, U>;
     onChangeCallback?: (value: PathValue<T, U>) => void;
   };
@@ -60,7 +60,7 @@ export default function ReactHookFormCheckbox<
   });
 
   return (
-    <ConductorCheckbox
+    <WeaverCheckbox
       {...fieldProps}
       {...props}
       value={validateInputValue(

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+﻿import { fireEvent, render, screen } from "@testing-library/react";
 import RunAgent from "./RunAgent";
 
 const navigate = vi.fn();
@@ -92,8 +92,8 @@ vi.mock("components/icons/PlayIcon", () => ({ default: () => null }));
 vi.mock("components/icons/ResetIcon", () => ({ default: () => null }));
 vi.mock("components/icons/XCloseIcon", () => ({ default: () => null }));
 
-vi.mock("components/ui/inputs/ConductorAutoComplete", () => ({
-  ConductorAutoComplete: ({
+vi.mock("components/ui/inputs/WeaverAutoComplete", () => ({
+  WeaverAutoComplete: ({
     id,
     label,
     value,
@@ -120,7 +120,7 @@ vi.mock("components/ui/inputs/ConductorAutoComplete", () => ({
   ),
 }));
 
-vi.mock("components/ui/inputs/ConductorInput", () => ({
+vi.mock("components/ui/inputs/WeaverInput", () => ({
   default: ({ id, label, value, onTextInputChange }: any) => (
     <div>
       <label htmlFor={id}>{label}</label>

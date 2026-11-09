@@ -32,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.ConflictException;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.dao.MetadataDAO;
@@ -68,9 +68,9 @@ public class RedisMetadataDAO extends BaseDynoDAO implements MetadataDAO {
     public RedisMetadataDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties) {
-        super(jedisProxy, objectMapper, conductorProperties, properties);
+        super(jedisProxy, objectMapper, WeaverProperties, properties);
         this.workflowDefCacheEnabled = properties.isWorkflowDefCacheEnabled();
         refreshTaskDefs();
         long taskCacheRefreshTime = properties.getTaskDefCacheRefreshInterval().getSeconds();

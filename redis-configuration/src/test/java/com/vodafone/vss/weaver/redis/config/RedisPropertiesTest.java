@@ -17,7 +17,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +27,7 @@ class RedisPropertiesTest {
 
     @BeforeEach
     void setUp() {
-        properties = new RedisProperties(new ConductorProperties());
+        properties = new RedisProperties(new WeaverProperties());
     }
 
     // --- Defaults ---

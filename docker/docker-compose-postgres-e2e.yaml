@@ -1,5 +1,5 @@
-services:
-  conductor-server:
+﻿services:
+  weaver-server:
     environment:
       - CONFIG_PROP=config-postgres.properties
       # Forwarded from the host shell when set. Empty/absent ⇒ the matching AI provider
@@ -7,8 +7,8 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - COHERE_API_KEY=${COHERE_API_KEY:-}
-    image: conductor:server
-    container_name: conductor-server-e2e
+    image: weaver:server
+    container_name: weaver-server-e2e
     networks:
       - internal
     ports:
@@ -19,9 +19,9 @@ services:
       timeout: 10s
       retries: 20
     links:
-      - conductor-postgres:postgresdb
+      - weaver-postgres:postgresdb
     depends_on:
-      conductor-postgres:
+      weaver-postgres:
         condition: service_healthy
     logging:
       driver: "json-file"
@@ -29,12 +29,12 @@ services:
         max-size: "10k"
         max-file: "3"
 
-  conductor-postgres:
+  weaver-postgres:
     image: postgres:16
-    container_name: conductor-postgres-e2e
+    container_name: weaver-postgres-e2e
     environment:
-      - POSTGRES_USER=conductor
-      - POSTGRES_PASSWORD=conductor
+      - POSTGRES_USER=weaver
+      - POSTGRES_PASSWORD=weaver
     networks:
       - internal
     healthcheck:

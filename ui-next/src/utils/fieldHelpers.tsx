@@ -1,11 +1,11 @@
-import { FormControlLabel, Grid, Link, Switch } from "@mui/material";
+﻿import { FormControlLabel, Grid, Link, Switch } from "@mui/material";
 import { useSelector } from "@xstate/react";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import PromptVariables from "components/PromptVariables";
 import MuiTypography from "components/ui/MuiTypography";
 import { path as _path, clone, setWith } from "lodash/fp";
-import { ConductorValueInput } from "pages/definition/EditorPanel/TaskFormTab/forms/ConductorValueInput";
-import { ConductorArrayMapFormBase } from "pages/definition/EditorPanel/TaskFormTab/forms/LLMFormFields/ConductorArrayMapForm";
+import { WeaverValueInput } from "pages/definition/EditorPanel/TaskFormTab/forms/WeaverValueInput";
+import { WeaverArrayMapFormBase } from "pages/definition/EditorPanel/TaskFormTab/forms/LLMFormFields/WeaverArrayMapForm";
 import { LLMAutocompleteVariables } from "pages/definition/EditorPanel/TaskFormTab/forms/LLMFormFields/LLMAutocompleteVariables";
 import {
   LLMFormFieldsEvents,
@@ -91,7 +91,7 @@ type PromptTemplateFieldConfig = {
 
 /**
  * Shared "Prompt Template" field for LLM_TEXT_COMPLETE (promptName) and
- * LLM_CHAT_COMPLETE (instructions). Free text always works (ConductorAutocompleteVariables
+ * LLM_CHAT_COMPLETE (instructions). Free text always works (WeaverAutocompleteVariables
  * is freeSolo) and self-fetches known prompt templates via promptNameOptions, which
  * degrades to an empty list (pure free text) when the server has no /prompts registry
  * (OSS) and populates a picker when it does (Orkes). Selecting a known template
@@ -134,7 +134,7 @@ const createPromptTemplateField = ({
               create a new one.
             </Link>
           </MuiTypography>
-          <ConductorAutocompleteVariables
+          <WeaverAutocompleteVariables
             openOnFocus
             multiline
             onChange={(value) => {
@@ -212,7 +212,7 @@ const aiFieldTypes = {
     );
     return (
       <>
-        <ConductorAutocompleteVariables
+        <WeaverAutocompleteVariables
           onChange={(value) => onChange(setValue(value))}
           value={ipValue}
           otherOptions={options}
@@ -275,7 +275,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
         otherOptions={options}
@@ -300,7 +300,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -319,7 +319,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         InputLabelProps={{ style: { pointerEvents: "auto" } }}
         onChange={(value) => onChange(setValue(value))}
@@ -347,7 +347,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         InputLabelProps={{ style: { pointerEvents: "auto" } }}
         onChange={(value) => onChange(setValue(value))}
@@ -368,7 +368,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         fullWidth
         label="Query"
         value={ipValue}
@@ -382,7 +382,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         fullWidth
         label="Vector ID"
         value={ipValue}
@@ -406,7 +406,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -433,7 +433,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -454,7 +454,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -468,7 +468,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -483,7 +483,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -527,7 +527,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -542,7 +542,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         InputLabelProps={{ style: { pointerEvents: "auto" } }}
         onChange={(value) => onChange(setValue(value))}
@@ -566,7 +566,7 @@ const aiFieldTypes = {
     );
 
     return (
-      <ConductorValueInput
+      <WeaverValueInput
         valueLabel="Stop words"
         value={stopWordsVal}
         onChangeValue={(val) => {
@@ -590,7 +590,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -612,7 +612,7 @@ const aiFieldTypes = {
     );
 
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -626,7 +626,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -641,7 +641,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}
@@ -666,7 +666,7 @@ const aiFieldTypes = {
         <MuiTypography pt={1} sx={{ opacity: 0.5 }} mb={3}>
           Messages with roles such as user, assistant, system, etc.
         </MuiTypography>
-        <ConductorArrayMapFormBase
+        <WeaverArrayMapFormBase
           value={ipValue}
           onChange={(value) => onChange(setValue(value))}
         />
@@ -710,7 +710,7 @@ const aiFieldTypes = {
       task,
     );
     return (
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         openOnFocus
         onChange={(value) => onChange(setValue(value))}
         value={ipValue}

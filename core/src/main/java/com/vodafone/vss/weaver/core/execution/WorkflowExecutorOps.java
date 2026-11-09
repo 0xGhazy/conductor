@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.conductoross.conductor.common.metadata.agent.AgentConfig;
-import org.conductoross.conductor.common.metadata.agent.AgentStartRequest;
-import org.conductoross.conductor.common.metadata.agent.AgentStartResponse;
-import org.conductoross.conductor.common.metadata.agent.ModelParser;
-import org.conductoross.conductor.common.metadata.agent.ModelParser.ParsedModel;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentConfig;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartRequest;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartResponse;
+import com.vodafone.vss.weaver.common.metadata.agent.ModelParser;
+import com.vodafone.vss.weaver.common.metadata.agent.ModelParser.ParsedModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ import com.vodafone.vss.weaver.common.metadata.workflow.*;
 import com.vodafone.vss.weaver.common.run.Workflow;
 import com.vodafone.vss.weaver.common.utils.TaskUtils;
 import com.vodafone.vss.weaver.core.WorkflowContext;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.exception.*;
 import com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry;
@@ -66,8 +66,8 @@ import com.google.common.base.Preconditions;
 import static com.vodafone.vss.weaver.core.utils.Utils.DECIDER_QUEUE;
 import static com.vodafone.vss.weaver.model.TaskModel.Status.*;
 
-import static org.conductoross.conductor.core.execution.ExecutorUtils.computePostpone;
-import static org.conductoross.conductor.core.execution.ExecutorUtils.hasInProgressHumanTask;
+import static com.vodafone.vss.weaver.core.execution.ExecutorUtils.computePostpone;
+import static com.vodafone.vss.weaver.core.execution.ExecutorUtils.hasInProgressHumanTask;
 
 /** Workflow services provider interface */
 @Trace
@@ -87,7 +87,7 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
     private final MetadataDAO metadataDAO;
     private final QueueDAO queueDAO;
     private final DeciderService deciderService;
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final MetadataMapperService metadataMapperService;
     private final ExecutionDAOFacade executionDAOFacade;
     private final ParametersUtils parametersUtils;
@@ -112,7 +112,7 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
             WorkflowStatusListener workflowStatusListener,
             TaskStatusListener taskStatusListener,
             ExecutionDAOFacade executionDAOFacade,
-            ConductorProperties properties,
+            WeaverProperties properties,
             ExecutionLockService executionLockService,
             SystemTaskRegistry systemTaskRegistry,
             ParametersUtils parametersUtils,
@@ -894,12 +894,12 @@ public class WorkflowExecutorOps implements WorkflowExecutor {
 
                     startWorkflow(startWorkflowInput);
 
-                    workflow.addOutput("conductor.failure_workflow", failureWFId);
+                    workflow.addOutput("weaver.failure_workflow", failureWFId);
                 } catch (Exception e) {
                     LOGGER.error("Failed to start error workflow", e);
                     workflow.getOutput()
                             .put(
-                                    "conductor.failure_workflow",
+                                    "weaver.failure_workflow",
                                     "Error workflow "
                                             + failureWorkflow
                                             + " failed to start.  reason: "

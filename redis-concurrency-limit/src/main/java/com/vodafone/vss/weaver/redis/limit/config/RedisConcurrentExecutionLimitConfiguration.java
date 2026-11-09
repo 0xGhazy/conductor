@@ -27,14 +27,14 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 @Configuration
 @ConditionalOnProperty(
-        value = "conductor.redis-concurrent-execution-limit.enabled",
+        value = "weaver.redis-concurrent-execution-limit.enabled",
         havingValue = "true")
 @EnableConfigurationProperties(RedisConcurrentExecutionLimitProperties.class)
 public class RedisConcurrentExecutionLimitConfiguration {
 
     @Bean
     @ConditionalOnProperty(
-            value = "conductor.redis-concurrent-execution-limit.type",
+            value = "weaver.redis-concurrent-execution-limit.type",
             havingValue = "cluster")
     public RedisConnectionFactory redisClusterConnectionFactory(
             RedisConcurrentExecutionLimitProperties properties) {
@@ -58,7 +58,7 @@ public class RedisConcurrentExecutionLimitConfiguration {
 
     @Bean
     @ConditionalOnProperty(
-            value = "conductor.redis-concurrent-execution-limit.type",
+            value = "weaver.redis-concurrent-execution-limit.type",
             havingValue = "standalone",
             matchIfMissing = true)
     public RedisConnectionFactory redisStandaloneConnectionFactory(

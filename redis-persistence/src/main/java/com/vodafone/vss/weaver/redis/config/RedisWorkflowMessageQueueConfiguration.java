@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.config.WorkflowMessageQueueProperties;
 import com.vodafone.vss.weaver.dao.WorkflowMessageQueueDAO;
 import com.vodafone.vss.weaver.redis.dao.RedisWorkflowMessageQueueDAO;
@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * WorkflowMessageQueueConfiguration} in the core module (via {@code @ConditionalOnMissingBean}).
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "conductor.workflow-message-queue.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.workflow-message-queue.enabled", havingValue = "true")
 @Conditional(AnyRedisCondition.class)
 public class RedisWorkflowMessageQueueConfiguration {
 
@@ -45,10 +45,10 @@ public class RedisWorkflowMessageQueueConfiguration {
     public WorkflowMessageQueueDAO redisWorkflowMessageQueueDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties redisProperties,
             WorkflowMessageQueueProperties wmqProperties) {
         return new RedisWorkflowMessageQueueDAO(
-                jedisProxy, objectMapper, conductorProperties, redisProperties, wmqProperties);
+                jedisProxy, objectMapper, WeaverProperties, redisProperties, wmqProperties);
     }
 }

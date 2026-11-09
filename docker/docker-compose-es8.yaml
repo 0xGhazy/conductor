@@ -1,11 +1,11 @@
-services:
-  conductor-server:
+﻿services:
+  weaver-server:
     environment:
       - CONFIG_PROP=config-redis-es8.properties
       - JAVA_OPTS=-Dpolyglot.engine.WarnInterpreterOnly=false
-      - conductor.app.ownerEmailMandatory=false
-    image: conductor:server
-    container_name: conductor-server
+      - weaver.app.ownerEmailMandatory=false
+    image: weaver:server
+    container_name: weaver-server
     build:
       context: ../
       dockerfile: docker/server/Dockerfile
@@ -26,12 +26,12 @@ services:
       timeout: 30s
       retries: 12
     links:
-      - conductor-elasticsearch:es
-      - conductor-redis:rs
+      - weaver-elasticsearch:es
+      - weaver-redis:rs
     depends_on:
-      conductor-elasticsearch:
+      weaver-elasticsearch:
         condition: service_healthy
-      conductor-redis:
+      weaver-redis:
         condition: service_healthy
     logging:
       driver: "json-file"
@@ -39,7 +39,7 @@ services:
         max-size: "1k"
         max-file: "3"
 
-  conductor-redis:
+  weaver-redis:
     image: redis:6.2.3-alpine
     volumes:
       - ../server/config/redis.conf:/usr/local/etc/redis/redis.conf
@@ -48,7 +48,7 @@ services:
     healthcheck:
       test: [ "CMD", "redis-cli","ping" ]
 
-  conductor-elasticsearch:
+  weaver-elasticsearch:
     # Keep ES image aligned with elasticsearch-java client version (8.19.11).
     image: docker.elastic.co/elasticsearch/elasticsearch:8.19.11
     environment:
@@ -56,7 +56,7 @@ services:
       - xpack.security.enabled=false
       - discovery.type=single-node
     volumes:
-      - esdata-conductor:/usr/share/elasticsearch/data
+      - esdata-weaver:/usr/share/elasticsearch/data
     networks:
       - internal
     healthcheck:
@@ -71,7 +71,7 @@ services:
         max-file: "3"
 
 volumes:
-  esdata-conductor:
+  esdata-weaver:
     driver: local
 
 networks:

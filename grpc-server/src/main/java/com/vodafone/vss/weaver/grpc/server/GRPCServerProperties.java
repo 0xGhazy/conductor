@@ -14,7 +14,7 @@ package com.vodafone.vss.weaver.grpc.server;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("conductor.grpc-server")
+@ConfigurationProperties("weaver.grpc-server")
 public class GRPCServerProperties {
 
     /** The port at which the gRPC server will serve requests */

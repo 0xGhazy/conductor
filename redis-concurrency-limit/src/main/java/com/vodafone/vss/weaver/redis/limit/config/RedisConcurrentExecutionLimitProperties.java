@@ -14,7 +14,7 @@ package com.vodafone.vss.weaver.redis.limit.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("conductor.redis-concurrent-execution-limit")
+@ConfigurationProperties("weaver.redis-concurrent-execution-limit")
 public class RedisConcurrentExecutionLimitProperties {
 
     public enum RedisType {

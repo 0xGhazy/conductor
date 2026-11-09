@@ -1,10 +1,10 @@
-import { EditorProps, Monaco } from "@monaco-editor/react";
+﻿import { EditorProps, Monaco } from "@monaco-editor/react";
 import { BoxProps } from "@mui/material";
 import { Theme } from "@mui/material/styles";
 import { SxProps } from "@mui/system";
 import _keys from "lodash/keys";
 
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
 import {
   invalidDollarVariables,
   undeclaredInputParameters,
@@ -194,7 +194,7 @@ export const JoinCodeBlock: FunctionComponent<JoinCodeBlockProps> = ({
   const minimumHeight = minHeight || MIN_HEIGHT;
 
   return (
-    <ConductorCodeBlockInput
+    <WeaverCodeBlockInput
       theme={mode === "dark" ? "vs-dark" : "light"}
       onChange={onEditorChange}
       onMount={(editor: Monaco, monaco: any) => {

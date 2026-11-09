@@ -29,7 +29,7 @@ import com.vodafone.vss.weaver.dao.UserLookupDAO;
  */
 @AutoConfiguration
 @EnableConfigurationProperties(AuditProperties.class)
-@ConditionalOnProperty(name = "conductor.audit.enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(name = "weaver.audit.enabled", havingValue = "true", matchIfMissing = true)
 @ComponentScan(basePackages = "com.vodafone.vss.weaver.audit")
 public class AuditConfiguration {
 

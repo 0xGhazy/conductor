@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.conductoross.conductor.dao.SecretsDAO;
+import com.vodafone.vss.weaver.dao.SecretsDAO;
 import org.junit.Before;
 import org.junit.Test;
 

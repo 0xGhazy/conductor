@@ -33,7 +33,7 @@ import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.run.SearchResult;
 import com.vodafone.vss.weaver.common.run.Workflow;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.core.exception.TerminateWorkflowException;
 import com.vodafone.vss.weaver.core.execution.TestDeciderService;
@@ -69,7 +69,7 @@ public class ExecutionDAOFacadeTest {
         ConcurrentExecutionLimitDAO concurrentExecutionLimitDAO =
                 mock(ConcurrentExecutionLimitDAO.class);
         PollDataDAO pollDataDAO = mock(PollDataDAO.class);
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.isEventExecutionIndexingEnabled()).thenReturn(true);
         when(properties.isAsyncIndexingEnabled()).thenReturn(true);
         when(properties.isTaskIndexingEnabled()).thenReturn(true);
@@ -334,7 +334,7 @@ public class ExecutionDAOFacadeTest {
         task.setStatus(TaskModel.Status.COMPLETED);
         workflow.setTasks(Collections.singletonList(task));
 
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.isEventExecutionIndexingEnabled()).thenReturn(true);
         when(properties.isAsyncIndexingEnabled()).thenReturn(true);
         when(properties.isTaskIndexingEnabled()).thenReturn(false);
@@ -368,7 +368,7 @@ public class ExecutionDAOFacadeTest {
         task.setTaskId("taskId");
         workflow.setTasks(Collections.singletonList(task));
 
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.isEventExecutionIndexingEnabled()).thenReturn(true);
         when(properties.isAsyncIndexingEnabled()).thenReturn(true);
         when(properties.isTaskIndexingEnabled()).thenReturn(false);

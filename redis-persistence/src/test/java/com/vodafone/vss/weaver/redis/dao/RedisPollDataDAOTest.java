@@ -23,7 +23,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
 import com.vodafone.vss.weaver.common.metadata.tasks.PollData;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.dao.PollDataDAO;
 import com.vodafone.vss.weaver.dao.PollDataDAOTest;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
@@ -56,12 +56,12 @@ public class RedisPollDataDAOTest extends PollDataDAOTest {
         jedisPool = new JedisPool(config, redis.getHost(), redis.getFirstMappedPort());
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
 
         redisPollDataDAO =
                 new RedisPollDataDAO(
-                        jedisProxy, objectMapper, conductorProperties, redisProperties);
+                        jedisProxy, objectMapper, WeaverProperties, redisProperties);
     }
 
     @AfterClass

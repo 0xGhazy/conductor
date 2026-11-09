@@ -5,39 +5,39 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-test-util</artifactId>
-    <name>conductor-test-util</name>
-    <description>Test utilities for Conductor</description>
+    <artifactId>weaver-test-util</artifactId>
+    <name>weaver-test-util</name>
+    <description>Test utilities for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-rest</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-rest</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-grpc-server</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-grpc-server</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-grpc-client</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-grpc-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-redis-persistence</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-redis-persistence</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

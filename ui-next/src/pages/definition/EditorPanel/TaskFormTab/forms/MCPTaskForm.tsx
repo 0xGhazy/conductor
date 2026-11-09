@@ -1,4 +1,4 @@
-import {
+﻿import {
   materialCells,
   materialRenderers,
 } from "@jsonforms/material-renderers";
@@ -12,7 +12,7 @@ import {
   createTheme,
 } from "@mui/material";
 import { GearIcon } from "@phosphor-icons/react";
-import { ConductorAutoComplete } from "components/ui/inputs";
+import { WeaverAutoComplete } from "components/ui/inputs";
 import { IntegrationIcon } from "components/IntegrationIcon";
 import { useNavigate } from "react-router";
 import { colors } from "theme/tokens/variables";
@@ -345,7 +345,7 @@ export const MCPTaskForm = ({ task, onChange }: TaskFormProps) => {
               <Grid size={12} mt={1}>
                 <Grid container spacing={3}>
                   <Grid size={6}>
-                    <ConductorAutoComplete
+                    <WeaverAutoComplete
                       id="integration-name-dropdown"
                       fullWidth
                       label="Integration"
@@ -376,7 +376,7 @@ export const MCPTaskForm = ({ task, onChange }: TaskFormProps) => {
                     />
                   </Grid>
                   <Grid size={6}>
-                    <ConductorAutoComplete
+                    <WeaverAutoComplete
                       id="integration-tool-dropdown"
                       fullWidth
                       label="Tool"

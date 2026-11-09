@@ -16,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
 import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
 
@@ -33,16 +33,16 @@ public class BaseDynoDAOTest {
     @Mock private ObjectMapper objectMapper;
 
     private RedisProperties properties;
-    private ConductorProperties conductorProperties;
+    private WeaverProperties WeaverProperties;
 
     private BaseDynoDAO baseDynoDAO;
 
     @Before
     public void setUp() {
         properties = mock(RedisProperties.class);
-        conductorProperties = mock(ConductorProperties.class);
+        WeaverProperties = mock(WeaverProperties.class);
         this.baseDynoDAO =
-                new BaseDynoDAO(jedisProxy, objectMapper, conductorProperties, properties);
+                new BaseDynoDAO(jedisProxy, objectMapper, WeaverProperties, properties);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class BaseDynoDAOTest {
 
         assertEquals("test.key1.key2", baseDynoDAO.nsKey(keys));
 
-        when(conductorProperties.getStack()).thenReturn("stack");
+        when(WeaverProperties.getStack()).thenReturn("stack");
         assertEquals("test.stack.key1.key2", baseDynoDAO.nsKey(keys));
     }
 }

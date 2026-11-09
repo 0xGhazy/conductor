@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   Grid,
   MenuItem,
@@ -9,8 +9,8 @@ import {
 } from "@mui/material";
 import { Text } from "components";
 import MuiTypography from "components/ui/MuiTypography";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import ConductorSelect from "components/ui/inputs/ConductorSelect";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import WeaverSelect from "components/ui/inputs/WeaverSelect";
 import cronstrue from "cronstrue";
 import {
   formatInTimeZone,
@@ -111,7 +111,7 @@ export function CronExpressionSection({
             </MuiTypography>
             <CronExpressionHelp highlightedPart={highlightedPart} />
           </Box>
-          <ConductorSelect
+          <WeaverSelect
             fullWidth
             label="Choose a template to get started"
             SelectProps={{
@@ -185,7 +185,7 @@ export function CronExpressionSection({
                   </MenuItem>
                 );
               })}
-          </ConductorSelect>
+          </WeaverSelect>
         </Grid>
         <Grid
           container
@@ -203,7 +203,7 @@ export function CronExpressionSection({
             }}
           >
             <Grid size={12}>
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Cron expression"
                 value={cronExpression}

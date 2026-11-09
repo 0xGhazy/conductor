@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.vodafone.vss.weaver.annotations.Trace;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.sync.Lock;
 import com.vodafone.vss.weaver.metrics.Monitors;
 
@@ -28,12 +28,12 @@ import com.vodafone.vss.weaver.metrics.Monitors;
 public class ExecutionLockService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutionLockService.class);
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final Lock lock;
     private final long lockLeaseTime;
     private final long lockTimeToTry;
 
-    public ExecutionLockService(ConductorProperties properties, Lock lock) {
+    public ExecutionLockService(WeaverProperties properties, Lock lock) {
         this.properties = properties;
         this.lock = lock;
         this.lockLeaseTime = properties.getLockLeaseTime().toMillis();

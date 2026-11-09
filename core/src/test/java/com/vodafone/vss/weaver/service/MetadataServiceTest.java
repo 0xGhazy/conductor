@@ -14,7 +14,7 @@ package com.vodafone.vss.weaver.service;
 
 import java.util.*;
 
-import org.conductoross.conductor.core.listener.MetadataChangeListenerStub;
+import com.vodafone.vss.weaver.core.listener.MetadataChangeListenerStub;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.stubbing.Answer;
@@ -31,7 +31,7 @@ import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDefSummary;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
 import com.vodafone.vss.weaver.common.model.BulkResponse;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.dao.EventHandlerDAO;
 import com.vodafone.vss.weaver.dao.MetadataDAO;
@@ -52,7 +52,7 @@ import static org.mockito.Mockito.when;
 
 @SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @RunWith(SpringRunner.class)
-@TestPropertySource(properties = "conductor.app.workflow.name-validation.enabled=true")
+@TestPropertySource(properties = "weaver.app.workflow.name-validation.enabled=true")
 @EnableAutoConfiguration
 public class MetadataServiceTest {
 
@@ -64,8 +64,8 @@ public class MetadataServiceTest {
         }
 
         @Bean
-        public ConductorProperties properties() {
-            ConductorProperties properties = mock(ConductorProperties.class);
+        public WeaverProperties properties() {
+            WeaverProperties properties = mock(WeaverProperties.class);
             when(properties.isOwnerEmailMandatory()).thenReturn(true);
 
             return properties;
@@ -73,7 +73,7 @@ public class MetadataServiceTest {
 
         @Bean
         public MetadataService metadataService(
-                MetadataDAO metadataDAO, ConductorProperties properties) {
+                MetadataDAO metadataDAO, WeaverProperties properties) {
             EventHandlerDAO eventHandlerDAO = mock(EventHandlerDAO.class);
 
             Map<String, TaskDef> taskDefinitions = new HashMap<>();

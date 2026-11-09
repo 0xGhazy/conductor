@@ -15,7 +15,7 @@ package com.vodafone.vss.weaver.core.execution
 import java.time.Duration
 
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef
-import com.vodafone.vss.weaver.core.config.ConductorProperties
+import com.vodafone.vss.weaver.core.config.WeaverProperties
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade
 import com.vodafone.vss.weaver.core.execution.tasks.SubWorkflow
 import com.vodafone.vss.weaver.core.placeholders.WeaverPlaceholderResolver
@@ -46,7 +46,7 @@ class AsyncSystemTaskExecutorTest extends Specification {
     AsyncSystemTaskExecutor executor
 
     WorkflowSystemTask workflowSystemTask
-    ConductorProperties properties = new ConductorProperties()
+    WeaverProperties properties = new WeaverProperties()
 
     def setup() {
         executionDAOFacade = Mock(ExecutionDAOFacade.class)

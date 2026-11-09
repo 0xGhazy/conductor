@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry;
 import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
@@ -59,7 +59,7 @@ public class TestWorkflowExecutorDecideLoop {
     private DeciderService deciderService;
     private ExecutionDAOFacade executionDAOFacade;
     private QueueDAO queueDAO;
-    private ConductorProperties properties;
+    private WeaverProperties properties;
     private ExecutionLockService executionLockService;
     private SystemTaskRegistry systemTaskRegistry;
     private WorkflowSystemTask mockSyncTask;
@@ -69,7 +69,7 @@ public class TestWorkflowExecutorDecideLoop {
         deciderService = mock(DeciderService.class);
         executionDAOFacade = mock(ExecutionDAOFacade.class);
         queueDAO = mock(QueueDAO.class);
-        properties = mock(ConductorProperties.class);
+        properties = mock(WeaverProperties.class);
         executionLockService = mock(ExecutionLockService.class);
         systemTaskRegistry = mock(SystemTaskRegistry.class);
         mockSyncTask = mock(WorkflowSystemTask.class);

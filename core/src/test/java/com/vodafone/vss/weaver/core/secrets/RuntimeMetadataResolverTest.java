@@ -15,7 +15,7 @@ package com.vodafone.vss.weaver.core.secrets;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.conductoross.conductor.dao.SecretsDAO;
+import com.vodafone.vss.weaver.dao.SecretsDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

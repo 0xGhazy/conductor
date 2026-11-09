@@ -1,9 +1,9 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import { Button } from "components";
 import Paper from "components/ui/Paper";
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import ResetIcon from "components/icons/ResetIcon";
 import IdempotencyForm from "pages/runWorkflow/IdempotencyForm";
 import { editor, type EditorOptions } from "shared/editor";
@@ -96,7 +96,7 @@ export const RunWorkFlowForm = ({ runTabActor }: RunWorkFlowFormProps) => {
         )}
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorCodeBlockInput
+            <WeaverCodeBlockInput
               label="Input params"
               value={input}
               onChange={handleChangeInputParams}
@@ -114,7 +114,7 @@ export const RunWorkFlowForm = ({ runTabActor }: RunWorkFlowFormProps) => {
             onChange={handleChangeIdempotencyValues}
           />
           <Grid size={12}>
-            <ConductorInput
+            <WeaverInput
               id="correlation-id-field"
               label="Correlation id"
               fullWidth
@@ -123,7 +123,7 @@ export const RunWorkFlowForm = ({ runTabActor }: RunWorkFlowFormProps) => {
             />
           </Grid>
           <Grid size={12}>
-            <ConductorCodeBlockInput
+            <WeaverCodeBlockInput
               label="Tasks to domain mapping"
               value={taskToDomain}
               onChange={handleChangeTasksToDomain}

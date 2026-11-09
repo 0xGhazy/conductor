@@ -1,12 +1,12 @@
-version: '2.3'
+﻿version: '2.3'
 
 services:
-  conductor-server:
+  weaver-server:
     environment:
       - CONFIG_PROP=config-redis-os3.properties
       - JAVA_OPTS=-Dpolyglot.engine.WarnInterpreterOnly=false
-    image: conductor:server
-    container_name: conductor-server-os3
+    image: weaver:server
+    container_name: weaver-server-os3
     build:
       context: ../
       dockerfile: docker/server/Dockerfile
@@ -25,11 +25,11 @@ services:
       retries: 12
     links:
       - conductor-opensearch:os
-      - conductor-redis:rs
+      - weaver-redis:rs
     depends_on:
       conductor-opensearch:
         condition: service_healthy
-      conductor-redis:
+      weaver-redis:
         condition: service_healthy
     logging:
       driver: "json-file"
@@ -37,7 +37,7 @@ services:
         max-size: "1k"
         max-file: "3"
 
-  conductor-redis:
+  weaver-redis:
     image: redis:6.2.3-alpine
     volumes:
       - ../server/config/redis.conf:/usr/local/etc/redis/redis.conf

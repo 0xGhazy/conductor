@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Conductor UI - Open Source
  *
  * This is the main entry point for the conductor-ui npm package.
@@ -15,7 +15,7 @@ import "./monacoLoader";
 // =============================================================================
 export { pluginRegistry } from "./plugins/registry";
 export type {
-  ConductorPlugin,
+  WeaverPlugin,
   PluginRegistry,
   // Task forms
   PluginTaskFormProps,

@@ -5,19 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-core</artifactId>
-    <name>conductor-core</name>
-    <description>Core orchestration engine for Conductor</description>
+    <artifactId>weaver-core</artifactId>
+    <name>weaver-core</name>
+    <description>Core orchestration engine for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -128,8 +128,8 @@
 
         <!-- Test dependencies -->
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

@@ -34,7 +34,7 @@ import com.vodafone.vss.weaver.common.run.TaskSummary;
 import com.vodafone.vss.weaver.common.run.Workflow;
 import com.vodafone.vss.weaver.common.run.WorkflowSummary;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
 import com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry;
@@ -64,7 +64,7 @@ public class ExecutionServiceTest {
     @Mock private WorkflowExecutor workflowExecutor;
     @Mock private ExecutionDAOFacade executionDAOFacade;
     @Mock private QueueDAO queueDAO;
-    @Mock private ConductorProperties conductorProperties;
+    @Mock private WeaverProperties WeaverProperties;
     @Mock private ExternalPayloadStorage externalPayloadStorage;
     @Mock private SystemTaskRegistry systemTaskRegistry;
     @Mock private TaskStatusListener taskStatusListener;
@@ -81,7 +81,7 @@ public class ExecutionServiceTest {
 
     @Before
     public void setup() {
-        when(conductorProperties.getTaskExecutionPostponeDuration())
+        when(WeaverProperties.getTaskExecutionPostponeDuration())
                 .thenReturn(Duration.ofSeconds(60));
         when(parametersUtils.substituteSecrets(any())).thenAnswer(inv -> inv.getArgument(0));
         executionService =
@@ -89,7 +89,7 @@ public class ExecutionServiceTest {
                         workflowExecutor,
                         executionDAOFacade,
                         queueDAO,
-                        conductorProperties,
+                        WeaverProperties,
                         externalPayloadStorage,
                         systemTaskRegistry,
                         taskStatusListener,

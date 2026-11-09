@@ -23,7 +23,7 @@ public class AMQPConstants {
     /** this when set will create a rabbitmq exchange */
     public static String AMQP_EXCHANGE_TYPE = "amqp_exchange";
 
-    public static String PROPERTY_KEY_TEMPLATE = "conductor.event-queues.amqp.%s";
+    public static String PROPERTY_KEY_TEMPLATE = "weaver.event-queues.amqp.%s";
 
     /** default content type for the message read from rabbitmq */
     public static String DEFAULT_CONTENT_TYPE = "application/json";

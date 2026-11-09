@@ -19,7 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
 import com.vodafone.vss.weaver.model.TaskModel;
 import com.vodafone.vss.weaver.model.WorkflowModel;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.mock;
 
 public class TestJoin {
 
-    private final ConductorProperties properties = new ConductorProperties();
+    private final WeaverProperties properties = new WeaverProperties();
 
     private final WorkflowExecutor executor = mock(WorkflowExecutor.class);
 

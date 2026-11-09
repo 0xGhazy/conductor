@@ -1,7 +1,7 @@
-import { Box, Grid } from "@mui/material";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import ConductorTooltip from "components/ui/ConductorTooltip";
+﻿import { Box, Grid } from "@mui/material";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import WeaverTooltip from "components/ui/WeaverTooltip";
 
 type RateLimitConfigValue = {
   rateLimitKey: string;
@@ -38,13 +38,13 @@ export default function RateLimitConfigForm({
             md: 12,
           }}
         >
-          <ConductorAutocompleteVariables
+          <WeaverAutocompleteVariables
             onChange={handleRateLimitKeyChange}
             value={value?.rateLimitKey ?? ""}
             label={
               <>
                 <>Rate limit key</>
-                <ConductorTooltip
+                <WeaverTooltip
                   title="Rate limit key"
                   content="A unique identifier to group workflow executions for rate limiting."
                   placement="top"
@@ -61,7 +61,7 @@ export default function RateLimitConfigForm({
           />
         </Grid>
         <Grid flexGrow={1}>
-          <ConductorInput
+          <WeaverInput
             tooltip={{
               title: "Concurrent execution limit",
               content:

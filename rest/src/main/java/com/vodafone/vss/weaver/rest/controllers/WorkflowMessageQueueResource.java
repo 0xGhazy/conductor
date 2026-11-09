@@ -47,7 +47,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
  */
 @RestController
 @RequestMapping("/api/workflow")
-@ConditionalOnProperty(name = "conductor.workflow-message-queue.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.workflow-message-queue.enabled", havingValue = "true")
 public class WorkflowMessageQueueResource {
 
     private static final Logger LOGGER =

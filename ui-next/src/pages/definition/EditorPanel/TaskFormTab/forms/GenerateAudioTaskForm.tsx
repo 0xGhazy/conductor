@@ -1,13 +1,13 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { path as _path } from "lodash/fp";
 import { UiIntegrationsFieldType } from "types/FormFieldTypes";
 import {
   fieldsToFieldsFieldsComponents,
   updateField,
 } from "utils/fieldHelpers";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { LLMFormFields } from "./LLMFormFields/LLMFormFields";
 import LLMFormFieldsWrapper from "./LLMFormFields/LLMFormFieldsWrapper";
 import { Optional } from "./OptionalFieldForm";
@@ -51,7 +51,7 @@ export const GenerateAudioTaskForm = ({ task, onChange }: TaskFormProps) => {
           >
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Text"
                   name="text"
                   value={(get("inputParameters.text") as string) || ""}
@@ -68,7 +68,7 @@ export const GenerateAudioTaskForm = ({ task, onChange }: TaskFormProps) => {
           <TaskFormSection title="Audio options">
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Voice"
                   value={get("inputParameters.voice") as string}
                   onChange={(v) => set("inputParameters.voice", v)}
@@ -76,7 +76,7 @@ export const GenerateAudioTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Speed"
                   value={get("inputParameters.speed") as number}
                   coerceTo="double"
@@ -84,7 +84,7 @@ export const GenerateAudioTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Response format"
                   value={get("inputParameters.responseFormat") as string}
                   onChange={(v) => set("inputParameters.responseFormat", v)}
@@ -92,7 +92,7 @@ export const GenerateAudioTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Number of outputs (n)"
                   value={get("inputParameters.n") as number}
                   coerceTo="integer"
@@ -104,7 +104,7 @@ export const GenerateAudioTaskForm = ({ task, onChange }: TaskFormProps) => {
 
           <TaskFormSection>
             <Box display="flex" flexDirection="column" gap={3}>
-              <ConductorCacheOutput onChange={onChange} taskJson={task} />
+              <WeaverCacheOutput onChange={onChange} taskJson={task} />
               <Optional onChange={onChange} taskJson={task} />
             </Box>
           </TaskFormSection>

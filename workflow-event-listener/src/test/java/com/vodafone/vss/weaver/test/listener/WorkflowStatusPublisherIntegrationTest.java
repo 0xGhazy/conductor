@@ -33,7 +33,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import com.vodafone.vss.weaver.ConductorTestApp;
+import com.vodafone.vss.weaver.WeaverTestApp;
 import com.vodafone.vss.weaver.common.metadata.tasks.Task;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskResult;
@@ -56,20 +56,20 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
-        classes = ConductorTestApp.class,
+        classes = WeaverTestApp.class,
         properties = {
-            "conductor.db.type=redis_standalone",
-            "conductor.queue.type=redis_standalone",
-            "conductor.workflow-status-listener.type=queue_publisher",
-            "conductor.workflow-status-listener.queue-publisher.successQueue=dummy",
-            "conductor.workflow-status-listener.queue-publisher.failureQueue=dummy",
-            "conductor.workflow-status-listener.queue-publisher.finalizeQueue=final",
-            "conductor.app.workflow.name-validation.enabled=true",
-            "conductor.indexing.enabled=false",
-            "conductor.app.stack=test",
-            "conductor.app.appId=conductor",
-            "conductor.app.workflow-execution-lock-enabled=false",
-            "conductor.workflow-execution-lock.type=local_only"
+            "weaver.db.type=redis_standalone",
+            "weaver.queue.type=redis_standalone",
+            "weaver.workflow-status-listener.type=queue_publisher",
+            "weaver.workflow-status-listener.queue-publisher.successQueue=dummy",
+            "weaver.workflow-status-listener.queue-publisher.failureQueue=dummy",
+            "weaver.workflow-status-listener.queue-publisher.finalizeQueue=final",
+            "weaver.app.workflow.name-validation.enabled=true",
+            "weaver.indexing.enabled=false",
+            "weaver.app.stack=test",
+            "weaver.app.appId=conductor",
+            "weaver.app.workflow-execution-lock-enabled=false",
+            "weaver.workflow-execution-lock.type=local_only"
         })
 public class WorkflowStatusPublisherIntegrationTest {
 
@@ -92,10 +92,10 @@ public class WorkflowStatusPublisherIntegrationTest {
     @DynamicPropertySource
     static void dynamicProperties(DynamicPropertyRegistry registry) {
         registry.add(
-                "conductor.redis.hosts",
+                "weaver.redis.hosts",
                 () -> "localhost:" + redis.getFirstMappedPort() + ":us-east-1c");
         registry.add(
-                "conductor.redis-lock.serverAddress",
+                "weaver.redis-lock.serverAddress",
                 () -> String.format("redis://localhost:%s", redis.getFirstMappedPort()));
     }
 

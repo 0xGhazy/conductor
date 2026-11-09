@@ -1,6 +1,6 @@
-import { Box, Grid, Switch } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+﻿import { Box, Grid, Switch } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { path as _path } from "lodash/fp";
 import { updateField } from "utils/fieldHelpers";
 import { useEventNameSuggestions } from "utils/hooks";
@@ -21,7 +21,7 @@ export const EventTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Sink"
               otherOptions={useEventNameSuggestions()}
               value={_path(sinkPath, task)}
@@ -39,7 +39,7 @@ export const EventTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               showFieldTypes={true}
               keyColumnLabel="Key"
               valueColumnLabel="Value"

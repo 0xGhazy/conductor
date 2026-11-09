@@ -1,10 +1,10 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import { Button } from "components";
 import StatusBadge from "components/StatusBadge";
 import { renderStatusTagChip } from "components/StatusTagChip";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import SplitButton from "components/ui/buttons/ConductorSplitButton";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import SplitButton from "components/ui/buttons/WeaverSplitButton";
 import ResetIcon from "components/icons/ResetIcon";
 import SearchIcon from "components/icons/SearchIcon";
 import { Dispatch } from "react";
@@ -107,7 +107,7 @@ export const BasicSearch = ({
           lg: 2,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Task definition name"
           onTextInputChange={setTaskDefName}
@@ -122,7 +122,7 @@ export const BasicSearch = ({
           lg: 2,
         }}
       >
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           id="task-type-dropdown"
           fullWidth
           label="Task type"
@@ -139,7 +139,7 @@ export const BasicSearch = ({
           lg: 2,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Task execution id"
           onTextInputChange={setTaskExecutionId}
@@ -153,7 +153,7 @@ export const BasicSearch = ({
           lg: 2,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Task reference name"
           onTextInputChange={setTaskRefName}
@@ -167,7 +167,7 @@ export const BasicSearch = ({
           lg: 2,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Workflow name"
           onTextInputChange={setWorkflowName}
@@ -181,7 +181,7 @@ export const BasicSearch = ({
           lg: 2,
         }}
       >
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           id="task-status-dropdown"
           label="Status"
           fullWidth
@@ -205,7 +205,7 @@ export const BasicSearch = ({
         }}
         sx={{ order: { xs: 0, md: 2 } }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Free text search"
           value={freeText}

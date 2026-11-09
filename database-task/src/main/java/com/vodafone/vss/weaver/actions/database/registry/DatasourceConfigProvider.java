@@ -51,9 +51,9 @@ public class DatasourceConfigProvider {
     @Autowired
     public DatasourceConfigProvider(
             DatasourceDAO datasourceDAO,
-            @Value("${conductor.datasource.metadata.cache-ttl-hours:1}") int metadataTtlHours,
-            @Value("${conductor.datasource.metadata.max-cached:1000}") int maxCached,
-            @Value("${conductor.datasource.version-check-interval-seconds:30}") int versionCheckIntervalSeconds
+            @Value("${weaver.datasource.metadata.cache-ttl-hours:1}") int metadataTtlHours,
+            @Value("${weaver.datasource.metadata.max-cached:1000}") int maxCached,
+            @Value("${weaver.datasource.version-check-interval-seconds:30}") int versionCheckIntervalSeconds
     ) {
         this.datasourceDAO = datasourceDAO;
         this.configCache = Caffeine.newBuilder()

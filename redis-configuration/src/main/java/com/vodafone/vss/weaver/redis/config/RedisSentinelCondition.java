@@ -26,9 +26,9 @@ public class RedisSentinelCondition extends AnyNestedCondition {
         super(ConfigurationPhase.PARSE_CONFIGURATION);
     }
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_sentinel")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_sentinel")
     static class DbRedisSentinel {}
 
-    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "redis_sentinel")
+    @ConditionalOnProperty(name = "weaver.queue.type", havingValue = "redis_sentinel")
     static class QueueRedisSentinel {}
 }

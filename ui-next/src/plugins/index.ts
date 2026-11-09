@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Plugins Module
  *
  * This module provides the plugin system and extension points for Conductor UI.
@@ -13,7 +13,7 @@ export {
   pluginRegistry,
   registerPlugin,
   // Types
-  type ConductorPlugin,
+  type WeaverPlugin,
   type PluginRegistry,
   type PluginTaskFormProps,
   type TaskFormRegistration,

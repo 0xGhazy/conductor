@@ -47,7 +47,7 @@ import com.vodafone.vss.weaver.model.WorkflowModel;
  * </ul>
  */
 @Component(PullWorkflowMessages.TASK_TYPE)
-@ConditionalOnProperty(name = "conductor.workflow-message-queue.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.workflow-message-queue.enabled", havingValue = "true")
 public class PullWorkflowMessages extends WorkflowSystemTask {
 
     public static final String TASK_TYPE = "PULL_WORKFLOW_MESSAGES";

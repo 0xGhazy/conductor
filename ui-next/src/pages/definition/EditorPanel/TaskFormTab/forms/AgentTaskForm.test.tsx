@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+﻿import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { ReactNode, useState } from "react";
 import { TaskDef, TaskType } from "types";
 import { AgentTaskForm } from "./AgentTaskForm";
@@ -16,8 +16,8 @@ vi.mock("utils/query", () => ({
   useFetch: () => ({ data: [{ name: "researcher", version: 2 }] }),
 }));
 
-vi.mock("components/FlatMapForm/ConductorAutocompleteVariables", () => ({
-  ConductorAutocompleteVariables: ({ label, value, onChange, onBlur }: any) => (
+vi.mock("components/FlatMapForm/WeaverAutocompleteVariables", () => ({
+  WeaverAutocompleteVariables: ({ label, value, onChange, onBlur }: any) => (
     <input
       aria-label={String(label)}
       value={value ?? ""}
@@ -39,7 +39,7 @@ vi.mock("components/ui/inputs/RadioButtonGroup", () => ({
   ),
 }));
 
-vi.mock("components/ui/inputs/ConductorInput", () => ({
+vi.mock("components/ui/inputs/WeaverInput", () => ({
   default: ({ label, value, onTextInputChange }: any) => (
     <textarea
       aria-label={label}
@@ -49,17 +49,17 @@ vi.mock("components/ui/inputs/ConductorInput", () => ({
   ),
 }));
 
-vi.mock("components/ui/inputs/ConductorCodeBlockInput", () => ({
-  ConductorCodeBlockInput: () => null,
+vi.mock("components/ui/inputs/WeaverCodeBlockInput", () => ({
+  WeaverCodeBlockInput: () => null,
 }));
-vi.mock("components/FlatMapForm/ConductorFlatMapForm", () => ({
-  ConductorFlatMapFormBase: () => null,
+vi.mock("components/FlatMapForm/WeaverFlatMapForm", () => ({
+  WeaverFlatMapFormBase: () => null,
 }));
-vi.mock("./HTTPTaskForm/ConductorAdditionalHeaders", () => ({
-  ConductorAdditionalHeadersBase: () => null,
+vi.mock("./HTTPTaskForm/WeaverAdditionalHeaders", () => ({
+  WeaverAdditionalHeadersBase: () => null,
 }));
-vi.mock("./ConductorCacheOutputForm", () => ({
-  ConductorCacheOutput: () => null,
+vi.mock("./WeaverCacheOutputForm", () => ({
+  WeaverCacheOutput: () => null,
 }));
 vi.mock("./OptionalFieldForm", () => ({ Optional: () => null }));
 vi.mock("./TaskFormSection", () => ({

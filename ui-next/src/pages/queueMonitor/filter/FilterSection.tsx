@@ -1,9 +1,9 @@
-import { Grid, MenuItem, Paper, useMediaQuery } from "@mui/material";
+﻿import { Grid, MenuItem, Paper, useMediaQuery } from "@mui/material";
 import Button from "components/ui/buttons/MuiButton";
 import MuiTypography from "components/ui/MuiTypography";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import ConductorSelect from "components/ui/inputs/ConductorSelect";
-import ConductorDateTimePicker from "components/ui/date-time/ConductorDateTimePicker";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import WeaverSelect from "components/ui/inputs/WeaverSelect";
+import WeaverDateTimePicker from "components/ui/date-time/WeaverDateTimePicker";
 import FilterIcon from "components/icons/FilterIcon";
 import ResetIcon from "components/icons/ResetIcon";
 import _isEmpty from "lodash/isEmpty";
@@ -40,7 +40,7 @@ export const OptionSelector: FunctionComponent<OptionSelectorProps> = ({
   };
 
   return (
-    <ConductorSelect
+    <WeaverSelect
       value={value?.option || ""}
       label={label}
       onChange={handleSelectChange}
@@ -51,7 +51,7 @@ export const OptionSelector: FunctionComponent<OptionSelectorProps> = ({
       <MenuItem value={RangeOptions.GT}>Greater than</MenuItem>
       <MenuItem value={RangeOptions.LT}>Lower than</MenuItem>
       <MenuItem value={""}>Empty</MenuItem>
-    </ConductorSelect>
+    </WeaverSelect>
   );
 };
 
@@ -114,7 +114,7 @@ export const FilterSection: FunctionComponent<FilterSectionProps> = ({
                 />
               }
               valueField={
-                <ConductorInput
+                <WeaverInput
                   fullWidth
                   label="Value"
                   value={state?.queue?.size || ""}
@@ -141,7 +141,7 @@ export const FilterSection: FunctionComponent<FilterSectionProps> = ({
                 />
               }
               valueField={
-                <ConductorInput
+                <WeaverInput
                   fullWidth
                   label="Value"
                   value={state?.worker?.size || ""}
@@ -172,7 +172,7 @@ export const FilterSection: FunctionComponent<FilterSectionProps> = ({
                 />
               }
               valueField={
-                <ConductorDateTimePicker
+                <WeaverDateTimePicker
                   format={"yyyy-MM-dd HH:mm A"}
                   label="Date time"
                   value={

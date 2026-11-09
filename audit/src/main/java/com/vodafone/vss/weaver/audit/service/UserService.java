@@ -58,8 +58,8 @@ public class UserService {
     @Autowired
     public UserService(
             @Autowired(required = false) UserLookupDAO userLookupDAO,
-            @Value("${conductor.audit.user.max-cache-size:1000}") int maxCacheSize,
-            @Value("${conductor.audit.user.cache-ttl-hours:24}") int cacheTtlHours) {
+            @Value("${weaver.audit.user.max-cache-size:1000}") int maxCacheSize,
+            @Value("${weaver.audit.user.cache-ttl-hours:24}") int cacheTtlHours) {
         this.userLookupDAO = userLookupDAO;
         this.userCache =
                 Caffeine.newBuilder()

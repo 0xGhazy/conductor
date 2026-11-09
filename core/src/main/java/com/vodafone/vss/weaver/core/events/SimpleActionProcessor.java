@@ -16,8 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.conductoross.conductor.common.metadata.agent.AgentStartRequest;
-import org.conductoross.conductor.common.metadata.agent.AgentStartResponse;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartRequest;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -172,8 +172,8 @@ public class SimpleActionProcessor implements ActionProcessor {
         if (!status.isSuccessful()) {
             taskModel.setReasonForIncompletion(reasonForIncompletion);
         }
-        taskModel.addOutput("conductor.event.messageId", messageId);
-        taskModel.addOutput("conductor.event.name", event);
+        taskModel.addOutput("weaver.event.messageId", messageId);
+        taskModel.addOutput("weaver.event.name", event);
 
         try {
             workflowExecutor.updateTask(new TaskResult(taskModel.toTask()));
@@ -224,8 +224,8 @@ public class SimpleActionProcessor implements ActionProcessor {
                             ? params.getTaskToDomain()
                             : (Map<String, String>) replaced.get("taskToDomain");
 
-            workflowInput.put("conductor.event.messageId", messageId);
-            workflowInput.put("conductor.event.name", event);
+            workflowInput.put("weaver.event.messageId", messageId);
+            workflowInput.put("weaver.event.name", event);
 
             StartWorkflowInput startWorkflowInput = new StartWorkflowInput();
             startWorkflowInput.setName(params.getName());

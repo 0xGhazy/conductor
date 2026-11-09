@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.TestPropertySource
 
 @TestPropertySource(properties = [
-        "conductor.system-task-workers.enabled=false",
-        "conductor.integ-test.queue-spy.enabled=true"
+        "weaver.system-task-workers.enabled=false",
+        "weaver.integ-test.queue-spy.enabled=true"
 ])
 abstract class AbstractResiliencySpecification extends AbstractSpecification {
 

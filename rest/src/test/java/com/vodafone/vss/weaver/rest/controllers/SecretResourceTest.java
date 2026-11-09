@@ -14,7 +14,7 @@ package com.vodafone.vss.weaver.rest.controllers;
 
 import java.util.List;
 
-import org.conductoross.conductor.dao.SecretsDAO;
+import com.vodafone.vss.weaver.dao.SecretsDAO;
 import org.junit.Before;
 import org.junit.Test;
 

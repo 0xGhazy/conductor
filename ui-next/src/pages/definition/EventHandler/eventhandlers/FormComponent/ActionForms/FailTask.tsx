@@ -1,9 +1,9 @@
-import { Grid } from "@mui/material";
+﻿import { Grid } from "@mui/material";
 import HelperText from "components/ui/inputs/HelperText";
 import IconButton from "components/ui/buttons/MuiIconButton";
 import MuiTypography from "components/ui/MuiTypography";
-import { ConductorUpdateTaskFormEvent } from "components/inputs/ConductorUpdateTaskFromEvent";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverUpdateTaskFormEvent } from "components/inputs/WeaverUpdateTaskFromEvent";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import XCloseIcon from "components/icons/XCloseIcon";
 import { Props } from "./common";
 
@@ -29,7 +29,7 @@ export const FailTask = ({
         <HelperText>Choose between one of these options</HelperText>
       </Grid>
       <Grid size={12}>
-        <ConductorUpdateTaskFormEvent
+        <WeaverUpdateTaskFormEvent
           value={fail_task}
           onChange={(upCt) => {
             handleChangeAction(index, {
@@ -40,7 +40,7 @@ export const FailTask = ({
         />
       </Grid>
       <Grid size={12}>
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           onChange={(newValues) => {
             handleChangeAction(index, {
               ...payload,

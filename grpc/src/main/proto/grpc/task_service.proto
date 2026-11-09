@@ -1,5 +1,5 @@
 syntax = "proto3";
-package conductor.grpc.tasks;
+package weaver.grpc.tasks;
 
 import "model/taskexeclog.proto";
 import "model/taskresult.proto";
@@ -9,14 +9,14 @@ import "grpc/search.proto";
 
 option java_package = "com.vodafone.vss.weaver.grpc";
 option java_outer_classname = "TaskServicePb";
-option go_package = "github.com/netflix/conductor/client/gogrpc/conductor/grpc/tasks";
+option go_package = "github.com/conductor-oss/conductor/client/gogrpc/weaver/grpc/tasks";
 
 service TaskService {
     // GET /poll/{tasktype}
     rpc Poll(PollRequest) returns (PollResponse);
 
     // /poll/batch/{tasktype}
-    rpc BatchPoll(BatchPollRequest) returns (stream conductor.proto.Task);
+    rpc BatchPoll(BatchPollRequest) returns (stream weaver.proto.Task);
 
     // POST /
     rpc UpdateTask(UpdateTaskRequest) returns (UpdateTaskResponse);
@@ -40,10 +40,10 @@ service TaskService {
     rpc GetQueueAllInfo(QueueAllInfoRequest) returns (QueueAllInfoResponse);
 
     // GET /search
-    rpc Search(conductor.grpc.search.Request) returns (TaskSummarySearchResult);
+    rpc Search(weaver.grpc.search.Request) returns (TaskSummarySearchResult);
 
     // GET /searchV2
-    rpc SearchV2(conductor.grpc.search.Request) returns (TaskSearchResult);
+    rpc SearchV2(weaver.grpc.search.Request) returns (TaskSearchResult);
 }
 
 message PollRequest {
@@ -53,7 +53,7 @@ message PollRequest {
 }
 
 message PollResponse {
-    conductor.proto.Task task = 1;
+    weaver.proto.Task task = 1;
 }
 
 message BatchPollRequest {
@@ -65,7 +65,7 @@ message BatchPollRequest {
 }
 
 message UpdateTaskRequest {
-    conductor.proto.TaskResult result = 1;
+    weaver.proto.TaskResult result = 1;
 }
 
 message UpdateTaskResponse {
@@ -84,7 +84,7 @@ message GetTaskLogsRequest {
 }
 
 message GetTaskLogsResponse {
-    repeated conductor.proto.TaskExecLog logs = 1;
+    repeated weaver.proto.TaskExecLog logs = 1;
 }
 
 message GetTaskRequest {
@@ -92,7 +92,7 @@ message GetTaskRequest {
 }
 
 message GetTaskResponse {
-    conductor.proto.Task task = 1;
+    weaver.proto.Task task = 1;
 }
 
 message QueueSizesRequest {
@@ -124,10 +124,10 @@ message QueueAllInfoResponse {
 
 message TaskSummarySearchResult {
     int64 total_hits = 1;
-    repeated conductor.proto.TaskSummary results = 2;
+    repeated weaver.proto.TaskSummary results = 2;
 }
 
 message TaskSearchResult {
     int64 total_hits = 1;
-    repeated conductor.proto.Task results = 2;
+    repeated weaver.proto.Task results = 2;
 }

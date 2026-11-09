@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   Button,
   CircularProgress,
@@ -13,9 +13,9 @@ import {
 import { MagicWand } from "@phosphor-icons/react";
 import MuiButton from "components/ui/buttons/MuiButton";
 import UIModal from "components/ui/dialogs/UIModal";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { MessageContext } from "components/providers/messageContext";
 import _every from "lodash/every";
 import _isEmpty from "lodash/isEmpty";
@@ -167,7 +167,7 @@ function ServiceRegistryPopulator({
       >
         <Grid container spacing={6} sx={{ width: "100%" }}>
           <Grid size={12}>
-            <ConductorAutoComplete
+            <WeaverAutoComplete
               fullWidth
               id="select-service-field"
               freeSolo={false}
@@ -185,7 +185,7 @@ function ServiceRegistryPopulator({
             />
           </Grid>
           <Grid size={12}>
-            <ConductorAutoComplete
+            <WeaverAutoComplete
               fullWidth
               id="select-service-host"
               freeSolo={false}
@@ -204,7 +204,7 @@ function ServiceRegistryPopulator({
             />
           </Grid>
           <Grid size={12}>
-            <ConductorAutoComplete
+            <WeaverAutoComplete
               fullWidth
               id="select-service-method-field"
               freeSolo={false}
@@ -229,7 +229,7 @@ function ServiceRegistryPopulator({
           </Grid>
           {serviceType === "HTTP" && (
             <Grid size={12}>
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 id="select-service-url"
                 disabled
@@ -391,7 +391,7 @@ function ServiceRegistryPopulator({
                               border: "none", // Remove all borders for table cells
                             }}
                           >
-                            <ConductorAutocompleteVariables
+                            <WeaverAutocompleteVariables
                               value={requestParams[row.name]?.value ?? ""}
                               onChange={(val) => handleInputChange(row, val)}
                             />

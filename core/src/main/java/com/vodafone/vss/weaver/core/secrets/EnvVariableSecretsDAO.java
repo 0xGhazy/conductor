@@ -15,8 +15,8 @@ package com.vodafone.vss.weaver.core.secrets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.conductoross.conductor.dao.SecretsDAO;
-import org.conductoross.conductor.model.secret.CredentialMeta;
+import com.vodafone.vss.weaver.dao.SecretsDAO;
+import com.vodafone.vss.weaver.model.secret.CredentialMeta;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import com.vodafone.vss.weaver.core.env.EnvVarLookup;
 
 @Component
-@ConditionalOnProperty(name = "conductor.secrets.type", havingValue = "env", matchIfMissing = true)
+@ConditionalOnProperty(name = "weaver.secrets.type", havingValue = "env", matchIfMissing = true)
 public class EnvVariableSecretsDAO implements SecretsDAO {
 
     /**
@@ -47,7 +47,7 @@ public class EnvVariableSecretsDAO implements SecretsDAO {
     private final String prefix;
 
     public EnvVariableSecretsDAO(
-            @Value("${conductor.secrets.env.prefix:CONDUCTOR_SECRET_}") String prefix) {
+            @Value("${weaver.secrets.env.prefix:WEAVER_SECRET_}") String prefix) {
         this.prefix = prefix;
     }
 

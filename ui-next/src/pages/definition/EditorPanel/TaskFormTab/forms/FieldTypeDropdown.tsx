@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactNode } from "react";
+﻿import { FunctionComponent, ReactNode } from "react";
 import { MenuItem } from "@mui/material";
 import {
   FIELD_TYPE_BOOLEAN,
@@ -9,7 +9,7 @@ import {
   FieldType,
 } from "types/common";
 import { inferType } from "utils";
-import ConductorSelect from "components/ui/inputs/ConductorSelect";
+import WeaverSelect from "components/ui/inputs/WeaverSelect";
 
 const fieldTypeOption: FieldType[] = [
   FIELD_TYPE_STRING,
@@ -55,7 +55,7 @@ const FieldTypeDropdown: FunctionComponent<FieldTypeDropdownProps> = ({
   );
 
   return (
-    <ConductorSelect
+    <WeaverSelect
       label={label}
       fullWidth
       value={inferType(value)}
@@ -68,7 +68,7 @@ const FieldTypeDropdown: FunctionComponent<FieldTypeDropdownProps> = ({
           {getFieldTypeLabel(type)}
         </MenuItem>
       ))}
-    </ConductorSelect>
+    </WeaverSelect>
   );
 };
 

@@ -5,14 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-redis-api</artifactId>
-    <name>conductor-redis-api</name>
-    <description>Redis API for Conductor</description>
+    <artifactId>weaver-redis-api</artifactId>
+    <name>weaver-redis-api</name>
+    <description>Redis API for Weaver</description>
 
     <dependencies>
         <dependency>

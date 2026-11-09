@@ -1,7 +1,7 @@
-version: '2.3'
+﻿version: '2.3'
 
 services:
-  conductor-server:
+  weaver-server:
     environment:
       - CONFIG_PROP=config-postgres.properties
       # Forwarded from the host shell when set. Empty/absent ⇒ the matching AI provider
@@ -9,8 +9,8 @@ services:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - COHERE_API_KEY=${COHERE_API_KEY:-}
-    image: conductor:server
-    container_name: conductor-server
+    image: weaver:server
+    container_name: weaver-server
     build:
       context: ../
       dockerfile: docker/server/Dockerfile
@@ -27,9 +27,9 @@ services:
       timeout: 30s
       retries: 12
     links:
-      - conductor-postgres:postgresdb
+      - weaver-postgres:postgresdb
     depends_on:
-      conductor-postgres:
+      weaver-postgres:
         condition: service_healthy
     logging:
       driver: "json-file"
@@ -37,13 +37,13 @@ services:
         max-size: "1k"
         max-file: "3"
 
-  conductor-postgres:
+  weaver-postgres:
     image: postgres:16
     environment:
-      - POSTGRES_USER=conductor
-      - POSTGRES_PASSWORD=conductor
+      - POSTGRES_USER=weaver
+      - POSTGRES_PASSWORD=weaver
     volumes:
-      - pgdata-conductor:/var/lib/postgresql/data
+      - pgdata-weaver:/var/lib/postgresql/data
     networks:
       - internal
     healthcheck:
@@ -58,7 +58,7 @@ services:
         max-file: "3"
 
 volumes:
-  pgdata-conductor:
+  pgdata-weaver:
     driver: local
 
 networks:

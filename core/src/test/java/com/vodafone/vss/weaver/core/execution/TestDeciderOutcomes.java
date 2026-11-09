@@ -40,7 +40,7 @@ import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.execution.DeciderService.DeciderOutcome;
 import com.vodafone.vss.weaver.core.execution.evaluators.Evaluator;
 import com.vodafone.vss.weaver.core.execution.mapper.DecisionTaskMapper;
@@ -128,7 +128,7 @@ public class TestDeciderOutcomes {
 
         @Bean(TASK_TYPE_JOIN)
         public Join join() {
-            return new Join(new ConductorProperties());
+            return new Join(new WeaverProperties());
         }
 
         @Bean
@@ -144,7 +144,7 @@ public class TestDeciderOutcomes {
 
         ExternalPayloadStorageUtils externalPayloadStorageUtils =
                 mock(ExternalPayloadStorageUtils.class);
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.getTaskInputPayloadSizeThreshold()).thenReturn(DataSize.ofKilobytes(10L));
         when(properties.getMaxTaskInputPayloadSizeThreshold())
                 .thenReturn(DataSize.ofKilobytes(10240L));
@@ -596,7 +596,7 @@ public class TestDeciderOutcomes {
 
         assertEquals(TaskModel.Status.SCHEDULED, outcome.tasksToBeScheduled.get(0).getStatus());
         System.out.println(outcome.tasksToBeScheduled.get(0));
-        new Join(new ConductorProperties())
+        new Join(new WeaverProperties())
                 .execute(workflow, outcome.tasksToBeScheduled.get(0), null);
         assertEquals(TaskModel.Status.COMPLETED, outcome.tasksToBeScheduled.get(0).getStatus());
     }

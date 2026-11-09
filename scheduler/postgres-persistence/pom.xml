@@ -5,32 +5,32 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>conductor-scheduler-postgres-persistence</artifactId>
-    <name>conductor-scheduler-postgres-persistence</name>
-    <description>Scheduler PostgreSQL persistence for Conductor</description>
+    <artifactId>weaver-scheduler-postgres-persistence</artifactId>
+    <name>weaver-scheduler-postgres-persistence</name>
+    <description>Scheduler PostgreSQL persistence for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-scheduler-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-scheduler-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-postgres-persistence</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-postgres-persistence</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -71,8 +71,8 @@
 
         <!-- Test Dependencies -->
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-scheduler-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-scheduler-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>

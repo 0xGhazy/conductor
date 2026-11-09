@@ -38,10 +38,10 @@ public class SchedulerConfiguration implements SchedulingConfigurer {
     /**
      * Used by some {@link com.vodafone.vss.weaver.core.events.queue.ObservableQueue} implementations.
      *
-     * @see com.vodafone.vss.weaver.core.events.queue.ConductorObservableQueue
+     * @see com.vodafone.vss.weaver.core.events.queue.WeaverObservableQueue
      */
     @Bean
-    public Scheduler scheduler(ConductorProperties properties) {
+    public Scheduler scheduler(WeaverProperties properties) {
         ThreadFactory threadFactory =
                 new BasicThreadFactory.Builder()
                         .namingPattern("event-queue-poll-scheduler-thread-%d")
@@ -54,10 +54,10 @@ public class SchedulerConfiguration implements SchedulingConfigurer {
     }
 
     @Bean(SWEEPER_EXECUTOR_NAME)
-    public Executor sweeperExecutor(ConductorProperties properties) {
+    public Executor sweeperExecutor(WeaverProperties properties) {
         if (properties.getSweeperThreadCount() <= 0) {
             throw new IllegalStateException(
-                    "conductor.app.sweeper-thread-count must be greater than 0.");
+                    "weaver.app.sweeper-thread-count must be greater than 0.");
         }
         ThreadFactory threadFactory =
                 new BasicThreadFactory.Builder().namingPattern("sweeper-thread-%d").build();

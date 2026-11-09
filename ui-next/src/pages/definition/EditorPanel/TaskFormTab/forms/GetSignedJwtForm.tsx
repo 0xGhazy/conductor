@@ -1,9 +1,9 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { GetSignedJWTAlgorithmType } from "types";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
-import { ConductorValueInput } from "./ConductorValueInput";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
+import { WeaverValueInput } from "./WeaverValueInput";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -45,7 +45,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={{ xs: 12, md: 6 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={subject}
               label="Subject:"
               onChange={handleSubject}
@@ -58,7 +58,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handleIssuer}
               value={issuer}
               label="Issuer:"
@@ -71,7 +71,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlePrivateKey}
               value={privateKey}
               label="PrivateKey:"
@@ -84,7 +84,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlePrivateKeyId}
               value={privateKeyId}
               label="PrivateKeyId:"
@@ -97,7 +97,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handleAudience}
               value={audience}
               label="Audience:"
@@ -110,7 +110,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handleTtl}
               coerceTo="integer"
               value={ttl}
@@ -124,7 +124,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorValueInput
+            <WeaverValueInput
               valueLabel="Scopes:"
               value={scopes}
               onChangeValue={(val) => {
@@ -140,7 +140,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutoComplete
+            <WeaverAutoComplete
               label="Algorithm:"
               freeSolo={false}
               fullWidth
@@ -156,7 +156,7 @@ const GetSignedJwtForm = (props: TaskFormProps) => {
       </TaskFormSection>
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

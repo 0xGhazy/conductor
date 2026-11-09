@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+﻿import { fireEvent, render, screen } from "@testing-library/react";
 import { useState } from "react";
 import { StartAgentActionForm } from "./StartAgentTask";
 
@@ -7,7 +7,7 @@ const useFetch = vi.hoisted(() => vi.fn());
 vi.mock("utils/query", () => ({ useFetch }));
 
 vi.mock("components/ui/inputs", () => ({
-  ConductorAutoComplete: ({ label, value, onChange, onBlur, options }: any) => (
+  WeaverAutoComplete: ({ label, value, onChange, onBlur, options }: any) => (
     <input
       aria-label={String(label)}
       value={value ?? ""}
@@ -18,7 +18,7 @@ vi.mock("components/ui/inputs", () => ({
   ),
 }));
 
-vi.mock("components/ui/inputs/ConductorInput", () => ({
+vi.mock("components/ui/inputs/WeaverInput", () => ({
   default: ({ label, value, onTextInputChange, multiline }: any) => {
     const Tag = multiline ? "textarea" : "input";
     return (
@@ -31,8 +31,8 @@ vi.mock("components/ui/inputs/ConductorInput", () => ({
   },
 }));
 
-vi.mock("components/FlatMapForm/ConductorFlatMapForm", () => ({
-  ConductorFlatMapFormBase: ({ onChange, value }: any) => (
+vi.mock("components/FlatMapForm/WeaverFlatMapForm", () => ({
+  WeaverFlatMapFormBase: ({ onChange, value }: any) => (
     <button
       aria-label="Edit context"
       onClick={() => onChange({ ...value, addedKey: "addedValue" })}

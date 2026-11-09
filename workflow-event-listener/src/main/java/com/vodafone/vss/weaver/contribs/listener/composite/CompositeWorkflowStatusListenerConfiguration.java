@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Configuration;
 import com.vodafone.vss.weaver.contribs.listener.StatusNotifierNotificationProperties;
 import com.vodafone.vss.weaver.contribs.listener.WorkflowStatusListenerFactory;
 import com.vodafone.vss.weaver.contribs.listener.archive.ArchivingWorkflowListenerProperties;
-import com.vodafone.vss.weaver.contribs.listener.conductorqueue.ConductorQueueStatusPublisherProperties;
+import com.vodafone.vss.weaver.contribs.listener.weaverqueue.WeaverQueueStatusPublisherProperties;
 import com.vodafone.vss.weaver.contribs.listener.kafka.KafkaWorkflowStatusPublisherProperties;
 import com.vodafone.vss.weaver.core.listener.WorkflowStatusListener;
 
@@ -39,10 +39,10 @@ import com.vodafone.vss.weaver.core.listener.WorkflowStatusListener;
     CompositeWorkflowStatusListenerProperties.class,
     StatusNotifierNotificationProperties.class,
     KafkaWorkflowStatusPublisherProperties.class,
-    ConductorQueueStatusPublisherProperties.class,
+    WeaverQueueStatusPublisherProperties.class,
     ArchivingWorkflowListenerProperties.class
 })
-@ConditionalOnProperty(name = "conductor.workflow-status-listener.type", havingValue = "composite")
+@ConditionalOnProperty(name = "weaver.workflow-status-listener.type", havingValue = "composite")
 public class CompositeWorkflowStatusListenerConfiguration {
 
     private static final Logger LOGGER =
@@ -53,7 +53,7 @@ public class CompositeWorkflowStatusListenerConfiguration {
             CompositeWorkflowStatusListenerProperties properties,
             WorkflowStatusListenerFactory factory,
             Optional<KafkaWorkflowStatusPublisherProperties> kafkaProperties,
-            Optional<ConductorQueueStatusPublisherProperties> queueProperties,
+            Optional<WeaverQueueStatusPublisherProperties> queueProperties,
             Optional<StatusNotifierNotificationProperties> notifierProperties,
             Optional<ArchivingWorkflowListenerProperties> archiveProperties) {
         List<WorkflowStatusListener> listeners = new ArrayList<>();
@@ -103,7 +103,7 @@ public class CompositeWorkflowStatusListenerConfiguration {
             String type,
             WorkflowStatusListenerFactory factory,
             Optional<KafkaWorkflowStatusPublisherProperties> kafkaProperties,
-            Optional<ConductorQueueStatusPublisherProperties> queueProperties,
+            Optional<WeaverQueueStatusPublisherProperties> queueProperties,
             Optional<StatusNotifierNotificationProperties> notifierProperties,
             Optional<ArchivingWorkflowListenerProperties> archiveProperties) {
         switch (type.toLowerCase()) {

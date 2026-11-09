@@ -47,7 +47,7 @@ import static com.vodafone.vss.weaver.rest.controllers.DatabaseResource.MAX_PAGE
  * Saved SQL queries, each bound to one database.
  *
  * <p>Writes and execution need the admin or operator role when security is enabled
- * (see ConductorSecurityConfiguration).
+ * (see WeaverSecurityConfiguration).
  */
 @Validated
 @RestController

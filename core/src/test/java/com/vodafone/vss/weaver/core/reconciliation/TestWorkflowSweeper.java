@@ -22,7 +22,7 @@ import org.junit.Test;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
 import com.vodafone.vss.weaver.dao.QueueDAO;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 
 public class TestWorkflowSweeper {
 
-    private ConductorProperties properties;
+    private WeaverProperties properties;
     private WorkflowExecutor workflowExecutor;
     private WorkflowRepairService workflowRepairService;
     private QueueDAO queueDAO;
@@ -53,7 +53,7 @@ public class TestWorkflowSweeper {
 
     @Before
     public void setUp() {
-        properties = mock(ConductorProperties.class);
+        properties = mock(WeaverProperties.class);
         workflowExecutor = mock(WorkflowExecutor.class);
         queueDAO = mock(QueueDAO.class);
         workflowRepairService = mock(WorkflowRepairService.class);

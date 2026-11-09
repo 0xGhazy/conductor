@@ -78,10 +78,10 @@ public class DataSourceRegistry {
             DatasourceConfigProvider configProvider,
             DialectRegistry dialectRegistry,
             @Autowired(required = false) MeterRegistry meterRegistry,
-            @Value("${conductor.datasource.pool.max-cached-pools:100}") int maxCachedPools,
-            @Value("${conductor.datasource.pool.idle-timeout-minutes:30}") int idleTimeoutMinutes,
-            @Value("${conductor.datasource.pool.max-total-connections:200}") int maxTotalConnections,
-            @Value("${conductor.datasource.pool.grace-period-seconds:60}") int gracePeriodSeconds
+            @Value("${weaver.datasource.pool.max-cached-pools:100}") int maxCachedPools,
+            @Value("${weaver.datasource.pool.idle-timeout-minutes:30}") int idleTimeoutMinutes,
+            @Value("${weaver.datasource.pool.max-total-connections:200}") int maxTotalConnections,
+            @Value("${weaver.datasource.pool.grace-period-seconds:60}") int gracePeriodSeconds
     ) {
         this.configProvider = configProvider;
         this.dialectRegistry = dialectRegistry != null ? dialectRegistry : DialectRegistry.getDefault();

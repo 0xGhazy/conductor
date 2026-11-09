@@ -1,9 +1,9 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Box, Grid } from "@mui/material";
 import { path as _path } from "lodash/fp";
 
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
 
@@ -36,7 +36,7 @@ export const YieldTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               showFieldTypes
               keyColumnLabel="Key"
               valueColumnLabel="Value"
@@ -51,7 +51,7 @@ export const YieldTaskForm = ({ task, onChange }: TaskFormProps) => {
       </TaskFormSection>
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

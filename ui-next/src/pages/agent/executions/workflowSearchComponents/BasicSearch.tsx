@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   FormControl,
   Grid,
@@ -10,9 +10,9 @@ import { Button, Paper } from "components";
 import { DEFAULT_ROWS_PER_PAGE } from "components/ui/DataTable/DataTable";
 import StatusBadge from "components/StatusBadge";
 import { renderStatusTagChip } from "components/StatusTagChip";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import SplitButton from "components/ui/buttons/ConductorSplitButton";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import SplitButton from "components/ui/buttons/WeaverSplitButton";
 import ResetIcon from "components/icons/ResetIcon";
 import SearchIcon from "components/icons/SearchIcon";
 import _isEmpty from "lodash/isEmpty";
@@ -432,7 +432,7 @@ export default function BasicSearch({
                 lg: 4,
               }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 id="workflow-search-name-dropdown"
                 fullWidth
                 label="Agent name"
@@ -444,7 +444,7 @@ export default function BasicSearch({
                 onChange={(__, val: string[]) => setWorkflowType(val)}
                 value={workflowType}
                 autoFocus
-                conductorInputProps={{
+                WeaverInputProps={{
                   tooltip: {
                     title: "Partial Name Search",
                     content:
@@ -465,7 +465,7 @@ export default function BasicSearch({
                 lg: 2,
               }}
             >
-              <ConductorInput
+              <WeaverInput
                 id="workflow-search-id"
                 fullWidth
                 label="Execution id"
@@ -482,7 +482,7 @@ export default function BasicSearch({
                 lg: 2,
               }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 id="workflow-search-correlation-id"
                 fullWidth
                 label="Correlation id"
@@ -502,7 +502,7 @@ export default function BasicSearch({
                 onBlur={() => setCorrelationFieldFocus(false)}
                 value={correlationIds}
                 error={correlationIdHasError}
-                conductorInputProps={{
+                WeaverInputProps={{
                   tooltip: {
                     title: "Get Agents by Correlation ID",
                     content:
@@ -520,7 +520,7 @@ export default function BasicSearch({
                 lg: 2,
               }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 id="workflow-search-idempotency-key"
                 fullWidth
                 label="Idempotency key"
@@ -541,7 +541,7 @@ export default function BasicSearch({
                 onBlur={() => setIdempotencyKeyFieldFocus(false)}
                 value={idempotencyKey}
                 error={idempotencyKeyHasError}
-                conductorInputProps={{
+                WeaverInputProps={{
                   tooltip: {
                     title: "Get Executions by Idempotency key",
                     content:
@@ -558,7 +558,7 @@ export default function BasicSearch({
                 lg: 2,
               }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 id="workflow-search-status"
                 label="Status"
                 fullWidth
@@ -620,7 +620,7 @@ export default function BasicSearch({
                 lg: 3,
               }}
             >
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Free text search"
                 value={freeText}

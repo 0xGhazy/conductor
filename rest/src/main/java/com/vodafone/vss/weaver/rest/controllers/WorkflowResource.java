@@ -23,9 +23,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.conductoross.conductor.model.SignalResponse;
-import org.conductoross.conductor.model.WorkflowSignalReturnStrategy;
-import org.conductoross.conductor.model.WorkflowStatus;
+import com.vodafone.vss.weaver.model.SignalResponse;
+import com.vodafone.vss.weaver.model.WorkflowSignalReturnStrategy;
+import com.vodafone.vss.weaver.model.WorkflowStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

@@ -24,14 +24,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.annotations.VisibleForTesting;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.utils.QueueUtils;
 
 import static com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry.ASYNC_SYSTEM_TASKS_QUALIFIER;
 
 @Component
 @ConditionalOnProperty(
-        name = "conductor.system-task-workers.enabled",
+        name = "weaver.system-task-workers.enabled",
         havingValue = "true",
         matchIfMissing = true)
 public class SystemTaskWorkerCoordinator {
@@ -44,7 +44,7 @@ public class SystemTaskWorkerCoordinator {
 
     public SystemTaskWorkerCoordinator(
             SystemTaskWorker systemTaskWorker,
-            ConductorProperties properties,
+            WeaverProperties properties,
             @Qualifier(ASYNC_SYSTEM_TASKS_QUALIFIER) Set<WorkflowSystemTask> asyncSystemTasks) {
         this.systemTaskWorker = systemTaskWorker;
         this.asyncSystemTasks = asyncSystemTasks;

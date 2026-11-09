@@ -33,26 +33,26 @@ public class AnyRedisConnectionCondition extends AnyNestedCondition {
 
     // --- conductor.db.type checks ---
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "memory")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "memory")
     static class DbInMemory {}
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_cluster")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_cluster")
     static class DbRedisCluster {}
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_sentinel")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_sentinel")
     static class DbRedisSentinel {}
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_standalone")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_standalone")
     static class DbRedisStandalone {}
 
     // --- conductor.queue.type checks ---
 
-    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "redis_cluster")
+    @ConditionalOnProperty(name = "weaver.queue.type", havingValue = "redis_cluster")
     static class QueueRedisCluster {}
 
-    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "redis_sentinel")
+    @ConditionalOnProperty(name = "weaver.queue.type", havingValue = "redis_sentinel")
     static class QueueRedisSentinel {}
 
-    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "redis_standalone")
+    @ConditionalOnProperty(name = "weaver.queue.type", havingValue = "redis_standalone")
     static class QueueRedisStandalone {}
 }

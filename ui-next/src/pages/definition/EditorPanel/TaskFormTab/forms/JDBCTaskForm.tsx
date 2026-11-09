@@ -1,15 +1,15 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
-import { ConductorArrayField } from "components/ui/inputs/ConductorArrayField";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverArrayField } from "components/ui/inputs/WeaverArrayField";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { assoc as _assoc, path as _path } from "lodash/fp";
 import { ChangeEvent } from "react";
 import { UseQueryResult } from "react-query";
 import { IntegrationCategory, IntegrationDef, JDBCType, TaskType } from "types";
 import { updateField } from "utils/fieldHelpers";
 import { useIntegrationProviders } from "utils/useIntegrationProviders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 
 import TaskFormSection from "./TaskFormSection";
@@ -52,7 +52,7 @@ export const JDBCTaskForm = ({ task, onChange }: TaskFormProps) => {
                 md: 6,
               }}
             >
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 onChange={(changes) =>
                   onChange(updateField(connectionIdPath, changes, task))
                 }
@@ -69,7 +69,7 @@ export const JDBCTaskForm = ({ task, onChange }: TaskFormProps) => {
               md: 6,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               otherOptions={integrationDBNames?.map((item) => item.name) || []}
               onChange={(changes) =>
                 onChange(updateField(integrationNamePath, changes, task))
@@ -85,7 +85,7 @@ export const JDBCTaskForm = ({ task, onChange }: TaskFormProps) => {
               md: 6,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={(changes) =>
                 onChange(updateField(schemaNamePath, changes, task))
               }
@@ -128,7 +128,7 @@ export const JDBCTaskForm = ({ task, onChange }: TaskFormProps) => {
             </Grid>
             {_path(jdbcTypePath, task) === JDBCType.UPDATE && (
               <Grid alignSelf={"end"} marginLeft={"auto"} width={"160px"}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   onChange={(changes) =>
                     onChange(
                       updateField(expectedUpdateCountPath, changes, task),
@@ -150,7 +150,7 @@ export const JDBCTaskForm = ({ task, onChange }: TaskFormProps) => {
         </Grid>
         <Grid container spacing={2} mt={4} sx={{ width: "100%" }}>
           <Grid size={12}>
-            <ConductorCodeBlockInput
+            <WeaverCodeBlockInput
               label="Statement"
               language="sql"
               minHeight={300}
@@ -169,7 +169,7 @@ export const JDBCTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorArrayField
+            <WeaverArrayField
               value={queryParameters}
               onChange={changeQueryParameters}
               showType
@@ -182,7 +182,7 @@ export const JDBCTaskForm = ({ task, onChange }: TaskFormProps) => {
       </TaskFormSection>
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   FormControl,
   FormControlLabel,
@@ -23,7 +23,7 @@ import { SnackbarMessage } from "components/ui/SnackbarMessage";
 import TagChip from "components/ui/TagChip";
 import ConfirmChoiceDialog from "components/ui/dialogs/ConfirmChoiceDialog";
 import AddTagDialog from "components/features/tags/AddTagDialog";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import TagList from "components/ui/TagList";
 import AddIcon from "components/icons/AddIcon";
 import PlayIcon from "components/icons/PlayIcon";
@@ -740,7 +740,7 @@ export default function ScheduleDefinitions() {
                   md: 4,
                 }}
               >
-                <ConductorInput
+                <WeaverInput
                   fullWidth
                   label="Quick search"
                   placeholder="Search scheduler definitions"

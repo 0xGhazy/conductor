@@ -1,4 +1,4 @@
-import { Grid, Box } from "@mui/material";
+﻿import { Grid, Box } from "@mui/material";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
 
@@ -6,9 +6,9 @@ import { MaybeVariable } from "./MaybeVariable";
 import { useGetSetHandler } from "./useGetSetHandler";
 import { TaskType } from "types";
 import { Optional } from "./OptionalFieldForm";
-import { ConductorFlatMapForm } from "components/FlatMapForm/ConductorFlatMapForm";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorKeyValueInput } from "components/FlatMapForm/ConductorKeyValueInput";
+import { WeaverFlatMapForm } from "components/FlatMapForm/WeaverFlatMapForm";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverKeyValueInput } from "components/FlatMapForm/WeaverKeyValueInput";
 
 const KAFKA_REQUEST = "inputParameters.kafka_request";
 const TOPIC_PATH = `${KAFKA_REQUEST}.topic`;
@@ -47,7 +47,7 @@ export const KafkaTaskForm = (props: TaskFormProps) => {
       >
         <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
           <Grid container sx={{ width: "100%" }} spacing={2}>
-            <ConductorKeyValueInput
+            <WeaverKeyValueInput
               showFieldTypes={true}
               mKey={topic}
               hideValue={false}
@@ -66,7 +66,7 @@ export const KafkaTaskForm = (props: TaskFormProps) => {
               enableAutocomplete={true}
             />
             <Grid size={12}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 onChange={handlerBootstrapServerPath}
                 value={bootstrapServer}
                 label="Server:"
@@ -78,7 +78,7 @@ export const KafkaTaskForm = (props: TaskFormProps) => {
         <TaskFormSection title="Headers:">
           <Grid container sx={{ width: "100%" }} spacing={1}>
             <Grid size={12}>
-              <ConductorFlatMapForm
+              <WeaverFlatMapForm
                 keyColumnLabel="Key"
                 valueColumnLabel="Value"
                 addItemLabel="Add header"
@@ -93,7 +93,7 @@ export const KafkaTaskForm = (props: TaskFormProps) => {
         <TaskFormSection title="">
           <Grid container sx={{ width: "100%" }} spacing={2}>
             <Grid sx={{ mb: 6 }} size={12}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 onChange={handlerKey}
                 value={key}
                 label="Key:"
@@ -101,7 +101,7 @@ export const KafkaTaskForm = (props: TaskFormProps) => {
             </Grid>
             <Grid size={12}>
               <Box>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   onChange={handlerKeySerializer}
                   value={keySerializer}
                   otherOptions={[

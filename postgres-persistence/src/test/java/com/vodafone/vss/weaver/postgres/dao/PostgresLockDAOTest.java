@@ -48,9 +48,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         })
 @TestPropertySource(
         properties = {
-            "conductor.workflow-execution-lock.type=postgres",
+            "weaver.workflow-execution-lock.type=postgres",
             "spring.flyway.clean-disabled=false",
-            "conductor.app.workflow.name-validation.enabled=true"
+            "weaver.app.workflow.name-validation.enabled=true"
         })
 @SpringBootTest
 public class PostgresLockDAOTest {

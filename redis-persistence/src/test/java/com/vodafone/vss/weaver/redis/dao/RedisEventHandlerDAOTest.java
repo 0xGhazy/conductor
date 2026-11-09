@@ -28,7 +28,7 @@ import com.vodafone.vss.weaver.common.metadata.events.EventHandler;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler.Action;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler.Action.Type;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler.StartWorkflow;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.ConflictException;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
@@ -62,12 +62,12 @@ class RedisEventHandlerDAOTest {
         jedisPool = new JedisPool(config, redis.getHost(), redis.getFirstMappedPort());
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
 
         redisEventHandlerDAO =
                 new RedisEventHandlerDAO(
-                        jedisProxy, objectMapper, conductorProperties, redisProperties);
+                        jedisProxy, objectMapper, WeaverProperties, redisProperties);
     }
 
     @AfterAll

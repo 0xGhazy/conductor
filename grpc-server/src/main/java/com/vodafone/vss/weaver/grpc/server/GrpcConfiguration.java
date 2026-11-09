@@ -23,7 +23,7 @@ import io.grpc.BindableService;
 import io.grpc.protobuf.services.ProtoReflectionService;
 
 @Configuration
-@ConditionalOnProperty(name = "conductor.grpc-server.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.grpc-server.enabled", havingValue = "true")
 @EnableConfigurationProperties(GRPCServerProperties.class)
 public class GrpcConfiguration {
 

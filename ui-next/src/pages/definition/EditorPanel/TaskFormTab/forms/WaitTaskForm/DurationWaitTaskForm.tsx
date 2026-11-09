@@ -1,7 +1,7 @@
-import { Grid, Link } from "@mui/material";
+﻿import { Grid, Link } from "@mui/material";
 import MuiTypography from "components/ui/MuiTypography";
-import ConductorInputNumber from "components/ui/inputs/ConductorInputNumber";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import WeaverInputNumber from "components/ui/inputs/WeaverInputNumber";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import _capitalize from "lodash/capitalize";
 import { durationStringToPairs } from "pages/definition/EditorPanel/TaskFormTab/forms/WaitTaskForm/helpers";
 import { FunctionComponent, useMemo } from "react";
@@ -32,7 +32,7 @@ const DurationWaitTaskForm: FunctionComponent<{
     <Grid container sx={{ width: "100%" }} spacing={2}>
       {durationTuples.map(([value, unit], idx) => (
         <Grid key={unit}>
-          <ConductorInputNumber
+          <WeaverInputNumber
             label={`${_capitalize(unit)}`}
             placeholder="#"
             type="number"
@@ -57,7 +57,7 @@ const DurationWaitTaskForm: FunctionComponent<{
         =
       </Grid>
       <Grid flexGrow={1}>
-        <ConductorAutocompleteVariables
+        <WeaverAutocompleteVariables
           fullWidth
           label={
             <>

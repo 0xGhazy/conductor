@@ -18,7 +18,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.redis.jedis.JedisCommands;
 
 import redis.clients.jedis.UnifiedJedis;
@@ -43,8 +43,8 @@ class RedisStandaloneConfigurationTest {
     void setUp() {
         redis.start();
 
-        ConductorProperties conductorProperties = new ConductorProperties();
-        properties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        properties = new RedisProperties(WeaverProperties);
         properties.setHosts(redis.getHost() + ":" + redis.getFirstMappedPort() + ":us-east-1c");
         properties.setMaxConnectionsPerHost(5);
         properties.setMinIdleConnections(1);

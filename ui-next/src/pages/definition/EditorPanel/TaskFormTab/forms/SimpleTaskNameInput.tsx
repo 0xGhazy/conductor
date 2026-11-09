@@ -1,4 +1,4 @@
-import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+﻿import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import Dialog from "@mui/material/Dialog";
@@ -10,7 +10,7 @@ import Snackbar from "@mui/material/Snackbar";
 import { useSelector } from "@xstate/react";
 import MuiAlert from "components/ui/MuiAlert";
 import Button from "components/ui/buttons/MuiButton";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import XCloseIcon from "components/icons/XCloseIcon";
 import { WorkflowEditContext } from "pages/definition/state";
 import React, {
@@ -257,7 +257,7 @@ const SimpleTaskNameInput: FunctionComponent<SimpleTaskNameInputProps> = ({
           } = originalInputProps;
 
           return (
-            <ConductorInput
+            <WeaverInput
               {...restParams}
               inputProps={{
                 ...restInputProps,
@@ -304,7 +304,7 @@ const SimpleTaskNameInput: FunctionComponent<SimpleTaskNameInputProps> = ({
             <DialogContentText>
               A new task definition with default values will be created.
             </DialogContentText>
-            <ConductorInput
+            <WeaverInput
               fullWidth
               margin="normal"
               id="name"
@@ -319,7 +319,7 @@ const SimpleTaskNameInput: FunctionComponent<SimpleTaskNameInputProps> = ({
               type="text"
               {...maybeNameErrorProps}
             />
-            <ConductorInput
+            <WeaverInput
               autoFocus
               fullWidth
               margin="normal"

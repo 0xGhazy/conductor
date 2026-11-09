@@ -5,23 +5,23 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-respond-task</artifactId>
-    <name>conductor-respond-task</name>
-    <description>Workflow localized response system task and translation management for Conductor</description>
+    <artifactId>weaver-respond-task</artifactId>
+    <name>weaver-respond-task</name>
+    <description>Workflow localized response system task and translation management for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
 
         <!-- Spring Boot Starter Web -->

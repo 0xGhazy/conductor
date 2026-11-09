@@ -137,7 +137,7 @@ public class LocalOnlyLockTest {
     @Test
     public void testLockConfiguration() {
         new ApplicationContextRunner()
-                .withPropertyValues("conductor.workflow-execution-lock.type=local_only")
+                .withPropertyValues("weaver.workflow-execution-lock.type=local_only")
                 .withUserConfiguration(LocalOnlyLockConfiguration.class)
                 .run(
                         context -> {

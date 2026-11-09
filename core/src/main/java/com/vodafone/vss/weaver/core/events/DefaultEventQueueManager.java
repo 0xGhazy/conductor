@@ -46,7 +46,7 @@ import com.vodafone.vss.weaver.model.TaskModel.Status;
  */
 @Component
 @ConditionalOnProperty(
-        name = "conductor.default-event-processor.enabled",
+        name = "weaver.default-event-processor.enabled",
         havingValue = "true",
         matchIfMissing = true)
 public class DefaultEventQueueManager extends LifecycleAwareComponent implements EventQueueManager {

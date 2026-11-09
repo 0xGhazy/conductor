@@ -1,10 +1,10 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { path as _path } from "lodash/fp";
 import { updateField } from "utils/fieldHelpers";
-import { ConductorAdditionalHeadersBase } from "./HTTPTaskForm/ConductorAdditionalHeaders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverAdditionalHeadersBase } from "./HTTPTaskForm/WeaverAdditionalHeaders";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -25,7 +25,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={12}>
-            <ConductorInput
+            <WeaverInput
               label="Markdown"
               name="markdown"
               value={(get("inputParameters.markdown") as string) || ""}
@@ -42,7 +42,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection title="Page">
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Page size"
               value={get("inputParameters.pageSize") as string}
               onChange={(v) => set("inputParameters.pageSize", v)}
@@ -51,7 +51,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Theme"
               value={get("inputParameters.theme") as string}
               onChange={(v) => set("inputParameters.theme", v)}
@@ -60,7 +60,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Base font size"
               value={get("inputParameters.baseFontSize") as number}
               coerceTo="double"
@@ -73,7 +73,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection title="Margins (points)">
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={{ xs: 6, md: 3 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Top"
               value={get("inputParameters.marginTop") as number}
               coerceTo="double"
@@ -81,7 +81,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={{ xs: 6, md: 3 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Right"
               value={get("inputParameters.marginRight") as number}
               coerceTo="double"
@@ -89,7 +89,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={{ xs: 6, md: 3 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Bottom"
               value={get("inputParameters.marginBottom") as number}
               coerceTo="double"
@@ -97,7 +97,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={{ xs: 6, md: 3 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Left"
               value={get("inputParameters.marginLeft") as number}
               coerceTo="double"
@@ -110,7 +110,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection title="Document metadata">
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={12}>
-            <ConductorAdditionalHeadersBase
+            <WeaverAdditionalHeadersBase
               headers={pdfMetadata}
               onChangeHeaders={(m) => set("inputParameters.pdfMetadata", m)}
             />
@@ -121,14 +121,14 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection title="Output">
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={{ xs: 12, md: 6 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Output location"
               value={get("inputParameters.outputLocation") as string}
               onChange={(v) => set("inputParameters.outputLocation", v)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Image base URL"
               value={get("inputParameters.imageBaseUrl") as string}
               onChange={(v) => set("inputParameters.imageBaseUrl", v)}
@@ -139,7 +139,7 @@ export const GeneratePdfTaskForm = ({ task, onChange }: TaskFormProps) => {
 
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

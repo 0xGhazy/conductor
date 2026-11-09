@@ -1,4 +1,4 @@
-import { Monaco } from "@monaco-editor/react";
+﻿import { Monaco } from "@monaco-editor/react";
 import {
   Box,
   CircularProgress,
@@ -11,7 +11,7 @@ import {
 import { useMachine } from "@xstate/react";
 import { DocLink } from "components/ui/DocLink";
 import { MessageContext } from "components/providers/messageContext";
-import { ConductorSectionHeader } from "components/layout/section/ConductorSectionHeader";
+import { WeaverSectionHeader } from "components/layout/section/WeaverSectionHeader";
 import _get from "lodash/get";
 import _isString from "lodash/isString";
 import TaskDefinitionDialogs from "pages/definition/task/dialogs/TaskDefinitionDialogs";
@@ -71,7 +71,7 @@ export default function TaskDefinition() {
   const pushHistory = usePushHistory();
   const { setMessage } = useContext(MessageContext);
 
-  const { conductorUser } = useAuth();
+  const { WeaverUser } = useAuth();
   const authHeaders = useAuthHeaders();
   const editorRefs = useRef<Monaco>(null);
   const location = useLocation();
@@ -92,10 +92,10 @@ export default function TaskDefinition() {
   // Defines a Template and puts the name of the url.
   const initTaskDefinition = useMemo(
     () => ({
-      ...newTaskTemplate(conductorUser?.id || "example@email.com"),
+      ...newTaskTemplate(WeaverUser?.id || "example@email.com"),
       name: isNewTaskDef ? `task-${randomChars(6)}` : stableParams.name,
     }),
-    [stableParams.name, isNewTaskDef, conductorUser?.id],
+    [stableParams.name, isNewTaskDef, WeaverUser?.id],
   ) as Partial<TaskDefinitionDto>;
 
   const taskJsonString = JSON.stringify(initTaskDefinition, null, 2);
@@ -109,7 +109,7 @@ export default function TaskDefinition() {
       modifiedTaskDefinition: initTaskDefinition,
       originTaskDefinitions: [initTaskDefinition],
       isNewTaskDef,
-      user: conductorUser,
+      user: WeaverUser,
       authHeaders,
       couldNotParseJson: false,
     },
@@ -197,7 +197,7 @@ export default function TaskDefinition() {
       <SaveProtectionPrompt taskDefActor={taskDefActor} />
       <SectionContainer
         header={
-          <ConductorSectionHeader
+          <WeaverSectionHeader
             id="task-definition-header-section"
             title={sectionTitle}
             breadcrumbItems={[

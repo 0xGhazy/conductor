@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   FormControlLabel,
   Grid,
@@ -7,11 +7,11 @@ import {
   Switch,
 } from "@mui/material";
 import MuiTypography from "components/ui/MuiTypography";
-import { ConductorArrayFieldBase } from "components/ui/inputs/ConductorArrayField";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import ConductorInputNumber from "components/ui/inputs/ConductorInputNumber";
-import ConductorSelect from "components/ui/inputs/ConductorSelect";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverArrayFieldBase } from "components/ui/inputs/WeaverArrayField";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import WeaverInputNumber from "components/ui/inputs/WeaverInputNumber";
+import WeaverSelect from "components/ui/inputs/WeaverSelect";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import _ from "lodash";
 import _isArray from "lodash/isArray";
 import { useTaskDefinitionFormActor } from "pages/definition/task/form/state/hook";
@@ -22,7 +22,7 @@ import {
   TaskTimeoutPolicy,
   TaskTimeoutPolicyLabel,
 } from "pages/definition/task/state";
-import { ConductorNameVersionField } from "components/inputs/ConductorNameVersionField";
+import { WeaverNameVersionField } from "components/inputs/WeaverNameVersionField";
 import { SchemaDefinition } from "types/SchemaDefinition";
 import { handleValidChars } from "utils";
 import { TASK_NAME_REGEX, regexToString } from "utils/constants/regex";
@@ -72,7 +72,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
               </MuiTypography>
             </Grid>
             <Grid size={12} id="task-form-name-container">
-              <ConductorInput
+              <WeaverInput
                 label="Name"
                 name="name"
                 required
@@ -89,7 +89,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
               />
             </Grid>
             <Grid size={12}>
-              <ConductorInput
+              <WeaverInput
                 id="task-description-field"
                 label="Description"
                 name="description"
@@ -124,7 +124,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
                 </MuiTypography>
               </Grid>
               <Grid size={12}>
-                <ConductorInputNumber
+                <WeaverInputNumber
                   id="task-rateLimitPerFrequency-field"
                   fullWidth
                   label="Rate limit per frequency"
@@ -145,7 +145,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
                 />
               </Grid>
               <Grid size={12}>
-                <ConductorInputNumber
+                <WeaverInputNumber
                   id="task-rateLimitFrequencyInSeconds-field"
                   fullWidth
                   label="Frequency seconds"
@@ -165,7 +165,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
                 />
               </Grid>
               <Grid size={12}>
-                <ConductorInputNumber
+                <WeaverInputNumber
                   id="task-concurrentExecLimit-field"
                   label="Concurrent execution limit"
                   fullWidth
@@ -196,7 +196,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           </MuiTypography>
         </Grid>
         <Grid size={12}>
-          <ConductorInputNumber
+          <WeaverInputNumber
             id="task-retryCount-field"
             label="No. of times to retry the task upon failure?"
             name="retryCount"
@@ -212,7 +212,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           />
         </Grid>
         <Grid size={12}>
-          <ConductorInputNumber
+          <WeaverInputNumber
             id="task-retryDelaySeconds-field"
             label="Delay between retries in seconds"
             fullWidth
@@ -232,7 +232,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           />
         </Grid>
         <Grid size={12}>
-          <ConductorSelect
+          <WeaverSelect
             id="task-retryLogic-field"
             label="Retry policy"
             name="retryLogic"
@@ -252,7 +252,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           />
         </Grid>
         <Grid size={12}>
-          <ConductorInputNumber
+          <WeaverInputNumber
             id="task-backoffScaleFactor-field"
             label="Backoff scale factor"
             fullWidth
@@ -281,7 +281,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           </MuiTypography>
         </Grid>
         <Grid size={12}>
-          <ConductorInputNumber
+          <WeaverInputNumber
             id="task-responseTimeoutSeconds-field"
             label="Response Timeout Seconds"
             fullWidth
@@ -302,7 +302,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           />
         </Grid>
         <Grid size={12}>
-          <ConductorInputNumber
+          <WeaverInputNumber
             id="task-timeoutSeconds-field"
             fullWidth
             label="Timeout Seconds"
@@ -323,7 +323,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           />
         </Grid>
         <Grid size={12}>
-          <ConductorInputNumber
+          <WeaverInputNumber
             id="task-pollTimeoutSeconds-field"
             label="Poll Timeout Seconds"
             fullWidth
@@ -344,7 +344,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           />
         </Grid>
         <Grid size={12}>
-          <ConductorSelect
+          <WeaverSelect
             id="task-timeoutPolicy-field"
             label="Timeout policy"
             name="timeoutPolicy"
@@ -393,7 +393,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
               marginTop: "10px",
             }}
           >
-            <ConductorNameVersionField
+            <WeaverNameVersionField
               label="Input Schema"
               optionsUrl="/schema"
               versionField={{
@@ -427,7 +427,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
               marginTop: "20px",
             }}
           >
-            <ConductorNameVersionField
+            <WeaverNameVersionField
               label="Output Schema"
               optionsUrl="/schema"
               versionField={{
@@ -502,7 +502,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
           }}
         >
           <Box>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               onChange={(newValues) => {
                 handleChangeParameters({
                   name: "inputTemplate",
@@ -533,7 +533,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
         </Grid>
 
         <Grid size={12}>
-          <ConductorArrayFieldBase
+          <WeaverArrayFieldBase
             onChange={(newValues) => {
               handleChangeParameters({
                 name: "inputKeys",
@@ -559,7 +559,7 @@ const TaskDefinitionForm = ({ formActor }: TaskDefinitionFormProps) => {
         </Grid>
 
         <Grid size={12}>
-          <ConductorArrayFieldBase
+          <WeaverArrayFieldBase
             onChange={(newValues) => {
               handleChangeParameters({
                 name: "outputKeys",

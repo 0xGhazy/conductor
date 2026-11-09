@@ -1,4 +1,4 @@
-import _isNil from "lodash/isNil";
+﻿import _isNil from "lodash/isNil";
 import {
   FieldPath,
   FieldValues,
@@ -7,14 +7,14 @@ import {
   useController,
 } from "react-hook-form";
 
-import ConductorInput, {
-  ConductorInputProps,
-} from "components/ui/inputs/ConductorInput";
+import WeaverInput, {
+  WeaverInputProps,
+} from "components/ui/inputs/WeaverInput";
 
 type ReactHookFormInputProps<
   T extends FieldValues,
   U extends FieldPath<T>,
-> = ConductorInputProps &
+> = WeaverInputProps &
   UseControllerProps<T, U> & {
     inputTransform?: (value: PathValue<T, U>, lastFormValues?: T) => string;
     outputTransform?: (value: string, lastFormValues?: T) => PathValue<T, U>;
@@ -59,7 +59,7 @@ export default function ReactHookFormInput<
     defaultValue,
   });
   return (
-    <ConductorInput
+    <WeaverInput
       {...fieldProps}
       {...props}
       value={validateInputValue(

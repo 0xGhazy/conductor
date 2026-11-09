@@ -1,8 +1,8 @@
-import { Box, CircularProgress, Paper, Tab, Tabs } from "@mui/material";
+﻿import { Box, CircularProgress, Paper, Tab, Tabs } from "@mui/material";
 import { DocLink } from "components/ui/DocLink";
 import ConfirmChoiceDialog from "components/ui/dialogs/ConfirmChoiceDialog";
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
-import { ConductorSectionHeader } from "components/layout/section/ConductorSectionHeader";
+import { WeaverSectionHeader } from "components/layout/section/WeaverSectionHeader";
 import EventHandlerButton from "pages/definition/EventHandler/eventhandlers/EventHandlerButton";
 import EventHandlerEditor from "pages/definition/EventHandler/eventhandlers/EventHandlerEditor";
 import EventHandlerForm from "pages/definition/EventHandler/eventhandlers/FormComponent/EventHandlerForm";
@@ -101,7 +101,7 @@ export default function EventHandlerDefinition() {
       <SaveProtectionPrompt service={service} />
       <SectionContainer
         header={
-          <ConductorSectionHeader
+          <WeaverSectionHeader
             breadcrumbItems={[
               { label: "Event Definitions", to: EVENT_HANDLERS_URL.BASE },
               {

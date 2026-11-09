@@ -1,7 +1,7 @@
-import { Box } from "@mui/material";
+﻿import { Box } from "@mui/material";
 import MuiTypography from "components/ui/MuiTypography";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import ConductorTooltip from "components/ui/ConductorTooltip";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import WeaverTooltip from "components/ui/WeaverTooltip";
 
 interface HedgingConfigFormProp {
   hedgingConfig?: { maxAttempts?: number };
@@ -21,7 +21,7 @@ function HedgingConfigForm({
         fontWeight={600}
       >
         Hedging config
-        <ConductorTooltip
+        <WeaverTooltip
           title="Hedging config"
           content={
             <ul style={{ paddingLeft: 12, paddingTop: 0, marginTop: 0 }}>
@@ -49,7 +49,7 @@ function HedgingConfigForm({
           }
         />
       </MuiTypography>
-      <ConductorAutocompleteVariables
+      <WeaverAutocompleteVariables
         id="hedging-max-attempts-field"
         fullWidth
         label="Maximum attempts"

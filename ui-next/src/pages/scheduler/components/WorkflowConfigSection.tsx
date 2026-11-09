@@ -1,7 +1,7 @@
-import { Grid } from "@mui/material";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Grid } from "@mui/material";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { SMALL_EDITOR_DEFAULT_OPTIONS } from "utils/constants";
 import { IdempotencyValuesProp } from "../../definition/RunWorkflow/state";
 import IdempotencyForm from "../../runWorkflow/IdempotencyForm";
@@ -45,7 +45,7 @@ export function WorkflowConfigSection({
   return (
     <>
       <Grid size={{ xs: 12, md: 9 }}>
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           fullWidth
           required
           label="Workflow or agent"
@@ -57,7 +57,7 @@ export function WorkflowConfigSection({
           value={workflowType}
           error={errors?.["startWorkflowRequest.name"]}
           helperText={errors ? errors["startWorkflowRequest.name"] : undefined}
-          conductorInputProps={{
+          WeaverInputProps={{
             tooltip: {
               title: "Workflow or agent",
               content:
@@ -67,14 +67,14 @@ export function WorkflowConfigSection({
         />
       </Grid>
       <Grid size={{ xs: 12, md: 3 }}>
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           fullWidth
           disableClearable
           label="Workflow version"
           options={[...workflowVersions, "Latest version"]}
           onChange={(_, val: any) => setWorkflowVersion(val)}
           value={workflowVersion === "" ? "Latest version" : workflowVersion}
-          conductorInputProps={{
+          WeaverInputProps={{
             tooltip: {
               title: "Workflow version",
               content: "Optional, by default the latest version is triggered",
@@ -83,7 +83,7 @@ export function WorkflowConfigSection({
         />
       </Grid>
       <Grid size={12}>
-        <ConductorCodeBlockInput
+        <WeaverCodeBlockInput
           label="Input params"
           minHeight={350}
           defaultLanguage="json"
@@ -93,7 +93,7 @@ export function WorkflowConfigSection({
         />
       </Grid>
       <Grid size={12}>
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Correlation id"
           value={workflowCorrelationId}

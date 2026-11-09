@@ -1,6 +1,6 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { path as _path } from "lodash/fp";
 import { updateField } from "utils/fieldHelpers";
 import { Optional } from "./OptionalFieldForm";
@@ -19,7 +19,7 @@ export const DynamicForkOperatorForm = ({ task, onChange }: TaskFormProps) => (
     >
       <Grid container sx={{ width: "100%" }} spacing={3}>
         <Grid size={12}>
-          <ConductorFlatMapFormBase
+          <WeaverFlatMapFormBase
             keyColumnLabel="Key"
             valueColumnLabel="Value"
             addItemLabel="Add parameter"
@@ -41,7 +41,7 @@ export const DynamicForkOperatorForm = ({ task, onChange }: TaskFormProps) => (
           <Box sx={{ fontSize: 12, opacity: 0.7, mb: 6 }}>
             Map parameters from above to tasks and inputs.
           </Box>
-          <ConductorAutocompleteVariables
+          <WeaverAutocompleteVariables
             fullWidth
             label="Tasks parameter"
             value={_path(dynamicForkTasksParamPath, task)}
@@ -51,7 +51,7 @@ export const DynamicForkOperatorForm = ({ task, onChange }: TaskFormProps) => (
           />
         </Grid>
         <Grid size={12}>
-          <ConductorAutocompleteVariables
+          <WeaverAutocompleteVariables
             fullWidth
             label="Input parameter name"
             value={_path(dynamicForkTasksInputParamNamePath, task)}

@@ -41,7 +41,7 @@ import static com.vodafone.vss.weaver.core.execution.tasks.SystemTaskRegistry.AS
 
 @Component
 @ConditionalOnProperty(
-        name = "conductor.workflow-monitor.enabled",
+        name = "weaver.workflow-monitor.enabled",
         havingValue = "true",
         matchIfMissing = true)
 public class WorkflowMonitor {
@@ -62,7 +62,7 @@ public class WorkflowMonitor {
             MetadataService metadataService,
             QueueDAO queueDAO,
             ExecutionDAOFacade executionDAOFacade,
-            @Value("${conductor.workflow-monitor.metadata-refresh-interval:10}")
+            @Value("${weaver.workflow-monitor.metadata-refresh-interval:10}")
                     int metadataRefreshInterval,
             @Qualifier(ASYNC_SYSTEM_TASKS_QUALIFIER) Set<WorkflowSystemTask> asyncSystemTasks) {
         this.metadataService = metadataService;
@@ -74,8 +74,8 @@ public class WorkflowMonitor {
     }
 
     @Scheduled(
-            initialDelayString = "${conductor.workflow-monitor.stats.initial-delay:120000}",
-            fixedDelayString = "${conductor.workflow-monitor.stats.delay:60000}")
+            initialDelayString = "${weaver.workflow-monitor.stats.initial-delay:120000}",
+            fixedDelayString = "${weaver.workflow-monitor.stats.delay:60000}")
     public void reportMetrics() {
         try {
             if (refreshCounter <= 0) {

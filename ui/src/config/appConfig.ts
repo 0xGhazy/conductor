@@ -1,4 +1,4 @@
-const baseConfig = {
+﻿const baseConfig = {
   appName: "Weaver",
   requestTimeoutMs: 15000,
 };
@@ -7,8 +7,8 @@ export const config = {
   ...baseConfig,
   apiBaseUrl: import.meta?.env?.VITE_API_BASE_URL || "",
   // Same server as apiBaseUrl; set only if workflow APIs are served from somewhere else.
-  conductorApiBaseUrl:
-    import.meta?.env?.VITE_CONDUCTOR_API_BASE_URL || import.meta?.env?.VITE_API_BASE_URL || "",
+  weaverApiBaseUrl:
+    import.meta?.env?.VITE_WEAVER_API_BASE_URL || import.meta?.env?.VITE_API_BASE_URL || "",
   restApiUrl: "",
   connectionsTtlMs: 300000,
   scriptsTtlMs: 300000,

@@ -14,7 +14,7 @@ DEFAULT_COMPOSE_FILE = "docker/docker-compose-postgres-redis-elasticsearch8.yaml
 WAIT_TIMEOUT = 300  # seconds `run` / `restart` wait for containers to become healthy
 
 # CLI service names -> compose service names, so `run database` matches `check database`.
-ALIASES = {"server": "conductor-server", "database": "postgres", "identity": "keycloak"}
+ALIASES = {"server": "weaver-server", "database": "postgres", "identity": "keycloak"}
 
 
 def _compose_base():

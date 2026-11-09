@@ -1,10 +1,10 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { UseQueryResult } from "react-query";
 import { IntegrationCategory, IntegrationDef } from "types";
 import { EMAIL_CONTENT_TYPE_SUGGESTIONS } from "utils/constants/emailContentTypeSuggestions";
 import { useIntegrationProviders } from "utils/useIntegrationProviders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -52,7 +52,7 @@ export const SendgridForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlerFrom}
               value={from}
               label="From"
@@ -66,7 +66,7 @@ export const SendgridForm = (props: TaskFormProps) => {
               sm: 12,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlerTo}
               value={to}
               label="To"
@@ -82,7 +82,7 @@ export const SendgridForm = (props: TaskFormProps) => {
               sm: 24,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlerSubject}
               value={subject}
               label="Subject"
@@ -98,7 +98,7 @@ export const SendgridForm = (props: TaskFormProps) => {
               sm: 24,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlerContentType}
               value={contentType}
               otherOptions={EMAIL_CONTENT_TYPE_SUGGESTIONS}
@@ -115,7 +115,7 @@ export const SendgridForm = (props: TaskFormProps) => {
               sm: 24,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlerContent}
               value={content}
               label="Content"
@@ -131,7 +131,7 @@ export const SendgridForm = (props: TaskFormProps) => {
               sm: 24,
             }}
           >
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               onChange={handlerSendgridConfiguration}
               value={sendgridConfiguration}
               otherOptions={
@@ -145,7 +145,7 @@ export const SendgridForm = (props: TaskFormProps) => {
 
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

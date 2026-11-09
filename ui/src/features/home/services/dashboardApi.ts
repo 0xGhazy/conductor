@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+﻿import { useQuery } from "@tanstack/react-query";
 import { config } from "@/config/appConfig";
 import apiClient from "@/services/apiClient";
 import type {
@@ -17,14 +17,14 @@ import type {
  *  - GET http://localhost:8080/api/tasks/queue/polldata/all
  *  - GET http://localhost:8080/health
  */
-const CONDUCTOR_BASE: string = config.conductorApiBaseUrl ?? "";
+const WEAVER_BASE: string = config.weaverApiBaseUrl ?? "";
 const WEAVER_BASE = config.apiBaseUrl || "";
 
 export const DASHBOARD_ENDPOINTS = {
-  queueAll: `${CONDUCTOR_BASE}/api/tasks/queue/all`,
-  queuePollDataAll: `${CONDUCTOR_BASE}/api/tasks/queue/polldata/all`,
-  conductorHealth: `${CONDUCTOR_BASE}/health`,
-  workflowSearch: `${CONDUCTOR_BASE}/api/workflow/search`,
+  queueAll: `${WEAVER_BASE}/api/tasks/queue/all`,
+  queuePollDataAll: `${WEAVER_BASE}/api/tasks/queue/polldata/all`,
+  conductorHealth: `${WEAVER_BASE}/health`,
+  workflowSearch: `${WEAVER_BASE}/api/workflow/search`,
   weaverHealth: `${WEAVER_BASE}/health`,
 
   // Same-origin proxied fallbacks for environments with cross-origin restrictions

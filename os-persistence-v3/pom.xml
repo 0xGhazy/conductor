@@ -5,27 +5,27 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-os-persistence-v3</artifactId>
-    <name>conductor-os-persistence-v3</name>
-    <description>OpenSearch 3.x persistence for Conductor</description>
+    <artifactId>weaver-os-persistence-v3</artifactId>
+    <name>weaver-os-persistence-v3</name>
+    <description>OpenSearch 3.x persistence for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common-persistence</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common-persistence</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -78,8 +78,8 @@
 
         <!-- Test Dependencies -->
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-test-util</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-test-util</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

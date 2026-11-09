@@ -35,8 +35,8 @@ import com.vodafone.vss.weaver.common.metadata.events.EventHandler.Action;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler.Action.Type;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler.StartWorkflow;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler.TaskDetails;
-import com.vodafone.vss.weaver.core.config.ConductorCoreConfiguration;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverCoreConfiguration;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.events.queue.Message;
 import com.vodafone.vss.weaver.core.events.queue.ObservableQueue;
 import com.vodafone.vss.weaver.core.exception.TransientException;
@@ -62,7 +62,7 @@ import static org.mockito.Mockito.*;
         classes = {
             TestObjectMapperConfiguration.class,
             TestDefaultEventProcessor.TestConfiguration.class,
-            ConductorCoreConfiguration.class
+            WeaverCoreConfiguration.class
         })
 @RunWith(SpringRunner.class)
 public class TestDefaultEventProcessor {
@@ -76,7 +76,7 @@ public class TestDefaultEventProcessor {
     private SimpleActionProcessor actionProcessor;
     private ParametersUtils parametersUtils;
     private JsonUtils jsonUtils;
-    private ConductorProperties properties;
+    private WeaverProperties properties;
     private Message message;
 
     @Autowired private Map<String, Evaluator> evaluators;
@@ -114,7 +114,7 @@ public class TestDefaultEventProcessor {
         when(queue.getName()).thenReturn(queueURI);
         when(queue.getType()).thenReturn("sqs");
 
-        properties = mock(ConductorProperties.class);
+        properties = mock(WeaverProperties.class);
         when(properties.isEventMessageIndexingEnabled()).thenReturn(true);
         when(properties.getEventProcessorThreadCount()).thenReturn(2);
     }

@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.conductoross.conductor.model.SignalResponse;
-import org.conductoross.conductor.model.WorkflowSignalReturnStrategy;
+import com.vodafone.vss.weaver.model.SignalResponse;
+import com.vodafone.vss.weaver.model.WorkflowSignalReturnStrategy;
 
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
 import com.vodafone.vss.weaver.core.execution.NotificationResult;

@@ -1,12 +1,12 @@
-import { Box, Grid } from "@mui/material";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Box, Grid } from "@mui/material";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { path as _path } from "lodash/fp";
 import { UiIntegrationsFieldType } from "types/FormFieldTypes";
 import {
   fieldsToFieldsFieldsComponents,
   updateField,
 } from "utils/fieldHelpers";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { LLMFormFields } from "./LLMFormFields/LLMFormFields";
 import LLMFormFieldsWrapper from "./LLMFormFields/LLMFormFieldsWrapper";
 import { Optional } from "./OptionalFieldForm";
@@ -67,7 +67,7 @@ export const LLMChatCompleteTaskForm = ({ task, onChange }: TaskFormProps) => {
           >
             <Grid container sx={{ width: "100%" }}>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Instructions"
                   name="instructions"
                   value={instructions}
@@ -127,7 +127,7 @@ export const LLMChatCompleteTaskForm = ({ task, onChange }: TaskFormProps) => {
           </TaskFormSection>
           <TaskFormSection>
             <Box display="flex" flexDirection="column" gap={3}>
-              <ConductorCacheOutput onChange={onChange} taskJson={task} />
+              <WeaverCacheOutput onChange={onChange} taskJson={task} />
               <Optional onChange={onChange} taskJson={task} />
             </Box>
           </TaskFormSection>

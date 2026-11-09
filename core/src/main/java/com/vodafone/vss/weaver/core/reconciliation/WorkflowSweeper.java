@@ -27,7 +27,7 @@ import com.vodafone.vss.weaver.annotations.VisibleForTesting;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskType;
 import com.vodafone.vss.weaver.core.WorkflowContext;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
@@ -41,18 +41,18 @@ import com.vodafone.vss.weaver.service.ExecutionLockService;
 import static com.vodafone.vss.weaver.core.config.SchedulerConfiguration.SWEEPER_EXECUTOR_NAME;
 import static com.vodafone.vss.weaver.core.utils.Utils.DECIDER_QUEUE;
 
-// Deprecated in favor of org.conductoross.conductor.core.execution.WorkflowSweeper
+// Deprecated in favor of com.vodafone.vss.weaver.core.execution.WorkflowSweeper
 @Deprecated(forRemoval = true)
 @Component
 @ConditionalOnProperty(
-        name = "conductor.app.legacy.sweeper.enabled",
+        name = "weaver.app.legacy.sweeper.enabled",
         havingValue = "true",
         matchIfMissing = false)
 public class WorkflowSweeper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowSweeper.class);
 
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final WorkflowExecutor workflowExecutor;
     private final WorkflowRepairService workflowRepairService;
     private final QueueDAO queueDAO;
@@ -64,7 +64,7 @@ public class WorkflowSweeper {
     public WorkflowSweeper(
             WorkflowExecutor workflowExecutor,
             Optional<WorkflowRepairService> workflowRepairService,
-            ConductorProperties properties,
+            WeaverProperties properties,
             QueueDAO queueDAO,
             ExecutionDAOFacade executionDAOFacade,
             ExecutionLockService executionLockService) {

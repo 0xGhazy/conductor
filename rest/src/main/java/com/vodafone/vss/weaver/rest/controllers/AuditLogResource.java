@@ -67,7 +67,7 @@ public class AuditLogResource {
 
     public AuditLogResource(
             @Autowired(required = false) AuditDAO auditDAO,
-            @Value("${conductor.audit.enabled:true}") boolean auditEnabled) {
+            @Value("${weaver.audit.enabled:true}") boolean auditEnabled) {
         this.auditDAO = auditDAO;
         this.auditEnabled = auditEnabled;
     }

@@ -18,8 +18,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import org.conductoross.conductor.common.metadata.agent.AgentStartRequest;
-import org.conductoross.conductor.common.metadata.agent.AgentStartResponse;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartRequest;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,7 +42,7 @@ import com.vodafone.vss.weaver.common.metadata.workflow.RerunWorkflowRequest;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.exception.ConflictException;
 import com.vodafone.vss.weaver.core.exception.NonTransientException;
@@ -206,7 +206,7 @@ public class TestWorkflowExecutor {
                         Duration.ofMinutes(60));
         MetadataMapperService metadataMapperService = new MetadataMapperService(metadataDAO);
 
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.getActiveWorkerLastPollTimeout()).thenReturn(Duration.ofSeconds(100));
         when(properties.getTaskExecutionPostponeDuration()).thenReturn(Duration.ofSeconds(60));
         when(properties.getWorkflowOffsetTimeout()).thenReturn(Duration.ofSeconds(30));
@@ -2653,7 +2653,7 @@ public class TestWorkflowExecutor {
 
         // Then should assert workflow properties
         assertEquals(WorkflowModel.Status.FAILED, workflow.getStatus());
-        assertTrue(workflow.getOutput().containsKey("conductor.failure_workflow"));
+        assertTrue(workflow.getOutput().containsKey("weaver.failure_workflow"));
         assertNotNull(workflow.getFailedTaskId());
         assertTrue(!workflow.getFailedReferenceTaskNames().isEmpty());
 
@@ -2709,7 +2709,7 @@ public class TestWorkflowExecutor {
 
         // Then should assert workflow properties
         assertEquals(WorkflowModel.Status.FAILED, workflow.getStatus());
-        assertTrue(workflow.getOutput().containsKey("conductor.failure_workflow"));
+        assertTrue(workflow.getOutput().containsKey("weaver.failure_workflow"));
         assertNotNull(workflow.getFailedTaskId());
         assertTrue(!workflow.getFailedReferenceTaskNames().isEmpty());
 

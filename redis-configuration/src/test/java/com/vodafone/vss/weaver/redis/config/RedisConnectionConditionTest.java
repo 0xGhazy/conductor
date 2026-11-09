@@ -32,21 +32,21 @@ class RedisConnectionConditionTest {
     @Test
     void standaloneConditionMatchesWhenQueueUsesRedisStandalone() {
         contextRunner
-                .withPropertyValues("conductor.queue.type=redis_standalone")
+                .withPropertyValues("weaver.queue.type=redis_standalone")
                 .run(context -> assertTrue(context.containsBean("standaloneMarker")));
     }
 
     @Test
     void clusterConditionMatchesWhenQueueUsesRedisCluster() {
         contextRunner
-                .withPropertyValues("conductor.queue.type=redis_cluster")
+                .withPropertyValues("weaver.queue.type=redis_cluster")
                 .run(context -> assertTrue(context.containsBean("clusterMarker")));
     }
 
     @Test
     void sentinelConditionMatchesWhenQueueUsesRedisSentinel() {
         contextRunner
-                .withPropertyValues("conductor.queue.type=redis_sentinel")
+                .withPropertyValues("weaver.queue.type=redis_sentinel")
                 .run(context -> assertTrue(context.containsBean("sentinelMarker")));
     }
 

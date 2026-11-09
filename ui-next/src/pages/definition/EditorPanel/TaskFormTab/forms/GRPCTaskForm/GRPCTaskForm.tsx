@@ -1,11 +1,11 @@
-import { Box, Grid, Checkbox, FormControlLabel } from "@mui/material";
+﻿import { Box, Grid, Checkbox, FormControlLabel } from "@mui/material";
 import { useContext, useEffect, useMemo, useState } from "react";
 
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 
 import { TaskType } from "types";
 
-import { ConductorCacheOutput } from "../ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "../WeaverCacheOutputForm";
 import { MaybeVariable } from "../MaybeVariable";
 import { Optional } from "../OptionalFieldForm";
 import TaskFormSection from "../TaskFormSection";
@@ -14,16 +14,16 @@ import { GrpcTaskFormProps } from "./types";
 
 import { useInterpret } from "@xstate/react";
 import { useAuthHeaders } from "utils/query";
-import { ConductorAutoComplete } from "components/ui/inputs";
+import { WeaverAutoComplete } from "components/ui/inputs";
 import { ServiceDefDto, ServiceType } from "types/RemoteServiceTypes";
 import { splitHostAndPort } from "utils/remoteServices";
 
 import { serviceMethodsMachine } from "../HTTPTaskForm/state/machine";
 import { useServiceMethodsDefinition } from "../HTTPTaskForm/state/hook";
 import { updateField } from "utils/fieldHelpers";
-import { ConductorAdditionalHeaders } from "../HTTPTaskForm/ConductorAdditionalHeaders";
+import { WeaverAdditionalHeaders } from "../HTTPTaskForm/WeaverAdditionalHeaders";
 import { SchemaDefinition } from "types/SchemaDefinition";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
 import { tryToJson } from "utils/utils";
 import { featureFlags, FEATURES } from "utils/flags";
 import HedgingConfigForm from "../HedgingConfigForm";
@@ -196,7 +196,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                           sm: 12,
                         }}
                       >
-                        <ConductorAutocompleteVariables
+                        <WeaverAutocompleteVariables
                           id="grpc-task-service"
                           openOnFocus
                           value={task?.inputParameters?.service ?? ""}
@@ -217,7 +217,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                         sm: 12,
                       }}
                     >
-                      <ConductorAutocompleteVariables
+                      <WeaverAutocompleteVariables
                         id="grpc-task-method-name"
                         fullWidth
                         label="Method name"
@@ -259,7 +259,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                     sm: 12,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     id="grpc-task-host"
                     openOnFocus
                     onChange={(val) =>
@@ -276,7 +276,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                     sm: 12,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     id="grpc-task-port"
                     fullWidth
                     label="Port"
@@ -288,7 +288,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                   />
                 </Grid>
                 <Grid size={12}>
-                  <ConductorCodeBlockInput
+                  <WeaverCodeBlockInput
                     label={"Request: "}
                     onChange={onChangeHttpRequestBody}
                     value={JSON.stringify(
@@ -308,7 +308,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                     sm: 12,
                   }}
                 >
-                  <ConductorAutoComplete
+                  <WeaverAutoComplete
                     fullWidth
                     id="id-select-method-type"
                     options={[
@@ -403,7 +403,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                                     selectedServiceConfig?.circuitBreakerConfig,
                                   ).map(([key, value]) => (
                                     <Grid key={key} size={6}>
-                                      <ConductorAutocompleteVariables
+                                      <WeaverAutocompleteVariables
                                         disabled
                                         onChange={() => {}}
                                         value={value as string}
@@ -466,7 +466,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                   </>
                 )}
                 <Grid pb={2} size={12}>
-                  <ConductorAdditionalHeaders
+                  <WeaverAdditionalHeaders
                     headers={task?.inputParameters?.headers ?? {}}
                     onChangeHeaders={onChangeHeaders}
                     taskType={TaskType.HTTP_POLL}
@@ -482,7 +482,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                     sm: 12,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     id="input-type"
                     openOnFocus
                     value={task?.inputParameters?.inputType ?? ""}
@@ -504,7 +504,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
                     sm: 12,
                   }}
                 >
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     id="output-type-name"
                     fullWidth
                     label="Output type"
@@ -526,7 +526,7 @@ export const GRPCTaskForm = ({ task, onChange }: GrpcTaskFormProps) => {
       </MaybeVariable>
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={currentTask} />
+          <WeaverCacheOutput onChange={onChange} taskJson={currentTask} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

@@ -1,5 +1,5 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { TaskType } from "types";
 import { MaybeVariable } from "../MaybeVariable";
 import { Optional } from "../OptionalFieldForm";
@@ -32,7 +32,7 @@ const UpdateSecretTaskForm = (props: TaskFormProps) => {
         >
           <Grid container sx={{ width: "100%" }} spacing={3}>
             <Grid size={12}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="Secret key"
                 value={secretKey}
                 onChange={setSecretKey}
@@ -40,7 +40,7 @@ const UpdateSecretTaskForm = (props: TaskFormProps) => {
             </Grid>
 
             <Grid size={12}>
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label="Secret value"
                 value={secretValue}
                 onChange={setSecretValue}

@@ -27,7 +27,7 @@ import com.vodafone.vss.weaver.annotations.VisibleForTesting;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
 import com.vodafone.vss.weaver.common.utils.TaskUtils;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
 import com.vodafone.vss.weaver.model.TaskModel;
 import com.vodafone.vss.weaver.model.WorkflowModel;
@@ -48,9 +48,9 @@ public class Join extends WorkflowSystemTask {
      */
     private static final Set<String> AGENT_PROPAGATED_KEYS = Set.of("_state_updates", "state");
 
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
 
-    public Join(ConductorProperties properties) {
+    public Join(WeaverProperties properties) {
         super(TASK_TYPE_JOIN);
         this.properties = properties;
     }

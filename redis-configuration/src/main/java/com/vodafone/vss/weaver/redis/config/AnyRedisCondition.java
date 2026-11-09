@@ -21,15 +21,15 @@ public class AnyRedisCondition extends AnyNestedCondition {
         super(ConfigurationPhase.PARSE_CONFIGURATION);
     }
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "memory")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "memory")
     static class InMemoryRedisCondition {}
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_cluster")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_cluster")
     static class RedisClusterConfiguration {}
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_sentinel")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_sentinel")
     static class RedisSentinelConfiguration {}
 
-    @ConditionalOnProperty(name = "conductor.db.type", havingValue = "redis_standalone")
+    @ConditionalOnProperty(name = "weaver.db.type", havingValue = "redis_standalone")
     static class RedisStandaloneConfiguration {}
 }

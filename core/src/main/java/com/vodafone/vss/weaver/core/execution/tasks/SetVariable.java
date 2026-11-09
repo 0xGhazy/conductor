@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.exception.NonTransientException;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
@@ -38,13 +38,13 @@ public class SetVariable extends WorkflowSystemTask {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SetVariable.class);
 
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final ObjectMapper objectMapper;
 
     private final ExecutionDAOFacade executionDAOFacade;
 
     public SetVariable(
-            ConductorProperties properties,
+            WeaverProperties properties,
             ObjectMapper objectMapper,
             ExecutionDAOFacade executionDAOFacade) {
         super(TASK_TYPE_SET_VARIABLE);

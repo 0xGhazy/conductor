@@ -1,5 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import ConductorTooltip from "components/ui/ConductorTooltip";
+﻿import { Box, Typography } from "@mui/material";
+import WeaverTooltip from "components/ui/WeaverTooltip";
 import _nth from "lodash/nth";
 import { useCallback, useEffect, useMemo } from "react";
 import { colors } from "theme/tokens/variables";
@@ -126,7 +126,7 @@ export const DoWhileIteration = ({
 
   const keepLastNTrailing =
     selectedTask?.inputData?.keepLastN != null ? (
-      <ConductorTooltip
+      <WeaverTooltip
         title=""
         content={`keepLastN is set to ${selectedTask?.inputData?.keepLastN}`}
         placement="top"
@@ -136,7 +136,7 @@ export const DoWhileIteration = ({
           src="/icons/info-icon.svg"
           style={{ paddingLeft: "3px" }}
         />
-      </ConductorTooltip>
+      </WeaverTooltip>
     ) : null;
 
   const trailing =

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeSet;
 
-import org.conductoross.conductor.core.listener.MetadataChangeListener;
+import com.vodafone.vss.weaver.core.listener.MetadataChangeListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDefSummary;
 import com.vodafone.vss.weaver.common.model.BulkResponse;
 import com.vodafone.vss.weaver.core.WorkflowContext;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.dao.EventHandlerDAO;
 import com.vodafone.vss.weaver.dao.MetadataDAO;
@@ -47,7 +47,7 @@ public class MetadataServiceImpl implements MetadataService {
             MetadataDAO metadataDAO,
             EventHandlerDAO eventHandlerDAO,
             MetadataChangeListener metadataChangeListener,
-            ConductorProperties properties) {
+            WeaverProperties properties) {
         this.metadataDAO = metadataDAO;
         this.eventHandlerDAO = eventHandlerDAO;
         this.metadataChangeListener = metadataChangeListener;

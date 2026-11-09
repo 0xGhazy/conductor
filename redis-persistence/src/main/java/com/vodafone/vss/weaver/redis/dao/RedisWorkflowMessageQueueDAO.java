@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.vodafone.vss.weaver.common.model.WorkflowMessage;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.config.WorkflowMessageQueueProperties;
 import com.vodafone.vss.weaver.dao.WorkflowMessageQueueDAO;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
@@ -45,10 +45,10 @@ public class RedisWorkflowMessageQueueDAO extends BaseDynoDAO implements Workflo
     public RedisWorkflowMessageQueueDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties redisProperties,
             WorkflowMessageQueueProperties wmqProperties) {
-        super(jedisProxy, objectMapper, conductorProperties, redisProperties);
+        super(jedisProxy, objectMapper, WeaverProperties, redisProperties);
         this.wmqProperties = wmqProperties;
     }
 

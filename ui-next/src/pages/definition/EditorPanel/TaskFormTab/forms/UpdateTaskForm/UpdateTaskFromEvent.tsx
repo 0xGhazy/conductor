@@ -1,11 +1,11 @@
-import { FormControlLabel, Grid, Radio, RadioGroup } from "@mui/material";
+﻿import { FormControlLabel, Grid, Radio, RadioGroup } from "@mui/material";
 import _omit from "lodash/omit";
 import React, { useMemo } from "react";
 
-import ConductorInput, {
-  ConductorInputProps,
-} from "../../../../../../components/ui/inputs/ConductorInput";
-import { ConductorAutocompleteVariablesProps } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import WeaverInput, {
+  WeaverInputProps,
+} from "../../../../../../components/ui/inputs/WeaverInput";
+import { WeaverAutocompleteVariablesProps } from "components/FlatMapForm/WeaverAutocompleteVariables";
 
 type EventTaskReferenceInput = { taskId: string };
 type WorkflowTaskReferenceInput = { workflowId: string; taskRefName: string };
@@ -13,7 +13,7 @@ export type EventJson = Partial<
   EventTaskReferenceInput & WorkflowTaskReferenceInput
 >;
 export type AnInputComponent = React.FunctionComponent<
-  ConductorInputProps | ConductorAutocompleteVariablesProps
+  WeaverInputProps | WeaverAutocompleteVariablesProps
 >;
 
 interface FormWithRadioGroupProps {
@@ -32,7 +32,7 @@ const _isTaskIdSelected = (value: EventJson) => value?.taskId != null;
 export const UpdateTaskFormEvent = ({
   value,
   onChange,
-  inputComponent: InputComponent = ConductorInput as AnInputComponent,
+  inputComponent: InputComponent = WeaverInput as AnInputComponent,
 }: FormWithRadioGroupProps) => {
   const isTaskIdSelected = useMemo(() => _isTaskIdSelected(value), [value]);
 

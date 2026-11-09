@@ -1,11 +1,11 @@
-import { Box, Grid, Paper, Theme } from "@mui/material";
+﻿import { Box, Grid, Paper, Theme } from "@mui/material";
 import { Button } from "components";
 import MuiAlert from "components/ui/MuiAlert";
 import NavLink from "components/ui/NavLink";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import SplitButton from "components/ui/buttons/ConductorSplitButton";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import SplitButton from "components/ui/buttons/WeaverSplitButton";
 import PlayIcon from "components/icons/PlayIcon";
 import ResetIcon from "components/icons/ResetIcon";
 import XCloseIcon from "components/icons/XCloseIcon";
@@ -630,7 +630,7 @@ export function RunWorkflow() {
                     rowSpacing={6}
                   >
                     <Grid size={9}>
-                      <ConductorAutoComplete
+                      <WeaverAutoComplete
                         id="workflow-name-dropdown"
                         fullWidth
                         sx={style.dropDown}
@@ -645,7 +645,7 @@ export function RunWorkflow() {
                       />
                     </Grid>
                     <Grid size={3}>
-                      <ConductorAutoComplete
+                      <WeaverAutoComplete
                         id="workflow-version-dropdown"
                         fullWidth
                         sx={style.dropDown}
@@ -656,7 +656,7 @@ export function RunWorkflow() {
                       />
                     </Grid>
                     <Grid size={12}>
-                      <ConductorCodeBlockInput
+                      <WeaverCodeBlockInput
                         label="Input params"
                         defaultLanguage="json"
                         value={runWorkflowState.workflowInputTemplate}
@@ -693,7 +693,7 @@ export function RunWorkflow() {
                       onChange={handleChangeIdempotencyValues}
                     />
                     <Grid size={12}>
-                      <ConductorInput
+                      <WeaverInput
                         id="correlation-id-field"
                         fullWidth
                         label="Correlation id"
@@ -704,7 +704,7 @@ export function RunWorkflow() {
                       />
                     </Grid>
                     <Grid size={12}>
-                      <ConductorCodeBlockInput
+                      <WeaverCodeBlockInput
                         label="Tasks to domain mapping"
                         height={80}
                         defaultLanguage="json"

@@ -1,8 +1,8 @@
-import { EditorProps, Monaco } from "@monaco-editor/react";
+﻿import { EditorProps, Monaco } from "@monaco-editor/react";
 import { BoxProps } from "@mui/material";
 import { Theme } from "@mui/material/styles";
 import { SxProps } from "@mui/system";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
 import _keys from "lodash/keys";
 import {
   invalidDollarVariables,
@@ -163,7 +163,7 @@ const InlineCodeBlock: FunctionComponent<InlineCodeBlockProps> = ({
   const minimumHeight = minHeight || MIN_HEIGHT;
 
   return (
-    <ConductorCodeBlockInput
+    <WeaverCodeBlockInput
       label={label}
       theme={mode === "dark" ? "vs-dark" : "light"}
       onChange={onEditorChange}

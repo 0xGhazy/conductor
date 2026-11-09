@@ -44,7 +44,7 @@ import static com.vodafone.vss.weaver.common.metadata.tasks.TaskType.TASK_TYPE_W
  */
 @Component
 @ConditionalOnProperty(
-        name = "conductor.default-event-queue-processor.enabled",
+        name = "weaver.default-event-queue-processor.enabled",
         havingValue = "true",
         matchIfMissing = true)
 public class DefaultEventQueueProcessor {

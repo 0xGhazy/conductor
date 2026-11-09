@@ -1,12 +1,12 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import { Button, Paper } from "components";
 import { DEFAULT_ROWS_PER_PAGE } from "components/ui/DataTable/DataTable";
 import StatusBadge from "components/StatusBadge";
 import { renderStatusTagChip } from "components/StatusTagChip";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import SplitButton from "components/ui/buttons/ConductorSplitButton";
-import ConductorDateRangePicker from "components/ui/date-time/ConductorDateRangePicker";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import SplitButton from "components/ui/buttons/WeaverSplitButton";
+import WeaverDateRangePicker from "components/ui/date-time/WeaverDateRangePicker";
 import ResetIcon from "components/icons/ResetIcon";
 import SearchIcon from "components/icons/SearchIcon";
 import _isEmpty from "lodash/isEmpty";
@@ -239,7 +239,7 @@ export default function SchedulerExecutions() {
               }}
               sx={{ minWidth: 0 }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 fullWidth
                 label="Schedule name"
                 options={scheduleNames}
@@ -247,7 +247,7 @@ export default function SchedulerExecutions() {
                 freeSolo
                 onChange={(__, val: string[]) => setScheduleName(val)}
                 value={scheduleName}
-                conductorInputProps={{
+                WeaverInputProps={{
                   autoFocus: true,
                 }}
               />
@@ -261,7 +261,7 @@ export default function SchedulerExecutions() {
               }}
               sx={{ minWidth: 0 }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 fullWidth
                 label="Workflow name"
                 options={workflowNames}
@@ -280,7 +280,7 @@ export default function SchedulerExecutions() {
               }}
               sx={{ minWidth: 0 }}
             >
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Scheduler execution id"
                 value={executionId}
@@ -296,7 +296,7 @@ export default function SchedulerExecutions() {
               }}
               sx={{ minWidth: 0 }}
             >
-              <ConductorDateRangePicker
+              <WeaverDateRangePicker
                 disabled={!_isEmpty(lookback)}
                 labelFrom="Start time - from"
                 labelTo="Start time - to"
@@ -315,7 +315,7 @@ export default function SchedulerExecutions() {
               }}
               sx={{ minWidth: 0 }}
             >
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Lookback (days)"
                 value={lookback}
@@ -334,7 +334,7 @@ export default function SchedulerExecutions() {
               }}
               sx={{ minWidth: 0 }}
             >
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 fullWidth
                 label="Status"
                 options={scheduleStatuses}

@@ -1,13 +1,13 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { path as _path } from "lodash/fp";
 import { UiIntegrationsFieldType } from "types/FormFieldTypes";
 import {
   fieldsToFieldsFieldsComponents,
   updateField,
 } from "utils/fieldHelpers";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { LLMFormFields } from "./LLMFormFields/LLMFormFields";
 import LLMFormFieldsWrapper from "./LLMFormFields/LLMFormFieldsWrapper";
 import { Optional } from "./OptionalFieldForm";
@@ -51,7 +51,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
           >
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Prompt"
                   name="prompt"
                   value={(get("inputParameters.prompt") as string) || ""}
@@ -68,7 +68,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
           <TaskFormSection title="Image options">
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Number of images (n)"
                   value={get("inputParameters.n") as number}
                   coerceTo="integer"
@@ -76,7 +76,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Width"
                   value={get("inputParameters.width") as number}
                   coerceTo="integer"
@@ -84,7 +84,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Height"
                   value={get("inputParameters.height") as number}
                   coerceTo="integer"
@@ -92,7 +92,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Size"
                   value={get("inputParameters.size") as string}
                   onChange={(v) => set("inputParameters.size", v)}
@@ -100,7 +100,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Style"
                   value={get("inputParameters.style") as string}
                   onChange={(v) => set("inputParameters.style", v)}
@@ -108,7 +108,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Output format"
                   value={get("inputParameters.outputFormat") as string}
                   onChange={(v) => set("inputParameters.outputFormat", v)}
@@ -116,7 +116,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Weight"
                   value={get("inputParameters.weight") as number}
                   coerceTo="double"
@@ -128,7 +128,7 @@ export const GenerateImageTaskForm = ({ task, onChange }: TaskFormProps) => {
 
           <TaskFormSection>
             <Box display="flex" flexDirection="column" gap={3}>
-              <ConductorCacheOutput onChange={onChange} taskJson={task} />
+              <WeaverCacheOutput onChange={onChange} taskJson={task} />
               <Optional onChange={onChange} taskJson={task} />
             </Box>
           </TaskFormSection>

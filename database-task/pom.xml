@@ -5,26 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-database-task</artifactId>
-    <name>conductor-database-task</name>
-    <description>Database execution system task and REST resource for Conductor</description>
+    <artifactId>weaver-database-task</artifactId>
+    <name>weaver-database-task</name>
+    <description>Database execution system task and REST resource for Weaver</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-common</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
-            <artifactId>conductor-core</artifactId>
+            <groupId>com.vodafone.vss.weaver</groupId>
+            <artifactId>weaver-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.conductoross</groupId>
+            <groupId>com.vodafone.vss.weaver</groupId>
             <artifactId>audit</artifactId>
             <version>${project.version}</version>
         </dependency>

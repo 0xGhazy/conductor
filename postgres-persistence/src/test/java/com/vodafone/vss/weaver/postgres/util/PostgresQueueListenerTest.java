@@ -48,11 +48,11 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @TestPropertySource(
         properties = {
-            "conductor.elasticsearch.version=0",
+            "weaver.elasticsearch.version=0",
             "spring.flyway.clean-disabled=false",
-            "conductor.database.type=postgres",
-            "conductor.postgres.experimentalQueueNotify=true",
-            "conductor.postgres.experimentalQueueNotifyStalePeriod=5000"
+            "weaver.database.type=postgres",
+            "weaver.postgres.experimentalQueueNotify=true",
+            "weaver.postgres.experimentalQueueNotifyStalePeriod=5000"
         })
 @SpringBootTest
 public class PostgresQueueListenerTest {

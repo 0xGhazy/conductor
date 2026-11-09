@@ -23,8 +23,8 @@ import com.vodafone.vss.weaver.contribs.listener.archive.ArchivingWithTTLWorkflo
 import com.vodafone.vss.weaver.contribs.listener.archive.ArchivingWorkflowListenerProperties;
 import com.vodafone.vss.weaver.contribs.listener.archive.ArchivingWorkflowStatusListener;
 import com.vodafone.vss.weaver.contribs.listener.archive.ArchivingWorkflowToS3;
-import com.vodafone.vss.weaver.contribs.listener.conductorqueue.ConductorQueueStatusPublisher;
-import com.vodafone.vss.weaver.contribs.listener.conductorqueue.ConductorQueueStatusPublisherProperties;
+import com.vodafone.vss.weaver.contribs.listener.weaverqueue.WeaverQueueStatusPublisher;
+import com.vodafone.vss.weaver.contribs.listener.weaverqueue.WeaverQueueStatusPublisherProperties;
 import com.vodafone.vss.weaver.contribs.listener.kafka.KafkaWorkflowStatusPublisher;
 import com.vodafone.vss.weaver.contribs.listener.kafka.KafkaWorkflowStatusPublisherProperties;
 import com.vodafone.vss.weaver.contribs.listener.statuschange.StatusChangePublisher;
@@ -82,13 +82,13 @@ public class WorkflowStatusListenerFactory {
      * @throws IllegalStateException if neither success nor failure queue is configured
      */
     public WorkflowStatusListener createQueuePublisherListener(
-            ConductorQueueStatusPublisherProperties properties) {
+            WeaverQueueStatusPublisherProperties properties) {
         validateQueuePublisherProperties(properties);
         LOGGER.debug(
-                "Creating Conductor queue status publisher with success queue: {}, failure queue: {}",
+                "Creating Weaver queue status publisher with success queue: {}, failure queue: {}",
                 properties.getSuccessQueue(),
                 properties.getFailureQueue());
-        return new ConductorQueueStatusPublisher(queueDAO, objectMapper, properties);
+        return new WeaverQueueStatusPublisher(queueDAO, objectMapper, properties);
     }
 
     /**
@@ -160,18 +160,18 @@ public class WorkflowStatusListenerFactory {
     }
 
     private void validateQueuePublisherProperties(
-            ConductorQueueStatusPublisherProperties properties) {
+            WeaverQueueStatusPublisherProperties properties) {
         if (properties == null) {
             throw new IllegalStateException(
                     "Queue publisher is enabled but properties are not configured. "
-                            + "Please configure conductor.workflow-status-listener.queue-publisher.* properties");
+                            + "Please configure weaver.workflow-status-listener.queue-publisher.* properties");
         }
         if (StringUtils.isBlank(properties.getSuccessQueue())
                 && StringUtils.isBlank(properties.getFailureQueue())) {
             throw new IllegalStateException(
                     "Queue publisher is enabled but neither success nor failure queue is configured. "
-                            + "Please set at least one of: conductor.workflow-status-listener.queue-publisher.successQueue "
-                            + "or conductor.workflow-status-listener.queue-publisher.failureQueue");
+                            + "Please set at least one of: weaver.workflow-status-listener.queue-publisher.successQueue "
+                            + "or weaver.workflow-status-listener.queue-publisher.failureQueue");
         }
     }
 

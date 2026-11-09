@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import com.vodafone.vss.weaver.dao.IndexDAO;
 
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(name = "conductor.indexing.enabled", havingValue = "false")
+@ConditionalOnProperty(name = "weaver.indexing.enabled", havingValue = "false")
 public class NoopIndexDAOConfiguration {
 
     @Bean

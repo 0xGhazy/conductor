@@ -35,7 +35,7 @@ import com.vodafone.vss.weaver.common.metadata.events.EventExecution;
 import com.vodafone.vss.weaver.common.metadata.events.EventExecution.Status;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler;
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler.Action;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.events.queue.Message;
 import com.vodafone.vss.weaver.core.events.queue.ObservableQueue;
 import com.vodafone.vss.weaver.core.exception.TransientException;
@@ -58,7 +58,7 @@ import static com.vodafone.vss.weaver.core.utils.Utils.isTransientException;
  */
 @Component
 @ConditionalOnProperty(
-        name = "conductor.default-event-processor.enabled",
+        name = "weaver.default-event-processor.enabled",
         havingValue = "true",
         matchIfMissing = true)
 public class DefaultEventProcessor {
@@ -81,7 +81,7 @@ public class DefaultEventProcessor {
             MetadataService metadataService,
             ActionProcessor actionProcessor,
             JsonUtils jsonUtils,
-            ConductorProperties properties,
+            WeaverProperties properties,
             ObjectMapper objectMapper,
             Map<String, Evaluator> evaluators,
             @Qualifier("onTransientErrorRetryTemplate") RetryTemplate retryTemplate) {

@@ -12,7 +12,7 @@
  */
 package com.vodafone.vss.weaver.test.base
 
-import com.vodafone.vss.weaver.ConductorTestApp
+import com.vodafone.vss.weaver.WeaverTestApp
 import com.vodafone.vss.weaver.service.WorkflowService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -25,17 +25,17 @@ import com.vodafone.vss.weaver.core.execution.WorkflowExecutor
 import com.vodafone.vss.weaver.service.ExecutionService
 import com.vodafone.vss.weaver.service.MetadataService
 import com.vodafone.vss.weaver.test.util.WorkflowTestUtil
-import org.conductoross.conductor.core.execution.WorkflowSweeper
+import com.vodafone.vss.weaver.core.execution.WorkflowSweeper
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.utility.DockerImageName
 import spock.lang.Specification
 
-@SpringBootTest(classes = ConductorTestApp.class)
+@SpringBootTest(classes = WeaverTestApp.class)
 @TestPropertySource(locations = "classpath:application-integrationtest.properties",properties = [
-        "conductor.db.type=redis_standalone",
-        "conductor.app.sweeperThreadCount=1",
-        "conductor.app.sweeper.sweepBatchSize=10",
-        "conductor.queue.type=redis_standalone"
+        "weaver.db.type=redis_standalone",
+        "weaver.app.sweeperThreadCount=1",
+        "weaver.app.sweeper.sweepBatchSize=10",
+        "weaver.queue.type=redis_standalone"
 ])
 abstract class AbstractSpecification extends Specification {
 
@@ -67,16 +67,16 @@ abstract class AbstractSpecification extends Specification {
 
     @DynamicPropertySource
     static void dynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("conductor.db.type", () -> "redis_standalone")
-        registry.add("conductor.redis.availability-zone", () -> "us-east-1c")
-        registry.add("conductor.redis.data-center-region", () -> "us-east-1")
-        registry.add("conductor.redis.workflow-namespace-prefix", () -> "integration-test")
-        registry.add("conductor.redis.availability-zone", () -> "us-east-1c")
-        registry.add("conductor.redis.queue-namespace-prefix", () -> "integtest");
-        registry.add("conductor.redis.hosts", () -> "localhost:${redis.getFirstMappedPort()}:us-east-1c")
-        registry.add("conductor.redis-lock.serverAddress", () -> String.format("redis://localhost:${redis.getFirstMappedPort()}"))
-        registry.add("conductor.queue.type", () -> "redis_standalone")
-        registry.add("conductor.db.type", () -> "redis_standalone")
+        registry.add("weaver.db.type", () -> "redis_standalone")
+        registry.add("weaver.redis.availability-zone", () -> "us-east-1c")
+        registry.add("weaver.redis.data-center-region", () -> "us-east-1")
+        registry.add("weaver.redis.workflow-namespace-prefix", () -> "integration-test")
+        registry.add("weaver.redis.availability-zone", () -> "us-east-1c")
+        registry.add("weaver.redis.queue-namespace-prefix", () -> "integtest");
+        registry.add("weaver.redis.hosts", () -> "localhost:${redis.getFirstMappedPort()}:us-east-1c")
+        registry.add("weaver.redis-lock.serverAddress", () -> String.format("redis://localhost:${redis.getFirstMappedPort()}"))
+        registry.add("weaver.queue.type", () -> "redis_standalone")
+        registry.add("weaver.db.type", () -> "redis_standalone")
     }
 
     def cleanup() {

@@ -27,7 +27,7 @@ import com.vodafone.vss.weaver.core.listener.WorkflowStatusListener;
 @Configuration
 @EnableConfigurationProperties(StatusNotifierNotificationProperties.class)
 @ConditionalOnProperty(
-        name = "conductor.workflow-status-listener.type",
+        name = "weaver.workflow-status-listener.type",
         havingValue = "workflow_publisher")
 public class StatusChangePublisherConfiguration {
 

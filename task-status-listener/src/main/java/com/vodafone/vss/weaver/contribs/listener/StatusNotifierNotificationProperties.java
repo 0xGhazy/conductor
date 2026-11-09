@@ -16,7 +16,7 @@ import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("conductor.status-notifier.notification")
+@ConfigurationProperties("weaver.status-notifier.notification")
 public class StatusNotifierNotificationProperties {
 
     private String url;

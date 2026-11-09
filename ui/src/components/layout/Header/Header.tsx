@@ -76,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({ search = "", onSearchChange }) =
       <div className={styles.headerRight}>
         <div
           className={styles.clusterStatus}
-          title={isHealthy ? "Conductor & Weaver clusters active" : "Cluster services degraded"}
+          title={isHealthy ? "Weaver cluster active" : "Cluster services degraded"}
         >
           <span className={styles.pulseDot} aria-hidden="true" />
           <span className={styles.clusterStatusText}>{isHealthy ? "Cluster UP" : "Degraded"}</span>

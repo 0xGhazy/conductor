@@ -1,6 +1,6 @@
-import {
+﻿import {
   CompleteActionType,
-  ConductorEvent,
+  WeaverEvent,
   FailActionType,
   StartAgentAction,
   StartWorkflowAction,
@@ -9,7 +9,7 @@ import {
 } from "types/Events";
 
 // v2
-export const NEW_EVENT_HANDLER_TEMPLATE: Partial<ConductorEvent> = {
+export const NEW_EVENT_HANDLER_TEMPLATE: Partial<WeaverEvent> = {
   name: "",
   description: "",
   event: "kafka:sampleConfig:sampleName",

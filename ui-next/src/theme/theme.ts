@@ -1,4 +1,4 @@
-import type { ConductorInputStyleProps } from "components/ui/inputs/ConductorInput";
+﻿import type { WeaverInputStyleProps } from "components/ui/inputs/WeaverInput";
 import baseTheme from "./material/baseTheme";
 import appBar from "./material/components/appBar";
 import paper from "./material/components/paper";
@@ -69,7 +69,7 @@ export const getColor = ({
   error,
   isLabel,
   isInputEmpty,
-}: ConductorInputStyleProps) => {
+}: WeaverInputStyleProps) => {
   if (error) {
     return theme.palette.input.error;
   }

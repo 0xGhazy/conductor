@@ -22,14 +22,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.vodafone.vss.weaver.contribs.queue.amqp.AMQPObservableQueue.Builder;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.events.EventQueueProvider;
 import com.vodafone.vss.weaver.core.events.queue.ObservableQueue;
 import com.vodafone.vss.weaver.model.TaskModel.Status;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(AMQPEventQueueProperties.class)
-@ConditionalOnProperty(name = "conductor.event-queues.amqp.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.event-queues.amqp.enabled", havingValue = "true")
 public class AMQPEventQueueConfiguration {
 
     private enum QUEUE_TYPE {
@@ -57,13 +57,13 @@ public class AMQPEventQueueConfiguration {
         return new AMQPEventQueueProvider(properties, QUEUE_TYPE.AMQP_EXCHANGE.getType(), true);
     }
 
-    @ConditionalOnProperty(name = "conductor.default-event-queue.type", havingValue = "amqp")
+    @ConditionalOnProperty(name = "weaver.default-event-queue.type", havingValue = "amqp")
     @Bean
     public Map<Status, ObservableQueue> getQueues(
-            ConductorProperties conductorProperties, AMQPEventQueueProperties properties) {
+            WeaverProperties WeaverProperties, AMQPEventQueueProperties properties) {
         String stack = "";
-        if (conductorProperties.getStack() != null && conductorProperties.getStack().length() > 0) {
-            stack = conductorProperties.getStack() + "_";
+        if (WeaverProperties.getStack() != null && WeaverProperties.getStack().length() > 0) {
+            stack = WeaverProperties.getStack() + "_";
         }
         final boolean useExchange = properties.isUseExchange();
 
@@ -72,7 +72,7 @@ public class AMQPEventQueueConfiguration {
         for (Status status : statuses) {
             String queuePrefix =
                     StringUtils.isBlank(properties.getListenerQueuePrefix())
-                            ? conductorProperties.getAppId() + "_amqp_notify_" + stack
+                            ? WeaverProperties.getAppId() + "_amqp_notify_" + stack
                             : properties.getListenerQueuePrefix();
 
             String queueName = queuePrefix + status.name();

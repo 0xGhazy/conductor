@@ -1,4 +1,4 @@
-import {
+﻿import {
   Alert,
   AlertTitle,
   Box,
@@ -9,8 +9,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { useCallback, useState } from "react";
 import { updateField } from "utils/fieldHelpers";
 import { useGetIntegration } from "utils/hooks";
@@ -322,7 +322,7 @@ export const ParseDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container spacing={3} mt={3} mb={2}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               openOnFocus
               onChange={handleIntegrationNameChange}
               value={integrationName}
@@ -343,7 +343,7 @@ export const ParseDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
           )}
 
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               openOnFocus
               onChange={handleUrlChange}
               value={url}
@@ -394,7 +394,7 @@ export const ParseDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container spacing={3} mt={3} mb={3}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               openOnFocus
               onChange={handleMediaTypeChange}
               value={mediaType}
@@ -469,7 +469,7 @@ export const ParseDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
           <Grid size={12}>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorInput
+                <WeaverInput
                   label="Chunk Size (characters)"
                   name="chunkSize"
                   type="number"

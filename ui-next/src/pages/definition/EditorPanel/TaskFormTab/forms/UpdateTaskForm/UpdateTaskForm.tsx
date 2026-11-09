@@ -1,4 +1,4 @@
-import { Box, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, FormControlLabel, Grid } from "@mui/material";
 
 import MuiCheckbox from "components/ui/MuiCheckbox";
 import {
@@ -6,8 +6,8 @@ import {
   EventJson,
   UpdateTaskFormEvent,
 } from "pages/definition/EditorPanel/TaskFormTab/forms/UpdateTaskForm/UpdateTaskFromEvent";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { updateField } from "utils/fieldHelpers";
 import TaskFormSection from "../TaskFormSection";
 import { TaskFormProps } from "../types";
@@ -42,12 +42,12 @@ export const UpdateTaskForm = ({ task, onChange }: TaskFormProps) => {
                 });
               }}
               inputComponent={
-                ConductorAutocompleteVariables as AnInputComponent
+                WeaverAutocompleteVariables as AnInputComponent
               }
             />
           </Grid>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={task?.inputParameters?.taskStatus}
               label="Task status"
               onChange={(value) => handleTaskStatusChange(value)}
@@ -73,7 +73,7 @@ export const UpdateTaskForm = ({ task, onChange }: TaskFormProps) => {
         title="Task output"
         accordionAdditionalProps={{ defaultExpanded: true }}
       >
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           showFieldTypes
           keyColumnLabel="Key"
           valueColumnLabel="Value"

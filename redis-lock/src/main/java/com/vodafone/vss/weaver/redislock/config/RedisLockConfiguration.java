@@ -29,7 +29,7 @@ import com.vodafone.vss.weaver.redislock.lock.RedisLock;
 
 @Configuration
 @EnableConfigurationProperties(RedisLockProperties.class)
-@ConditionalOnProperty(name = "conductor.workflow-execution-lock.type", havingValue = "redis")
+@ConditionalOnProperty(name = "weaver.workflow-execution-lock.type", havingValue = "redis")
 public class RedisLockConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RedisLockConfiguration.class);

@@ -18,7 +18,7 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
@@ -31,12 +31,12 @@ public class TestSystemTaskWorkerCoordinator {
     private static final String EXECUTION_NAMESPACE_CONSTANT = "@exeNS";
 
     private SystemTaskWorker systemTaskWorker;
-    private ConductorProperties properties;
+    private WeaverProperties properties;
 
     @Before
     public void setUp() {
         systemTaskWorker = mock(SystemTaskWorker.class);
-        properties = mock(ConductorProperties.class);
+        properties = mock(WeaverProperties.class);
         when(properties.getSystemTaskWorkerPollInterval()).thenReturn(Duration.ofMillis(50));
         when(properties.getSystemTaskWorkerExecutionNamespace()).thenReturn("");
     }

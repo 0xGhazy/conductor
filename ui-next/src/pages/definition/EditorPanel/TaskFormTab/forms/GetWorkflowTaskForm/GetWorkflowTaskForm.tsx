@@ -1,6 +1,6 @@
-import { Box, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, FormControlLabel, Grid } from "@mui/material";
 import MuiCheckbox from "components/ui/MuiCheckbox";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { updateField } from "utils/fieldHelpers";
 import { Optional } from "../OptionalFieldForm";
 import TaskFormSection from "../TaskFormSection";
@@ -15,7 +15,7 @@ export const GetWorkflowTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
         <Grid container sx={{ width: "100%" }} spacing={2}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={task?.inputParameters?.id ?? ""}
               label="Workflow ID"
               onChange={(value) =>

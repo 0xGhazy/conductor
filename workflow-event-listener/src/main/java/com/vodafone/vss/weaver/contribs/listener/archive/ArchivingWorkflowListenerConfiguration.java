@@ -22,7 +22,7 @@ import com.vodafone.vss.weaver.core.listener.WorkflowStatusListener;
 
 @Configuration
 @EnableConfigurationProperties(ArchivingWorkflowListenerProperties.class)
-@ConditionalOnProperty(name = "conductor.workflow-status-listener.type", havingValue = "archive")
+@ConditionalOnProperty(name = "weaver.workflow-status-listener.type", havingValue = "archive")
 public class ArchivingWorkflowListenerConfiguration {
 
     @Bean

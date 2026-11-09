@@ -1,13 +1,13 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+﻿import { Box, Grid, Typography } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { path as _path } from "lodash/fp";
 import { UiIntegrationsFieldType } from "types/FormFieldTypes";
 import {
   fieldsToFieldsFieldsComponents,
   updateField,
 } from "utils/fieldHelpers";
-import { ConductorAdditionalHeadersBase } from "./HTTPTaskForm/ConductorAdditionalHeaders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverAdditionalHeadersBase } from "./HTTPTaskForm/WeaverAdditionalHeaders";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { LLMFormFields } from "./LLMFormFields/LLMFormFields";
 import LLMFormFieldsWrapper from "./LLMFormFields/LLMFormFieldsWrapper";
 import { Optional } from "./OptionalFieldForm";
@@ -91,7 +91,7 @@ export const LLMSearchEmbeddingsTaskForm = ({
           >
             <Grid container spacing={3} sx={{ width: "100%" }}>
               <Grid size={12}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Embeddings"
                   value={get("inputParameters.embeddings") as string}
                   onChange={(v) => set("inputParameters.embeddings", v)}
@@ -119,7 +119,7 @@ export const LLMSearchEmbeddingsTaskForm = ({
           <TaskFormSection title="Metadata filter">
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={12}>
-                <ConductorAdditionalHeadersBase
+                <WeaverAdditionalHeadersBase
                   headers={metadata}
                   onChangeHeaders={(m) => set("inputParameters.metadata", m)}
                 />
@@ -129,7 +129,7 @@ export const LLMSearchEmbeddingsTaskForm = ({
 
           <TaskFormSection>
             <Box display="flex" flexDirection="column" gap={3}>
-              <ConductorCacheOutput onChange={onChange} taskJson={task} />
+              <WeaverCacheOutput onChange={onChange} taskJson={task} />
               <Optional onChange={onChange} taskJson={task} />
             </Box>
           </TaskFormSection>

@@ -1,6 +1,6 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import _path from "lodash/fp/path";
 import { updateField } from "utils/fieldHelpers";
 import { configureJQLanguage } from "utils/monacoUtils/CodeEditorUtils";
@@ -26,7 +26,7 @@ export const JSONJQTransformForm = ({ task, onChange }: TaskFormProps) => {
               onChange={onChange}
               taskJson={task}
             >
-              <ConductorFlatMapFormBase
+              <WeaverFlatMapFormBase
                 showFieldTypes={true}
                 keyColumnLabel="Key"
                 valueColumnLabel="Value"
@@ -43,7 +43,7 @@ export const JSONJQTransformForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorCodeBlockInput
+            <WeaverCodeBlockInput
               label="JQ expression"
               language="jq"
               beforeMount={configureJQLanguage}

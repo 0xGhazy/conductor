@@ -22,9 +22,9 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.conductoross.conductor.postgres.dao.PostgresFileMetadataDAO;
-import org.conductoross.conductor.postgres.dao.PostgresSkillMetadataDAO;
-import org.conductoross.conductor.postgres.dao.PostgresSkillPackageDAO;
+import com.vodafone.vss.weaver.postgres.dao.PostgresFileMetadataDAO;
+import com.vodafone.vss.weaver.postgres.dao.PostgresSkillMetadataDAO;
+import com.vodafone.vss.weaver.postgres.dao.PostgresSkillPackageDAO;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -46,7 +46,7 @@ import jakarta.annotation.*;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(PostgresProperties.class)
-@ConditionalOnProperty(name = "conductor.db.type", havingValue = "postgres")
+@ConditionalOnProperty(name = "weaver.db.type", havingValue = "postgres")
 // Import the DataSourceAutoConfiguration when postgres database is selected.
 // By default, the datasource configuration is excluded in the main module.
 @Import(DataSourceAutoConfiguration.class)
@@ -124,7 +124,7 @@ public class PostgresConfiguration {
      */
     @Bean
     @DependsOn({"flywayForPrimaryDb"})
-    @ConditionalOnProperty(name = "conductor.queue.type", havingValue = "postgres", matchIfMissing = true)
+    @ConditionalOnProperty(name = "weaver.queue.type", havingValue = "postgres", matchIfMissing = true)
     public QueueDAO postgresQueueDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
             ObjectMapper objectMapper,
@@ -134,7 +134,7 @@ public class PostgresConfiguration {
 
     @Bean
     @DependsOn({"flywayForPrimaryDb"})
-    @ConditionalOnProperty(name = "conductor.indexing.type", havingValue = "postgres")
+    @ConditionalOnProperty(name = "weaver.indexing.type", havingValue = "postgres")
     public PostgresIndexDAO postgresIndexDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
             ObjectMapper objectMapper,
@@ -145,7 +145,7 @@ public class PostgresConfiguration {
     @Bean
     @DependsOn({"flywayForPrimaryDb"})
     @ConditionalOnProperty(
-            name = "conductor.workflow-execution-lock.type",
+            name = "weaver.workflow-execution-lock.type",
             havingValue = "postgres")
     public PostgresLockDAO postgresLockDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
@@ -155,7 +155,7 @@ public class PostgresConfiguration {
 
     @Bean
     @DependsOn({"flywayForPrimaryDb"})
-    @ConditionalOnProperty(name = "conductor.file-storage.enabled", havingValue = "true")
+    @ConditionalOnProperty(name = "weaver.file-storage.enabled", havingValue = "true")
     public PostgresFileMetadataDAO postgresFileMetadataDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
             ObjectMapper objectMapper) {
@@ -164,7 +164,7 @@ public class PostgresConfiguration {
 
     @Bean
     @DependsOn({"flywayForPrimaryDb"})
-    @ConditionalOnProperty(name = "conductor.integrations.ai.enabled", havingValue = "true")
+    @ConditionalOnProperty(name = "weaver.integrations.ai.enabled", havingValue = "true")
     public PostgresSkillMetadataDAO postgresSkillMetadataDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
             ObjectMapper objectMapper) {
@@ -173,7 +173,7 @@ public class PostgresConfiguration {
 
     @Bean
     @DependsOn({"flywayForPrimaryDb"})
-    @ConditionalOnProperty(name = "conductor.integrations.ai.enabled", havingValue = "true")
+    @ConditionalOnProperty(name = "weaver.integrations.ai.enabled", havingValue = "true")
     public PostgresSkillPackageDAO postgresSkillPackageDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
             ObjectMapper objectMapper) {
@@ -181,7 +181,7 @@ public class PostgresConfiguration {
     }
 
     /** True when conductor.audit.user-lookup.url is set and not blank. */
-    static final String USER_LOOKUP_ENABLED = "!'${conductor.audit.user-lookup.url:}'.isBlank()";
+    static final String USER_LOOKUP_ENABLED = "!'${weaver.audit.user-lookup.url:}'.isBlank()";
 
     /**
      * Reads users from Keycloak's own database (conductor.audit.user-lookup.*) to show who created
@@ -193,10 +193,10 @@ public class PostgresConfiguration {
     public PostgresUserLookupDAO postgresUserLookupDAO(
             @Qualifier("postgresRetryTemplate") RetryTemplate retryTemplate,
             ObjectMapper objectMapper,
-            @Value("${conductor.audit.user-lookup.url}") String url,
-            @Value("${conductor.audit.user-lookup.username:}") String username,
-            @Value("${conductor.audit.user-lookup.password:}") String password,
-            @Value("${conductor.audit.user-lookup.schema:public}") String schema) {
+            @Value("${weaver.audit.user-lookup.url}") String url,
+            @Value("${weaver.audit.user-lookup.username:}") String username,
+            @Value("${weaver.audit.user-lookup.password:}") String password,
+            @Value("${weaver.audit.user-lookup.schema:public}") String schema) {
         HikariConfig config = new HikariConfig();
         config.setPoolName("keycloak-user-lookup");
         config.setJdbcUrl(url);

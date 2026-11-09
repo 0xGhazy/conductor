@@ -15,10 +15,10 @@ package com.vodafone.vss.weaver.core.execution;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.conductoross.conductor.model.SignalResponse;
-import org.conductoross.conductor.model.TaskRun;
-import org.conductoross.conductor.model.WorkflowRun;
-import org.conductoross.conductor.model.WorkflowSignalReturnStrategy;
+import com.vodafone.vss.weaver.model.SignalResponse;
+import com.vodafone.vss.weaver.model.TaskRun;
+import com.vodafone.vss.weaver.model.WorkflowRun;
+import com.vodafone.vss.weaver.model.WorkflowSignalReturnStrategy;
 
 import com.vodafone.vss.weaver.common.metadata.tasks.Task;
 import com.vodafone.vss.weaver.common.run.Workflow;

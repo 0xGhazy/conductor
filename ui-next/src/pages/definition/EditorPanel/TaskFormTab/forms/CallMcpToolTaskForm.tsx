@@ -1,10 +1,10 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
+﻿import { Box, Grid, Typography } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
 import { path as _path } from "lodash/fp";
 import { updateField } from "utils/fieldHelpers";
-import { ConductorAdditionalHeadersBase } from "./HTTPTaskForm/ConductorAdditionalHeaders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverAdditionalHeadersBase } from "./HTTPTaskForm/WeaverAdditionalHeaders";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -39,14 +39,14 @@ export const CallMcpToolTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={{ xs: 12, md: 8 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="MCP server URL"
               value={get("inputParameters.mcpServer")}
               onChange={(v) => set("inputParameters.mcpServer", v)}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Tool name (method)"
               value={get("inputParameters.method")}
               onChange={(v) => set("inputParameters.method", v)}
@@ -65,7 +65,7 @@ export const CallMcpToolTaskForm = ({ task, onChange }: TaskFormProps) => {
           </Grid>
           {/* Variable reference input — allows e.g. ${llmChat.output.params} */}
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Arguments (variable reference)"
               value={argumentsIsVariable ? rawArguments : ""}
               onChange={(v) => {
@@ -81,7 +81,7 @@ export const CallMcpToolTaskForm = ({ task, onChange }: TaskFormProps) => {
           {/* JSON editor — used when not a variable reference */}
           {!argumentsIsVariable && (
             <Grid size={12}>
-              <ConductorCodeBlockInput
+              <WeaverCodeBlockInput
                 label="Arguments (JSON)"
                 language="json"
                 minHeight={200}
@@ -99,7 +99,7 @@ export const CallMcpToolTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection title="Headers">
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={12}>
-            <ConductorAdditionalHeadersBase
+            <WeaverAdditionalHeadersBase
               headers={headers}
               onChangeHeaders={(h) => set("inputParameters.headers", h)}
             />
@@ -109,7 +109,7 @@ export const CallMcpToolTaskForm = ({ task, onChange }: TaskFormProps) => {
 
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

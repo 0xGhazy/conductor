@@ -20,7 +20,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.convert.DurationUnit;
 import org.springframework.core.env.Environment;
 
-@ConfigurationProperties("conductor.workflow-status-listener.archival")
+@ConfigurationProperties("weaver.workflow-status-listener.archival")
 public class ArchivingWorkflowListenerProperties {
 
     private final Environment environment;
@@ -114,9 +114,9 @@ public class ArchivingWorkflowListenerProperties {
     /** The time to delay the archival of workflow */
     public int getWorkflowArchivalDelay() {
         return environment.getProperty(
-                "conductor.workflow-status-listener.archival.delaySeconds",
+                "weaver.workflow-status-listener.archival.delaySeconds",
                 Integer.class,
                 environment.getProperty(
-                        "conductor.app.asyncUpdateDelaySeconds", Integer.class, 60));
+                        "weaver.app.asyncUpdateDelaySeconds", Integer.class, 60));
     }
 }

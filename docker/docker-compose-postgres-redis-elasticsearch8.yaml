@@ -1,14 +1,14 @@
-services:
-  conductor-server:
+﻿services:
+  weaver-server:
     environment:
       - CONFIG_PROP=config-postgres-redis-elasticsearch8.properties
       - JAVA_OPTS=-Dpolyglot.engine.WarnInterpreterOnly=false
-      - conductor.app.ownerEmailMandatory=false
+      - weaver.app.ownerEmailMandatory=false
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - COHERE_API_KEY=${COHERE_API_KEY:-}
-    image: conductor:server
-    container_name: conductor-server
+    image: weaver:server
+    container_name: weaver-server
     build:
       context: ../
       dockerfile: docker/server/Dockerfile
@@ -28,16 +28,16 @@ services:
       timeout: 30s
       retries: 12
     links:
-      - conductor-postgres:postgresdb
-      - conductor-redis:rs
-      - conductor-elasticsearch:es
+      - weaver-postgres:postgresdb
+      - weaver-redis:rs
+      - weaver-elasticsearch:es
       - keycloak:keycloak
     depends_on:
-      conductor-postgres:
+      weaver-postgres:
         condition: service_healthy
-      conductor-redis:
+      weaver-redis:
         condition: service_healthy
-      conductor-elasticsearch:
+      weaver-elasticsearch:
         condition: service_healthy
     logging:
       driver: "json-file"
@@ -45,13 +45,13 @@ services:
         max-size: "1k"
         max-file: "3"
 
-  conductor-postgres:
+  weaver-postgres:
     image: postgres:16
     environment:
-      - POSTGRES_USER=conductor
-      - POSTGRES_PASSWORD=conductor
+      - POSTGRES_USER=weaver
+      - POSTGRES_PASSWORD=weaver
     volumes:
-      - pgdata-conductor:/var/lib/postgresql/data
+      - pgdata-weaver:/var/lib/postgresql/data
     networks:
       - internal
     ports:
@@ -67,7 +67,7 @@ services:
         max-size: "1k"
         max-file: "3"
 
-  conductor-redis:
+  weaver-redis:
     image: redis:6.2.3-alpine
     volumes:
       - ../server/config/redis.conf:/usr/local/etc/redis/redis.conf
@@ -78,14 +78,14 @@ services:
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
 
-  conductor-elasticsearch:
+  weaver-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.19.11
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx1024m"
       - xpack.security.enabled=false
       - discovery.type=single-node
     volumes:
-      - esdata-conductor:/usr/share/elasticsearch/data
+      - esdata-weaver:/usr/share/elasticsearch/data
     networks:
       - internal
     ports:
@@ -101,14 +101,14 @@ services:
         max-size: "1k"
         max-file: "3"
 
-  # Creates the "keycloak" role and database in conductor-postgres if they are missing, plus the
+  # Creates the "keycloak" role and database in weaver-postgres if they are missing, plus the
   # read-only "keycloak_reader" role Conductor uses to show who created / updated records, then exits.
   # Runs on every "up", so it also works for an existing data volume (Postgres init scripts only
   # run on an empty one). Keycloak creates its own tables on first start.
   keycloak-db-init:
     image: postgres:16
     environment:
-      - PGHOST=conductor-postgres
+      - PGHOST=weaver-postgres
       - PGUSER=conductor
       - PGPASSWORD=conductor
       - KEYCLOAK_DB_PASSWORD=${WEAVER_KEYCLOAK_DB_PASSWORD:-keycloak}
@@ -132,7 +132,7 @@ services:
         ALTER DEFAULT PRIVILEGES FOR ROLE keycloak IN SCHEMA public GRANT SELECT ON TABLES TO keycloak_reader;
         SQL
     depends_on:
-      conductor-postgres:
+      weaver-postgres:
         condition: service_healthy
     networks:
       - internal
@@ -150,9 +150,9 @@ services:
       - KC_HEALTH_ENABLED=true
       - KC_HTTP_PORT=8080
       - KC_HOSTNAME_STRICT=false
-      # Users, sessions and admin-console changes live in the "keycloak" database of conductor-postgres.
+      # Users, sessions and admin-console changes live in the "keycloak" database of weaver-postgres.
       - KC_DB=postgres
-      - KC_DB_URL=jdbc:postgresql://conductor-postgres:5432/keycloak
+      - KC_DB_URL=jdbc:postgresql://weaver-postgres:5432/keycloak
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=${WEAVER_KEYCLOAK_DB_PASSWORD:-keycloak}
     depends_on:
@@ -178,9 +178,9 @@ services:
         max-file: "3"
 
 volumes:
-  pgdata-conductor:
+  pgdata-weaver:
     driver: local
-  esdata-conductor:
+  esdata-weaver:
     driver: local
 
 networks:

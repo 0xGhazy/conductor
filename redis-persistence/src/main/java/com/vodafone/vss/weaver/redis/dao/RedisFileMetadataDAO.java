@@ -17,14 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.conductoross.conductor.dao.FileMetadataDAO;
-import org.conductoross.conductor.model.FileModel;
-import org.conductoross.conductor.model.file.FileUploadStatus;
+import com.vodafone.vss.weaver.dao.FileMetadataDAO;
+import com.vodafone.vss.weaver.model.FileModel;
+import com.vodafone.vss.weaver.model.file.FileUploadStatus;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.redis.config.AnyRedisCondition;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
 import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 @Conditional(AnyRedisCondition.class)
-@ConditionalOnProperty(name = "conductor.file-storage.enabled", havingValue = "true")
+@ConditionalOnProperty(name = "weaver.file-storage.enabled", havingValue = "true")
 public class RedisFileMetadataDAO extends BaseDynoDAO implements FileMetadataDAO {
 
     private static final String FILE_METADATA = "FILE_METADATA";
@@ -43,9 +43,9 @@ public class RedisFileMetadataDAO extends BaseDynoDAO implements FileMetadataDAO
     public RedisFileMetadataDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties) {
-        super(jedisProxy, objectMapper, conductorProperties, properties);
+        super(jedisProxy, objectMapper, WeaverProperties, properties);
     }
 
     @Override

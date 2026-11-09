@@ -1,4 +1,4 @@
-import { Box, List, Tooltip, alpha, useTheme } from "@mui/material";
+﻿import { Box, List, Tooltip, alpha, useTheme } from "@mui/material";
 import { ReactNode, RefObject } from "react";
 import { Auth0User } from "types/User";
 import { SidebarItem } from "./SidebarItem";
@@ -18,10 +18,10 @@ interface SidebarMenuProps {
   isAuthenticated: boolean;
   isMobile: boolean;
   user: Auth0User | null;
-  conductorUser: { id: string } | null;
+  WeaverUser: { id: string } | null;
   logOut?: () => void;
   /** undefined = loading (skeleton), null = error/unavailable, string = loaded */
-  conductorVersion?: string | null;
+  WeaverVersion?: string | null;
   uiVersion: string;
   showCopyAlert: boolean;
   setShowCopyAlert: (show: boolean) => void;
@@ -41,9 +41,9 @@ export const SidebarMenu = ({
   isAuthenticated,
   isMobile,
   user,
-  conductorUser,
+  WeaverUser,
   logOut,
-  conductorVersion,
+  WeaverVersion,
   uiVersion,
   showCopyAlert,
   setShowCopyAlert,
@@ -125,9 +125,9 @@ export const SidebarMenu = ({
         isAuthenticated={isAuthenticated}
         isMobile={isMobile}
         user={user}
-        conductorUser={conductorUser}
+        WeaverUser={WeaverUser}
         logOut={logOut}
-        conductorVersion={conductorVersion}
+        WeaverVersion={WeaverVersion}
         uiVersion={uiVersion}
         showCopyAlert={showCopyAlert}
         setShowCopyAlert={setShowCopyAlert}

@@ -157,7 +157,7 @@ class RedisConcurrentExecutionLimitDAOSpec extends Specification {
 
     def "verify createKeyName ignores namespace if its not present"() {
         given:
-        def dao = new RedisConcurrentExecutionLimitDAO(null, conductorProperties)
+        def dao = new RedisConcurrentExecutionLimitDAO(null, WeaverProperties)
 
         when:
         def keyName = dao.createKeyName('taskdefname')
@@ -166,7 +166,7 @@ class RedisConcurrentExecutionLimitDAOSpec extends Specification {
         keyName == expectedKeyName
 
         where:
-        conductorProperties << [new RedisConcurrentExecutionLimitProperties(), new RedisConcurrentExecutionLimitProperties(namespace: null), new RedisConcurrentExecutionLimitProperties(namespace: 'test')]
+        WeaverProperties << [new RedisConcurrentExecutionLimitProperties(), new RedisConcurrentExecutionLimitProperties(namespace: null), new RedisConcurrentExecutionLimitProperties(namespace: 'test')]
         expectedKeyName << ['conductor:taskdefname', 'taskdefname', 'test:taskdefname']
     }
 }

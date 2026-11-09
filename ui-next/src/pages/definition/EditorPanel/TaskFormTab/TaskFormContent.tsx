@@ -1,7 +1,7 @@
-import { Box, Link } from "@mui/material";
+﻿import { Box, Link } from "@mui/material";
 import { WarningIcon } from "@phosphor-icons/react";
 import { useActor, useSelector } from "@xstate/react";
-import ConductorTooltip from "components/ui/ConductorTooltip";
+import WeaverTooltip from "components/ui/WeaverTooltip";
 import theme from "components/features/flow/theme";
 import DocsIcon from "components/icons/DocsIcon";
 import {
@@ -70,7 +70,7 @@ import { FormTaskType, TaskDef, TaskType } from "types";
 import { updateField } from "utils/fieldHelpers";
 import { FEATURES, featureFlags } from "utils/flags";
 import { TaskStats } from "./TaskStats/TaskStats";
-import { ConductorCacheOutput } from "./forms/ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./forms/WeaverCacheOutputForm";
 import { MCPTaskForm } from "./forms/MCPTaskForm";
 import { MaybeVariable } from "./forms/MaybeVariable";
 import { Optional } from "./forms/OptionalFieldForm";
@@ -499,7 +499,7 @@ const TaskFormContent: FunctionComponent = () => {
             >
               {taskDocUrl &&
                 (taskDescription ? (
-                  <ConductorTooltip
+                  <WeaverTooltip
                     title={`${taskType} Task`}
                     content={taskDescription}
                     placement="left"
@@ -584,7 +584,7 @@ const TaskFormContent: FunctionComponent = () => {
                 onChange={handleTaskFieldUpdate("optional")}
                 taskJson={task}
               />
-              <ConductorCacheOutput
+              <WeaverCacheOutput
                 onChange={handleTaskFieldUpdate("cacheConfig")}
                 taskJson={task}
               />

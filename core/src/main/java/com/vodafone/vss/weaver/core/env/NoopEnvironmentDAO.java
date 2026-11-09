@@ -22,7 +22,7 @@ import com.vodafone.vss.weaver.common.metadata.EnvironmentVariable;
 import com.vodafone.vss.weaver.dao.EnvironmentDAO;
 
 @Component
-@ConditionalOnProperty(name = "conductor.environment.type", havingValue = "noop")
+@ConditionalOnProperty(name = "weaver.environment.type", havingValue = "noop")
 public class NoopEnvironmentDAO implements EnvironmentDAO {
 
     @Override

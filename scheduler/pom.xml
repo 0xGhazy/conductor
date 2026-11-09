@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.conductoross</groupId>
-        <artifactId>conductor</artifactId>
+        <groupId>com.vodafone.vss.weaver</groupId>
+        <artifactId>weaver</artifactId>
         <version>3.30.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>conductor-scheduler</artifactId>
+    <artifactId>weaver-scheduler</artifactId>
     <packaging>pom</packaging>
-    <name>conductor-scheduler</name>
-    <description>Scheduler aggregator for Conductor</description>
+    <name>weaver-scheduler</name>
+    <description>Scheduler aggregator for Weaver</description>
 
     <modules>
         <module>core</module>

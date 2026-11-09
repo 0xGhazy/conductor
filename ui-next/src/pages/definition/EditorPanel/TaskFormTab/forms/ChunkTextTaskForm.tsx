@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   FormControlLabel,
   FormHelperText,
@@ -16,14 +16,14 @@ import { useCallback, useContext, useMemo, useState } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
 import { updateField } from "utils/fieldHelpers";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
 import { ColorModeContext } from "theme/material/ColorModeContext";
 
 // Comprehensive media type options with auto-detect
@@ -270,7 +270,7 @@ export const ChunkTextTaskForm = ({ task, onChange }: TaskFormProps) => {
             {syntaxHighlighting ? (
               <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
                 <Box sx={{ flexGrow: 1, position: "relative" }}>
-                  <ConductorCodeBlockInput
+                  <WeaverCodeBlockInput
                     key={selectedLanguage} // Force re-render when language changes
                     label="Text"
                     value={text}
@@ -386,7 +386,7 @@ export const ChunkTextTaskForm = ({ task, onChange }: TaskFormProps) => {
             ) : (
               <Box sx={{ display: "flex", gap: 1, alignItems: "flex-start" }}>
                 <Box sx={{ flexGrow: 1 }}>
-                  <ConductorInput
+                  <WeaverInput
                     label="Text"
                     name="text"
                     value={text}
@@ -460,7 +460,7 @@ export const ChunkTextTaskForm = ({ task, onChange }: TaskFormProps) => {
           <Grid size={12}>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorInput
+                <WeaverInput
                   label="Chunk Size (characters)"
                   name="chunkSize"
                   type="number"
@@ -525,7 +525,7 @@ export const ChunkTextTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container spacing={3} mt={3} mb={4}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               openOnFocus
               onChange={(value) => handleMediaTypeChange(value || "auto")}
               value={mediaType}
@@ -569,7 +569,7 @@ export const ChunkTextTaskForm = ({ task, onChange }: TaskFormProps) => {
 
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

@@ -1,11 +1,11 @@
-import { Autocomplete, ListItem, ListItemText, Popper } from "@mui/material";
+﻿import { Autocomplete, ListItem, ListItemText, Popper } from "@mui/material";
 import {
   AppWindow as ApplicationIcon,
   UsersThree as GroupIcon,
   User as UserIcon,
 } from "@phosphor-icons/react";
 import TagChip from "components/ui/TagChip";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import XCloseIcon from "components/icons/XCloseIcon";
 import { CSSProperties, FunctionComponent } from "react";
 import { autocompleteStyle } from "shared/styles";
@@ -92,7 +92,7 @@ export const SubjectMultiPicker: FunctionComponent<SubjectMultiPickerProps> = ({
         </ListItem>
       )}
       renderInput={(params) => (
-        <ConductorInput
+        <WeaverInput
           {...params}
           label={label}
           required={required}

@@ -1,5 +1,5 @@
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { ReactNode } from "react";
 import { RefreshOptions } from "./refresher";
 
@@ -25,7 +25,7 @@ export const QuickSearchRefresh = ({
     <Box pb={3} sx={{ height: "100%", padding: 6 }}>
       <Grid container spacing={2} sx={{ width: "100%" }}>
         <Grid size={{ xs: 12, md: 5 }}>
-          <ConductorInput
+          <WeaverInput
             fullWidth={mediumScreen ? false : true}
             label={label}
             placeholder={quickSearchPlaceholder}

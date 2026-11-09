@@ -1,4 +1,4 @@
-import {
+﻿import {
   FieldPath,
   FieldValues,
   PathValue,
@@ -8,21 +8,21 @@ import {
 import _isNil from "lodash/isNil";
 
 import {
-  ConductorFlatMapFormBase,
-  ConductorFlatMapFormProps,
-} from "components/FlatMapForm/ConductorFlatMapForm";
+  WeaverFlatMapFormBase,
+  WeaverFlatMapFormProps,
+} from "components/FlatMapForm/WeaverFlatMapForm";
 
 type ReactHookFormFlatMapFormProps<
   T extends FieldValues,
   U extends FieldPath<T>,
-> = ConductorFlatMapFormProps &
+> = WeaverFlatMapFormProps &
   UseControllerProps<T, U> & {
     inputTransform?: (
       value: PathValue<T, U>,
       lastFormValues?: T,
-    ) => ConductorFlatMapFormProps["value"];
+    ) => WeaverFlatMapFormProps["value"];
     outputTransform?: (
-      value: ConductorFlatMapFormProps["value"],
+      value: WeaverFlatMapFormProps["value"],
       lastFormValues: T,
     ) => PathValue<T, U>;
     onChangeCallback?: (value: PathValue<T, U>) => void;
@@ -66,7 +66,7 @@ export default function ReactHookFormFlatMapForm<
     defaultValue,
   });
   return (
-    <ConductorFlatMapFormBase
+    <WeaverFlatMapFormBase
       {...fieldProps}
       {...props}
       value={validateInputValue(

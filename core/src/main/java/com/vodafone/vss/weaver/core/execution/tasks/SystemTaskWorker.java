@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.annotations.VisibleForTesting;
 import com.vodafone.vss.weaver.core.LifecycleAwareComponent;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.execution.AsyncSystemTaskExecutor;
 import com.vodafone.vss.weaver.core.utils.QueueUtils;
 import com.vodafone.vss.weaver.core.utils.SemaphoreUtil;
@@ -43,7 +43,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
 /** The worker that polls and executes an async system task. */
 @Component
 @ConditionalOnProperty(
-        name = "conductor.system-task-workers.enabled",
+        name = "weaver.system-task-workers.enabled",
         havingValue = "true",
         matchIfMissing = true)
 public class SystemTaskWorker extends LifecycleAwareComponent {
@@ -56,7 +56,7 @@ public class SystemTaskWorker extends LifecycleAwareComponent {
     private volatile ExecutorService sharedExecutorService;
     private final int systemTaskWorkerThreadCount;
     private final AsyncSystemTaskExecutor asyncSystemTaskExecutor;
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final int queuePopTimeout;
     private final ReentrantReadWriteLock dispatchLock = new ReentrantReadWriteLock();
 
@@ -65,7 +65,7 @@ public class SystemTaskWorker extends LifecycleAwareComponent {
     public SystemTaskWorker(
             QueueDAO queueDAO,
             AsyncSystemTaskExecutor asyncSystemTaskExecutor,
-            ConductorProperties properties) {
+            WeaverProperties properties) {
         this.properties = properties;
         int threadCount = properties.getSystemTaskWorkerThreadCount();
         this.systemTaskWorkerThreadCount = threadCount;
@@ -320,7 +320,7 @@ public class SystemTaskWorker extends LifecycleAwareComponent {
 
     private ExecutionConfig createNonIsolatedExecutionConfig(String taskQueue) {
         String taskType = QueueUtils.getTaskType(taskQueue);
-        ConductorProperties.TaskWorkerConfig override = findTaskWorkerConfig(taskType);
+        WeaverProperties.TaskWorkerConfig override = findTaskWorkerConfig(taskType);
 
         if (override != null && override.getThreadCount() > 0) {
             // Dedicated pool: this task type gets its own threads, isolated from everything else.
@@ -344,19 +344,19 @@ public class SystemTaskWorker extends LifecycleAwareComponent {
         return new ExecutionConfig(sharedExecutorService, systemTaskWorkerThreadCount);
     }
 
-    private ConductorProperties.TaskWorkerConfig findTaskWorkerConfig(String taskType) {
-        Map<String, ConductorProperties.TaskWorkerConfig> configs =
+    private WeaverProperties.TaskWorkerConfig findTaskWorkerConfig(String taskType) {
+        Map<String, WeaverProperties.TaskWorkerConfig> configs =
                 properties.getTaskWorkerConfigs();
         if (configs.isEmpty()) {
             return null;
         }
         // Direct match first, then case-insensitive fallback (YAML preserves case; .properties may
         // not). Lookup result is cached in queueExecutionConfigMap so this is called once per type.
-        ConductorProperties.TaskWorkerConfig config = configs.get(taskType);
+        WeaverProperties.TaskWorkerConfig config = configs.get(taskType);
         if (config != null) {
             return config;
         }
-        for (Map.Entry<String, ConductorProperties.TaskWorkerConfig> entry : configs.entrySet()) {
+        for (Map.Entry<String, WeaverProperties.TaskWorkerConfig> entry : configs.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(taskType)) {
                 return entry.getValue();
             }

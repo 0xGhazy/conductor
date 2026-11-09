@@ -14,7 +14,7 @@ package com.vodafone.vss.weaver.redislock.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("conductor.redis-lock")
+@ConfigurationProperties("weaver.redis-lock")
 public class RedisLockProperties {
 
     /** The redis server configuration to be used. */

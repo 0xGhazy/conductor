@@ -34,7 +34,7 @@ import com.vodafone.vss.weaver.common.config.TestObjectMapperConfiguration;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.run.ExternalStorageLocation;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.TerminateWorkflowException;
 import com.vodafone.vss.weaver.model.TaskModel;
 import com.vodafone.vss.weaver.model.WorkflowModel;
@@ -64,7 +64,7 @@ public class ExternalPayloadStorageUtilsTest {
     @Before
     public void setup() {
         externalPayloadStorage = mock(ExternalPayloadStorage.class);
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         location = new ExternalStorageLocation();
         location.setPath("some/test/path");
 

@@ -26,12 +26,12 @@ import com.vodafone.vss.weaver.test.integration.grpc.AbstractGrpcEndToEndTest;
 @RunWith(SpringRunner.class)
 @TestPropertySource(
         properties = {
-            "conductor.db.type=postgres",
-            "conductor.postgres.experimentalQueueNotify=true",
-            "conductor.app.asyncIndexingEnabled=false",
-            "conductor.elasticsearch.version=7",
-            "conductor.grpc-server.port=8098",
-            "conductor.indexing.type=elasticsearch",
+            "weaver.db.type=postgres",
+            "weaver.postgres.experimentalQueueNotify=true",
+            "weaver.app.asyncIndexingEnabled=false",
+            "weaver.elasticsearch.version=7",
+            "weaver.grpc-server.port=8098",
+            "weaver.indexing.type=elasticsearch",
             "spring.datasource.url=jdbc:tc:postgresql:11.15-alpine:///conductor", // "tc" prefix
             // starts the
             // Postgres container
@@ -40,7 +40,7 @@ import com.vodafone.vss.weaver.test.integration.grpc.AbstractGrpcEndToEndTest;
             "spring.datasource.hikari.maximum-pool-size=8",
             "spring.datasource.hikari.minimum-idle=300000",
             "spring.flyway.clean-disabled=true",
-            "conductor.app.workflow.name-validation.enabled=true"
+            "weaver.app.workflow.name-validation.enabled=true"
         })
 public class PostgresGrpcEndToEndTest extends AbstractGrpcEndToEndTest {
 

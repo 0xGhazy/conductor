@@ -22,7 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.core.LifecycleAwareComponent;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.dao.QueueDAO;
 import com.vodafone.vss.weaver.metrics.Monitors;
 
@@ -32,12 +32,12 @@ import static com.vodafone.vss.weaver.core.utils.Utils.DECIDER_QUEUE;
  * Periodically polls all running workflows in the system and evaluates them for timeouts and/or
  * maintain consistency.
  */
-// Deprecated - and superseeded by new WorkflowSweeper in org.conductoross.conductor.core.execution
+// Deprecated - and superseeded by new WorkflowSweeper in com.vodafone.vss.weaver.core.execution
 // package
 @Deprecated(forRemoval = true)
 @Component
 @ConditionalOnProperty(
-        name = "conductor.workflow-reconciler.enabled",
+        name = "weaver.workflow-reconciler.enabled",
         havingValue = "true",
         matchIfMissing = false)
 public class WorkflowReconciler extends LifecycleAwareComponent {
@@ -50,7 +50,7 @@ public class WorkflowReconciler extends LifecycleAwareComponent {
     private static final Logger LOGGER = LoggerFactory.getLogger(WorkflowReconciler.class);
 
     public WorkflowReconciler(
-            WorkflowSweeper workflowSweeper, QueueDAO queueDAO, ConductorProperties properties) {
+            WorkflowSweeper workflowSweeper, QueueDAO queueDAO, WeaverProperties properties) {
         this.workflowSweeper = workflowSweeper;
         this.queueDAO = queueDAO;
         this.sweeperThreadCount = properties.getSweeperThreadCount();
@@ -62,8 +62,8 @@ public class WorkflowReconciler extends LifecycleAwareComponent {
     }
 
     @Scheduled(
-            fixedDelayString = "${conductor.sweep-frequency.millis:500}",
-            initialDelayString = "${conductor.sweep-frequency.millis:500}")
+            fixedDelayString = "${weaver.sweep-frequency.millis:500}",
+            initialDelayString = "${weaver.sweep-frequency.millis:500}")
     public void pollAndSweep() {
         try {
             if (!isRunning()) {

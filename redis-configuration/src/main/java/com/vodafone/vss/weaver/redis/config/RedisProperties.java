@@ -20,19 +20,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.convert.DurationUnit;
 import org.springframework.context.annotation.Configuration;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 
 import lombok.Data;
 
 @Configuration
-@ConfigurationProperties("conductor.redis")
+@ConfigurationProperties("weaver.redis")
 public class RedisProperties {
 
-    private final ConductorProperties conductorProperties;
+    private final WeaverProperties WeaverProperties;
 
     @Autowired
-    public RedisProperties(ConductorProperties conductorProperties) {
-        this.conductorProperties = conductorProperties;
+    public RedisProperties(WeaverProperties WeaverProperties) {
+        this.WeaverProperties = WeaverProperties;
     }
 
     /**
@@ -326,7 +326,7 @@ public class RedisProperties {
     }
 
     public String getQueuePrefix() {
-        String prefix = getQueueNamespacePrefix() + "." + conductorProperties.getStack();
+        String prefix = getQueueNamespacePrefix() + "." + WeaverProperties.getStack();
         if (getKeyspaceDomain() != null) {
             prefix = prefix + "." + getKeyspaceDomain();
         }

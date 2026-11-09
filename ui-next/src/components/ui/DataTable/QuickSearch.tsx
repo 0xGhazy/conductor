@@ -1,7 +1,7 @@
-import { Box, Grid, GridProps } from "@mui/material";
+﻿import { Box, Grid, GridProps } from "@mui/material";
 import { FunctionComponent, ReactNode } from "react";
 
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 
 export interface QuickSearchProps {
   autoFocusValue: boolean;
@@ -39,7 +39,7 @@ export const QuickSearch: FunctionComponent<QuickSearchProps> = ({
           }}
           {...searchModalContainerProps}
         >
-          <ConductorInput
+          <WeaverInput
             id="quick-search-field"
             fullWidth
             label={quickSearchLabel}

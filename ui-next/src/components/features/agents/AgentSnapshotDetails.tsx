@@ -1,4 +1,4 @@
-import { Box, Chip, Divider, Paper, Typography } from "@mui/material";
+﻿import { Box, Chip, Divider, Paper, Typography } from "@mui/material";
 import { ReactNode, useMemo } from "react";
 import { A2AAgentCard, A2AAgentExtension, AgentMetadataSnapshot } from "types";
 import { toolCategoryForPanel } from "utils/agentTaskCategory";
@@ -571,11 +571,11 @@ export function AgentSnapshotDetails({
 }) {
   if (!snapshot) return null;
   const a2aCard = snapshot.a2a?.agentCard;
-  const conductorConfig = snapshot.conductor?.agentConfig;
+  const WeaverConfig = snapshot.conductor?.agentConfig;
   const description =
     a2aCard?.description ??
-    (typeof conductorConfig?.description === "string"
-      ? conductorConfig.description
+    (typeof WeaverConfig?.description === "string"
+      ? WeaverConfig.description
       : undefined);
   const version = a2aCard?.version ?? snapshot.conductor?.resolvedVersion;
 

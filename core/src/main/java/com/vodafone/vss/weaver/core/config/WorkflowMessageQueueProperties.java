@@ -19,7 +19,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * <p>All properties are under the {@code conductor.workflow-message-queue} prefix.
  */
-@ConfigurationProperties("conductor.workflow-message-queue")
+@ConfigurationProperties("weaver.workflow-message-queue")
 public class WorkflowMessageQueueProperties {
 
     /**

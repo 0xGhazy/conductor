@@ -1,5 +1,5 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { path as _path } from "lodash/fp";
 import { updateField } from "utils/fieldHelpers";
 import { Optional } from "./OptionalFieldForm";
@@ -17,7 +17,7 @@ export const SetVariableOperatorForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               showFieldTypes={true}
               keyColumnLabel="Key"
               valueColumnLabel="Value"

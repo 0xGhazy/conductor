@@ -1,4 +1,4 @@
-import { TestTask } from "components/features/testTask";
+﻿import { TestTask } from "components/features/testTask";
 import { useInterpret, useSelector } from "@xstate/react";
 import { TestTaskButtonMachineStates, TestTaskMachine } from "./state";
 import { useAuthHeaders } from "utils/query";
@@ -16,14 +16,14 @@ export const TestTaskButton = ({
   tasksList,
 }: TestTaskButtonProps) => {
   const authHeaders = useAuthHeaders();
-  const { conductorUser } = useAuth();
+  const { WeaverUser } = useAuth();
   const { setMessage } = useContext(MessageContext);
 
   const testTaskActor = useInterpret(TestTaskMachine, {
     ...(process.env.NODE_ENV === "development" ? { devTools: true } : {}),
     context: {
       authHeaders,
-      user: conductorUser,
+      user: WeaverUser,
       originalTask: task,
       taskChanges: task?.inputParameters,
       tasksList: tasksList,

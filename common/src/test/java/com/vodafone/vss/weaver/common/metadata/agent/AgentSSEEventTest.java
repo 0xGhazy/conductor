@@ -14,7 +14,7 @@ package com.vodafone.vss.weaver.common.metadata.agent;
 
 import java.util.Map;
 
-import org.conductoross.conductor.common.metadata.agent.AgentSSEEvent;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentSSEEvent;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

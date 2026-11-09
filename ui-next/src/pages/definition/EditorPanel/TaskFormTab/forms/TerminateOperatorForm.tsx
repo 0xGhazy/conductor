@@ -1,7 +1,7 @@
-import { Grid, Stack } from "@mui/material";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+﻿import { Grid, Stack } from "@mui/material";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { path as _path } from "lodash/fp";
 import { updateField } from "utils/fieldHelpers";
 import TaskFormSection from "./TaskFormSection";
@@ -34,7 +34,7 @@ export const TerminateOperatorForm = (props: TaskFormProps) => {
               md: 6,
             }}
           >
-            <ConductorAutoComplete
+            <WeaverAutoComplete
               fullWidth
               label="Termination status"
               options={["COMPLETED", "FAILED", "TERMINATED"]}
@@ -45,7 +45,7 @@ export const TerminateOperatorForm = (props: TaskFormProps) => {
             />
           </Grid>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Termination reason"
               value={terminationReason}
               onChange={setTerminationReason}
@@ -59,7 +59,7 @@ export const TerminateOperatorForm = (props: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={2}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               showFieldTypes={true}
               keyColumnLabel="Key"
               valueColumnLabel="Value"

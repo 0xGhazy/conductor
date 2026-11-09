@@ -51,7 +51,7 @@ public @interface ValidNameConstraint {
         public static final String INVALID_NAME_MESSAGE =
                 "Allowed characters are alphanumeric, underscores, spaces, hyphens, and special characters like <, >, {, }, #";
 
-        @Value("${conductor.app.workflow.name-validation.enabled}")
+        @Value("${weaver.app.workflow.name-validation.enabled}")
         private boolean nameValidationEnabled;
 
         @Override

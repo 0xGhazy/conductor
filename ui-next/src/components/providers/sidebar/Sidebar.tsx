@@ -1,4 +1,4 @@
-import { Backdrop, Box, Drawer, alpha, useTheme } from "@mui/material";
+﻿import { Backdrop, Box, Drawer, alpha, useTheme } from "@mui/material";
 import { useMemo, useState } from "react";
 import { useAuth } from "components/features/auth";
 import { colors } from "theme/tokens/variables";
@@ -38,7 +38,7 @@ export const Sidebar = ({
 }: SidebarProps) => {
   const theme = useTheme();
   const [internalOpen, setInternalOpen] = useState(true);
-  const { user, logOut, conductorUser, isAuthenticated } = useAuth();
+  const { user, logOut, WeaverUser, isAuthenticated } = useAuth();
   const [showCopyAlert, setShowCopyAlert] = useState(false);
 
   const {
@@ -68,7 +68,7 @@ export const Sidebar = ({
 
   // Pass the three-state value straight through to SidebarVersionBlock:
   // undefined = loading (skeleton), null = error/unavailable, string = loaded.
-  const conductorVersion = apiVersion;
+  const WeaverVersion = apiVersion;
   const uiVersion = useMemo(() => releaseVersion || "latest", [releaseVersion]);
 
   const visibleItems = useMemo(
@@ -143,9 +143,9 @@ export const Sidebar = ({
         isAuthenticated={isAuthenticated}
         isMobile={isMobile}
         user={(user as Auth0User) || null}
-        conductorUser={conductorUser ? { id: conductorUser.id } : null}
+        WeaverUser={WeaverUser ? { id: WeaverUser.id } : null}
         logOut={logOut}
-        conductorVersion={conductorVersion}
+        WeaverVersion={WeaverVersion}
         uiVersion={uiVersion}
         showCopyAlert={showCopyAlert}
         setShowCopyAlert={setShowCopyAlert}

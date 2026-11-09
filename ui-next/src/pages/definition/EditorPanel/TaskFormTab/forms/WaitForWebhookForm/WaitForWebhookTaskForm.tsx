@@ -1,6 +1,6 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 
-import { ConductorFlatMapForm } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverFlatMapForm } from "components/FlatMapForm/WeaverFlatMapForm";
 import TaskFormSection from "pages/definition/EditorPanel/TaskFormTab/forms/TaskFormSection";
 import { TaskFormProps } from "pages/definition/EditorPanel/TaskFormTab/forms/types";
 import { TaskType } from "types";
@@ -19,7 +19,7 @@ const WaitForWebhookTaskForm = (props: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapForm
+            <WeaverFlatMapForm
               showFieldTypes={true}
               keyColumnLabel="Key"
               valueColumnLabel="Value"

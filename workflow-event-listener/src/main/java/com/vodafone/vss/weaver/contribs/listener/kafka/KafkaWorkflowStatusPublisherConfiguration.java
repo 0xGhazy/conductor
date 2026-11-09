@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
 @EnableConfigurationProperties(KafkaWorkflowStatusPublisherProperties.class)
-@ConditionalOnProperty(name = "conductor.workflow-status-listener.type", havingValue = "kafka")
+@ConditionalOnProperty(name = "weaver.workflow-status-listener.type", havingValue = "kafka")
 public class KafkaWorkflowStatusPublisherConfiguration {
 
     @Bean

@@ -29,9 +29,9 @@ public class ApplicationPropertiesEnvTest {
                         .properties("spring.main.web-application-type=none")
                         .run()) {
             Environment env = ctx.getEnvironment();
-            assertNotNull(env.getProperty("conductor.db.type"));
+            assertNotNull(env.getProperty("weaver.db.type"));
             assertNotNull(env.getProperty("spring.datasource.url"));
-            assertEquals("postgres", env.getProperty("conductor.db.type"));
+            assertEquals("postgres", env.getProperty("weaver.db.type"));
         }
     }
 

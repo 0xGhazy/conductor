@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Plugin Registry
  *
  * This module provides the plugin system for Conductor UI.
@@ -6,9 +6,9 @@
  *
  * @example
  * ```typescript
- * import { registerPlugin, ConductorPlugin } from 'plugins/registry';
+ * import { registerPlugin, WeaverPlugin } from 'plugins/registry';
  *
- * const myPlugin: ConductorPlugin = {
+ * const myPlugin: WeaverPlugin = {
  *   id: 'my-plugin',
  *   name: 'My Plugin',
  *   routes: [...],
@@ -26,7 +26,7 @@ export { pluginRegistry, registerPlugin } from "./registry";
 // Export all types
 export type {
   // Main plugin interface
-  ConductorPlugin,
+  WeaverPlugin,
   PluginRegistry,
   // Task form types
   PluginTaskFormProps,

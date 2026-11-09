@@ -1,4 +1,4 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import { Paper, NavLink } from "components";
 import { Helmet } from "react-helmet";
 import SectionContainer from "components/ui/layout/SectionContainer";
@@ -11,11 +11,11 @@ import { colors } from "theme/tokens/variables";
 import { EventExecutionDto } from "./types";
 import TagChip from "components/ui/TagChip";
 import Header from "components/ui/Header";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import useCustomPagination from "utils/hooks/useCustomPagination";
 import { LegacyColumn } from "components/ui/DataTable/types";
 import { createTableTitle } from "utils/helpers";
-import ConductorMultiSelect from "components/ui/inputs/ConductorMultiSelect";
+import WeaverMultiSelect from "components/ui/inputs/WeaverMultiSelect";
 import { RefreshEvent } from "./EventMonitorDetail/Refresher/RefreshEvent";
 import MuiTypography from "components/ui/MuiTypography";
 import { useRefreshMachine } from "./EventMonitorDetail/Refresher/state/hook";
@@ -189,7 +189,7 @@ export const EventMonitor = () => {
                   md: 4,
                 }}
               >
-                <ConductorInput
+                <WeaverInput
                   id="search-event"
                   fullWidth
                   label="Quick search"
@@ -207,7 +207,7 @@ export const EventMonitor = () => {
                   md: 2,
                 }}
               >
-                <ConductorMultiSelect
+                <WeaverMultiSelect
                   dataTestId="event-list-status-filter"
                   label="Select status"
                   options={statusOptions.map((status) => status.label)}

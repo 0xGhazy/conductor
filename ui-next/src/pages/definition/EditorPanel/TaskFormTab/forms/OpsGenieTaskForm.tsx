@@ -1,14 +1,14 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import { path as _path } from "lodash/fp";
 
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import {
-  ConductorFlatMapForm,
-  ConductorFlatMapFormBase,
-} from "components/FlatMapForm/ConductorFlatMapForm";
+  WeaverFlatMapForm,
+  WeaverFlatMapFormBase,
+} from "components/FlatMapForm/WeaverFlatMapForm";
 import { TaskType } from "types";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
-import { ConductorValueInput } from "./ConductorValueInput";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
+import { WeaverValueInput } from "./WeaverValueInput";
 import { updateField } from "utils/fieldHelpers";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -41,7 +41,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={alias}
               label="Alias"
               onChange={(changes) =>
@@ -50,7 +50,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={description}
               label="Description"
               onChange={(changes) =>
@@ -63,7 +63,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               showFieldTypes={true}
               autoFocusField={false}
               keyColumnLabel="Key"
@@ -92,7 +92,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapForm
+            <WeaverFlatMapForm
               title="Details"
               showFieldTypes={true}
               keyColumnLabel="Key"
@@ -111,7 +111,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={message}
               label="Message"
               onChange={(changes) =>
@@ -120,7 +120,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={12}>
-            <ConductorValueInput
+            <WeaverValueInput
               valueLabel="Actions"
               value={actions}
               onChangeValue={(changes) => {
@@ -131,7 +131,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
           </Grid>
 
           <Grid size={6}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={priority}
               label="Priority"
               onChange={(changes) =>
@@ -140,7 +140,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={6}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={entity}
               label="Entity"
               onChange={(changes) =>
@@ -153,7 +153,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection accordionAdditionalProps={{ defaultExpanded: true }}>
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               value={token}
               label="Token"
               onChange={(changes) =>
@@ -162,7 +162,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </Grid>
           <Grid size={12}>
-            <ConductorValueInput
+            <WeaverValueInput
               valueLabel="Tags"
               value={tags}
               onChangeValue={(changes) => {
@@ -174,7 +174,7 @@ export const OpsGenieTaskForm = ({ task, onChange }: TaskFormProps) => {
         </Grid>
       </TaskFormSection>
       <TaskFormSection>
-        <ConductorCacheOutput onChange={onChange} taskJson={task} />
+        <WeaverCacheOutput onChange={onChange} taskJson={task} />
       </TaskFormSection>
     </Box>
   );

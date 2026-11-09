@@ -1,12 +1,12 @@
 syntax = "proto3";
-package conductor.proto;
+package weaver.proto;
 
 import "google/protobuf/struct.proto";
 import "google/protobuf/any.proto";
 
 option java_package = "com.vodafone.vss.weaver.proto";
 option java_outer_classname = "EventHandlerPb";
-option go_package = "github.com/netflix/conductor/client/gogrpc/conductor/model";
+option go_package = "github.com/conductor-oss/conductor/client/gogrpc/weaver/model";
 
 message EventHandler {
     message UpdateWorkflowVariables {

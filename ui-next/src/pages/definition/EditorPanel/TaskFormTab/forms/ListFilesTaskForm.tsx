@@ -1,15 +1,15 @@
-import { Box, Grid, Typography } from "@mui/material";
+﻿import { Box, Grid, Typography } from "@mui/material";
 import { path as _path, pipe as _pipe, assoc as _assoc } from "lodash/fp";
 import { useState } from "react";
 
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapForm } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapForm } from "components/FlatMapForm/WeaverFlatMapForm";
 import { TaskType } from "types";
 import { updateField } from "utils/fieldHelpers";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
 import { Optional } from "./OptionalFieldForm";
-import { ConductorAutoComplete } from "components/ui/inputs";
+import { WeaverAutoComplete } from "components/ui/inputs";
 import { useGetIntegration } from "utils/hooks";
 import { MaybeVariable } from "./MaybeVariable";
 
@@ -122,7 +122,7 @@ export const ListFilesTaskForm = ({ task, onChange }: TaskFormProps) => {
           <Grid size={12}>
             <Grid container spacing={3}>
               <Grid size={12}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   value={integrationName}
                   label="Integration Name"
                   otherOptions={integrationNameOptions}
@@ -136,7 +136,7 @@ export const ListFilesTaskForm = ({ task, onChange }: TaskFormProps) => {
           <Grid size={12}>
             <Grid container spacing={3} alignItems={"center"}>
               <Grid size={12}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   fullWidth
                   required
                   value={inputLocation}
@@ -207,7 +207,7 @@ export const ListFilesTaskForm = ({ task, onChange }: TaskFormProps) => {
                   helperTextStyle={{ padding: 0 }}
                   fieldStyle={{ paddingX: 0 }}
                 >
-                  <ConductorAutoComplete
+                  <WeaverAutoComplete
                     fullWidth
                     label="File Types"
                     options={DEFAULT_VALUES_FOR_FILE_TYPES_ARRAY}
@@ -223,7 +223,7 @@ export const ListFilesTaskForm = ({ task, onChange }: TaskFormProps) => {
                       );
                     }}
                     value={fileTypes}
-                    conductorInputProps={{
+                    WeaverInputProps={{
                       tooltip: {
                         title: "Field Name",
                         content:
@@ -238,7 +238,7 @@ export const ListFilesTaskForm = ({ task, onChange }: TaskFormProps) => {
           <Grid size={12}>
             <Grid container spacing={3}>
               <Grid size={12}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   fullWidth
                   value={outputLocation}
                   onChange={(changes) =>
@@ -279,7 +279,7 @@ export const ListFilesTaskForm = ({ task, onChange }: TaskFormProps) => {
           </>
           <Grid container>
             <Grid size={12}>
-              <ConductorFlatMapForm
+              <WeaverFlatMapForm
                 keyColumnLabel="Type"
                 valueColumnLabel="Name"
                 addItemLabel="Add Integration"

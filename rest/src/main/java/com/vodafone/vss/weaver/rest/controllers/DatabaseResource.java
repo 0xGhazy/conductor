@@ -53,7 +53,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
  * Databases (JDBC connections) used by DATABASE tasks and saved queries.
  *
  * <p>Writes, connection tests and SQL execution need the admin or operator role when security is
- * enabled (see ConductorSecurityConfiguration). Passwords are never returned.
+ * enabled (see WeaverSecurityConfiguration). Passwords are never returned.
  */
 @Validated
 @RestController

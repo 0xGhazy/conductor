@@ -1,4 +1,4 @@
-import React, { isValidElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+﻿import React, { isValidElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Box, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -17,7 +17,7 @@ import type {
 } from "@/components/common/data/WeaverDataExplorer/WeaverDataExplorer.types";
 import Tag from "@/components/common/data/Tag/Tag";
 import { WeaverConfirmDialog } from "@/components/common/dialogs";
-import { useConductorMetadataService } from "@/features/workflows/services/conductorMetadataService";
+import { useWeaverMetadataService } from "@/features/workflows/services/weaverMetadataService";
 import { getErrorMessage } from "@/utils/error";
 import { toTimezoneDateTime } from "@/utils/dateTime";
 import { config } from "@/config/appConfig";
@@ -196,7 +196,7 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
   const backendDownNotifiedRef = useRef(false);
 
   // Single cached list; pagination happens client-side in WeaverDataExplorer.
-  const { workflows, saveWorkflow, deleteWorkflow } = useConductorMetadataService();
+  const { workflows, saveWorkflow, deleteWorkflow } = useWeaverMetadataService();
   const { refetch: refetchWorkflows } = workflows;
   const [duplicatingWorkflowName, setDuplicatingWorkflowName] = useState<string | null>(null);
   const [deletingWorkflowKey, setDeletingWorkflowKey] = useState<string | null>(null);

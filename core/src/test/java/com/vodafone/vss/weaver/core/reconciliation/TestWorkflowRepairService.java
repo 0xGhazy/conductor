@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.events.EventQueues;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
 import com.vodafone.vss.weaver.core.execution.tasks.*;
@@ -49,7 +49,7 @@ public class TestWorkflowRepairService {
 
     private QueueDAO queueDAO;
     private ExecutionDAO executionDAO;
-    private ConductorProperties properties;
+    private WeaverProperties properties;
     private WorkflowRepairService workflowRepairService;
     private SystemTaskRegistry systemTaskRegistry;
 
@@ -57,7 +57,7 @@ public class TestWorkflowRepairService {
     public void setUp() {
         executionDAO = mock(ExecutionDAO.class);
         queueDAO = mock(QueueDAO.class);
-        properties = mock(ConductorProperties.class);
+        properties = mock(WeaverProperties.class);
         systemTaskRegistry = mock(SystemTaskRegistry.class);
         workflowRepairService =
                 new WorkflowRepairService(executionDAO, queueDAO, properties, systemTaskRegistry);

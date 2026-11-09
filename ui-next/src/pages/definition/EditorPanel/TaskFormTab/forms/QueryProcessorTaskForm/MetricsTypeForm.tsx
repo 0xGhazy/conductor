@@ -1,7 +1,7 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { configurePromQl } from "utils/monacoUtils/CodeEditorUtils";
 import { useTaskForm } from "../hooks/useTaskForm";
 import { TaskFormProps } from "../types";
@@ -35,7 +35,7 @@ export const MetricsTypeForm = ({ task, onChange }: TaskFormProps) => {
   return (
     <Grid container sx={{ width: "100%" }} spacing={3} mt={1}>
       <Grid size={12}>
-        <ConductorCodeBlockInput
+        <WeaverCodeBlockInput
           language="promql"
           minHeight={100}
           autoformat={false}
@@ -48,7 +48,7 @@ export const MetricsTypeForm = ({ task, onChange }: TaskFormProps) => {
         <Grid container sx={{ width: "100%" }} alignItems={"center"} gap={2}>
           <Box>{"Start time from (Now - "} </Box>
           <Grid size={2}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Value"
               value={metricsStart}
               fullWidth
@@ -58,7 +58,7 @@ export const MetricsTypeForm = ({ task, onChange }: TaskFormProps) => {
           </Grid>
           <Box>{`mins) to (Now -`} </Box>
           <Grid size={2}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Value"
               value={metricsEnd}
               fullWidth
@@ -70,7 +70,7 @@ export const MetricsTypeForm = ({ task, onChange }: TaskFormProps) => {
         </Grid>
       </Grid>
       <Grid size={12}>
-        <ConductorAutocompleteVariables
+        <WeaverAutocompleteVariables
           fullWidth
           label="Step"
           value={metricsStep}

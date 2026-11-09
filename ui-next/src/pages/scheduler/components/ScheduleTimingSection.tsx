@@ -1,4 +1,4 @@
-import {
+﻿import {
   FormControl,
   FormControlLabel,
   Grid,
@@ -6,8 +6,8 @@ import {
   Switch,
   Tooltip,
 } from "@mui/material";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorDateRangePicker from "components/ui/date-time/ConductorDateRangePicker";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverDateRangePicker from "components/ui/date-time/WeaverDateRangePicker";
 import { baseLabelStyle } from "theme/styles";
 import { SMALL_EDITOR_DEFAULT_OPTIONS } from "utils/constants";
 
@@ -35,7 +35,7 @@ export function ScheduleTimingSection({
   return (
     <>
       <Grid size={12}>
-        <ConductorDateRangePicker
+        <WeaverDateRangePicker
           labelFrom="Schedule start (local)"
           labelTo="Schedule end (local)"
           from={scheduleStartTime ? new Date(scheduleStartTime) : null}
@@ -45,7 +45,7 @@ export function ScheduleTimingSection({
         />
       </Grid>
       <Grid size={12}>
-        <ConductorCodeBlockInput
+        <WeaverCodeBlockInput
           label="Tasks to domain mapping"
           minHeight={100}
           defaultLanguage="json"

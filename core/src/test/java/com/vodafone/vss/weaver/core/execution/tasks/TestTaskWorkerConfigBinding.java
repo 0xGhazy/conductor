@@ -23,7 +23,7 @@ import org.springframework.boot.env.PropertiesPropertySourceLoader;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.io.ByteArrayResource;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.execution.AsyncSystemTaskExecutor;
 import com.vodafone.vss.weaver.dao.QueueDAO;
 
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.mock;
  */
 public class TestTaskWorkerConfigBinding {
 
-    private ConductorProperties bindFromPropertiesFile(String propertiesFileContent)
+    private WeaverProperties bindFromPropertiesFile(String propertiesFileContent)
             throws Exception {
         List<PropertySource<?>> sources =
                 new PropertiesPropertySourceLoader()
@@ -48,13 +48,13 @@ public class TestTaskWorkerConfigBinding {
         Iterable<ConfigurationPropertySource> configSources =
                 ConfigurationPropertySources.from(sources.get(0));
         return new Binder(configSources)
-                .bind("conductor.app", ConductorProperties.class)
+                .bind("weaver.app", WeaverProperties.class)
                 .orElseThrow(() -> new AssertionError("binding produced no result"));
     }
 
     @Test
     public void propertiesFileKeysBindAndResolveThroughWorkerLookup() throws Exception {
-        ConductorProperties properties =
+        WeaverProperties properties =
                 bindFromPropertiesFile(
                         """
                         conductor.app.taskWorkerConfigs.HTTP.threadCount=20

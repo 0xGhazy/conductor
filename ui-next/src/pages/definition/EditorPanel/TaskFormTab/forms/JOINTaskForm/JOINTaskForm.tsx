@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+﻿import { Box, Grid, Stack, Typography } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { useSelector } from "@xstate/react";
 import Button from "components/ui/buttons/MuiButton";
@@ -10,7 +10,7 @@ import {
   forkLastTaskReferences,
   tasksAsNodes,
 } from "components/features/flow/nodes/mapper";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import _difference from "lodash/difference";
 import _first from "lodash/first";
 import { path as _path } from "lodash/fp";
@@ -205,7 +205,7 @@ export const JOINTaskForm = ({ task, onChange }: TaskFormProps) => {
         >
           <Grid container sx={{ width: "100%" }} spacing={3}>
             <Grid size={12}>
-              <ConductorFlatMapFormBase
+              <WeaverFlatMapFormBase
                 showFieldTypes={true}
                 keyColumnLabel="Key"
                 valueColumnLabel="Value"

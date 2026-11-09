@@ -1,8 +1,8 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import { path as _path } from "lodash/fp";
 
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { updateField } from "utils/fieldHelpers";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
@@ -18,7 +18,7 @@ export const DynamicForkForm = ({ task, onChange }: TaskFormProps) => (
     >
       <Grid container sx={{ width: "100%" }} spacing={3}>
         <Grid size={12}>
-          <ConductorFlatMapFormBase
+          <WeaverFlatMapFormBase
             keyColumnLabel="Key"
             valueColumnLabel="Value"
             addItemLabel="Add parameter"
@@ -30,7 +30,7 @@ export const DynamicForkForm = ({ task, onChange }: TaskFormProps) => (
         </Grid>
 
         <Grid size={12}>
-          <ConductorAutocompleteVariables
+          <WeaverAutocompleteVariables
             label="Dynamic Task to be Executed"
             value={task.dynamicTaskNameParam}
             onChange={(changes) =>

@@ -1,7 +1,7 @@
-import { Autocomplete } from "@mui/material";
+﻿import { Autocomplete } from "@mui/material";
 import { createFilterOptions } from "@mui/material/Autocomplete";
 import TagChip from "components/ui/TagChip";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import XCloseIcon from "components/icons/XCloseIcon";
 import { ReactNode } from "react";
 import { autocompleteStyle } from "shared/styles";
@@ -113,7 +113,7 @@ const ReplaceTagsInput = ({
         );
       }}
       renderInput={(params) => (
-        <ConductorInput
+        <WeaverInput
           {...params}
           id="tag-input-field"
           label={label}

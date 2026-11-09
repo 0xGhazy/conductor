@@ -1,4 +1,4 @@
-import {
+﻿import {
   FormControl,
   FormControlLabel,
   Grid,
@@ -22,7 +22,7 @@ import ConfirmChoiceDialog from "components/ui/dialogs/ConfirmChoiceDialog";
 import AddTagDialog, {
   TagDialogProps,
 } from "components/features/tags/AddTagDialog";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { TagsRenderer } from "components/ui/TagList";
 import AddIcon from "components/icons/AddIcon";
 import PlayIcon from "components/icons/PlayIcon";
@@ -34,7 +34,7 @@ import SectionHeader from "components/layout/SectionHeader";
 import SectionHeaderActions from "components/ui/layout/SectionHeaderActions";
 import { useAuth } from "components/features/auth";
 import { colors } from "theme/tokens/variables";
-import { ConductorEvent } from "types/Events";
+import { WeaverEvent } from "types/Events";
 import { TagDto } from "types/Tag";
 import { createSearchableTags, logger } from "utils";
 import { parseErrorResponse } from "utils/helpers";
@@ -97,7 +97,7 @@ export default function EventDefinitionList() {
   const activeNonActiveFiltered = useMemo(
     () =>
       eventHandlers.filter(
-        ({ active }: ConductorEvent) =>
+        ({ active }: WeaverEvent) =>
           activeFilterParam === "all" ||
           (activeFilterParam === "yes" && active) ||
           (activeFilterParam === "no" && !active),
@@ -106,7 +106,7 @@ export default function EventDefinitionList() {
   );
 
   const handlePauseResumeEvent = useCallback(
-    (event: ConductorEvent, active: boolean) => {
+    (event: WeaverEvent, active: boolean) => {
       if (event) {
         // @ts-ignore
         pauseActiveEventAction.mutate({
@@ -136,7 +136,7 @@ export default function EventDefinitionList() {
         id: "name",
         name: "name",
         label: "Event handler name",
-        renderer: (name: string, rec: ConductorEvent) => (
+        renderer: (name: string, rec: WeaverEvent) => (
           <NavLink
             style={{ color: getLinkColor(rec) }}
             path={`${EVENT_HANDLERS_URL.BASE}/${name}`}
@@ -377,7 +377,7 @@ export default function EventDefinitionList() {
                   md: 4,
                 }}
               >
-                <ConductorInput
+                <WeaverInput
                   fullWidth
                   label="Quick search"
                   placeholder="Search event handlers"

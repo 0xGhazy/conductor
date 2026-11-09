@@ -1,9 +1,9 @@
-import { Grid } from "@mui/material";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+﻿import { Grid } from "@mui/material";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import XCloseIcon from "components/icons/XCloseIcon";
 import IconButton from "components/ui/buttons/MuiIconButton";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import MuiTypography from "components/ui/MuiTypography";
 import _isEmpty from "lodash/isEmpty";
 import _isUndefined from "lodash/isUndefined";
@@ -71,7 +71,7 @@ export const StartAgentActionForm = ({
           md: 9,
         }}
       >
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           label="Agent name"
           freeSolo
           fullWidth
@@ -95,7 +95,7 @@ export const StartAgentActionForm = ({
               },
             });
           }}
-          conductorInputProps={{
+          WeaverInputProps={{
             placeholder: `\${event.payload.agent_name}`,
           }}
         />
@@ -107,7 +107,7 @@ export const StartAgentActionForm = ({
           md: 3,
         }}
       >
-        <ConductorAutoComplete
+        <WeaverAutoComplete
           label="Agent version"
           freeSolo
           fullWidth
@@ -131,13 +131,13 @@ export const StartAgentActionForm = ({
               },
             });
           }}
-          conductorInputProps={{
+          WeaverInputProps={{
             placeholder: "latest",
           }}
         />
       </Grid>
       <Grid size={12}>
-        <ConductorInput
+        <WeaverInput
           fullWidth
           multiline
           minRows={3}
@@ -161,7 +161,7 @@ export const StartAgentActionForm = ({
           md: 6,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Session ID"
           placeholder={`\${event.payload.session_id}`}
@@ -183,7 +183,7 @@ export const StartAgentActionForm = ({
           md: 6,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Idempotency key"
           placeholder={`\${event.payload.event_id}`}
@@ -200,7 +200,7 @@ export const StartAgentActionForm = ({
         />
       </Grid>
       <Grid size={12}>
-        <ConductorInput
+        <WeaverInput
           fullWidth
           multiline
           minRows={2}
@@ -222,7 +222,7 @@ export const StartAgentActionForm = ({
         />
       </Grid>
       <Grid size={12}>
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           onChange={(newValues) => {
             handleChangeAction(index, {
               ...payload,

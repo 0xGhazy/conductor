@@ -1,14 +1,14 @@
-import { Box, Grid, Stack } from "@mui/material";
+﻿import { Box, Grid, Stack } from "@mui/material";
 import { Button, DataTable, Paper } from "components";
 import { LegacyColumn } from "components/ui/DataTable/types";
 import Header from "components/ui/Header";
 import MuiButton from "components/ui/buttons/MuiButton";
 import MuiTypography from "components/ui/MuiTypography";
 import TagChip from "components/ui/TagChip";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorMultiSelect from "components/ui/inputs/ConductorMultiSelect";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverMultiSelect from "components/ui/inputs/WeaverMultiSelect";
 import XCloseIcon from "components/icons/XCloseIcon";
-import { ConductorSectionHeader } from "components/layout/section/ConductorSectionHeader";
+import { WeaverSectionHeader } from "components/layout/section/WeaverSectionHeader";
 import _countBy from "lodash/countBy";
 import _get from "lodash/get";
 import _isEmpty from "lodash/isEmpty";
@@ -251,7 +251,7 @@ export const EventMonitorDetail = () => {
       </Helmet>
       <SectionContainer
         header={
-          <ConductorSectionHeader
+          <WeaverSectionHeader
             breadcrumbItems={[
               { label: "Event Monitor", to: EVENT_MONITOR_URL.BASE },
               {
@@ -298,7 +298,7 @@ export const EventMonitorDetail = () => {
                   md: 4,
                 }}
               >
-                <ConductorAutoComplete
+                <WeaverAutoComplete
                   id="event-monitor-detail-dropdown"
                   fullWidth
                   label="Select action"
@@ -319,7 +319,7 @@ export const EventMonitorDetail = () => {
                   md: 4,
                 }}
               >
-                <ConductorMultiSelect
+                <WeaverMultiSelect
                   dataTestId="event-detail-status-filter"
                   label="Select status"
                   options={status.map((stat) => stat.name)}
@@ -336,7 +336,7 @@ export const EventMonitorDetail = () => {
                   md: 4,
                 }}
               >
-                <ConductorAutoComplete
+                <WeaverAutoComplete
                   dataTestId="event-detail-timer-filter"
                   fullWidth
                   label="Events within"

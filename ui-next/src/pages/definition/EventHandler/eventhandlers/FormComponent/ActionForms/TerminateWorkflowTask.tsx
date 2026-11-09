@@ -1,7 +1,7 @@
-import { Grid } from "@mui/material";
+﻿import { Grid } from "@mui/material";
 import IconButton from "components/ui/buttons/MuiIconButton";
 import MuiTypography from "components/ui/MuiTypography";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import XCloseIcon from "components/icons/XCloseIcon";
 import { Props } from "./common";
 
@@ -42,7 +42,7 @@ export const TerminateWorkflowForm = ({
           md: 6,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Workflow ID"
           placeholder={`\${event.payload.workflow_id}`}
@@ -57,7 +57,7 @@ export const TerminateWorkflowForm = ({
           md: 6,
         }}
       >
-        <ConductorInput
+        <WeaverInput
           fullWidth
           label="Termination reason"
           placeholder="abcd"

@@ -33,7 +33,7 @@ import com.vodafone.vss.weaver.redis.limit.config.RedisConcurrentExecutionLimitP
 @Trace
 @Component
 @ConditionalOnProperty(
-        value = "conductor.redis-concurrent-execution-limit.enabled",
+        value = "weaver.redis-concurrent-execution-limit.enabled",
         havingValue = "true")
 public class RedisConcurrentExecutionLimitDAO implements ConcurrentExecutionLimitDAO {
 

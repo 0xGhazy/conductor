@@ -1,4 +1,4 @@
-import { TagDto } from "./Tag";
+﻿import { TagDto } from "./Tag";
 
 export type CompleteActionType = {
   action: "complete_task";
@@ -71,7 +71,7 @@ export type StartAgentAction = {
   };
 };
 
-export type ConductorEvent = {
+export type WeaverEvent = {
   name: string;
   description?: string;
   event: string;

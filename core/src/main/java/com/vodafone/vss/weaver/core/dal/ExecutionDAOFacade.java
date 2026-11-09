@@ -36,7 +36,7 @@ import com.vodafone.vss.weaver.common.run.TaskSummary;
 import com.vodafone.vss.weaver.common.run.Workflow;
 import com.vodafone.vss.weaver.common.run.WorkflowSummary;
 import com.vodafone.vss.weaver.common.utils.ExternalPayloadStorage;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.events.queue.Message;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.core.exception.TerminateWorkflowException;
@@ -74,7 +74,7 @@ public class ExecutionDAOFacade {
     private final ConcurrentExecutionLimitDAO concurrentExecutionLimitDAO;
     private final PollDataDAO pollDataDAO;
     private final ObjectMapper objectMapper;
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final ExternalPayloadStorageUtils externalPayloadStorageUtils;
 
     private final ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
@@ -87,7 +87,7 @@ public class ExecutionDAOFacade {
             ConcurrentExecutionLimitDAO concurrentExecutionLimitDAO,
             PollDataDAO pollDataDAO,
             ObjectMapper objectMapper,
-            ConductorProperties properties,
+            WeaverProperties properties,
             ExternalPayloadStorageUtils externalPayloadStorageUtils) {
         this.executionDAO = executionDAO;
         this.queueDAO = queueDAO;

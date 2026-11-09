@@ -1,4 +1,4 @@
-import { getAccessToken, refreshToken } from "@/features/auth";
+﻿import { getAccessToken, refreshToken } from "@/features/auth";
 import { config } from "@/config/appConfig";
 
 let isInstalled = false;
@@ -26,7 +26,7 @@ export function installFetchInterceptor(): void {
       urlString = (input as Request).url;
     }
 
-    const backendBases = [config.apiBaseUrl, config.conductorApiBaseUrl].filter(Boolean) as string[];
+    const backendBases = [config.apiBaseUrl, config.weaverApiBaseUrl].filter(Boolean) as string[];
     const isBackendRequest =
       urlString.startsWith("/api") ||
       urlString.startsWith("/health") ||

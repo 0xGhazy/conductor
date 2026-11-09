@@ -21,33 +21,33 @@ import static org.junit.Assert.*;
 
 public class EnvVariableSecretsDAOTest {
 
-    private final EnvVariableSecretsDAO dao = new EnvVariableSecretsDAO("CONDUCTOR_SECRET_");
+    private final EnvVariableSecretsDAO dao = new EnvVariableSecretsDAO("WEAVER_SECRET_");
 
     @After
     public void cleanup() {
-        System.clearProperty("CONDUCTOR_SECRET_DB_PASSWORD");
-        System.clearProperty("CONDUCTOR_SECRET_CREDS");
+        System.clearProperty("WEAVER_SECRET_DB_PASSWORD");
+        System.clearProperty("WEAVER_SECRET_CREDS");
     }
 
     @Test
     public void testGetSecretReadsPrefixedProperty() {
-        System.setProperty("CONDUCTOR_SECRET_DB_PASSWORD", "s3cr3t");
+        System.setProperty("WEAVER_SECRET_DB_PASSWORD", "s3cr3t");
         assertEquals("s3cr3t", dao.getSecret("DB_PASSWORD"));
     }
 
     @Test
     public void testSecretExists() {
-        System.setProperty("CONDUCTOR_SECRET_DB_PASSWORD", "s3cr3t");
+        System.setProperty("WEAVER_SECRET_DB_PASSWORD", "s3cr3t");
         assertTrue(dao.secretExists("DB_PASSWORD"));
         assertFalse(dao.secretExists("NOPE"));
     }
 
     @Test
     public void testListSecretNamesStripsPrefixAndOmitsValues() {
-        System.setProperty("CONDUCTOR_SECRET_DB_PASSWORD", "s3cr3t");
+        System.setProperty("WEAVER_SECRET_DB_PASSWORD", "s3cr3t");
         List<String> names = dao.listSecretNames();
         assertTrue(names.contains("DB_PASSWORD"));
-        assertFalse(names.contains("CONDUCTOR_SECRET_DB_PASSWORD"));
+        assertFalse(names.contains("WEAVER_SECRET_DB_PASSWORD"));
         assertFalse(names.contains("s3cr3t"));
     }
 

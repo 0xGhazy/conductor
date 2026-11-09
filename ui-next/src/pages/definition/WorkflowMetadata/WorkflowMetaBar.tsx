@@ -1,9 +1,9 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import { useSelector } from "@xstate/react";
 import { Text } from "components";
 import { selectIsOpenedEdge } from "components/features/flow/state/selectors";
 import { HeadBarSelect } from "components/ui/inputs";
-import ConductorBreadcrumbs from "components/ui/layout/ConductorBreadcrumbs";
+import WeaverBreadcrumbs from "components/ui/layout/WeaverBreadcrumbs";
 import DoubleArrowLeftIcon from "components/icons/DoubleArrowLeftIcon";
 import ButtonLinks from "components/layout/header/ButtonLinks";
 import _isString from "lodash/isString";
@@ -116,7 +116,7 @@ export const WorkflowMetaBar: FunctionComponent<WorkflowMetaBarProps> = ({
               md: 5,
             }}
           >
-            <ConductorBreadcrumbs items={breadcrumbItems} />
+            <WeaverBreadcrumbs items={breadcrumbItems} />
             <Text
               sx={{
                 marginBottom: 0,

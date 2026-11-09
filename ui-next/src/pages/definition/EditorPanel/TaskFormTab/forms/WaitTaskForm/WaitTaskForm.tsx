@@ -1,9 +1,9 @@
-import { Box, Link } from "@mui/material";
+﻿import { Box, Link } from "@mui/material";
 import _omit from "lodash/omit";
 import { FunctionComponent, useMemo } from "react";
 
 import MuiTypography from "components/ui/MuiTypography";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import { WaitTaskDef } from "types";
 import { Optional } from "../OptionalFieldForm";
 import TaskFormSection from "../TaskFormSection";
@@ -173,7 +173,7 @@ export const WaitTaskForm: FunctionComponent<WaitTaskFormProps> = (props) => {
         handler: onChange,
       })}
       <TaskFormSection title="Input Parameters">
-        <ConductorFlatMapFormBase
+        <WeaverFlatMapFormBase
           autoFocusField={false}
           showFieldTypes={true}
           keyColumnLabel="Key"

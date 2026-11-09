@@ -1,6 +1,6 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+﻿import { Box, Grid, Typography } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { LLMFormFields } from "pages/definition/EditorPanel/TaskFormTab/forms/LLMFormFields";
 import { path as _path } from "lodash/fp";
 import { UiIntegrationsFieldType } from "types/FormFieldTypes";
@@ -8,8 +8,8 @@ import {
   fieldsToFieldsFieldsComponents,
   updateField,
 } from "utils/fieldHelpers";
-import { ConductorAdditionalHeadersBase } from "./HTTPTaskForm/ConductorAdditionalHeaders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverAdditionalHeadersBase } from "./HTTPTaskForm/WeaverAdditionalHeaders";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -99,7 +99,7 @@ export const LLMIndexDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
                 </Typography>
               </Grid>
               <Grid size={12}>
-                <ConductorInput
+                <WeaverInput
                   label="Text (inline)"
                   name="text"
                   value={(get("inputParameters.text") as string) || ""}
@@ -111,7 +111,7 @@ export const LLMIndexDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <ConductorAutocompleteVariables
+                <WeaverAutocompleteVariables
                   label="Document ID"
                   value={get("inputParameters.docId") as string}
                   onChange={(v) => set("inputParameters.docId", v)}
@@ -130,7 +130,7 @@ export const LLMIndexDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
           <TaskFormSection title="Metadata">
             <Grid container spacing={2} sx={{ width: "100%" }}>
               <Grid size={12}>
-                <ConductorAdditionalHeadersBase
+                <WeaverAdditionalHeadersBase
                   headers={metadata}
                   onChangeHeaders={(m) => set("inputParameters.metadata", m)}
                 />
@@ -139,7 +139,7 @@ export const LLMIndexDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
           </TaskFormSection>
           <TaskFormSection>
             <Box display="flex" flexDirection="column" gap={3}>
-              <ConductorCacheOutput onChange={onChange} taskJson={task} />
+              <WeaverCacheOutput onChange={onChange} taskJson={task} />
               <Optional onChange={onChange} taskJson={task} />
             </Box>
           </TaskFormSection>

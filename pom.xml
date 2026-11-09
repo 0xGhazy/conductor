@@ -16,12 +16,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.conductoross</groupId>
-    <artifactId>conductor</artifactId>
+    <groupId>com.vodafone.vss.weaver</groupId>
+    <artifactId>weaver</artifactId>
     <version>3.30.2-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>conductor</name>
-    <description>Conductor orchestration engine</description>
+    <name>weaver</name>
+    <description>Weaver orchestration engine</description>
 
     <properties>
         <java.version>21</java.version>
@@ -86,6 +86,15 @@
         <revHandlebars>4.5.0</revHandlebars>
         <revCaffeine>3.1.8</revCaffeine>
         <revTomcat>10.1.54</revTomcat>
+        <revSpringAI>1.1.6</revSpringAI>
+        <revMCP>1.0.0</revMCP>
+        <mongodb>4.11.0</mongodb>
+        <pgVector>0.1.4</pgVector>
+        <pinecone>3.0.0</pinecone>
+        <revFlexmark>0.64.8</revFlexmark>
+        <revPdfbox>3.0.5</revPdfbox>
+        <revOkHttp>4.12.0</revOkHttp>
+        <revGoogleAuth>1.33.0</revGoogleAuth>
 
         <!-- Plugin Versions -->
         <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
@@ -124,6 +133,7 @@
         <module>scripting-task</module>
         <module>secrets</module>
         <module>rule-task</module>
+        <module>ai</module>
         <module>amqp</module>
         <module>audit</module>
         <module>rest</module>
@@ -143,176 +153,181 @@
 
             <!-- Inter-module dependencies -->
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-annotations</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-annotations</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-annotations-processor</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-annotations-processor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-common</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-core</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-grpc</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-grpc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-grpc-server</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-grpc-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-grpc-client</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-grpc-client</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-rest</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-common-persistence</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-common-persistence</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-postgres-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-redis-configuration</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-redis-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-redis-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-redis-lock</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-redis-concurrency-limit</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-es8-persistence</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-os-persistence-v3</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-scheduler-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-scheduler-postgres-persistence</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-postgres-persistence</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-scheduler-redis-persistence</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-redis-configuration</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-redis-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-redis-persistence</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-redis-lock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-redis-concurrency-limit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-es8-persistence</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-os-persistence-v3</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-scheduler-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-scheduler-postgres-persistence</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-workflow-event-listener</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-scheduler-redis-persistence</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-workflow-event-listener</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-task-status-listener</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-task-status-listener</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-http-task</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-http-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-json-jq-task</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-json-jq-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-database-task</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-database-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-respond-task</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-respond-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-redis-task</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-redis-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-scripting-task</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-scripting-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-secrets</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-secrets</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-rule-task</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-rule-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-amqp</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-ai</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-amqp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.vodafone.vss.weaver</groupId>
                 <artifactId>audit</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-server</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-server</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.conductoross</groupId>
-                <artifactId>conductor-test-util</artifactId>
+                <groupId>com.vodafone.vss.weaver</groupId>
+                <artifactId>weaver-test-util</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

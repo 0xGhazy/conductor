@@ -1,4 +1,4 @@
-import {
+﻿import {
   Dialog,
   DialogTitle,
   DialogContent,
@@ -13,7 +13,7 @@ import {
   FormControlLabel,
   Switch,
 } from "@mui/material";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { UploadSimple, XCircle } from "@phosphor-icons/react";
 import CodeBlockInput from "components/ui/inputs/CodeBlockInput";
 import { useImportBPMWorkflow } from "./hook";
@@ -128,7 +128,7 @@ export const ImportBPNFileDialog = ({
             pt={4}
           >
             <Box sx={{ position: "relative" }}>
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Select file"
                 value={selectedFile}
@@ -212,7 +212,7 @@ export const ImportBPNFileDialog = ({
               }}
             />
 
-            <ConductorInput
+            <WeaverInput
               fullWidth
               label="Workflow Name"
               required

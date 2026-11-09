@@ -1,12 +1,12 @@
-import { Box, FormControlLabel, Grid } from "@mui/material";
+﻿import { Box, FormControlLabel, Grid } from "@mui/material";
 import { useSelector } from "@xstate/react";
 import MuiCheckbox from "components/ui/MuiCheckbox";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
 import ConfirmChoiceDialog from "components/ui/dialogs/ConfirmChoiceDialog";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import ConductorInputNumber from "components/ui/inputs/ConductorInputNumber";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import WeaverInputNumber from "components/ui/inputs/WeaverInputNumber";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import _capitalize from "lodash/capitalize";
 import _first from "lodash/first";
 import _isNull from "lodash/isNull";
@@ -157,7 +157,7 @@ export const DoWhileForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               key={task?.loopCondition}
               showFieldTypes
               keyColumnLabel="Key"
@@ -198,7 +198,7 @@ export const DoWhileForm = ({ task, onChange }: TaskFormProps) => {
             {["javascript", "graaljs"].includes(
               task.evaluatorType as string,
             ) && (
-              <ConductorAutoComplete
+              <WeaverAutoComplete
                 fullWidth
                 label="Sample scripts"
                 freeSolo={false}
@@ -227,7 +227,7 @@ export const DoWhileForm = ({ task, onChange }: TaskFormProps) => {
                 onChange={onChange}
               />
             ) : (
-              <ConductorInput
+              <WeaverInput
                 value={task?.loopCondition}
                 fullWidth
                 label="Code"
@@ -237,7 +237,7 @@ export const DoWhileForm = ({ task, onChange }: TaskFormProps) => {
           </Grid>
 
           <Grid size={8}>
-            <ConductorInputNumber
+            <WeaverInputNumber
               label="No. of iterations to keep (if enabled, min value is 2):"
               fullWidth
               value={keepLastN || null}

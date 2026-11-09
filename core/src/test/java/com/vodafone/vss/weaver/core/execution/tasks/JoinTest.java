@@ -21,7 +21,7 @@ import org.junit.Test;
 
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowTask;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.execution.WorkflowExecutor;
 import com.vodafone.vss.weaver.model.TaskModel;
 import com.vodafone.vss.weaver.model.WorkflowModel;
@@ -61,7 +61,7 @@ public class JoinTest {
 
     @Test
     public void testSynchronousJoinModeEvaluationOffset() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.getSystemTaskPostponeThreshold()).thenReturn(200);
 
         Join join = new Join(properties);
@@ -82,7 +82,7 @@ public class JoinTest {
 
     @Test
     public void testAsynchronousJoinModeEvaluationOffset() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.getSystemTaskPostponeThreshold()).thenReturn(200);
 
         Join join = new Join(properties);
@@ -103,7 +103,7 @@ public class JoinTest {
 
     @Test
     public void testDefaultAsyncBehavior() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.getSystemTaskPostponeThreshold()).thenReturn(200);
 
         Join join = new Join(properties);
@@ -127,7 +127,7 @@ public class JoinTest {
 
     @Test
     public void testNullWorkflowTaskDefaultsToAsync() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         when(properties.getSystemTaskPostponeThreshold()).thenReturn(200);
 
         Join join = new Join(properties);
@@ -143,7 +143,7 @@ public class JoinTest {
 
     @Test
     public void testIsAsync() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         Join join = new Join(properties);
 
         // isAsync should always return true
@@ -152,7 +152,7 @@ public class JoinTest {
 
     @Test
     public void testAgentWorkflowDefCompactsForkOutput() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         Join join = new Join(properties);
 
         WorkflowDef agentDef = new WorkflowDef();
@@ -184,7 +184,7 @@ public class JoinTest {
 
     @Test
     public void testAgentWorkflowDefKeepsToolOutputWithoutStateKeys() {
-        Join join = new Join(mock(ConductorProperties.class));
+        Join join = new Join(mock(WeaverProperties.class));
 
         WorkflowDef agentDef = new WorkflowDef();
         agentDef.setMetadata(Map.of("agent_sdk", "python"));
@@ -204,7 +204,7 @@ public class JoinTest {
 
     @Test
     public void testMarkedAgentToolKeepsNameAndFullOutputWhenItAlsoUpdatesState() {
-        Join join = new Join(mock(ConductorProperties.class));
+        Join join = new Join(mock(WeaverProperties.class));
 
         WorkflowDef agentDef = new WorkflowDef();
         agentDef.setMetadata(Map.of("agent_sdk", "python"));
@@ -228,7 +228,7 @@ public class JoinTest {
 
     @Test
     public void testUnmarkedAgentWorkflowDefCompactsOnlyStateKeys() {
-        Join join = new Join(mock(ConductorProperties.class));
+        Join join = new Join(mock(WeaverProperties.class));
 
         Map<String, Object> forkOutput =
                 Map.of(
@@ -260,7 +260,7 @@ public class JoinTest {
 
     @Test
     public void testNonAgentWorkflowDefCopiesFullForkOutput() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         Join join = new Join(properties);
 
         WorkflowDef plainDef = new WorkflowDef();
@@ -291,7 +291,7 @@ public class JoinTest {
 
     @Test
     public void testNoWorkflowDefinitionDoesNotThrow() {
-        ConductorProperties properties = mock(ConductorProperties.class);
+        WeaverProperties properties = mock(WeaverProperties.class);
         Join join = new Join(properties);
 
         Map<String, Object> forkOutput = Map.of("state", "some-state");

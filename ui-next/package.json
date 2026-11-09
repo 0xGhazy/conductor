@@ -1,7 +1,7 @@
 {
-  "name": "conductor-ui",
+  "name": "weaver-ui",
   "version": "0.0.0",
-  "description": "Open Source Conductor UI - Core components, pages, and plugin infrastructure",
+  "description": "Open Source Weaver UI - Core components, pages, and plugin infrastructure",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

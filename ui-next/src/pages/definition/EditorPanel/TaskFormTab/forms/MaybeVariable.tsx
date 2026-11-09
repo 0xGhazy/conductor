@@ -1,7 +1,7 @@
-import { useMemo, Fragment, FunctionComponent, ReactNode } from "react";
+﻿import { useMemo, Fragment, FunctionComponent, ReactNode } from "react";
 import { Article as FormIcon } from "@phosphor-icons/react";
 import { Box, ToggleButton, Tooltip, Stack, SxProps } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import _isString from "lodash/isString";
 import { FormTaskType } from "types/TaskType";
 import _path from "lodash/fp/path";
@@ -89,7 +89,7 @@ export const MaybeVariable: FunctionComponent<MaybeVariableProps> = ({
             width="100%"
           >
             <Box width="100%">
-              <ConductorAutocompleteVariables
+              <WeaverAutocompleteVariables
                 label={`${referenceKey}:`}
                 onChange={onChange}
                 value={(value as string) || ""}

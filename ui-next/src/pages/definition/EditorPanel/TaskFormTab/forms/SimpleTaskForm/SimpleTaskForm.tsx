@@ -1,18 +1,18 @@
-import { Editor } from "@monaco-editor/react";
+﻿import { Editor } from "@monaco-editor/react";
 import { Box, Grid, IconButton, Link, Stack } from "@mui/material";
 import { ArrowsOutSimple, ArrowSquareOut } from "@phosphor-icons/react";
 import { Paper, Tab, Tabs } from "components";
 import MuiTypography from "components/ui/MuiTypography";
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
 import UIModal from "components/ui/dialogs/UIModal";
-import { ConductorFlatMapFormBase } from "components/FlatMapForm/ConductorFlatMapForm";
+import { WeaverFlatMapFormBase } from "components/FlatMapForm/WeaverFlatMapForm";
 import CopyIcon from "components/icons/CopyIcon";
 import { path as _path } from "lodash/fp";
 import { useMemo, useState } from "react";
 import { getAccessToken } from "components/features/auth/tokenManagerJotai";
 import { defaultEditorOptions, type EditorOptions } from "shared/editor";
 import { updateField } from "utils/fieldHelpers";
-import { ConductorCacheOutput } from "../ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "../WeaverCacheOutputForm";
 import { Optional } from "../OptionalFieldForm";
 import { SchemaForm } from "../SchemaForm";
 import TaskFormSection from "../TaskFormSection";
@@ -210,7 +210,7 @@ export const SimpleTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container sx={{ width: "100%" }} spacing={3}>
           <Grid size={12}>
-            <ConductorFlatMapFormBase
+            <WeaverFlatMapFormBase
               showFieldTypes
               keyColumnLabel="Key"
               valueColumnLabel="Value"
@@ -226,7 +226,7 @@ export const SimpleTaskForm = ({ task, onChange }: TaskFormProps) => {
 
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Plugin Registry Types
  *
  * This module defines the interfaces for the Conductor UI plugin system.
@@ -417,7 +417,7 @@ export type TaskValidatorFn = (task: TaskDef) => ValidationError[];
 /**
  * A Conductor UI plugin that can extend the application
  */
-export interface ConductorPlugin {
+export interface WeaverPlugin {
   /**
    * Unique identifier for the plugin
    */
@@ -586,12 +586,12 @@ export interface PluginRegistry {
   /**
    * Register a plugin
    */
-  register(plugin: ConductorPlugin): void;
+  register(plugin: WeaverPlugin): void;
 
   /**
    * Get all registered plugins
    */
-  getPlugins(): ConductorPlugin[];
+  getPlugins(): WeaverPlugin[];
 
   /**
    * Get all authenticated routes from plugins

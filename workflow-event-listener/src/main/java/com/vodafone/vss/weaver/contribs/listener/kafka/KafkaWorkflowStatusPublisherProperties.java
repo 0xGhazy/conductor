@@ -18,7 +18,7 @@ import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "conductor.workflow-status-listener.kafka")
+@ConfigurationProperties(prefix = "weaver.workflow-status-listener.kafka")
 public class KafkaWorkflowStatusPublisherProperties {
 
     private Map<String, Object> producer = new HashMap<>();

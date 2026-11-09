@@ -72,7 +72,7 @@ public class SummaryUtilTest {
     public void testSerializeInputOutput_defaultToString() throws Exception {
         new ApplicationContextRunner()
                 .withPropertyValues(
-                        "conductor.app.summary-input-output-json-serialization.enabled:false")
+                        "weaver.app.summary-input-output-json-serialization.enabled:false")
                 .withUserConfiguration(SummaryUtilTestConfiguration.class)
                 .run(
                         context -> {
@@ -89,7 +89,7 @@ public class SummaryUtilTest {
     public void testSerializeInputOutput_jsonSerializationEnabled() throws Exception {
         new ApplicationContextRunner()
                 .withPropertyValues(
-                        "conductor.app.summary-input-output-json-serialization.enabled:true")
+                        "weaver.app.summary-input-output-json-serialization.enabled:true")
                 .withUserConfiguration(SummaryUtilTestConfiguration.class)
                 .run(
                         context -> {

@@ -1,8 +1,8 @@
-import { Box } from "@mui/material";
+﻿import { Box } from "@mui/material";
 import { LLMFormFields } from "pages/definition/EditorPanel/TaskFormTab/forms/LLMFormFields";
 import { UiIntegrationsFieldType } from "types";
 import { fieldsToFieldsFieldsComponents } from "utils/fieldHelpers";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
 import LLMFormFieldsWrapper from "./LLMFormFields/LLMFormFieldsWrapper";
@@ -34,7 +34,7 @@ export const GetDocumentTaskForm = ({ task, onChange }: TaskFormProps) => {
             />
           </TaskFormSection>
           <TaskFormSection>
-            <ConductorCacheOutput onChange={onChange} taskJson={task} />
+            <WeaverCacheOutput onChange={onChange} taskJson={task} />
           </TaskFormSection>
         </Box>
       )}

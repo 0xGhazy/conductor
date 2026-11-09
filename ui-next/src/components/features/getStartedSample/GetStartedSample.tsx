@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button, Grid, Stack } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import { Input, Tab, Tabs } from "components";
@@ -7,7 +7,7 @@ import {
   JavaLanguageSet,
   OperatingSystemEnvironment,
 } from "./types";
-import { useConductorProjectBuilder } from "utils/hooks/useConductorProjectBuilder";
+import { useWeaverProjectBuilder } from "utils/hooks/useWeaverProjectBuilder";
 import { CodeSnippet } from "./components/CodeSnippet";
 
 export const DEFAULT_TASK_NAME = "my_first_simple_task";
@@ -30,12 +30,12 @@ export const GetStartedSample = ({
     useState<JavaLanguageSet>(JavaLanguageSet.GRADLE);
   const [taskName, setTaskName] = useState<string>(DEFAULT_TASK_NAME);
   const [projectName, setProjectName] = useState<string>(
-    "ConductorSampleProject",
+    "WeaverSampleProject",
   );
   const [packageName, setPackageName] = useState<string>("org.example");
   const [namespace, setNamespace] = useState<string>("");
 
-  const { displayCode, onDownload } = useConductorProjectBuilder({
+  const { displayCode, onDownload } = useWeaverProjectBuilder({
     serverUrl,
     taskName: taskName || DEFAULT_TASK_NAME,
     language: selectedLanguage,

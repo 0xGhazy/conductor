@@ -1,7 +1,7 @@
-import {
-  ConductorAutocompleteVariables,
-  ConductorAutocompleteVariablesProps,
-} from "components/FlatMapForm/ConductorAutocompleteVariables";
+﻿import {
+  WeaverAutocompleteVariables,
+  WeaverAutocompleteVariablesProps,
+} from "components/FlatMapForm/WeaverAutocompleteVariables";
 
 /**
  * Autocomplete for optional LLM numeric params (temperature, topP, …).
@@ -9,11 +9,11 @@ import {
  * important for providers like Claude that reject temperature + top_p together,
  * and that treat 0 differently from "unset".
  *
- * Non-LLM forms should keep using {@link ConductorAutocompleteVariables}, which
+ * Non-LLM forms should keep using {@link WeaverAutocompleteVariables}, which
  * preserves the historical "" → 0 coercion for numeric fields.
  */
 export function LLMAutocompleteVariables(
-  props: ConductorAutocompleteVariablesProps,
+  props: WeaverAutocompleteVariablesProps,
 ) {
-  return <ConductorAutocompleteVariables {...props} clearEmptyNumberAsNull />;
+  return <WeaverAutocompleteVariables {...props} clearEmptyNumberAsNull />;
 }

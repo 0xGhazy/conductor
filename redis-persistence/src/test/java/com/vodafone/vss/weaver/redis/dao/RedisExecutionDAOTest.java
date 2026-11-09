@@ -31,7 +31,7 @@ import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
 import com.vodafone.vss.weaver.common.metadata.events.EventExecution;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
 import com.vodafone.vss.weaver.common.metadata.workflow.WorkflowDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.dao.ExecutionDAO;
 import com.vodafone.vss.weaver.dao.ExecutionDAOTest;
 import com.vodafone.vss.weaver.dao.QueueDAO;
@@ -75,14 +75,14 @@ public class RedisExecutionDAOTest extends ExecutionDAOTest {
         jedisPool = new JedisPool(config, redis.getHost(), redis.getFirstMappedPort());
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
 
         executionDAO =
                 new RedisExecutionDAO(
                         jedisProxy,
                         objectMapper,
-                        conductorProperties,
+                        WeaverProperties,
                         redisProperties,
                         mock(QueueDAO.class));
     }
@@ -362,14 +362,14 @@ public class RedisExecutionDAOTest extends ExecutionDAOTest {
         when(queueDAO.peekFirstIds(anyString(), eq(1)))
                 .thenReturn(Collections.singletonList("postponed-id"));
 
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         RedisExecutionDAO dao =
                 new RedisExecutionDAO(
                         jedisProxy,
                         new ObjectMapperProvider().getObjectMapper(),
-                        conductorProperties,
+                        WeaverProperties,
                         redisProperties,
                         queueDAO);
 
@@ -399,14 +399,14 @@ public class RedisExecutionDAOTest extends ExecutionDAOTest {
     public void updateTaskScheduledDoesNotReleasePostponedTaskWhenConcurrencyLimit() {
         QueueDAO queueDAO = mock(QueueDAO.class);
 
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         RedisExecutionDAO dao =
                 new RedisExecutionDAO(
                         jedisProxy,
                         new ObjectMapperProvider().getObjectMapper(),
-                        conductorProperties,
+                        WeaverProperties,
                         redisProperties,
                         queueDAO);
 

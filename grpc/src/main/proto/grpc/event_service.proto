@@ -1,11 +1,11 @@
 syntax = "proto3";
-package conductor.grpc.events;
+package weaver.grpc.events;
 
 import "model/eventhandler.proto";
 
 option java_package = "com.vodafone.vss.weaver.grpc";
 option java_outer_classname = "EventServicePb";
-option go_package = "github.com/netflix/conductor/client/gogrpc/conductor/grpc/events";
+option go_package = "github.com/conductor-oss/conductor/client/gogrpc/weaver/grpc/events";
 
 service EventService {
     // POST /
@@ -18,20 +18,20 @@ service EventService {
     rpc RemoveEventHandler(RemoveEventHandlerRequest) returns (RemoveEventHandlerResponse);
 
     // GET /
-    rpc GetEventHandlers(GetEventHandlersRequest) returns (stream conductor.proto.EventHandler);
+    rpc GetEventHandlers(GetEventHandlersRequest) returns (stream weaver.proto.EventHandler);
 
     // GET /{name}
-    rpc GetEventHandlersForEvent(GetEventHandlersForEventRequest) returns (stream conductor.proto.EventHandler);
+    rpc GetEventHandlersForEvent(GetEventHandlersForEventRequest) returns (stream weaver.proto.EventHandler);
 }
 
 message AddEventHandlerRequest {
-    conductor.proto.EventHandler handler = 1;
+    weaver.proto.EventHandler handler = 1;
 }
 
 message AddEventHandlerResponse {}
 
 message UpdateEventHandlerRequest {
-    conductor.proto.EventHandler handler = 1;
+    weaver.proto.EventHandler handler = 1;
 }
 
 message UpdateEventHandlerResponse {}

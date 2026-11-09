@@ -1,4 +1,4 @@
-import {
+﻿import {
   Box,
   Divider,
   FormControlLabel,
@@ -14,10 +14,10 @@ import { ChangeEvent, Fragment } from "react";
 import { ActorRef } from "xstate";
 
 import { Button } from "components";
-import { ConductorAutoComplete } from "components/ui/inputs";
-import { ConductorCodeBlockInput } from "components/ui/inputs/ConductorCodeBlockInput";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import ConductorSelect from "components/ui/inputs/ConductorSelect";
+import { WeaverAutoComplete } from "components/ui/inputs";
+import { WeaverCodeBlockInput } from "components/ui/inputs/WeaverCodeBlockInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import WeaverSelect from "components/ui/inputs/WeaverSelect";
 import { colors } from "theme/tokens/variables";
 import { useEventNameSuggestions } from "utils/hooks/useEventNameSuggestions";
 import { CompleteTask } from "./ActionForms/CompleteTask";
@@ -80,7 +80,7 @@ const EventHandlerForm = ({
               <Grid size={12} sx={{ mt: 2 }}>
                 <Grid container sx={{ width: "100%" }} spacing={4}>
                   <Grid size={12}>
-                    <ConductorInput
+                    <WeaverInput
                       label="Name"
                       fullWidth
                       required
@@ -92,7 +92,7 @@ const EventHandlerForm = ({
                     />
                   </Grid>
                   <Grid size={12}>
-                    <ConductorInput
+                    <WeaverInput
                       id="event-description-field"
                       label="Description"
                       name="description"
@@ -107,7 +107,7 @@ const EventHandlerForm = ({
                     />
                   </Grid>
                   <Grid size={12}>
-                    <ConductorAutoComplete
+                    <WeaverAutoComplete
                       label="Event"
                       fullWidth
                       required
@@ -137,7 +137,7 @@ const EventHandlerForm = ({
                     />
                   </Grid>
                   <Grid size={12}>
-                    <ConductorCodeBlockInput
+                    <WeaverCodeBlockInput
                       label="Condition (Trigger if evaluated to true)"
                       language="javascript"
                       value={condition}
@@ -146,7 +146,7 @@ const EventHandlerForm = ({
                   </Grid>
 
                   <Grid size={12}>
-                    <ConductorSelect
+                    <WeaverSelect
                       fullWidth
                       sx={{ width: "100%" }}
                       label="Action"
@@ -161,7 +161,7 @@ const EventHandlerForm = ({
                           {actionLabel[val]}
                         </MenuItem>
                       ))}
-                    </ConductorSelect>
+                    </WeaverSelect>
                   </Grid>
 
                   <Grid size={12}>

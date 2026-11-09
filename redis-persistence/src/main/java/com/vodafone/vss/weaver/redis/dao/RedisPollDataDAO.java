@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.common.metadata.tasks.PollData;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.dao.PollDataDAO;
 import com.vodafone.vss.weaver.redis.config.AnyRedisCondition;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
@@ -39,9 +39,9 @@ public class RedisPollDataDAO extends BaseDynoDAO implements PollDataDAO {
     public RedisPollDataDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties) {
-        super(jedisProxy, objectMapper, conductorProperties, properties);
+        super(jedisProxy, objectMapper, WeaverProperties, properties);
     }
 
     @Override

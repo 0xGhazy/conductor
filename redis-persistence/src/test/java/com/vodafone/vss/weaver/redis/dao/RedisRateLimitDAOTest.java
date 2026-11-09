@@ -25,7 +25,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.vodafone.vss.weaver.common.config.ObjectMapperProvider;
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.model.TaskModel;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
 import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
@@ -59,12 +59,12 @@ class RedisRateLimitDAOTest {
         jedisPool = new JedisPool(config, redis.getHost(), redis.getFirstMappedPort());
         JedisProxy jedisProxy = new JedisProxy(new JedisStandalone(jedisPool));
         ObjectMapper objectMapper = new ObjectMapperProvider().getObjectMapper();
-        ConductorProperties conductorProperties = new ConductorProperties();
-        RedisProperties redisProperties = new RedisProperties(conductorProperties);
+        WeaverProperties WeaverProperties = new WeaverProperties();
+        RedisProperties redisProperties = new RedisProperties(WeaverProperties);
 
         rateLimitingDao =
                 new RedisRateLimitingDAO(
-                        jedisProxy, objectMapper, conductorProperties, redisProperties);
+                        jedisProxy, objectMapper, WeaverProperties, redisProperties);
     }
 
     @BeforeEach

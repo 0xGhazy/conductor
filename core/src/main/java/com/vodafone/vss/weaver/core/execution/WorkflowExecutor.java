@@ -15,9 +15,9 @@ package com.vodafone.vss.weaver.core.execution;
 import java.util.List;
 import java.util.Map;
 
-import org.conductoross.conductor.common.metadata.agent.AgentConfig;
-import org.conductoross.conductor.common.metadata.agent.AgentStartRequest;
-import org.conductoross.conductor.common.metadata.agent.AgentStartResponse;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentConfig;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartRequest;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStartResponse;
 
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskResult;
 import com.vodafone.vss.weaver.common.metadata.workflow.RerunWorkflowRequest;

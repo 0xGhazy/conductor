@@ -1,13 +1,13 @@
-import { Box, Grid } from "@mui/material";
+﻿import { Box, Grid } from "@mui/material";
 import RadioButtonGroup from "components/ui/inputs/RadioButtonGroup";
-import ConductorInput from "components/ui/inputs/ConductorInput";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+import WeaverInput from "components/ui/inputs/WeaverInput";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { path as _path } from "lodash/fp";
 import { WorkflowExecutionStatus } from "types/Execution";
 import { QueryProcessorType } from "types/TaskType";
 import { updateField } from "utils/fieldHelpers";
 import { useWorkflowNames } from "utils/query";
-import { ConductorValueInput } from "../ConductorValueInput";
+import { WeaverValueInput } from "../WeaverValueInput";
 import { useTaskForm } from "../hooks/useTaskForm";
 import TaskFormSection from "../TaskFormSection";
 import { TaskFormProps } from "../types";
@@ -69,7 +69,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
 
   const changeTemplateType = (type: string) => {
     setQueryType(type);
-    const conductorApiTemplate = {
+    const WeaverApiTemplate = {
       workflowNames: [],
       statuses: [],
       correlationIds: [],
@@ -84,7 +84,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
       onChange({
         ...task,
         inputParameters: {
-          ...conductorApiTemplate,
+          ...WeaverApiTemplate,
           queryType: type,
         },
       });
@@ -139,7 +139,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
         {queryType === QueryProcessorType.CONDUCTOR_API && (
           <Grid container sx={{ width: "100%" }} spacing={3} mt={1}>
             <Grid size={12}>
-              <ConductorValueInput
+              <WeaverValueInput
                 valueLabel="Workflow names"
                 value={workflowNames}
                 onChangeValue={(val: string) => {
@@ -150,7 +150,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
               />
             </Grid>
             <Grid size={12}>
-              <ConductorValueInput
+              <WeaverValueInput
                 valueLabel="Correlation ids"
                 value={correlationIds}
                 onChangeValue={(val: string) => {
@@ -160,7 +160,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
               />
             </Grid>
             <Grid size={12}>
-              <ConductorValueInput
+              <WeaverValueInput
                 valueLabel="Statuses"
                 value={statuses}
                 dropDownOptions={statusOptions}
@@ -178,7 +178,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
                 gap={2}
               >
                 <Grid flexGrow={1}>
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     label="Start time from (Now -"
                     value={startTimeFrom}
                     fullWidth
@@ -188,7 +188,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
                   />
                 </Grid>
                 <Grid flexGrow={1}>
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     label={`mins) to (Now -`}
                     value={startTimeTo}
                     fullWidth
@@ -207,7 +207,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
                 gap={2}
               >
                 <Grid flexGrow={1}>
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     label={"End time from (Now - "}
                     value={endTimeFrom}
                     fullWidth
@@ -217,7 +217,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
                   />
                 </Grid>
                 <Grid flexGrow={1}>
-                  <ConductorAutocompleteVariables
+                  <WeaverAutocompleteVariables
                     label={`mins) to (Now -`}
                     value={endTimeTo}
                     fullWidth
@@ -229,7 +229,7 @@ export const QueryProcessorTaskForm = ({ task, onChange }: TaskFormProps) => {
               </Grid>
             </Grid>
             <Grid size={12}>
-              <ConductorInput
+              <WeaverInput
                 fullWidth
                 label="Free text search"
                 value={freeText}

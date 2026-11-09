@@ -1,4 +1,4 @@
-import { AlertColor, Box, LinearProgress } from "@mui/material";
+﻿import { AlertColor, Box, LinearProgress } from "@mui/material";
 import { useSelector } from "@xstate/react";
 import { SnackbarMessage } from "components/ui/SnackbarMessage";
 import Error from "components/ui/Error";
@@ -23,7 +23,7 @@ import { useWorkflowDefinition } from "./state/hook";
 import { WorkflowMetaBar } from "./WorkflowMetadata";
 
 export default function Workflow() {
-  const { conductorUser } = useAuth();
+  const { WeaverUser } = useAuth();
   const navigate = useNavigate();
   const [
     { handleResetMessage, setLeftPanelExpanded },
@@ -37,7 +37,7 @@ export default function Workflow() {
       isNotFound,
       isErrorFetching,
     },
-  ] = useWorkflowDefinition(conductorUser!);
+  ] = useWorkflowDefinition(WeaverUser!);
 
   const graphPanel = <GraphPanel definitionActor={definitionActor} />;
 

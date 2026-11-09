@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
 
 import redis.clients.jedis.exceptions.JedisConnectionException;
@@ -123,7 +123,7 @@ class RetryingJedisCommandsTest {
     }
 
     private static RedisProperties redisProperties(int maxRetryAttempts) {
-        RedisProperties redisProperties = new RedisProperties(new ConductorProperties());
+        RedisProperties redisProperties = new RedisProperties(new WeaverProperties());
         redisProperties.setMaxRetryAttempts(maxRetryAttempts);
         return redisProperties;
     }

@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.vodafone.vss.weaver.common.model.WorkflowMessage;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.config.WorkflowMessageQueueProperties;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
 import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
@@ -50,14 +50,14 @@ public class RedisWorkflowMessageQueueDAOTest {
         wmqProperties.setTtlSeconds(3600);
 
         ObjectMapper objectMapper = new ObjectMapper();
-        ConductorProperties conductorProperties = mock(ConductorProperties.class);
+        WeaverProperties WeaverProperties = mock(WeaverProperties.class);
         RedisProperties redisProperties = mock(RedisProperties.class);
 
         dao =
                 new RedisWorkflowMessageQueueDAO(
                         jedisProxy,
                         objectMapper,
-                        conductorProperties,
+                        WeaverProperties,
                         redisProperties,
                         wmqProperties);
     }

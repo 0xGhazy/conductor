@@ -18,11 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.conductoross.conductor.dao.SecretsDAO;
+import com.vodafone.vss.weaver.dao.SecretsDAO;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.dal.ExecutionDAOFacade;
 import com.vodafone.vss.weaver.core.execution.tasks.WorkflowSystemTask;
 import com.vodafone.vss.weaver.core.utils.ParametersUtils;
@@ -72,7 +72,7 @@ public class AsyncSystemTaskExecutorSecretsTest {
         ParametersUtils parametersUtils =
                 new ParametersUtils(new ObjectMapper(), mock(EnvironmentDAO.class), secretsDAO);
 
-        ConductorProperties properties = new ConductorProperties();
+        WeaverProperties properties = new WeaverProperties();
         properties.setTaskExecutionPostponeDuration(Duration.ofSeconds(1));
         properties.setSystemTaskWorkerCallbackDuration(Duration.ofSeconds(1));
         executor =

@@ -1,4 +1,4 @@
-import { LogoutOutlined } from "@mui/icons-material";
+﻿import { LogoutOutlined } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -24,10 +24,10 @@ interface SidebarFooterProps {
   isAuthenticated: boolean;
   isMobile: boolean;
   user: Auth0User | null;
-  conductorUser: { id: string } | null;
+  WeaverUser: { id: string } | null;
   logOut?: () => void;
   /** undefined = loading (skeleton), null = error/unavailable, string = loaded */
-  conductorVersion?: string | null;
+  WeaverVersion?: string | null;
   uiVersion: string;
   showCopyAlert: boolean;
   setShowCopyAlert: (show: boolean) => void;
@@ -40,9 +40,9 @@ export const SidebarFooter = ({
   isAuthenticated,
   isMobile,
   user,
-  conductorUser,
+  WeaverUser,
   logOut,
-  conductorVersion,
+  WeaverVersion,
   uiVersion,
   showCopyAlert,
   setShowCopyAlert,
@@ -58,7 +58,7 @@ export const SidebarFooter = ({
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mx: 1 }}>
             <SidebarVersionBlock
               open={open}
-              conductorVersion={conductorVersion}
+              WeaverVersion={WeaverVersion}
               uiVersion={uiVersion}
             />
           </Box>
@@ -171,7 +171,7 @@ export const SidebarFooter = ({
                       lineHeight: 1.2,
                     }}
                   >
-                    {conductorUser?.id}
+                    {WeaverUser?.id}
                   </Typography>
                 </Box>
                 <Tooltip title="Sign out" arrow placement="top">
@@ -284,7 +284,7 @@ export const SidebarFooter = ({
 
           <SidebarVersionBlock
             open={open}
-            conductorVersion={conductorVersion}
+            WeaverVersion={WeaverVersion}
             uiVersion={uiVersion}
           />
         </Box>

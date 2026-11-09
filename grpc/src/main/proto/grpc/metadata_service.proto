@@ -1,12 +1,12 @@
 syntax = "proto3";
-package conductor.grpc.metadata;
+package weaver.grpc.metadata;
 
 import "model/taskdef.proto";
 import "model/workflowdef.proto";
 
 option java_package = "com.vodafone.vss.weaver.grpc";
 option java_outer_classname = "MetadataServicePb";
-option go_package = "github.com/netflix/conductor/client/gogrpc/conductor/grpc/metadata";
+option go_package = "github.com/conductor-oss/conductor/client/gogrpc/weaver/grpc/metadata";
 
 service MetadataService {
     // POST /workflow
@@ -35,19 +35,19 @@ service MetadataService {
 }
 
 message CreateWorkflowRequest {
-    conductor.proto.WorkflowDef workflow = 1;
+    weaver.proto.WorkflowDef workflow = 1;
 }
 
 message CreateWorkflowResponse {}
 
 message ValidateWorkflowRequest {
-    conductor.proto.WorkflowDef workflow = 1;
+    weaver.proto.WorkflowDef workflow = 1;
 }
 
 message ValidateWorkflowResponse {}
 
 message UpdateWorkflowsRequest {
-    repeated conductor.proto.WorkflowDef defs = 1;
+    repeated weaver.proto.WorkflowDef defs = 1;
 }
 
 message UpdateWorkflowsResponse {}
@@ -58,17 +58,17 @@ message GetWorkflowRequest {
 }
 
 message GetWorkflowResponse {
-    conductor.proto.WorkflowDef workflow = 1;
+    weaver.proto.WorkflowDef workflow = 1;
 }
 
 message CreateTasksRequest {
-    repeated conductor.proto.TaskDef defs = 1;
+    repeated weaver.proto.TaskDef defs = 1;
 }
 
 message CreateTasksResponse {}
 
 message UpdateTaskRequest {
-    conductor.proto.TaskDef task = 1;
+    weaver.proto.TaskDef task = 1;
 }
 
 message UpdateTaskResponse {}
@@ -79,7 +79,7 @@ message GetTaskRequest {
 }
 
 message GetTaskResponse {
-    conductor.proto.TaskDef task = 1;
+    weaver.proto.TaskDef task = 1;
 }
 
 message DeleteTaskRequest {

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+﻿import { fireEvent, render, screen } from "@testing-library/react";
 import { ReactNode, useState } from "react";
 import { queryClient } from "queryClient";
 import { TaskDef } from "types";
@@ -16,7 +16,7 @@ vi.mock("utils/query", () => ({
   useAuthHeaders: () => ({}),
 }));
 
-vi.mock("components/ui/inputs/ConductorInput", () => ({
+vi.mock("components/ui/inputs/WeaverInput", () => ({
   default: ({ label, value, onTextInputChange }: any) => (
     <textarea
       aria-label={label}
@@ -28,14 +28,14 @@ vi.mock("components/ui/inputs/ConductorInput", () => ({
 
 vi.mock("components/PromptVariables", () => ({ default: () => null }));
 vi.mock(
-  "pages/definition/EditorPanel/TaskFormTab/forms/ConductorValueInput",
-  () => ({ ConductorValueInput: () => null }),
+  "pages/definition/EditorPanel/TaskFormTab/forms/WeaverValueInput",
+  () => ({ WeaverValueInput: () => null }),
 );
 vi.mock("./LLMFormFields/LLMFormFields", () => ({
   LLMFormFields: () => null,
 }));
-vi.mock("./ConductorCacheOutputForm", () => ({
-  ConductorCacheOutput: () => null,
+vi.mock("./WeaverCacheOutputForm", () => ({
+  WeaverCacheOutput: () => null,
 }));
 vi.mock("./OptionalFieldForm", () => ({ Optional: () => null }));
 vi.mock("./TaskFormSection", () => ({

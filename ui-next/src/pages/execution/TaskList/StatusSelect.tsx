@@ -1,9 +1,9 @@
-import { Box, FormControl, MenuItem, useMediaQuery } from "@mui/material";
+﻿import { Box, FormControl, MenuItem, useMediaQuery } from "@mui/material";
 import { FunctionComponent, useMemo } from "react";
 
 import MuiCheckbox from "components/ui/MuiCheckbox";
 import StatusBadge from "components/StatusBadge";
-import { ConductorSelect } from "components/ui/inputs";
+import { WeaverSelect } from "components/ui/inputs";
 import { Entries } from "types";
 import { SelectableStatus } from "./state";
 
@@ -54,7 +54,7 @@ export const StatusSelect: FunctionComponent<StatusSelectProps> = ({
           alignItems: "center",
         }}
       >
-        <ConductorSelect
+        <WeaverSelect
           onChange={handleSelection}
           fullWidth
           label={label}
@@ -77,7 +77,7 @@ export const StatusSelect: FunctionComponent<StatusSelectProps> = ({
               <StatusBadge status={statusId} labelConcat={` (${amount})`} />
             </MenuItem>
           ))}
-        </ConductorSelect>
+        </WeaverSelect>
       </Box>
     </FormControl>
   );

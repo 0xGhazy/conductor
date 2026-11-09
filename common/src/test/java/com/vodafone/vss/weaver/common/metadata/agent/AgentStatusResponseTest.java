@@ -12,7 +12,7 @@
  */
 package com.vodafone.vss.weaver.common.metadata.agent;
 
-import org.conductoross.conductor.common.metadata.agent.AgentStatusResponse;
+import com.vodafone.vss.weaver.common.metadata.agent.AgentStatusResponse;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;

@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.common.metadata.events.EventHandler;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.exception.ConflictException;
 import com.vodafone.vss.weaver.core.exception.NotFoundException;
 import com.vodafone.vss.weaver.core.exception.TransientException;
@@ -47,9 +47,9 @@ public class RedisEventHandlerDAO extends BaseDynoDAO implements EventHandlerDAO
     public RedisEventHandlerDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties) {
-        super(jedisProxy, objectMapper, conductorProperties, properties);
+        super(jedisProxy, objectMapper, WeaverProperties, properties);
     }
 
     @Override

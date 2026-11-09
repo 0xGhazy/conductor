@@ -20,7 +20,7 @@ import lombok.Data;
  * Configuration properties for Conductor audit module.
  */
 @Data
-@ConfigurationProperties(prefix = "conductor.audit")
+@ConfigurationProperties(prefix = "weaver.audit")
 public class AuditProperties {
 
     /**

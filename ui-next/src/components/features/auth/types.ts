@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Auth state returned by useAuth().
  * Default is no auth (defaultAuthState). OSS or custom providers can set
  * authState in AuthContext to enable auth without the enterprise package.
@@ -13,7 +13,7 @@ export interface AuthState {
   trialExpiryDate: number | Date | undefined;
   isAnnouncementBannerDismissed: boolean;
   provider: SupportedProviders;
-  conductorUser: User | undefined;
+  WeaverUser: User | undefined;
   oidcConfig: unknown;
   authService: unknown;
   fetchingUserInformation: boolean;
@@ -38,7 +38,7 @@ export const defaultAuthState: AuthState = {
   trialExpiryDate: undefined,
   isAnnouncementBannerDismissed: false,
   provider: SupportedProviders.NO_USER,
-  conductorUser: undefined,
+  WeaverUser: undefined,
   oidcConfig: undefined,
   authService: undefined,
   fetchingUserInformation: false,

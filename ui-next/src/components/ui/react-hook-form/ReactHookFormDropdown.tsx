@@ -1,4 +1,4 @@
-import {
+﻿import {
   FieldPath,
   FieldValues,
   PathValue,
@@ -8,15 +8,15 @@ import {
 import _isNil from "lodash/isNil";
 
 import {
-  ConductorAutoComplete,
-  ConductorAutocompleteProps,
-} from "components/ui/inputs/ConductorAutoComplete";
+  WeaverAutoComplete,
+  WeaverAutocompleteProps,
+} from "components/ui/inputs/WeaverAutoComplete";
 
 type ReactHookFormDropdownProps<
   T extends FieldValues,
   U extends FieldPath<T>,
   V,
-> = ConductorAutocompleteProps<V> &
+> = WeaverAutocompleteProps<V> &
   UseControllerProps<T, U> & {
     inputTransform?: (value: PathValue<T, U>, lastFormValues?: T) => V | V[];
     outputTransform?: (value: V | V[], lastFormValues: T) => PathValue<T, U>;
@@ -62,7 +62,7 @@ export default function ReactHookFormDropdown<
     defaultValue,
   });
   return (
-    <ConductorAutoComplete
+    <WeaverAutoComplete
       {...fieldProps}
       {...props}
       value={validateInputValue(

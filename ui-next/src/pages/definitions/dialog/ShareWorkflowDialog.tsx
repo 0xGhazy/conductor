@@ -1,4 +1,4 @@
-import {
+﻿import {
   Avatar,
   Box,
   FormControlLabel,
@@ -10,7 +10,7 @@ import { Share, X } from "@phosphor-icons/react";
 import { Button, Paper } from "components";
 import MuiCheckbox from "components/ui/MuiCheckbox";
 import UIModal from "components/ui/dialogs/UIModal";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import { MessageContext } from "components/providers/messageContext";
 import _ from "lodash";
 import _last from "lodash/last";
@@ -163,7 +163,7 @@ const ShareWorkflowDialog = ({
       <Paper>
         <Grid container sx={{ width: "100%" }} spacing={4}>
           <Grid size={12}>
-            <ConductorInput
+            <WeaverInput
               id="workflow-sharing-user-id-field"
               fullWidth
               label={"User Id"}

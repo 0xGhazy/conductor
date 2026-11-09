@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import com.vodafone.vss.weaver.annotations.Audit;
 import com.vodafone.vss.weaver.annotations.Trace;
 import com.vodafone.vss.weaver.common.metadata.tasks.Task;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.core.events.EventQueueManager;
 import com.vodafone.vss.weaver.core.reconciliation.WorkflowRepairService;
 import com.vodafone.vss.weaver.core.utils.Utils;
@@ -35,7 +35,7 @@ import com.vodafone.vss.weaver.dao.QueueDAO;
 @Service
 public class AdminServiceImpl implements AdminService {
 
-    private final ConductorProperties properties;
+    private final WeaverProperties properties;
     private final ExecutionService executionService;
     private final QueueDAO queueDAO;
     private final WorkflowRepairService workflowRepairService;
@@ -43,7 +43,7 @@ public class AdminServiceImpl implements AdminService {
     private final BuildProperties buildProperties;
 
     public AdminServiceImpl(
-            ConductorProperties properties,
+            WeaverProperties properties,
             ExecutionService executionService,
             QueueDAO queueDAO,
             Optional<WorkflowRepairService> workflowRepairService,

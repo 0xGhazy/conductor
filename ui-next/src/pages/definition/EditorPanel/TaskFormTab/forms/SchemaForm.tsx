@@ -1,8 +1,8 @@
-import { Grid, Stack, Tooltip } from "@mui/material";
+﻿import { Grid, Stack, Tooltip } from "@mui/material";
 import { NotePencilIcon as EditIcon, EyeIcon } from "@phosphor-icons/react";
 import MuiIconButton from "components/ui/buttons/MuiIconButton";
 import { chain, map } from "lodash";
-import { ConductorNameVersionField } from "components/inputs/ConductorNameVersionField";
+import { WeaverNameVersionField } from "components/inputs/WeaverNameVersionField";
 import { pluginRegistry } from "plugins/registry";
 import {
   forwardRef,
@@ -37,7 +37,7 @@ const SchemaFormItem = forwardRef<
   },
   SchemaFormItemProps
 >(({ onChange, value, label, disabled, onRefetch }, ref) => {
-  const conductorNameVersionFieldRef = useRef<{ refetch: () => void }>(null);
+  const WeaverNameVersionFieldRef = useRef<{ refetch: () => void }>(null);
   const [editingSchema, setEditingSchema] = useState<boolean>(false);
   const [previewSchema, setPreviewSchema] = useState<boolean>(false);
 
@@ -47,7 +47,7 @@ const SchemaFormItem = forwardRef<
 
   useImperativeHandle(ref, () => ({
     refetch: () => {
-      conductorNameVersionFieldRef.current?.refetch();
+      WeaverNameVersionFieldRef.current?.refetch();
     },
   }));
 
@@ -102,9 +102,9 @@ const SchemaFormItem = forwardRef<
             flex: 1,
           }}
         >
-          <ConductorNameVersionField
+          <WeaverNameVersionField
             disabled={disabled}
-            ref={conductorNameVersionFieldRef}
+            ref={WeaverNameVersionFieldRef}
             label={label}
             nameField={{
               id: `${label?.toLowerCase()?.replaceAll(" ", "-")}-name-input`,

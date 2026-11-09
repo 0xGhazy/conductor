@@ -1,11 +1,11 @@
-import {
+﻿import {
   Box,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
 } from "@mui/material";
-import ConductorInput from "components/ui/inputs/ConductorInput";
+import WeaverInput from "components/ui/inputs/WeaverInput";
 import SaveIcon from "components/icons/SaveIcon";
 import XCloseIcon from "components/icons/XCloseIcon";
 import { ReactNode, useState } from "react";
@@ -95,7 +95,7 @@ export default function ConfirmChoiceDialog({
             {message}
           </Text>
           {isInputConfirmation && (
-            <ConductorInput
+            <WeaverInput
               sx={{ mt: 2, pr: 5 }}
               id="choice-dialog-confirmation-field"
               value={inputValue}

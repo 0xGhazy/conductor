@@ -21,7 +21,7 @@ import com.vodafone.vss.weaver.contribs.queue.amqp.util.RetryType;
 import com.rabbitmq.client.AMQP.PROTOCOL;
 import com.rabbitmq.client.ConnectionFactory;
 
-@ConfigurationProperties("conductor.event-queues.amqp")
+@ConfigurationProperties("weaver.event-queues.amqp")
 public class AMQPEventQueueProperties {
 
     private int batchSize = 1;

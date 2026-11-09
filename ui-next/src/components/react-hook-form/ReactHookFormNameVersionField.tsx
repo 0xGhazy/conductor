@@ -1,4 +1,4 @@
-import {
+﻿import {
   FieldPath,
   FieldValues,
   PathValue,
@@ -8,19 +8,19 @@ import {
 import _isNil from "lodash/isNil";
 
 import {
-  ConductorNameVersionField,
-  ConductorNameVersionFieldProps,
-} from "components/inputs/ConductorNameVersionField";
+  WeaverNameVersionField,
+  WeaverNameVersionFieldProps,
+} from "components/inputs/WeaverNameVersionField";
 
 type ReactHookFormNameVersionFieldProps<
   T extends FieldValues,
   U extends FieldPath<T>,
-> = ConductorNameVersionFieldProps &
+> = WeaverNameVersionFieldProps &
   UseControllerProps<T, U> & {
     inputTransform?: (
       value: PathValue<T, U>,
       lastFormValues?: T,
-    ) => ConductorNameVersionFieldProps["value"];
+    ) => WeaverNameVersionFieldProps["value"];
     outputTransform?: (
       value:
         | {
@@ -71,7 +71,7 @@ export default function ReactHookFormNameVersionField<
     defaultValue,
   });
   return (
-    <ConductorNameVersionField
+    <WeaverNameVersionField
       {...fieldProps}
       {...props}
       value={validateInputValue(

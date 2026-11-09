@@ -1,4 +1,4 @@
-import { ThemeProvider, createTheme } from "@mui/material/styles";
+﻿import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
   fireEvent,
   render,
@@ -24,9 +24,9 @@ vi.mock("../timezones.json", () => ({
   ],
 }));
 
-// Mock the ConductorAutoComplete component to render a simple select
-vi.mock("components/ui/inputs/ConductorAutoComplete", () => ({
-  ConductorAutoComplete: ({ value, onChange, options, ...props }: any) => (
+// Mock the WeaverAutoComplete component to render a simple select
+vi.mock("components/ui/inputs/WeaverAutoComplete", () => ({
+  WeaverAutoComplete: ({ value, onChange, options, ...props }: any) => (
     <div data-testid="timezone-picker">
       <label htmlFor="timezone-select">Select Timezone</label>
       <select

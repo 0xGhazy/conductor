@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography, useTheme } from "@mui/material";
+﻿import { Box, Skeleton, Typography, useTheme } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import ClipboardCopy from "components/ui/ClipboardCopy";
 import { colors } from "theme/tokens/variables";
@@ -11,9 +11,9 @@ interface SidebarVersionBlockProps {
   /**
    * undefined = API call still in-flight → show a skeleton placeholder.
    * null      = API settled without data (error / unavailable) → show just uiVersion.
-   * string    = loaded successfully → show "conductorVersion | uiVersion".
+   * string    = loaded successfully → show "WeaverVersion | uiVersion".
    */
-  conductorVersion?: string | null;
+  WeaverVersion?: string | null;
   uiVersion: string;
 }
 
@@ -23,7 +23,7 @@ interface SidebarVersionBlockProps {
  */
 export function SidebarVersionBlock({
   open,
-  conductorVersion,
+  WeaverVersion,
   uiVersion,
 }: SidebarVersionBlockProps) {
   const theme = useTheme();
@@ -46,7 +46,7 @@ export function SidebarVersionBlock({
       >
         <img
           width="50%"
-          src={open ? "/conductorLogo.svg" : "/conductorLogoSmall.svg"}
+          src={open ? "/WeaverLogo.svg" : "/WeaverLogoSmall.svg"}
           alt="Conductor"
         />
       </Box>
@@ -68,7 +68,7 @@ export function SidebarVersionBlock({
             Orkes Platform Version
           </Typography>
 
-          {conductorVersion === undefined ? (
+          {WeaverVersion === undefined ? (
             // Still loading — show a skeleton so the layout doesn't shift.
             <Skeleton
               variant="text"
@@ -78,11 +78,11 @@ export function SidebarVersionBlock({
           ) : (
             <ClipboardCopy
               buttonId="copy-version-btn"
-              value={`${conductorVersion ?? "unknown"} | ${uiVersion}`}
+              value={`${WeaverVersion ?? "unknown"} | ${uiVersion}`}
               sx={{ justifyContent: "center" }}
             >
               <Typography fontSize="12px" color={theme.palette.text.secondary}>
-                {`${conductorVersion ?? "Unknown"} | ${uiVersion}`}
+                {`${WeaverVersion ?? "Unknown"} | ${uiVersion}`}
               </Typography>
             </ClipboardCopy>
           )}

@@ -22,7 +22,7 @@ import org.springframework.context.annotation.Conditional;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.common.metadata.tasks.TaskDef;
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.dao.RateLimitingDAO;
 import com.vodafone.vss.weaver.metrics.Monitors;
 import com.vodafone.vss.weaver.model.TaskModel;
@@ -43,9 +43,9 @@ public class RedisRateLimitingDAO extends BaseDynoDAO implements RateLimitingDAO
     public RedisRateLimitingDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties) {
-        super(jedisProxy, objectMapper, conductorProperties, properties);
+        super(jedisProxy, objectMapper, WeaverProperties, properties);
     }
 
     /**

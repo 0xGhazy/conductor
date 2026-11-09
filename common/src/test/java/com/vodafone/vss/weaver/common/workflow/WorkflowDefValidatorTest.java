@@ -34,7 +34,7 @@ import jakarta.validation.ValidatorFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@TestPropertySource(properties = "conductor.app.workflow.name-validation.enabled=true")
+@TestPropertySource(properties = "weaver.app.workflow.name-validation.enabled=true")
 public class WorkflowDefValidatorTest {
 
     @Before

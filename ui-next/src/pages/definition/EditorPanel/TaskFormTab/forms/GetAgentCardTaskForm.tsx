@@ -1,9 +1,9 @@
-import { Box, Grid } from "@mui/material";
-import { ConductorAutocompleteVariables } from "components/FlatMapForm/ConductorAutocompleteVariables";
+﻿import { Box, Grid } from "@mui/material";
+import { WeaverAutocompleteVariables } from "components/FlatMapForm/WeaverAutocompleteVariables";
 import { path as _path } from "lodash/fp";
 import { updateField } from "utils/fieldHelpers";
-import { ConductorAdditionalHeadersBase } from "./HTTPTaskForm/ConductorAdditionalHeaders";
-import { ConductorCacheOutput } from "./ConductorCacheOutputForm";
+import { WeaverAdditionalHeadersBase } from "./HTTPTaskForm/WeaverAdditionalHeaders";
+import { WeaverCacheOutput } from "./WeaverCacheOutputForm";
 import { Optional } from "./OptionalFieldForm";
 import TaskFormSection from "./TaskFormSection";
 import { TaskFormProps } from "./types";
@@ -28,7 +28,7 @@ export const GetAgentCardTaskForm = ({ task, onChange }: TaskFormProps) => {
       >
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={12}>
-            <ConductorAutocompleteVariables
+            <WeaverAutocompleteVariables
               label="Agent URL"
               value={get("inputParameters.agentUrl")}
               onChange={(v) => set("inputParameters.agentUrl", v)}
@@ -40,7 +40,7 @@ export const GetAgentCardTaskForm = ({ task, onChange }: TaskFormProps) => {
       <TaskFormSection title="Headers">
         <Grid container spacing={2} sx={{ width: "100%" }}>
           <Grid size={12}>
-            <ConductorAdditionalHeadersBase
+            <WeaverAdditionalHeadersBase
               headers={headers}
               onChangeHeaders={(h) => set("inputParameters.headers", h)}
             />
@@ -50,7 +50,7 @@ export const GetAgentCardTaskForm = ({ task, onChange }: TaskFormProps) => {
 
       <TaskFormSection>
         <Box display="flex" flexDirection="column" gap={3}>
-          <ConductorCacheOutput onChange={onChange} taskJson={task} />
+          <WeaverCacheOutput onChange={onChange} taskJson={task} />
           <Optional onChange={onChange} taskJson={task} />
         </Box>
       </TaskFormSection>

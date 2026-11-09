@@ -77,7 +77,7 @@ public class DeciderService {
             SystemTaskRegistry systemTaskRegistry,
             @Qualifier("taskMappersByTaskType") Map<String, TaskMapper> taskMappers,
             @Qualifier("annotatedTaskSystems") Map<String, TaskMapper> annotatedTaskSystems,
-            @Value("${conductor.app.taskPendingTimeThreshold:60m}")
+            @Value("${weaver.app.taskPendingTimeThreshold:60m}")
                     Duration taskPendingTimeThreshold) {
         this.idGenerator = idGenerator;
         this.metadataDAO = metadataDAO;

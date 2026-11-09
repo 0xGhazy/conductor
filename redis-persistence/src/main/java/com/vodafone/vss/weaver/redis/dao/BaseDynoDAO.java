@@ -16,7 +16,7 @@ import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.vodafone.vss.weaver.core.config.ConductorProperties;
+import com.vodafone.vss.weaver.core.config.WeaverProperties;
 import com.vodafone.vss.weaver.metrics.Monitors;
 import com.vodafone.vss.weaver.redis.config.RedisProperties;
 import com.vodafone.vss.weaver.redis.jedis.JedisProxy;
@@ -29,18 +29,18 @@ public class BaseDynoDAO {
     private static final String NAMESPACE_SEP = ".";
     private static final String DAO_NAME = "redis";
     private final RedisProperties properties;
-    private final ConductorProperties conductorProperties;
+    private final WeaverProperties WeaverProperties;
     protected JedisProxy jedisProxy;
     protected ObjectMapper objectMapper;
 
     protected BaseDynoDAO(
             JedisProxy jedisProxy,
             ObjectMapper objectMapper,
-            ConductorProperties conductorProperties,
+            WeaverProperties WeaverProperties,
             RedisProperties properties) {
         this.jedisProxy = jedisProxy;
         this.objectMapper = objectMapper;
-        this.conductorProperties = conductorProperties;
+        this.WeaverProperties = WeaverProperties;
         this.properties = properties;
     }
 
@@ -50,7 +50,7 @@ public class BaseDynoDAO {
         if (StringUtils.isNotBlank(rootNamespace)) {
             namespacedKey.append(rootNamespace).append(NAMESPACE_SEP);
         }
-        String stack = conductorProperties.getStack();
+        String stack = WeaverProperties.getStack();
         if (StringUtils.isNotBlank(stack)) {
             namespacedKey.append(stack).append(NAMESPACE_SEP);
         }

@@ -33,7 +33,7 @@ public class SummaryUtil {
 
     private static boolean isSummaryInputOutputJsonSerializationEnabled;
 
-    @Value("${conductor.app.summary-input-output-json-serialization.enabled:false}")
+    @Value("${weaver.app.summary-input-output-json-serialization.enabled:false}")
     private boolean isJsonSerializationEnabled;
 
     @PostConstruct
