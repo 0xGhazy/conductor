@@ -478,6 +478,84 @@ describe("WeaverDataExplorer Canvas Card & Renderer", () => {
     }
   });
 
+  it("renders centered canvas card with bottom action section (Duplicate & Hold Delete)", async () => {
+    const React = await import("react");
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { DataCanvasCard } = await import("../internal/DataCanvasCard");
+
+    const html = renderToStaticMarkup(
+      React.createElement(DataCanvasCard, {
+        record: SAMPLE_DATA[0],
+        getRecordId: (r: SampleUser) => r.id,
+        visibleFields: FIELDS,
+        isSelected: false,
+        onToggleSelect: () => {},
+        canvas: {
+          layout: "centered",
+          renderQuickActions: () =>
+            React.createElement(
+              "div",
+              { className: "cardActionsGroup" },
+              React.createElement("button", null, "Duplicate"),
+              React.createElement("button", null, "Delete")
+            ),
+        },
+      })
+    );
+
+    expect(html).toContain("centeredActionsBar");
+    expect(html).toContain("centeredDivider");
+    expect(html).toContain("Duplicate");
+    expect(html).toContain("Delete");
+  });
+
+  it("hides 3-dots row actions menu when canvas.hideRowActions is true", async () => {
+    const React = await import("react");
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { DataCanvasCard } = await import("../internal/DataCanvasCard");
+
+    const rowActions: WeaverDataAction<SampleUser>[] = [
+      {
+        id: "delete",
+        label: "Delete",
+        onClick: () => {},
+      },
+    ];
+
+    // With hideRowActions: true
+    const hiddenHtml = renderToStaticMarkup(
+      React.createElement(DataCanvasCard, {
+        record: SAMPLE_DATA[0],
+        getRecordId: (r: SampleUser) => r.id,
+        visibleFields: FIELDS,
+        isSelected: false,
+        onToggleSelect: () => {},
+        rowActions,
+        canvas: {
+          layout: "centered",
+          hideRowActions: true,
+        },
+      })
+    );
+    expect(hiddenHtml).not.toContain("actionsMenuWrapperCentered");
+
+    // Without hideRowActions
+    const defaultHtml = renderToStaticMarkup(
+      React.createElement(DataCanvasCard, {
+        record: SAMPLE_DATA[0],
+        getRecordId: (r: SampleUser) => r.id,
+        visibleFields: FIELDS,
+        isSelected: false,
+        onToggleSelect: () => {},
+        rowActions,
+        canvas: {
+          layout: "centered",
+        },
+      })
+    );
+    expect(defaultHtml).toContain("actionsMenuWrapperCentered");
+  });
+
   it("renders seamlessly under light and dark MUI themes", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
@@ -523,6 +601,111 @@ describe("WeaverDataExplorer Canvas Card & Renderer", () => {
     if (!darkHtml.includes('data-selected="true"')) {
       throw new Error("Dark theme rendering failed to include selected state");
     }
+  });
+
+  it("renders centered SaaS workflow card layout with top circular icon, overlapping version badge, centered title, truncated description, and structured footer", async () => {
+    const React = await import("react");
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { DataCanvasCard } = await import("../internal/DataCanvasCard");
+
+    const workflowRecord = {
+      name: "Customer_KYC_Verification",
+      version: 2,
+      description: "Automated KYC verification pipeline orchestrating biometric and fraud checks.",
+      createdBy: "Alice Smith",
+      language: "EN",
+    };
+
+    const html = renderToStaticMarkup(
+      React.createElement(DataCanvasCard, {
+        record: workflowRecord,
+        getRecordId: (r: any) => r.name,
+        visibleFields: [],
+        isSelected: false,
+        onToggleSelect: () => {},
+        canvas: {
+          layout: "centered",
+          getTitle: (r: any) => r.name,
+          getDescription: (r: any) => r.description,
+          getCreatedBy: (r: any) => r.createdBy,
+          getLanguage: (r: any) => r.language,
+          renderStatus: (r: any) => `v${r.version}`,
+        },
+      })
+    );
+
+    // Verify circular icon and version pill badge
+    expect(html).toContain("canvas-card-icon");
+    expect(html).toContain("canvas-card-version");
+    expect(html).toContain("v2");
+
+    // Verify centered workflow name
+    expect(html).toContain("Customer_KYC_Verification");
+
+    // Verify centered description
+    expect(html).toContain("Automated KYC verification pipeline orchestrating biometric and fraud checks.");
+
+    // Verify footer metadata sections
+    expect(html).toContain("Created by");
+    expect(html).toContain("Alice Smith");
+    expect(html).toContain("Language");
+    expect(html).toContain("EN");
+  });
+
+  it("renders custom image inside centered circular icon container when supplied", async () => {
+    const React = await import("react");
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { DataCanvasCard } = await import("../internal/DataCanvasCard");
+
+    const workflowWithImage = {
+      name: "Image_Workflow",
+      version: 1,
+      iconUrl: "/custom-wf-icon.png",
+      description: "Workflow with custom icon",
+      createdBy: "Bob",
+      language: "FR",
+    };
+
+    const html = renderToStaticMarkup(
+      React.createElement(DataCanvasCard, {
+        record: workflowWithImage,
+        getRecordId: (r: any) => r.name,
+        visibleFields: [],
+        isSelected: false,
+        onToggleSelect: () => {},
+        canvas: {
+          layout: "centered",
+          renderIcon: (r: any) => React.createElement("img", { src: r.iconUrl, "data-testid": "custom-img" }),
+        },
+      })
+    );
+
+    expect(html).toContain('data-testid="custom-img"');
+    expect(html).toContain('src="/custom-wf-icon.png"');
+  });
+
+  it("renders top-right three-dot menu in centered layout when rowActions are provided", async () => {
+    const React = await import("react");
+    const { renderToStaticMarkup } = await import("react-dom/server");
+    const { DataCanvasCard } = await import("../internal/DataCanvasCard");
+
+    const rowActions = [
+      { id: "delete", label: "Delete", danger: true, onClick: () => {} },
+    ];
+
+    const html = renderToStaticMarkup(
+      React.createElement(DataCanvasCard, {
+        record: { name: "Test_Flow", version: 1 },
+        getRecordId: (r: any) => r.name,
+        visibleFields: [],
+        rowActions,
+        isSelected: false,
+        onToggleSelect: () => {},
+        canvas: { layout: "centered" },
+      })
+    );
+
+    expect(html).toContain("Actions for Test_Flow");
   });
 
   it("renders responsive grid of cards with DataCanvasView", async () => {

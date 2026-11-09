@@ -13,17 +13,20 @@ describe("settings navigation", () => {
   it("finds top-level pages", () => {
     expect(findSettingsTrail("/settings/migrations").map((item) => item.id)).toEqual(["migrations"]);
     expect(findSettingsTrail("/settings/configurations").map((item) => item.id)).toEqual(["configurations"]);
+    expect(findSettingsTrail("/settings/languages").map((item) => item.id)).toEqual(["languages"]);
   });
 
   it("ignores paths outside the Settings area", () => {
-    expect(findSettingsTrail("/settings/languages")).toEqual([]);
     expect(findSettingsTrail("/queries")).toEqual([]);
-    expect(isSettingsAreaPath("/settings/languages")).toBe(false);
+    expect(findSettingsTrail("/caching")).toEqual([]);
+    expect(isSettingsAreaPath("/queries")).toBe(false);
+    expect(isSettingsAreaPath("/caching")).toBe(false);
+    expect(isSettingsAreaPath("/settings/languages")).toBe(true);
     expect(isSettingsAreaPath("/settings")).toBe(true);
   });
 
   it("gives every page a title and description", () => {
-    for (const id of ["migrations", "configurations", "users", "roles"]) {
+    for (const id of ["migrations", "configurations", "users", "roles", "languages"]) {
       const item = findSettingsItem(id);
       expect(item?.label).toBeTruthy();
       expect(item?.description).toBeTruthy();

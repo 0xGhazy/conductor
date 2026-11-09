@@ -63,7 +63,7 @@ export default function ConnectionViewPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const isCreateMode = location.pathname === "/connections/new";
+  const isCreateMode = location.pathname === "/authentications/new" || location.pathname === "/connections/new";
   const { error: showError, success: showSuccess } = useWeaverNotification();
   const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
@@ -117,7 +117,7 @@ export default function ConnectionViewPage() {
 
   useEffect(() => {
     const name = String(form?.name || "").trim();
-    document.title = name ? `Connection: ${name}` : "Connection";
+    document.title = isCreateMode ? "Create Authentication" : name ? `Authentications - ${name}` : "Authentications";
   }, [form?.name]);
 
   const handleChange = (field, value) => {
@@ -143,7 +143,7 @@ export default function ConnectionViewPage() {
         await queryClient.invalidateQueries({ queryKey: connectionKeys.all });
         showSuccess("Connection created successfully.");
         if (created?.id) {
-          navigate(`/connections/${encodeURIComponent(created.id)}`, { replace: true });
+          navigate(`/authentications/${encodeURIComponent(created.id)}`, { replace: true });
         }
       } else {
         await updateConnection(form.id || id, payload);
@@ -176,7 +176,7 @@ export default function ConnectionViewPage() {
       // Mark stale without refetching the (now deleted) detail query that is still mounted.
       void queryClient.invalidateQueries({ queryKey: connectionKeys.all, refetchType: "none" });
       showSuccess("Connection deleted successfully.");
-      navigate("/connections");
+      navigate("/authentications");
     } catch (error) {
       showError(getErrorMessage(error, "Failed to delete connection."));
     } finally {

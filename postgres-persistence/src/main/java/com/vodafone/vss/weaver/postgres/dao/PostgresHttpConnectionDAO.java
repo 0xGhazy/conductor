@@ -59,9 +59,9 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
         connection.setUpdatedAt(Instant.now());
 
         String sql =
-                "INSERT INTO http_connections ("
-                        + "id, name, strategy, auth_config, created_at, updated_at, last_check, error"
-                        + ") VALUES (?::uuid, ?, ?, ?::jsonb, ?, ?, ?, ?)";
+                "INSERT INTO authentications ("
+                        + "id, name, strategy, auth_config, created_at, updated_at, last_check, error, created_by, updated_by"
+                        + ") VALUES (?::uuid, ?, ?, ?::jsonb, ?, ?, ?, ?, ?::uuid, ?::uuid)";
 
         executeWithTransaction(
                 sql,
@@ -74,6 +74,8 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
                     q.addTimestampParameter(toTimestamp(connection.getUpdatedAt()));
                     q.addTimestampParameter(toTimestamp(connection.getLastCheck()));
                     q.addParameter(connection.getError());
+                    q.addParameter(connection.getCreatedBy() != null ? connection.getCreatedBy().toString() : null);
+                    q.addParameter(connection.getUpdatedBy() != null ? connection.getUpdatedBy().toString() : null);
                     q.executeUpdate();
                 });
 
@@ -85,8 +87,8 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
         connection.setUpdatedAt(Instant.now());
 
         String sql =
-                "UPDATE http_connections SET "
-                        + "name = ?, strategy = ?, auth_config = ?::jsonb, updated_at = ?, last_check = ?, error = ? "
+                "UPDATE authentications SET "
+                        + "name = ?, strategy = ?, auth_config = ?::jsonb, updated_at = ?, last_check = ?, error = ?, updated_by = ?::uuid "
                         + "WHERE id = ?::uuid";
 
         executeWithTransaction(
@@ -98,6 +100,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
                     q.addTimestampParameter(toTimestamp(connection.getUpdatedAt()));
                     q.addTimestampParameter(toTimestamp(connection.getLastCheck()));
                     q.addParameter(connection.getError());
+                    q.addParameter(connection.getUpdatedBy() != null ? connection.getUpdatedBy().toString() : null);
                     q.addParameter(connection.getId().toString());
                     q.executeUpdate();
                 });
@@ -108,7 +111,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
     @Override
     public Optional<HttpConnectionModel> findById(UUID id) {
         if (id == null) return Optional.empty();
-        String sql = "SELECT * FROM http_connections WHERE id = ?::uuid";
+        String sql = "SELECT * FROM authentications WHERE id = ?::uuid";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -126,7 +129,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
     @Override
     public Optional<HttpConnectionModel> findByName(String name) {
         if (name == null) return Optional.empty();
-        String sql = "SELECT * FROM http_connections WHERE LOWER(name) = LOWER(?)";
+        String sql = "SELECT * FROM authentications WHERE LOWER(name) = LOWER(?)";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -144,7 +147,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
     @Override
     public boolean existsByName(String name) {
         if (name == null) return false;
-        String sql = "SELECT COUNT(1) FROM http_connections WHERE LOWER(name) = LOWER(?)";
+        String sql = "SELECT COUNT(1) FROM authentications WHERE LOWER(name) = LOWER(?)";
         Long count =
                 queryWithTransaction(
                         sql,
@@ -158,7 +161,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
     @Override
     public boolean existsById(UUID id) {
         if (id == null) return false;
-        String sql = "SELECT COUNT(1) FROM http_connections WHERE id = ?::uuid";
+        String sql = "SELECT COUNT(1) FROM authentications WHERE id = ?::uuid";
         Long count =
                 queryWithTransaction(
                         sql,
@@ -171,7 +174,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
 
     @Override
     public List<HttpConnectionModel> findAll() {
-        String sql = "SELECT * FROM http_connections ORDER BY name ASC";
+        String sql = "SELECT * FROM authentications ORDER BY name ASC";
         return queryWithTransaction(
                 sql,
                 q ->
@@ -188,7 +191,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
     @Override
     public boolean deleteById(UUID id) {
         if (id == null) return false;
-        String sql = "DELETE FROM http_connections WHERE id = ?::uuid";
+        String sql = "DELETE FROM authentications WHERE id = ?::uuid";
         int rows =
                 queryWithTransaction(
                         sql,
@@ -201,7 +204,7 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
 
     @Override
     public List<HttpConnectionModel> findByAuthConfigLike(String pattern) {
-        String sql = "SELECT * FROM http_connections WHERE auth_config::text LIKE ?";
+        String sql = "SELECT * FROM authentications WHERE auth_config::text LIKE ?";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -232,6 +235,18 @@ public class PostgresHttpConnectionDAO extends PostgresBaseDAO implements HttpCo
         model.setUpdatedAt(toInstant(rs.getTimestamp("updated_at")));
         model.setLastCheck(toInstant(rs.getTimestamp("last_check")));
         model.setError(rs.getString("error"));
+        String createdByStr = rs.getString("created_by");
+        if (createdByStr != null) {
+            try {
+                model.setCreatedBy(UUID.fromString(createdByStr));
+            } catch (Exception ignored) {}
+        }
+        String updatedByStr = rs.getString("updated_by");
+        if (updatedByStr != null) {
+            try {
+                model.setUpdatedBy(UUID.fromString(updatedByStr));
+            } catch (Exception ignored) {}
+        }
         return model;
     }
 

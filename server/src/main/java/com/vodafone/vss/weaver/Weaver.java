@@ -67,6 +67,41 @@ public class Weaver implements ApplicationRunner {
         String hostname = getHostName();
 
         String serverUrl = String.format("http://%s:%s%s", hostname, port, contextPath);
+        String managementUiPort =
+                environment.getProperty(
+                        "weaver.management.ui.port",
+                        environment.getProperty(
+                                "weaver.ui.port",
+                                environment.getProperty("WEAVER_MANAGEMENT_UI_PORT", "8127")));
+        String managementUiUrl =
+                environment.getProperty(
+                        "weaver.management.ui.url",
+                        environment.getProperty(
+                                "weaver.ui.url",
+                                environment.getProperty(
+                                        "conductor.ui.url",
+                                        String.format("http://%s:%s", hostname, managementUiPort))));
+
+        String keycloakPort =
+                environment.getProperty(
+                        "weaver.keycloak.port",
+                        environment.getProperty(
+                                "keycloak.port",
+                                environment.getProperty("WEAVER_KEYCLOAK_PORT", "8085")));
+        String keycloakHost =
+                environment.getProperty(
+                        "weaver.keycloak.host",
+                        environment.getProperty(
+                                "keycloak.host",
+                                environment.getProperty("WEAVER_KEYCLOAK_HOST", hostname)));
+        String defaultKeycloakUrl = String.format("http://%s:%s", keycloakHost, keycloakPort);
+        String keycloakUrl =
+                environment.getProperty(
+                        "weaver.keycloak.url",
+                        environment.getProperty(
+                                "keycloak.url",
+                                environment.getProperty("WEAVER_KEYCLOAK_URL", defaultKeycloakUrl)));
+
         log.info("┌────────────────────────────────────────────────────────────────────────┐");
         log.info("│                       WEAVER SERVER CONFIGURATION                      │");
         log.info("├────────────────────────────────────────────────────────────────────────┤");
@@ -77,7 +112,8 @@ public class Weaver implements ApplicationRunner {
         log.info("├────────────────────────────────────────────────────────────────────────┤");
         log.info("│  Server URL       : {}", padRight(serverUrl) + "│");
         log.info("│  Swagger UI       : {}", padRight(serverUrl + "/swagger-ui/index.html") + "│");
-        // TODO: add management UI URL here
+        log.info("│  Management UI    : {}", padRight(managementUiUrl) + "│");
+        log.info("│  Keycloak URL     : {}", padRight(keycloakUrl) + "│");
         log.info("└────────────────────────────────────────────────────────────────────────┘");
     }
 
@@ -113,6 +149,9 @@ public class Weaver implements ApplicationRunner {
 
 
     private String padRight(String s) {
+        if (s == null) {
+            s = "";
+        }
         if (s.length() >= 51) {
             return s.substring(0, 51 - 3) + "...";
         }
@@ -121,6 +160,10 @@ public class Weaver implements ApplicationRunner {
 
     private String getHostName() {
         try {
+            String host = environment.getProperty("weaver.host");
+            if (StringUtils.isNotBlank(host)) {
+                return host;
+            }
             return InetAddress.getLocalHost().getHostName();
         } catch (Exception e) {
             return "localhost";

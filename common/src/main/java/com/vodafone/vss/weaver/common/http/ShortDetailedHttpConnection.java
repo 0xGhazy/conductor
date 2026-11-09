@@ -15,7 +15,10 @@
  */
 package com.vodafone.vss.weaver.common.http;
 
+import java.time.Instant;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,17 +26,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Compact summary of an HTTP connection with its active/health status.
+ * Compact summary of an HTTP connection with its active/health status and audit info.
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ShortDetailedHttpConnection {
 
     private UUID id;
     private String name;
     private AuthenticationStrategy strategy;
     private boolean status;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private UUID createdBy;
+    private UUID updatedBy;
 }
 

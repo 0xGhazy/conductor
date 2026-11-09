@@ -21,8 +21,7 @@ import type { NameValidationResult } from "@/components/common/fields";
 import { WeaverConfirmDialog } from "@/components/common/dialogs";
 import { WeaverButton } from "@/components/common/buttons";
 import { useWeaverNotification } from "@/components/common/notifications";
-import { supportedLanguageKeys, supportedLanguagesApi } from "@/features/settings";
-import type { SupportedLanguage } from "@/features/settings";
+import { SettingsPage, supportedLanguageKeys, supportedLanguagesApi, type SupportedLanguage } from "@/features/settings";
 import styles from "./SupportedLanguagesPage.module.css";
 
 const EMPTY_LANGUAGES: SupportedLanguage[] = [];
@@ -306,45 +305,34 @@ export default function SupportedLanguagesPage() {
   );
 
   return (
-    <div className={styles.pageContainer}>
-      {/* Header */}
-      <div className={styles.pageHeader}>
-        <div className={styles.headerTitleGroup}>
-          <div className={styles.titleRow}>
-            <Globe size={28} color="var(--color-accent-fg)" />
-            <h1 className={styles.pageTitle}>Supported Languages</h1>
-          </div>
-        </div>
-
-        <div className={styles.headerActions}>
-          <WeaverButton variant="contained" color="primary" onClick={handleOpenCreate}>
-            <Plus size={16} style={{ marginRight: 6 }} />
-            Add Language
-          </WeaverButton>
-        </div>
-      </div>
-
-      {/* WeaverDataExplorer Table View */}
-      <div className={styles.explorerWrapper}>
-        <WeaverDataExplorer<SupportedLanguage>
-          records={languages}
-          getRecordId={getLanguageRecordId}
-          fields={fields}
-          storageKey="settings-supported-languages"
-          defaultVisibleFields={DEFAULT_VISIBLE_FIELDS}
-          dataMode="client"
-          selectionMode="none"
-          loading={loading}
-          searchable
-          searchPlaceholder="Search languages by code or name..."
-          stickyHeader
-          toolbarActions={toolbarActions}
-          rowActions={rowActions}
-          canvas={canvasConfig}
-          emptyTitle="No supported languages defined yet"
-          emptyDescription="Add languages to configure application-wide supported languages."
-        />
-      </div>
+    <SettingsPage
+      sectionId="languages"
+      actions={
+        <WeaverButton variant="contained" color="primary" onClick={handleOpenCreate}>
+          <Plus size={16} style={{ marginRight: 6 }} />
+          Add Language
+        </WeaverButton>
+      }
+    >
+      <WeaverDataExplorer<SupportedLanguage>
+        records={languages}
+        getRecordId={getLanguageRecordId}
+        fields={fields}
+        storageKey="settings-supported-languages"
+        defaultVisibleFields={DEFAULT_VISIBLE_FIELDS}
+        dataMode="client"
+        selectionMode="none"
+        loading={loading}
+        searchable
+        searchPlaceholder="Search languages by code or name..."
+        stickyHeader
+        height="calc(100vh - 220px)"
+        toolbarActions={toolbarActions}
+        rowActions={rowActions}
+        canvas={canvasConfig}
+        emptyTitle="No supported languages defined yet"
+        emptyDescription="Add languages to configure application-wide supported languages."
+      />
 
       {/* Create / Edit Modal */}
       <Modal
@@ -460,6 +448,6 @@ export default function SupportedLanguagesPage() {
         onCancel={() => setDeletingItem(null)}
         onConfirm={handleConfirmDelete}
       />
-    </div>
+    </SettingsPage>
   );
 }

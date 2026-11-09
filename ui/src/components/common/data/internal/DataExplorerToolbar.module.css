@@ -157,3 +157,27 @@
   color: var(--color-accent-fg);
   box-shadow: var(--shadow-sm);
 }
+
+@media (max-width: 640px) {
+  .toolbar {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
+  .leftControls {
+    width: 100%;
+    gap: 6px;
+  }
+
+  .searchContainer {
+    flex: 1;
+    min-width: 120px;
+    width: auto;
+  }
+
+  .rightControls {
+    width: 100%;
+    justify-content: space-between;
+    margin-left: 0;
+  }
+}

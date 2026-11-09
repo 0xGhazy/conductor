@@ -64,8 +64,8 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
 
         String sql =
                 "INSERT INTO api_collections ("
-                        + "id, name, description, connection, type, created_at, created_by, updated_at, updated_by"
-                        + ") VALUES (?::uuid, ?, ?, ?::uuid, ?, ?, ?::uuid, ?, ?::uuid)";
+                        + "id, name, description, type, created_at, created_by, updated_at, updated_by"
+                        + ") VALUES (?::uuid, ?, ?, ?, ?, ?::uuid, ?, ?::uuid)";
 
         executeWithTransaction(
                 sql,
@@ -73,7 +73,6 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
                     q.addParameter(collection.getId().toString());
                     q.addParameter(collection.getName());
                     q.addParameter(collection.getDescription());
-                    q.addParameter(collection.getConnection() != null ? collection.getConnection().toString() : null);
                     q.addParameter(collection.getType() != null ? collection.getType().name() : null);
                     q.addTimestampParameter(toTimestamp(collection.getCreatedAt()));
                     q.addParameter(collection.getCreatedBy() != null ? collection.getCreatedBy().toString() : null);
@@ -91,7 +90,7 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
 
         String sql =
                 "UPDATE api_collections SET "
-                        + "name = ?, description = ?, connection = ?::uuid, type = ?, updated_at = ?, updated_by = ?::uuid "
+                        + "name = ?, description = ?, type = ?, updated_at = ?, updated_by = ?::uuid "
                         + "WHERE id = ?::uuid";
 
         executeWithTransaction(
@@ -99,7 +98,6 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
                 q -> {
                     q.addParameter(collection.getName());
                     q.addParameter(collection.getDescription());
-                    q.addParameter(collection.getConnection() != null ? collection.getConnection().toString() : null);
                     q.addParameter(collection.getType() != null ? collection.getType().name() : null);
                     q.addTimestampParameter(toTimestamp(collection.getUpdatedAt()));
                     q.addParameter(collection.getUpdatedBy() != null ? collection.getUpdatedBy().toString() : null);
@@ -384,10 +382,6 @@ public class PostgresApiCollectionDAO extends PostgresBaseDAO implements ApiColl
         model.setId(UUID.fromString(rs.getString("id")));
         model.setName(rs.getString("name"));
         model.setDescription(rs.getString("description"));
-        String conn = rs.getString("connection");
-        if (conn != null) {
-            model.setConnection(UUID.fromString(conn));
-        }
         String type = rs.getString("type");
         if (type != null) {
             try {

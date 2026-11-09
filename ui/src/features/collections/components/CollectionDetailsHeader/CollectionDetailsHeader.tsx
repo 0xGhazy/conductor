@@ -16,8 +16,6 @@ interface CollectionDetailsHeaderProps {
   loading: boolean;
   submitting: boolean;
   onChange: (field: string, value: any) => void;
-  connections: any[];
-  connectionsLoading?: boolean;
   onSave: () => void;
   onDelete?: () => void | Promise<void>;
 }
@@ -29,8 +27,6 @@ export const CollectionDetailsHeader: React.FC<CollectionDetailsHeaderProps> = (
   loading,
   submitting,
   onChange,
-  connections,
-  connectionsLoading = false,
   onSave,
   onDelete,
 }) => {
@@ -41,14 +37,6 @@ export const CollectionDetailsHeader: React.FC<CollectionDetailsHeaderProps> = (
   const typeOptions = [
     { label: "Postman Collection", value: "POSTMAN" },
     { label: "OpenAPI / Swagger Spec", value: "SWAGGER" },
-  ];
-
-  const connectionOptions = [
-    { label: "None (No connection)", value: "" },
-    ...connections.map((conn) => ({
-      label: conn.strategy ? `${conn.name} (${conn.strategy})` : conn.name,
-      value: String(conn.id || ""),
-    })),
   ];
 
   return (
@@ -125,7 +113,7 @@ export const CollectionDetailsHeader: React.FC<CollectionDetailsHeaderProps> = (
               </span>
             </div>
             <p className={styles.panelSubtitle}>
-              Manage collection identity, format specifications, and HTTP connection.
+              Manage collection identity and format specifications.
             </p>
           </div>
         </div>
@@ -157,17 +145,6 @@ export const CollectionDetailsHeader: React.FC<CollectionDetailsHeaderProps> = (
               options={typeOptions}
               onChange={(val) => onChange("type", val)}
               disabled={loading || submitting}
-            />
-          </div>
-
-          {/* Connection Binding */}
-          <div className={styles.gridField}>
-            <WeaverSelectField
-              label="HTTP Connection (Optional)"
-              value={collection?.connection || ""}
-              options={connectionOptions}
-              onChange={(val) => onChange("connection", val)}
-              disabled={loading || submitting || connectionsLoading}
             />
           </div>
 

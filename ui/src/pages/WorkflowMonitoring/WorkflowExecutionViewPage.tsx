@@ -184,8 +184,8 @@ export default function WorkflowExecutionViewPage() {
   }, [refetchExecution]);
 
   useEffect(() => {
-    const title = data?.workflowName || data?.workflowType || (workflowId ? `Execution: ${workflowId}` : "Execution Details");
-    document.title = title;
+    const name = data?.workflowName || data?.workflowType || workflowId;
+    document.title = name ? `Executions - ${name}` : "Executions";
   }, [data?.workflowName, data?.workflowType, workflowId]);
 
   const notify = useWeaverNotification();

@@ -104,6 +104,21 @@ export const normalizeWorkflows = (workflowsData) =>
         .trim() || "Workflow";
     const createdAt = wf.createdAt || (wf.createTime ? new Date(wf.createTime).toISOString() : undefined);
     const updatedAt = wf.updatedAt || (wf.updateTime ? new Date(wf.updateTime).toISOString() : undefined);
+    const createdBy =
+      wf.createdBy ||
+      wf.ownerEmail ||
+      wf.createBy ||
+      definition?.createdBy ||
+      definition?.ownerEmail ||
+      "-";
+    const language =
+      wf.language ||
+      definition?.language ||
+      wf.defaultLanguage ||
+      definition?.defaultLanguage ||
+      (Array.isArray(wf.supportedLanguages) && wf.supportedLanguages[0]) ||
+      (Array.isArray(definition?.supportedLanguages) && definition.supportedLanguages[0]) ||
+      "en";
     return {
       ...wf,
       definition,
@@ -112,6 +127,8 @@ export const normalizeWorkflows = (workflowsData) =>
       description: isMissingDescription ? fallbackDescription : normalizedDescription,
       createdAt,
       updatedAt,
+      createdBy,
+      language,
     };
   });
 

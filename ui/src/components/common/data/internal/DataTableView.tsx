@@ -200,7 +200,7 @@ export function DataTableView<TRecord>({
         </thead>
 
         <tbody>
-          {records.map((record) => {
+          {records.map((record, index) => {
             const id = getRecordId(record);
             const isSelected = selectedIds.includes(id);
 
@@ -216,6 +216,7 @@ export function DataTableView<TRecord>({
               <tr
                 key={id}
                 className={rowClass}
+                style={{ "--row-index": index } as React.CSSProperties}
                 onClick={() => onToggleSelectRecord(id)}
               >
                 {showCheckbox && (

@@ -101,7 +101,7 @@ export default function SecretViewContent({ id, isCreateMode }: SecretViewConten
       return;
     }
     if (!secret?.name) return;
-    document.title = `Secret - ${secret.name}`;
+    document.title = `Secrets - ${secret.name}`;
     window.dispatchEvent(
       new CustomEvent("weaver:breadcrumb-title", {
         detail: { title: secret.name, pathname: window.location.pathname },

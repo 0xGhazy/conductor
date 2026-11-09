@@ -1,13 +1,13 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useContext, useMemo } from "react";
 import { Box, Link } from "@mui/material";
 import { alpha, type Theme } from "@mui/material/styles";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CodeIcon from "@mui/icons-material/Code";
 
-import { WeaverDataExplorer } from "@/components/common/data";
+import { WeaverDataExplorer, UserAvatarCell, resolveUserDisplay } from "@/components/common/data";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import type {
   WeaverDataAction,
   WeaverDataField,
@@ -23,6 +23,7 @@ const DEFAULT_VISIBLE_FIELDS = ["name", "description", "language", "createdAt"];
 const getScriptRecordId = (r: ScriptDefinition) => r.id || r.name;
 
 const SCRIPTS_CANVAS = {
+  hideRowActions: true,
   renderIcon: () => (
     <Box
       sx={{
@@ -80,6 +81,9 @@ export default function ScriptsTable({
   onDeleteSelected,
   onPaginationChange,
 }: ScriptsTableProps) {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
+
   const fields = useMemo<WeaverDataField<ScriptDefinition>[]>(
     () => [
       {
@@ -156,6 +160,16 @@ export default function ScriptsTable({
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
       },
       {
+        key: "createdBy",
+        label: "Created By",
+        getValue: (r: any) => resolveUserDisplay(r.createdBy, currentUser)?.name || r.createdBy || "-",
+        visibleByDefault: false,
+        hideable: true,
+        sortable: true,
+        width: 190,
+        render: (_val, r: any) => <UserAvatarCell value={r.createdBy} currentUser={currentUser} />,
+      },
+      {
         key: "updatedAt",
         label: "Updated At",
         getValue: (r) => r.updatedAt,
@@ -165,8 +179,18 @@ export default function ScriptsTable({
         width: 200,
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
       },
+      {
+        key: "updatedBy",
+        label: "Updated By",
+        getValue: (r: any) => resolveUserDisplay(r.updatedBy, currentUser)?.name || r.updatedBy || "-",
+        visibleByDefault: false,
+        hideable: true,
+        sortable: true,
+        width: 190,
+        render: (_val, r: any) => <UserAvatarCell value={r.updatedBy} currentUser={currentUser} />,
+      },
     ],
-    [onView]
+    [currentUser, onView]
   );
 
   const toolbarActions = useMemo<WeaverDataAction<ScriptDefinition>[]>(
@@ -175,6 +199,9 @@ export default function ScriptsTable({
         id: "new",
         label: "New Script",
         icon: <AddIcon fontSize="small" />,
+        asButton: true,
+        buttonVariant: "contained",
+        buttonColor: "primary",
         onClick: onNew,
       },
       {
@@ -187,30 +214,6 @@ export default function ScriptsTable({
     [onNew, onRefresh]
   );
 
-  const rowActions = useMemo<WeaverDataAction<ScriptDefinition>[]>(
-    () => [
-      {
-        id: "open",
-        label: "Open / Edit",
-        icon: <VisibilityIcon fontSize="small" />,
-        onClick: ({ record }) => {
-          if (record) onView(record);
-        },
-      },
-      {
-        id: "delete",
-        label: "Delete",
-        icon: <DeleteOutlineIcon fontSize="small" />,
-        danger: true,
-        onClick: ({ record }) => {
-          if (record) {
-            onDeleteSelected({ selectedRows: [record] });
-          }
-        },
-      },
-    ],
-    [onDeleteSelected, onView]
-  );
 
   const bulkActions = useMemo<WeaverDataAction<ScriptDefinition>[]>(
     () => [
@@ -250,9 +253,8 @@ export default function ScriptsTable({
       loading={loading}
       searchable={false}
       stickyHeader
-      height="calc(100vh - 220px)"
+      height="calc(100vh - 104px)"
       toolbarActions={toolbarActions}
-      rowActions={rowActions}
       bulkActions={bulkActions}
       onRecordClick={handleRecordClick}
       pagination

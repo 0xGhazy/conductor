@@ -45,5 +45,7 @@ public class HttpConnectionModel {
     private Instant lastCheck;
     private String error;
     private Boolean active;
+    private UUID createdBy;
+    private UUID updatedBy;
 }
 

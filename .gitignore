@@ -30,6 +30,7 @@ node_modules
 /test-exports
 /.impeccable/review
 /ui/public/monaco-editor
+/ui/dist
 
 # publishing secrets
 secrets/signing-key
@@ -62,3 +63,4 @@ docs/superpowers
 
 .env
 logs
+permissions.json

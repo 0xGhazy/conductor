@@ -364,7 +364,7 @@ export default function QueryViewContent({
 
   useEffect(() => {
     const name = String(form?.name || "").trim();
-    document.title = name ? `Query: ${name}` : isCreateMode ? "New Query" : "Query";
+    document.title = isCreateMode ? "New Query" : name ? `Queries - ${name}` : "Queries";
   }, [form?.name, isCreateMode]);
 
   // Header breadcrumb shows the saved query name (not the id, and not every keystroke).

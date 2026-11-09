@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { useSidebarStore } from "@/store/useSidebarStore";
+import { AuthContext } from "@/features/auth";
 
 const renderSidebar = () =>
   render(
@@ -23,6 +24,11 @@ describe("Sidebar", () => {
     expect(databases.nextElementSibling).toBe(queries);
   });
 
+  it("places Workbench in the Orchestration group", () => {
+    renderSidebar();
+    expect(screen.getByRole("link", { name: "Workbench" })).toBeInTheDocument();
+  });
+
   it("opens and closes when the Weaver logo is clicked", () => {
     renderSidebar();
     const logo = screen.getByRole("button", { name: "Collapse sidebar" });
@@ -40,27 +46,28 @@ describe("Sidebar", () => {
     expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
-  it.each(["/settings/migrations", "/settings/configurations", "/settings/identity/users"])(
-    "highlights Settings on %s",
-    (path) => {
-      render(
-        <MemoryRouter initialEntries={[path]}>
-          <Sidebar />
-        </MemoryRouter>
-      );
-      expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute("aria-current", "page");
-      expect(screen.getByRole("link", { name: "Languages" })).not.toHaveAttribute("aria-current");
-    }
-  );
+  it("collapses the sidebar automatically when clicking on Settings", () => {
+    renderSidebar();
+    expect(useSidebarStore.getState().collapsed).toBe(false);
 
-  it("highlights only Languages on the languages page", () => {
+    const settingsLink = screen.getByRole("link", { name: "Settings" });
+    fireEvent.click(settingsLink);
+
+    expect(useSidebarStore.getState().collapsed).toBe(true);
+  });
+
+  it.each([
+    "/settings/migrations",
+    "/settings/configurations",
+    "/settings/identity/users",
+    "/settings/languages",
+  ])("highlights Settings on %s", (path) => {
     render(
-      <MemoryRouter initialEntries={["/settings/languages"]}>
+      <MemoryRouter initialEntries={[path]}>
         <Sidebar />
       </MemoryRouter>
     );
-    expect(screen.getByRole("link", { name: "Languages" })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: "Settings" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Settings" })).toHaveAttribute("aria-current", "page");
   });
 
   it("maintains stable DOM references during rapid toggling without unmounting links", () => {
@@ -75,5 +82,129 @@ describe("Sidebar", () => {
 
     const dbLinkAfter = screen.getByRole("link", { name: "Databases" });
     expect(dbLinkBefore).toBe(dbLinkAfter);
+  });
+
+  it("hides Settings when user lacks conductor_admin realm role", () => {
+    const userWithoutAdmin = {
+      username: "user",
+      roles: ["database:read"],
+      realmRoles: [],
+      resourceAccess: {
+        weaver: { roles: ["database:read"] },
+      },
+    };
+
+    render(
+      <MemoryRouter>
+        <AuthContext.Provider
+          value={{
+            isAuthenticated: true,
+            isLoading: false,
+            user: userWithoutAdmin,
+            token: "tok",
+            login: vi.fn(),
+            logout: vi.fn(),
+            hasRole: vi.fn(),
+          }}
+        >
+          <Sidebar />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByRole("link", { name: "Settings" })).not.toBeInTheDocument();
+  });
+
+  it("shows Settings when user has conductor_admin realm role", () => {
+    const adminUser = {
+      username: "admin",
+      roles: ["conductor_admin", "database:read"],
+      realmRoles: ["conductor_admin"],
+      resourceAccess: {
+        weaver: { roles: ["database:read"] },
+      },
+    };
+
+    render(
+      <MemoryRouter>
+        <AuthContext.Provider
+          value={{
+            isAuthenticated: true,
+            isLoading: false,
+            user: adminUser,
+            token: "tok",
+            login: vi.fn(),
+            logout: vi.fn(),
+            hasRole: vi.fn(),
+          }}
+        >
+          <Sidebar />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("link", { name: "Settings" })).toBeInTheDocument();
+  });
+
+  it("hides Databases when user lacks database related resource_access", () => {
+    const userWithoutDb = {
+      username: "user",
+      roles: ["conductor_admin"],
+      realmRoles: ["conductor_admin"],
+      resourceAccess: {
+        weaver: { roles: ["audit_log:read"] },
+      },
+    };
+
+    render(
+      <MemoryRouter>
+        <AuthContext.Provider
+          value={{
+            isAuthenticated: true,
+            isLoading: false,
+            user: userWithoutDb,
+            token: "tok",
+            login: vi.fn(),
+            logout: vi.fn(),
+            hasRole: vi.fn(),
+          }}
+        >
+          <Sidebar />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByRole("link", { name: "Databases" })).not.toBeInTheDocument();
+  });
+
+  it("shows Databases when user has database related resource_access", () => {
+    const userWithDb = {
+      username: "user",
+      roles: ["database:read"],
+      realmRoles: [],
+      resourceAccess: {
+        weaver: { roles: ["database:read"] },
+      },
+    };
+
+    render(
+      <MemoryRouter>
+        <AuthContext.Provider
+          value={{
+            isAuthenticated: true,
+            isLoading: false,
+            user: userWithDb,
+            token: "tok",
+            login: vi.fn(),
+            logout: vi.fn(),
+            hasRole: vi.fn(),
+          }}
+        >
+          <Sidebar />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("link", { name: "Databases" })).toBeInTheDocument();
   });
 });

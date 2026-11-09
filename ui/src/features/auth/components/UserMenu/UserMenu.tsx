@@ -8,7 +8,9 @@ import {
   Settings,
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import { hasAdminRole } from "../../utils/authPermissions";
 import { getAccessToken } from "../../services/keycloakService";
+import { useSidebarStore } from "@/store/useSidebarStore";
 import styles from "./UserMenu.module.css";
 
 const AVATAR_PALETTE = [
@@ -64,6 +66,7 @@ function getInitials(user: {
 
 export default function UserMenu() {
   const { isAuthenticated, isLoading, user, token, login, logout } = useAuth();
+  const canAccessSettings = hasAdminRole(user);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [copiedToken, setCopiedToken] = useState(false);
@@ -222,15 +225,20 @@ export default function UserMenu() {
               </span>
             </button>
 
+            {canAccessSettings && (
             <Link
               to="/settings"
               className={styles.actionItem}
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                useSidebarStore.getState().setCollapsed(true);
+              }}
               role="menuitem"
             >
               <Settings size={15} className={styles.actionIcon} aria-hidden="true" />
               <span>Account & Settings</span>
             </Link>
+          )}
           </div>
 
           <div className={styles.divider} />

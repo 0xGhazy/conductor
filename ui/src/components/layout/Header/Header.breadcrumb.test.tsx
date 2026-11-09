@@ -57,4 +57,16 @@ describe("Header", () => {
     fireEvent.click(themeBtn);
     expect(mockToggleMode).toHaveBeenCalledTimes(1);
   });
+
+  it("renders mobile navigation button and toggles sidebar state", async () => {
+    const { useSidebarStore } = await import("@/store/useSidebarStore");
+    useSidebarStore.setState({ collapsed: false });
+
+    renderHeader();
+    const menuBtn = screen.getByRole("button", { name: "Collapse navigation" });
+    expect(menuBtn).toBeInTheDocument();
+
+    fireEvent.click(menuBtn);
+    expect(useSidebarStore.getState().collapsed).toBe(true);
+  });
 });

@@ -1,7 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { SettingsSidebar } from "../components/SettingsSidebar/SettingsSidebar";
+import { AuthContext } from "@/features/auth";
 
 const renderAt = (path: string) =>
   render(
@@ -59,5 +60,67 @@ describe("SettingsSidebar", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "false");
     fireEvent.click(toggle);
     expect(toggle).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("hides Audit Logs when user lacks audit related resource_access", () => {
+    const userWithoutAudit = {
+      username: "user",
+      roles: ["conductor_admin", "database:read"],
+      realmRoles: ["conductor_admin"],
+      resourceAccess: {
+        weaver: { roles: ["database:read"] },
+      },
+    };
+
+    render(
+      <MemoryRouter initialEntries={["/settings/migrations"]}>
+        <AuthContext.Provider
+          value={{
+            isAuthenticated: true,
+            isLoading: false,
+            user: userWithoutAudit,
+            token: "tok",
+            login: vi.fn(),
+            logout: vi.fn(),
+            hasRole: vi.fn(),
+          }}
+        >
+          <SettingsSidebar />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByRole("link", { name: "Audit Logs" })).not.toBeInTheDocument();
+  });
+
+  it("shows Audit Logs when user has audit related resource_access", () => {
+    const userWithAudit = {
+      username: "user",
+      roles: ["conductor_admin", "audit_log:read"],
+      realmRoles: ["conductor_admin"],
+      resourceAccess: {
+        weaver: { roles: ["audit_log:read"] },
+      },
+    };
+
+    render(
+      <MemoryRouter initialEntries={["/settings/migrations"]}>
+        <AuthContext.Provider
+          value={{
+            isAuthenticated: true,
+            isLoading: false,
+            user: userWithAudit,
+            token: "tok",
+            login: vi.fn(),
+            logout: vi.fn(),
+            hasRole: vi.fn(),
+          }}
+        >
+          <SettingsSidebar />
+        </AuthContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole("link", { name: "Audit Logs" })).toBeInTheDocument();
   });
 });

@@ -2,7 +2,6 @@ export const buildEmptyCollection = () => ({
   id: null,
   name: "",
   description: "",
-  connection: "",
   type: "POSTMAN",
   createdAt: "",
   createdBy: "",
@@ -16,7 +15,6 @@ export const normalizeCollection = (collection) => ({
   id: collection?.id ?? null,
   name: collection?.name ?? "",
   description: collection?.description ?? "",
-  connection: collection?.connection ?? "",
   type: collection?.type ?? "POSTMAN",
   createdAt: collection?.createdAt ?? "",
   createdBy: collection?.createdBy ?? "",
@@ -36,7 +34,6 @@ export const validateCollection = (collection) => {
 export const buildCollectionPayload = (form) => ({
   name: form.name?.trim() ?? "",
   description: form.description ?? "",
-  connection: form.connection || null,
   type: form.type || "POSTMAN",
 });
 
@@ -357,12 +354,11 @@ export const parseCollectionFile = async (file) => {
 export const buildImportPayload = (form, parsed) => ({
   name: form.name?.trim() ?? "",
   description: form.description ?? "",
-  connection: form.connection || null,
   type: parsed?.type || form.type || "POSTMAN",
   endpoints: (parsed?.endpoints || []).map((ep) => ({
     name: ep.name,
     description: ep.description || "",
-    connection: form.connection || null,
+    connection: ep.connection || null,
     tags: ep.tags || ep.config?.tags || [],
     config: {
       ...(ep.config || {}),

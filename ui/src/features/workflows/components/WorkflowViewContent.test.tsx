@@ -1,6 +1,5 @@
 import { describe, it, assert } from "vitest";
 import type { WeaverRelatedTableColumn } from "@/components/common/data";
-import type { WeaverRelatedListItem } from "@/components/common/navigation";
 import type { WeaverSelectOption } from "@/components/common/fields";
 import type {
   WorkflowDetail,
@@ -288,63 +287,6 @@ describe("Workflow View/Edit Page Specification", () => {
     });
   });
 
-  describe("3. Related List (In-Page Navigation)", () => {
-    const RELATED_NAV_ITEMS: WeaverRelatedListItem[] = [
-      { id: "queries", label: "Queries", targetId: "workflow-queries-section" },
-      { id: "databases", label: "Databases", targetId: "workflow-databases-section" },
-      { id: "connections", label: "Connections", targetId: "workflow-connections-section" },
-      { id: "scripts", label: "Scripts", targetId: "workflow-scripts-section" },
-      { id: "activity", label: "Activity", targetId: "workflow-activity-section" },
-    ];
-
-    it("includes exact items without count badges", () => {
-      assert.strictEqual(RELATED_NAV_ITEMS.length, 5);
-      assert.deepStrictEqual(
-        RELATED_NAV_ITEMS.map((item) => item.id),
-        ["queries", "databases", "connections", "scripts", "activity"]
-      );
-      assert.deepStrictEqual(
-        RELATED_NAV_ITEMS.map((item) => item.label),
-        ["Queries", "Databases", "Connections", "Scripts", "Activity"]
-      );
-      RELATED_NAV_ITEMS.forEach((item) => {
-        assert.strictEqual((item as any).count, undefined);
-      });
-    });
-
-    it("has matching stable target section IDs", () => {
-      assert.strictEqual(RELATED_NAV_ITEMS[0].targetId, "workflow-queries-section");
-      assert.strictEqual(RELATED_NAV_ITEMS[1].targetId, "workflow-databases-section");
-      assert.strictEqual(RELATED_NAV_ITEMS[2].targetId, "workflow-connections-section");
-      assert.strictEqual(RELATED_NAV_ITEMS[3].targetId, "workflow-scripts-section");
-      assert.strictEqual(RELATED_NAV_ITEMS[4].targetId, "workflow-activity-section");
-    });
-
-    it("expands corresponding section when item is clicked", () => {
-      const expandedMap = {
-        "workflow-queries-section": false,
-        "workflow-databases-section": false,
-        "workflow-connections-section": false,
-        "workflow-scripts-section": false,
-        "workflow-activity-section": false,
-      };
-
-      const handleItemClick = (item: WeaverRelatedListItem) => {
-        if (item.targetId in expandedMap) {
-          expandedMap[item.targetId as keyof typeof expandedMap] = true;
-        }
-      };
-
-      handleItemClick(RELATED_NAV_ITEMS[0]);
-      assert.strictEqual(expandedMap["workflow-queries-section"], true);
-
-      handleItemClick(RELATED_NAV_ITEMS[2]);
-      assert.strictEqual(expandedMap["workflow-connections-section"], true);
-
-      handleItemClick(RELATED_NAV_ITEMS[4]);
-      assert.strictEqual(expandedMap["workflow-activity-section"], true);
-    });
-  });
 
   describe("4. Task Referenced Entity Extraction", () => {
     it("extracts query, datasource, connection, and script references from workflow definition", () => {

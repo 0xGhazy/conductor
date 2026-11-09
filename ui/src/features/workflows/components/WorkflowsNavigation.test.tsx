@@ -74,7 +74,7 @@ describe("Workflows Navigation & Routing Specification", () => {
       const getDocumentTitle = (route: string, context?: { name?: string; workflowId?: string }) => {
         if (route === "/executions") return "Executions";
         if (route === "/workflows") return "Workflows";
-        if (route === "/workflows/:id") return context?.name || "Workflow";
+        if (route === "/workflows/:id") return context?.name ? `Workflows - ${context.name}` : "Workflows";
         if (route === "/designer") return context?.name || "Untitled workflow";
         if (route === "/" || route === "/dashboard" || route === "/home") return "Dashboard";
         return "Weaver";
@@ -82,7 +82,7 @@ describe("Workflows Navigation & Routing Specification", () => {
 
       expect(getDocumentTitle("/executions")).toBe("Executions");
       expect(getDocumentTitle("/workflows")).toBe("Workflows");
-      expect(getDocumentTitle("/workflows/:id", { name: "my_payment_flow" })).toBe("my_payment_flow");
+      expect(getDocumentTitle("/workflows/:id", { name: "my_payment_flow" })).toBe("Workflows - my_payment_flow");
       expect(getDocumentTitle("/designer")).toBe("Untitled workflow");
       expect(getDocumentTitle("/designer", { name: "order_process" })).toBe("order_process");
       expect(getDocumentTitle("/")).toBe("Dashboard");

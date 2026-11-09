@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Box, Link } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import type { AppLayoutContext } from "@/app/layout/AppLayout";
 import { useWeaverNotification } from "@/components/common/notifications";
-import { WeaverDataExplorer } from "@/components/common/data";
+import { WeaverDataExplorer, UserAvatarCell, resolveUserDisplay } from "@/components/common/data";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import type {
   WeaverDataAction,
   WeaverDataField,
@@ -60,6 +60,8 @@ interface ConnectionRecord {
   status: string;
   createdAt: string | number | null;
   updatedAt: string | number | null;
+  createdBy?: string | null;
+  updatedBy?: string | null;
 }
 
 const normalizeStatus = (value: any) => {
@@ -91,6 +93,7 @@ const DEFAULT_VISIBLE_FIELDS = ["name", "type", "status", "createdAt"];
 const PAGE_SIZE_OPTIONS = [20, 25, 50, 75, 100];
 
 const CONNECTIONS_CANVAS = {
+  hideRowActions: true,
   renderIcon: () => (
     <Box
       sx={{
@@ -124,6 +127,8 @@ const CONNECTIONS_CANVAS = {
 };
 
 export default function ConnectionsPage() {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
   const navigate = useNavigate();
   const { error: showError, success: showSuccess } = useWeaverNotification();
   const { search } = useOutletContext<AppLayoutContext>() ?? { search: "" };
@@ -172,6 +177,8 @@ export default function ConnectionsPage() {
       status: normalizeStatus(item?.status ?? item?.connectionStatus ?? "-"),
       createdAt: item?.createdAt ?? null,
       updatedAt: item?.updatedAt ?? null,
+      createdBy: item?.createdBy ?? null,
+      updatedBy: item?.updatedBy ?? null,
     }));
     return { items: normalized, rowCount: extractTotal(response, extractTotal(body, normalized.length)) };
   }, [connectionsResponse]);
@@ -181,7 +188,7 @@ export default function ConnectionsPage() {
   }, [connectionsError, showError]);
 
   useEffect(() => {
-    document.title = "HTTP Connections";
+    document.title = "Authentications";
   }, []);
 
   const fields = useMemo<WeaverDataField<ConnectionRecord>[]>(
@@ -212,7 +219,7 @@ export default function ConnectionsPage() {
               underline="hover"
               onClick={(event) => {
                 event.stopPropagation();
-                navigate(`/connections/${encodeURIComponent(id)}`);
+                navigate(`/authentications/${encodeURIComponent(id)}`);
               }}
               sx={{ fontWeight: 600, textAlign: "left", color: "primary.main" }}
             >
@@ -259,6 +266,16 @@ export default function ConnectionsPage() {
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
       },
       {
+        key: "createdBy",
+        label: "Created By",
+        getValue: (r) => resolveUserDisplay(r.createdBy, currentUser)?.name || r.createdBy || "-",
+        visibleByDefault: false,
+        hideable: true,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.createdBy} currentUser={currentUser} />,
+      },
+      {
         key: "updatedAt",
         label: "Updated At",
         getValue: (r) => r.updatedAt,
@@ -268,8 +285,18 @@ export default function ConnectionsPage() {
         width: 200,
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
       },
+      {
+        key: "updatedBy",
+        label: "Updated By",
+        getValue: (r) => resolveUserDisplay(r.updatedBy, currentUser)?.name || r.updatedBy || "-",
+        visibleByDefault: false,
+        hideable: true,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.updatedBy} currentUser={currentUser} />,
+      },
     ],
-    [navigate]
+    [currentUser, navigate]
   );
 
   const isSearchActive = Boolean(String(search || "").trim());
@@ -317,9 +344,12 @@ export default function ConnectionsPage() {
     () => [
       {
         id: "new",
-        label: "New Connection",
+        label: "New Authentication",
         icon: <AddIcon fontSize="small" />,
-        onClick: () => navigate("/connections/new"),
+        asButton: true,
+        buttonVariant: "contained",
+        buttonColor: "primary",
+        onClick: () => navigate("/authentications/new"),
       },
       {
         id: "refresh",
@@ -333,32 +363,6 @@ export default function ConnectionsPage() {
     [navigate, refetchConnections]
   );
 
-  const rowActions = useMemo<WeaverDataAction<ConnectionRecord>[]>(
-    () => [
-      {
-        id: "open",
-        label: "Open / Edit",
-        icon: <VisibilityIcon fontSize="small" />,
-        onClick: ({ record }) => {
-          if (record?.id) {
-            navigate(`/connections/${encodeURIComponent(record.id)}`);
-          }
-        },
-      },
-      {
-        id: "delete",
-        label: "Delete",
-        icon: <DeleteOutlineIcon fontSize="small" />,
-        danger: true,
-        onClick: ({ record }) => {
-          if (record) {
-            openDeleteConfirm({ selectedRows: [record] });
-          }
-        },
-      },
-    ],
-    [navigate, openDeleteConfirm]
-  );
 
   const bulkActions = useMemo<WeaverDataAction<ConnectionRecord>[]>(
     () => [
@@ -383,7 +387,7 @@ export default function ConnectionsPage() {
 
   const handleRecordClick = useCallback(
     (r: ConnectionRecord) => {
-      if (r?.id) navigate(`/connections/${encodeURIComponent(r.id)}`);
+      if (r?.id) navigate(`/authentications/${encodeURIComponent(r.id)}`);
     },
     [navigate]
   );
@@ -417,11 +421,10 @@ export default function ConnectionsPage() {
           loading={loading}
           searchable
           searchValue={search}
-          searchPlaceholder="Search connections by name, type..."
+          searchPlaceholder="Search authentications by name, type..."
           stickyHeader
-          height="calc(100vh - 220px)"
+          height="calc(100vh - 104px)"
           toolbarActions={toolbarActions}
-          rowActions={rowActions}
           bulkActions={bulkActions}
           onRecordClick={handleRecordClick}
           pagination
@@ -430,8 +433,8 @@ export default function ConnectionsPage() {
           paginationModel={paginationModel}
           onPaginationChange={handlePaginationChange}
           canvas={CONNECTIONS_CANVAS}
-          emptyTitle="No connections found"
-          emptyDescription="Configure HTTP connections to connect workflows with external systems."
+          emptyTitle="No authentications found"
+          emptyDescription="Configure authentications to connect workflows with external systems."
         />
       </div>
 

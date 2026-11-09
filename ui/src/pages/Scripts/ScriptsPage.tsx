@@ -20,6 +20,10 @@ interface ConfirmState {
 }
 
 export default function ScriptsPage() {
+  useEffect(() => {
+    document.title = "Scripts";
+  }, []);
+
   const navigate = useNavigate();
   const { error: showError, success: showSuccess } = useWeaverNotification();
   const { search } = useOutletContext<AppLayoutContext>() ?? { search: "" };

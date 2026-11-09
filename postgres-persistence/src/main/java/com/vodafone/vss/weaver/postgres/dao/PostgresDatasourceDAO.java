@@ -84,7 +84,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         datasource.setUpdatedAt(Instant.now());
 
         String sql =
-                "INSERT INTO conductor_datasources ("
+                "INSERT INTO databases ("
                         + "id, name, version, type, connection, created_at, updated_at, created_by, updated_by"
                         + ") VALUES (?::uuid, ?, ?, ?, ?::jsonb, ?, ?, ?::uuid, ?::uuid)";
 
@@ -113,7 +113,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         Long nextVersion = currentVersion + 1;
 
         String sql =
-                "UPDATE conductor_datasources SET "
+                "UPDATE databases SET "
                         + "name = ?, version = ?, type = ?, connection = ?::jsonb, "
                         + "updated_at = ?, updated_by = ?::uuid "
                         + "WHERE id = ?::uuid AND version = ?";
@@ -151,7 +151,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         }
         String sql =
                 "SELECT id, name, version, type, connection, created_at, updated_at, created_by, updated_by "
-                        + "FROM conductor_datasources WHERE id = ?::uuid";
+                        + "FROM databases WHERE id = ?::uuid";
 
         return queryWithTransaction(
                 sql,
@@ -172,7 +172,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         if (id == null) {
             return false;
         }
-        String sql = "SELECT 1 FROM conductor_datasources WHERE id = ?::uuid LIMIT 1";
+        String sql = "SELECT 1 FROM databases WHERE id = ?::uuid LIMIT 1";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -188,7 +188,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         }
         String sql =
                 "SELECT id, name, version, type, connection, created_at, updated_at, created_by, updated_by "
-                        + "FROM conductor_datasources WHERE name = ?";
+                        + "FROM databases WHERE name = ?";
 
         return queryWithTransaction(
                 sql,
@@ -213,7 +213,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         StringBuilder sql =
                 new StringBuilder(
                         "SELECT id, name, version, type, connection, created_at, updated_at, created_by, updated_by "
-                                + "FROM conductor_datasources ");
+                                + "FROM databases ");
         boolean hasSearch = search != null && !search.isBlank();
         if (hasSearch) {
             sql.append("WHERE name ILIKE ? ");
@@ -247,7 +247,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
 
     @Override
     public long count(String search) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM conductor_datasources ");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM databases ");
         boolean hasSearch = search != null && !search.isBlank();
         if (hasSearch) {
             sql.append("WHERE name ILIKE ?");
@@ -274,7 +274,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         if (id == null) {
             return false;
         }
-        String sql = "DELETE FROM conductor_datasources WHERE id = ?::uuid";
+        String sql = "DELETE FROM databases WHERE id = ?::uuid";
         int rows =
                 queryWithTransaction(
                         sql,
@@ -290,7 +290,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         if (name == null || name.isBlank()) {
             return false;
         }
-        String sql = "SELECT 1 FROM conductor_datasources WHERE name = ? LIMIT 1";
+        String sql = "SELECT 1 FROM databases WHERE name = ? LIMIT 1";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -304,7 +304,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         if (name == null || name.isBlank()) {
             return false;
         }
-        String sql = "SELECT 1 FROM conductor_datasources WHERE LOWER(name) = LOWER(?) LIMIT 1";
+        String sql = "SELECT 1 FROM databases WHERE LOWER(name) = LOWER(?) LIMIT 1";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -318,7 +318,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
         if (id == null) {
             return Optional.empty();
         }
-        String sql = "SELECT version FROM conductor_datasources WHERE id = ?::uuid";
+        String sql = "SELECT version FROM databases WHERE id = ?::uuid";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -339,7 +339,7 @@ public class PostgresDatasourceDAO extends PostgresBaseDAO implements Datasource
             return;
         }
         String sql =
-                "UPDATE conductor_datasources SET version = version + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?::uuid";
+                "UPDATE databases SET version = version + 1, updated_at = CURRENT_TIMESTAMP WHERE id = ?::uuid";
         withTransaction(
                 conn -> {
                     try (var ps = conn.prepareStatement(sql)) {

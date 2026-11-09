@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import {
   ArrowRightLeft,
   Fingerprint,
+  Languages,
   ScrollText,
   ShieldCheck,
   SlidersHorizontal,
@@ -72,6 +73,14 @@ export const SETTINGS_NAVIGATION: SettingsNavItem[] = [
       },
     ],
   },
+  {
+    id: "languages",
+    label: "Languages",
+    path: "/settings/languages",
+    icon: Languages,
+    description:
+      "Supported languages for workflow localization and translation message templates.",
+  },
 ];
 
 /** The default Settings page. */
@@ -108,7 +117,7 @@ export function findSettingsItem(
   return undefined;
 }
 
-/** True when `pathname` belongs to the Settings area (Supported Languages lives elsewhere). */
+/** True when `pathname` belongs to the Settings area. */
 export const isSettingsAreaPath = (pathname: string) =>
   findSettingsTrail(pathname).length > 0 ||
   pathname === SETTINGS_ROOT_PATH ||

@@ -36,7 +36,7 @@ export default function RedisSourceViewPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
-  const isCreateMode = location.pathname === "/redis/new";
+  const isCreateMode = location.pathname === "/caching/new" || location.pathname === "/redis/new";
   const { error: showError, success: showSuccess } = useWeaverNotification();
   const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
@@ -63,6 +63,15 @@ export default function RedisSourceViewPage() {
     if (redisSourceError) showError(getErrorMessage(redisSourceError, "Failed to load Redis source."));
   }, [redisSourceError, showError]);
 
+  useEffect(() => {
+    const name = String(form?.name || "").trim();
+    if (isCreateMode) {
+      document.title = "Create Cache";
+    } else {
+      document.title = name ? `Caching - ${name}` : "Caching";
+    }
+  }, [form?.name, isCreateMode]);
+
   const loadRedisSource = useCallback(async () => {
     if (!id || isCreateMode) return;
     await refetchRedisSource();
@@ -88,11 +97,11 @@ export default function RedisSourceViewPage() {
         void queryClient.invalidateQueries({ queryKey: redisDatasourceKeys.all });
         showSuccess("Redis datasource created successfully.");
         if (createdId) {
-          navigate(`/redis/${encodeURIComponent(createdId)}`, {
+          navigate(`/caching/${encodeURIComponent(createdId)}`, {
             replace: true,
           });
         } else {
-          navigate("/redis");
+          navigate("/caching");
         }
       } else {
         await updateRedisDatasource(id!, buildRedisDatasourcePayload(form));
@@ -164,7 +173,7 @@ export default function RedisSourceViewPage() {
               <Button
                 variant="outlined"
                 startIcon={<ArrowBackIcon />}
-                onClick={() => navigate("/redis")}
+                onClick={() => navigate("/caching")}
               >
                 Back
               </Button>

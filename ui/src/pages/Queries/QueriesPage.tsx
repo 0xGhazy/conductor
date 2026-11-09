@@ -19,7 +19,7 @@ export default function QueriesPage() {
 
   useEffect(() => {
     if (!isCreating) {
-      document.title = "Weaver - Queries";
+      document.title = "Queries";
     }
   }, [isCreating]);
 

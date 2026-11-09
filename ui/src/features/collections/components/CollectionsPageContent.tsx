@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import {
   UploadCloud,
-  Trash2,
   FileCode,
-  ExternalLink,
 } from "lucide-react";
 import { SiPostman, SiSwagger } from "react-icons/si";
 
-import { WeaverDataExplorer } from "@/components/common/data";
+import { WeaverDataExplorer, UserAvatarCell, resolveUserDisplay } from "@/components/common/data";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import type {
   WeaverDataAction,
   WeaverDataField,
@@ -44,6 +43,8 @@ export const CollectionsPageContent: React.FC<CollectionsPageContentProps> = ({
   onNotify,
   search = "",
 }) => {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -291,10 +292,12 @@ export const CollectionsPageContent: React.FC<CollectionsPageContentProps> = ({
       {
         key: "createdBy",
         label: "Created By",
-        getValue: (r) => r.createdBy || "-",
+        getValue: (r) => resolveUserDisplay(r.createdBy, currentUser)?.name || r.createdBy || "-",
         visibleByDefault: false,
         hideable: true,
-        width: 160,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.createdBy} currentUser={currentUser} />,
       },
       {
         key: "updatedAt",
@@ -309,13 +312,15 @@ export const CollectionsPageContent: React.FC<CollectionsPageContentProps> = ({
       {
         key: "updatedBy",
         label: "Updated By",
-        getValue: (r) => r.updatedBy || "-",
+        getValue: (r) => resolveUserDisplay(r.updatedBy, currentUser)?.name || r.updatedBy || "-",
         visibleByDefault: false,
         hideable: true,
-        width: 160,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.updatedBy} currentUser={currentUser} />,
       },
     ],
-    []
+    [currentUser]
   );
 
   // Filter items locally if client search is active
@@ -349,33 +354,6 @@ export const CollectionsPageContent: React.FC<CollectionsPageContentProps> = ({
     []
   );
 
-  // Row Actions (since selection checkboxes are disabled)
-  const rowActions = useMemo<WeaverDataAction<CollectionRow>[]>(
-    () => [
-      {
-        id: "view-collection",
-        label: "View Collection",
-        icon: <ExternalLink size={14} />,
-        onClick: ({ record }) => {
-          if (record?.id) {
-            navigate(`/collections/${encodeURIComponent(record.id)}`);
-          }
-        },
-      },
-      {
-        id: "delete-collection",
-        label: "Delete",
-        danger: true,
-        icon: <Trash2 size={14} />,
-        onClick: ({ record }) => {
-          if (record) {
-            openDeleteConfirm({ selectedRows: [record] });
-          }
-        },
-      },
-    ],
-    [navigate, openDeleteConfirm]
-  );
 
   return (
     <div
@@ -425,7 +403,7 @@ export const CollectionsPageContent: React.FC<CollectionsPageContentProps> = ({
         }}
         selectionMode="none"
         toolbarActions={toolbarActions}
-        rowActions={rowActions}
+        height="calc(100vh - 104px)"
         loading={loading}
         errorMessage={errorMessage}
         onRecordClick={(record) => {

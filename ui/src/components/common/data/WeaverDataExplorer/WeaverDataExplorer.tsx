@@ -56,6 +56,7 @@ export function WeaverDataExplorer<TRecord>(props: WeaverDataExplorerProps<TReco
     <div
       className={`${styles.container} ${className}`.trim()}
       data-testid="weaver-data-explorer"
+      style={height ? { height } : undefined}
     >
       {/* Top Toolbar */}
       <DataExplorerToolbar

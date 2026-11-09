@@ -7,12 +7,13 @@ import AppRoutes from "@/routes/AppRoutes";
 vi.mock("@/routes/ProtectedRoute", () => ({ default: () => <Outlet /> }));
 vi.mock("@/app/layout/AppLayout", () => ({ default: () => <Outlet context={{ search: "", setSearch: () => {} }} /> }));
 vi.mock("@/components/common/editors", () => ({ WeaverCodeEditor: () => <div data-testid="code-editor" /> }));
-vi.mock("@/pages/Settings/SupportedLanguagesPage", () => ({ default: () => <h1>Supported Languages</h1> }));
+vi.mock("@/pages/Settings/SupportedLanguagesPage", () => ({ default: () => <h1>Languages</h1> }));
 vi.mock("@/features/settings/hooks/useAuditLogs", () => ({
   auditLogKeys: { all: ["auditLogs"] },
   useAuditEvents: () => ({ data: { items: [], total: 0 }, isPending: false, isFetching: false, refetch: vi.fn() }),
   useAuditEvent: () => ({ data: undefined, isPending: false }),
   useAuditFacets: () => ({ data: { enabled: true, readable: true, resourceTypes: [], statuses: [], actions: [] } }),
+  useAuditHistogram: () => ({ data: [], isPending: false, isFetching: false }),
 }));
 
 const Location = () => <div data-testid="location">{useLocation().pathname}</div>;
@@ -32,6 +33,7 @@ describe("Settings routes", () => {
     ["/settings/audit-logs", "Audit Logs"],
     ["/settings/identity/users", "Users"],
     ["/settings/identity/roles", "Roles & Permissions"],
+    ["/settings/languages", "Languages"],
   ])("%s shows the %s page inside the Settings layout", { timeout: 20000 }, async (path, title) => {
     renderAt(path);
     // Pages load lazily; Migrations pulls in the designer code, so allow time for it.
@@ -51,9 +53,5 @@ describe("Settings routes", () => {
     expect(screen.getByTestId("location")).toHaveTextContent(to);
   });
 
-  it("keeps Supported Languages outside the Settings layout", async () => {
-    renderAt("/settings/languages");
-    expect(await screen.findByRole("heading", { name: "Supported Languages" })).toBeInTheDocument();
-    expect(screen.queryByRole("complementary", { name: "Settings" })).toBeNull();
-  });
+
 });

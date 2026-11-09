@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
+import { AuthContext, hasAdminRole, hasDatabaseAccess } from "@/features/auth";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  Workflow,
   Layers,
   Activity,
   Database,
@@ -12,9 +12,7 @@ import {
   FileCode,
   Radio,
   KeyRound,
-  Globe,
   FlaskConical,
-  Languages,
   Settings as SettingsIcon,
 } from "lucide-react";
 import { useSidebarStore } from "@/store/useSidebarStore";
@@ -40,9 +38,9 @@ const NAVIGATION_GROUPS: NavGroupDef[] = [
     label: "Orchestration",
     items: [
       { label: "Dashboard", path: "/", icon: LayoutDashboard, exact: true },
-      { label: "Designer", path: "/designer", icon: Workflow },
       { label: "Workflows", path: "/workflows", icon: Layers },
       { label: "Executions", path: "/executions", icon: Activity },
+      { label: "Workbench", path: "/workbench", icon: FlaskConical },
     ],
   },
   {
@@ -50,19 +48,16 @@ const NAVIGATION_GROUPS: NavGroupDef[] = [
     items: [
       { label: "Databases", path: "/databases", icon: Database },
       { label: "Queries", path: "/queries", icon: Code },
-      { label: "Redis Cache", path: "/redis", icon: Zap },
+      { label: "Caching", path: "/caching", icon: Zap },
       { label: "Collections", path: "/collections", icon: Folder },
       { label: "Scripts", path: "/scripts", icon: FileCode },
-      { label: "Connections", path: "/connections", icon: Radio },
+      { label: "Authentications", path: "/authentications", icon: Radio },
       { label: "Secrets", path: "/secrets", icon: KeyRound },
-      { label: "Translations", path: "/translations", icon: Globe },
     ],
   },
   {
     label: "Platform",
     items: [
-      { label: "Workbench", path: "/workbench", icon: FlaskConical },
-      { label: "Languages", path: "/settings/languages", icon: Languages },
       {
         label: "Settings",
         path: "/settings",
@@ -73,6 +68,7 @@ const NAVIGATION_GROUPS: NavGroupDef[] = [
           "/settings/configurations",
           "/settings/audit-logs",
           "/settings/identity",
+          "/settings/languages",
         ],
       },
     ],
@@ -81,8 +77,37 @@ const NAVIGATION_GROUPS: NavGroupDef[] = [
 
 export const Sidebar: React.FC = () => {
   const location = useLocation();
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user;
   const collapsed = useSidebarStore((state) => state.collapsed);
   const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+  const setCollapsed = useSidebarStore((state) => state.setCollapsed);
+
+  // Filter navigation groups based on realm roles and resource access
+  const visibleGroups = useMemo(() => {
+    // If rendered outside AuthProvider (e.g. unit tests without auth wrapper), default to all
+    if (authContext === undefined) {
+      return NAVIGATION_GROUPS;
+    }
+
+    return NAVIGATION_GROUPS.map((group) => {
+      const filteredItems = group.items.filter((item) => {
+        // Hide Settings tab in sidebar if user doesn't have "conductor_admin" realm role
+        if (item.path === "/settings" || item.path.startsWith("/settings")) {
+          return hasAdminRole(currentUser);
+        }
+        // Hide Databases tab in sidebar if user doesn't have database related resource_access
+        if (item.path === "/databases" || item.path.startsWith("/databases")) {
+          return hasDatabaseAccess(currentUser);
+        }
+        return true;
+      });
+      return {
+        ...group,
+        items: filteredItems,
+      };
+    }).filter((group) => group.items.length > 0);
+  }, [authContext, currentUser]);
 
   // Keyboard shortcut: Ctrl+B or Cmd+B to toggle sidebar
   useEffect(() => {
@@ -136,7 +161,7 @@ export const Sidebar: React.FC = () => {
 
       {/* Navigation Groups (Flat clean list) */}
       <nav className={styles.navContainer}>
-        {NAVIGATION_GROUPS.map((group, groupIndex) => (
+        {visibleGroups.map((group, groupIndex) => (
           <div key={group.label} className={styles.navGroup}>
             {groupIndex > 0 && (
               <div className={styles.groupDivider} aria-hidden="true" />
@@ -159,6 +184,11 @@ export const Sidebar: React.FC = () => {
                   className={itemClass}
                   aria-current={active ? "page" : undefined}
                   aria-label={item.label}
+                  onClick={() => {
+                    if (item.path.startsWith("/settings")) {
+                      setCollapsed(true);
+                    }
+                  }}
                   onMouseEnter={() => prefetchRoute(item.path)}
                   onFocus={() => prefetchRoute(item.path)}
                 >

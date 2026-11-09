@@ -61,7 +61,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         query.setUpdatedAt(Instant.now());
 
         String sql =
-                "INSERT INTO conductor_queries ("
+                "INSERT INTO queries ("
                         + "id, name, description, sql_query, timeout, parameters, datasource_id, "
                         + "created_at, updated_at, created_by, updated_by"
                         + ") VALUES (?::uuid, ?, ?, ?, ?, ?::jsonb, ?::uuid, ?, ?, ?::uuid, ?::uuid)";
@@ -92,7 +92,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         query.setUpdatedAt(Instant.now());
 
         String sql =
-                "UPDATE conductor_queries SET "
+                "UPDATE queries SET "
                         + "name = ?, description = ?, sql_query = ?, timeout = ?, "
                         + "parameters = ?::jsonb, datasource_id = ?::uuid, updated_at = ?, updated_by = ?::uuid "
                         + "WHERE id = ?::uuid";
@@ -131,7 +131,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         String sql =
                 "SELECT id, name, description, sql_query, timeout, parameters, datasource_id, "
                         + "created_at, updated_at, created_by, updated_by "
-                        + "FROM conductor_queries WHERE id = ?::uuid";
+                        + "FROM queries WHERE id = ?::uuid";
 
         return queryWithTransaction(
                 sql,
@@ -155,7 +155,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         String sql =
                 "SELECT id, name, description, sql_query, timeout, parameters, datasource_id, "
                         + "created_at, updated_at, created_by, updated_by "
-                        + "FROM conductor_queries WHERE name = ? AND datasource_id = ?::uuid";
+                        + "FROM queries WHERE name = ? AND datasource_id = ?::uuid";
 
         return queryWithTransaction(
                 sql,
@@ -182,7 +182,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
                 new StringBuilder(
                         "SELECT id, name, description, sql_query, timeout, parameters, datasource_id, "
                                 + "created_at, updated_at, created_by, updated_by "
-                                + "FROM conductor_queries WHERE 1=1 ");
+                                + "FROM queries WHERE 1=1 ");
 
         boolean hasSearch = search != null && !search.isBlank();
         boolean hasDs = datasourceId != null;
@@ -221,7 +221,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
 
     @Override
     public long count(String search, UUID datasourceId) {
-        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM conductor_queries WHERE 1=1 ");
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM queries WHERE 1=1 ");
         boolean hasSearch = search != null && !search.isBlank();
         boolean hasDs = datasourceId != null;
 
@@ -258,7 +258,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         if (id == null) {
             return false;
         }
-        String sql = "DELETE FROM conductor_queries WHERE id = ?::uuid";
+        String sql = "DELETE FROM queries WHERE id = ?::uuid";
         int rows =
                 queryWithTransaction(
                         sql,
@@ -274,7 +274,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         if (datasourceId == null) {
             return 0;
         }
-        String sql = "DELETE FROM conductor_queries WHERE datasource_id = ?::uuid";
+        String sql = "DELETE FROM queries WHERE datasource_id = ?::uuid";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -289,7 +289,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
             return 0;
         }
         String sql =
-                "UPDATE conductor_queries SET datasource_id = ?::uuid, updated_at = CURRENT_TIMESTAMP WHERE datasource_id = ?::uuid";
+                "UPDATE queries SET datasource_id = ?::uuid, updated_at = CURRENT_TIMESTAMP WHERE datasource_id = ?::uuid";
         return queryWithTransaction(
                 sql,
                 q -> {
@@ -304,7 +304,7 @@ public class PostgresQueryDAO extends PostgresBaseDAO implements QueryDAO {
         if (datasourceId == null) {
             return 0L;
         }
-        String sql = "SELECT COUNT(*) FROM conductor_queries WHERE datasource_id = ?::uuid";
+        String sql = "SELECT COUNT(*) FROM queries WHERE datasource_id = ?::uuid";
         return queryWithTransaction(
                 sql,
                 q -> {

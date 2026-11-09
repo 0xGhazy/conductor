@@ -76,17 +76,26 @@ export interface WeaverCanvasContentContext<TRecord> {
 }
 
 export interface WeaverCanvasConfig<TRecord> {
+  layout?: "default" | "centered";
   getTitle?: (record: TRecord) => ReactNode;
   renderIcon?: (record: TRecord) => ReactNode;
   renderStatus?: (record: TRecord) => ReactNode;
+  getDescription?: (record: TRecord) => ReactNode;
+  getCreatedBy?: (record: TRecord) => ReactNode;
+  getLanguage?: (record: TRecord) => ReactNode;
   renderContent?: (
     record: TRecord,
     context?: WeaverCanvasContentContext<TRecord>
   ) => ReactNode;
   quickActions?: WeaverDataAction<TRecord>[];
   renderQuickActions?: (record: TRecord) => ReactNode;
+  hideRowActions?: boolean;
   iconColor?: string;
   getIconColor?: (record: TRecord) => string;
+  renderItem?: (
+    record: TRecord,
+    context: WeaverCanvasItemContext<TRecord>
+  ) => ReactNode;
 }
 
 export interface WeaverCanvasItemContext<TRecord> {

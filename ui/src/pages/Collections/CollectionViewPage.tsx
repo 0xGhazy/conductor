@@ -20,7 +20,6 @@ import {
   normalizeCollection,
   validateCollection,
 } from "@/features/collections";
-import { useConnectionsList, normalizeConnection } from "@/features/connections";
 import styles from "./CollectionViewPage.module.css";
 
 const extractEndpointList = (responseBody: any) => {
@@ -44,7 +43,6 @@ const extractEndpointList = (responseBody: any) => {
 
 const CREATE_HYDRATION_KEY = "__create__";
 const EMPTY_LIST: any[] = [];
-const CONNECTIONS_LIST_PARAMS = { page: 0, size: 200, sort: "createdAt,DESC" };
 
 export default function CollectionViewPage() {
   const navigate = useNavigate();
@@ -63,18 +61,6 @@ export default function CollectionViewPage() {
   // Endpoint Drawer State
   const [selectedEndpoint, setSelectedEndpoint] = useState<any | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // Connections Query
-  const connectionsQuery = useConnectionsList(CONNECTIONS_LIST_PARAMS);
-  const connectionsLoading = connectionsQuery.isPending;
-  const connectionsResponse = connectionsQuery.data;
-  const connectionsError = connectionsQuery.error;
-  const connections = useMemo(() => {
-    if (!connectionsResponse) return EMPTY_LIST;
-    const body = (connectionsResponse as any)?.data ?? {};
-    const data = body?.data?.items ?? body?.data ?? body?.items ?? body ?? [];
-    return (Array.isArray(data) ? data : []).map(normalizeConnection);
-  }, [connectionsResponse]);
 
   // Collection Query
   const collectionQuery = useCollection(id, { enabled: !isCreateMode && Boolean(id) });
@@ -109,10 +95,6 @@ export default function CollectionViewPage() {
 
   // Error notifications
   useEffect(() => {
-    if (connectionsError) showError(getErrorMessage(connectionsError, "Failed to load connections."));
-  }, [connectionsError, showError]);
-
-  useEffect(() => {
     if (collectionError) showError(getErrorMessage(collectionError, "Failed to load collection details."));
   }, [collectionError, showError]);
 
@@ -122,7 +104,7 @@ export default function CollectionViewPage() {
 
   useEffect(() => {
     const name = String(form?.name || "").trim();
-    const title = name || (isCreateMode ? "New Collection" : "Collection");
+    const title = isCreateMode ? "New Collection" : name ? `Collections - ${name}` : "Collections";
     document.title = title;
     if (name) {
       window.dispatchEvent(
@@ -272,8 +254,6 @@ export default function CollectionViewPage() {
             loading={loading}
             submitting={submitting}
             onChange={handleFieldChange}
-            connections={connections}
-            connectionsLoading={connectionsLoading}
             onSave={handleSave}
             onDelete={!isCreateMode ? confirmDelete : undefined}
           />

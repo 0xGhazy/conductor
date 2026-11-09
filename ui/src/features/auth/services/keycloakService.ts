@@ -323,15 +323,64 @@ export const logout = async (options?: Keycloak.KeycloakLogoutOptions): Promise<
   return new Promise(() => {});
 };
 
+const parseJwtPayload = (jwt: string): Record<string, any> | null => {
+  try {
+    const parts = jwt.split(".");
+    if (parts.length >= 2) {
+      const base64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(decodeURIComponent(escape(atob(base64))));
+    }
+  } catch {
+    try {
+      const parts = jwt.split(".");
+      if (parts.length >= 2) {
+        return JSON.parse(atob(parts[1].replace(/-/g, "+").replace(/_/g, "/")));
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return null;
+};
+
 export const getUserProfile = (): UserProfile | null => {
-  if (!keycloak.authenticated || !keycloak.tokenParsed) {
+  let token = keycloak.tokenParsed as Record<string, any> | undefined;
+  if (!token && keycloak.token) {
+    token = parseJwtPayload(keycloak.token) || undefined;
+  }
+  if (!token) {
+    const storedToken =
+      localStorage.getItem("access_token") || localStorage.getItem("cwAccessToken");
+    if (storedToken) {
+      token = parseJwtPayload(storedToken) || undefined;
+    }
+  }
+
+  if (!token) {
     return null;
   }
 
-  const token = keycloak.tokenParsed as Record<string, any>;
-  const realmRoles: string[] = token?.realm_access?.roles || [];
-  const clientRoles: string[] = token?.resource_access?.[config.keycloak.clientId]?.roles || [];
-  const allRoles = Array.from(new Set([...realmRoles, ...clientRoles]));
+  const realmRoles: string[] = Array.isArray(token?.realm_access?.roles)
+    ? token.realm_access.roles
+    : [];
+
+  const resourceAccess: Record<string, { roles: string[] }> =
+    token?.resource_access && typeof token.resource_access === "object"
+      ? token.resource_access
+      : {};
+
+  const allResourceRoles: string[] = [];
+  Object.values(resourceAccess).forEach((entry) => {
+    if (Array.isArray(entry?.roles)) {
+      allResourceRoles.push(...entry.roles);
+    }
+  });
+
+  const clientRoles: string[] = Array.isArray(resourceAccess[config.keycloak.clientId]?.roles)
+    ? resourceAccess[config.keycloak.clientId].roles
+    : allResourceRoles;
+
+  const allRoles = Array.from(new Set([...realmRoles, ...clientRoles, ...allResourceRoles]));
 
   return {
     id: token.sub,
@@ -344,6 +393,10 @@ export const getUserProfile = (): UserProfile | null => {
       [token.given_name, token.family_name].filter(Boolean).join(" ") ||
       token.preferred_username,
     roles: allRoles,
+    realmRoles,
+    clientRoles,
+    resourceRoles: Array.from(new Set(allResourceRoles)),
+    resourceAccess,
   };
 };
 

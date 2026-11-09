@@ -1,4 +1,5 @@
-import { useEffect, useId, useState } from "react";
+import { useContext, useEffect, useId, useMemo, useState } from "react";
+import { AuthContext, hasAuditAccess, hasDatabaseAccess } from "@/features/auth";
 import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, Settings } from "lucide-react";
 import {
@@ -19,7 +20,27 @@ interface SettingsSidebarProps {
  */
 export function SettingsSidebar({ items = SETTINGS_NAVIGATION }: SettingsSidebarProps) {
   const { pathname } = useLocation();
-  const trail = findSettingsTrail(pathname, items);
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user;
+
+  const visibleItems = useMemo(() => {
+    if (authContext === undefined) {
+      return items;
+    }
+
+    return items.filter((item) => {
+      // Do not show Audit Logs if user lacks audit related resource_access
+      if (item.id === "audit-logs" || item.path?.includes("audit-logs")) {
+        return hasAuditAccess(currentUser);
+      }
+      if (item.id === "databases" || item.path?.includes("databases")) {
+        return hasDatabaseAccess(currentUser);
+      }
+      return true;
+    });
+  }, [items, authContext, currentUser]);
+
+  const trail = findSettingsTrail(pathname, visibleItems);
   const activeIds = new Set(trail.map((item) => item.id));
   const current = trail[trail.length - 1];
 
@@ -31,7 +52,7 @@ export function SettingsSidebar({ items = SETTINGS_NAVIGATION }: SettingsSidebar
 
   // Opening a page inside a group opens that group; navigating closes the mobile menu.
   useEffect(() => {
-    const activeGroups = findSettingsTrail(pathname, items).filter((item) => item.children);
+    const activeGroups = findSettingsTrail(pathname, visibleItems).filter((item) => item.children);
     if (activeGroups.length) {
       setOpenGroups((prev) => {
         const next = { ...prev };
@@ -121,7 +142,7 @@ export function SettingsSidebar({ items = SETTINGS_NAVIGATION }: SettingsSidebar
 
       <nav aria-label="Settings sections">
         <ul id={listId} className={`${styles.list} ${mobileOpen ? styles.listMobileOpen : ""}`}>
-          {renderItems(items, 0)}
+          {renderItems(visibleItems, 0)}
         </ul>
       </nav>
     </aside>

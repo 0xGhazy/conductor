@@ -22,10 +22,6 @@ import {
   type WeaverRelatedTableColumn,
 } from "@/components/common/data";
 import {
-  WeaverRelatedList,
-  type WeaverRelatedListItem,
-} from "@/components/common/navigation";
-import {
   WeaverNameField,
   WeaverNumberField,
   WeaverSelectField,
@@ -180,16 +176,6 @@ export default function DatabaseViewPage({
     [form]
   );
 
-  const relatedNavItems = useMemo<WeaverRelatedListItem[]>(
-    () => [
-      {
-        id: "related-queries",
-        label: "Queries",
-        targetId: "section-related-queries",
-      },
-    ],
-    []
-  );
 
   const handleValidationStateChange = useCallback(
     (state: NameValidationState) => {
@@ -239,7 +225,7 @@ export default function DatabaseViewPage({
     if (isCreateMode) {
       document.title = "Create Database";
     } else {
-      document.title = name ? `Database - ${name}` : "Database";
+      document.title = name ? `Databases - ${name}` : "Databases";
       if (name) {
         window.dispatchEvent(
           new CustomEvent("weaver:breadcrumb-title", {
@@ -938,19 +924,7 @@ export default function DatabaseViewPage({
                 ) : null}
               </div>
 
-              {!isCreateMode ? (
-                <WeaverRelatedList
-                  items={relatedNavItems}
-                  title="Related List"
-                  sticky
-                  stickyTop={84}
-                  onItemClick={(item) => {
-                    if (item.id === "related-queries" || item.targetId === "section-related-queries") {
-                      setQueriesExpanded(true);
-                    }
-                  }}
-                />
-              ) : null}
+
             </div>
           )}
         </div>

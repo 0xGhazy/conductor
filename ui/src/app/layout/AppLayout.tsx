@@ -16,10 +16,9 @@ const IDLE_PREFETCH_PATHS = [
   "/queries",
   "/collections",
   "/scripts",
-  "/connections",
+  "/authentications",
   "/secrets",
-  "/redis",
-  "/translations",
+  "/caching",
 ];
 
 /**

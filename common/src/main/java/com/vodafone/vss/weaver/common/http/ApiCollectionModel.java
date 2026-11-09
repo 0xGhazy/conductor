@@ -38,7 +38,6 @@ public class ApiCollectionModel {
     private UUID id;
     private String name;
     private String description;
-    private UUID connection;
     private ApiCollectionType type;
     private Instant createdAt;
     private UUID createdBy;

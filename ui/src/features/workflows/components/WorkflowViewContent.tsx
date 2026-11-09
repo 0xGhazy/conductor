@@ -26,7 +26,6 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import TimelineRoundedIcon from "@mui/icons-material/TimelineRounded";
 
 import { WeaverRelatedTable, type WeaverRelatedTableColumn } from "@/components/common/data";
-import { WeaverRelatedList, type WeaverRelatedListItem } from "@/components/common/navigation";
 import ActivityTimeline, { type ActivityTimelineAction } from "@/components/common/data/ActivityTimeline";
 import {
   WeaverTextField,
@@ -206,7 +205,9 @@ export default function WorkflowViewContent({ onBack }: WorkflowViewContentProps
   useEffect(() => {
     const currentName = form.name || workflow?.name || id;
     if (currentName) {
-      document.title = currentName;
+      document.title = `Workflows - ${currentName}`;
+    } else {
+      document.title = "Workflows";
     }
   }, [form.name, workflow?.name, id]);
 
@@ -460,36 +461,6 @@ export default function WorkflowViewContent({ onBack }: WorkflowViewContentProps
     workflow,
   ]);
 
-  const relatedNavItems = useMemo<WeaverRelatedListItem[]>(
-    () => [
-      {
-        id: "queries",
-        label: "Queries",
-        targetId: "workflow-queries-section",
-      },
-      {
-        id: "databases",
-        label: "Databases",
-        targetId: "workflow-databases-section",
-      },
-      {
-        id: "connections",
-        label: "Connections",
-        targetId: "workflow-connections-section",
-      },
-      {
-        id: "scripts",
-        label: "Scripts",
-        targetId: "workflow-scripts-section",
-      },
-      {
-        id: "activity",
-        label: "Activity",
-        targetId: "workflow-activity-section",
-      },
-    ],
-    []
-  );
 
   // Reload the workflow (and retry any failed reference list); re-syncs the form.
   const { refetch: refetchQueriesList } = queriesListQuery;
@@ -1622,20 +1593,7 @@ export default function WorkflowViewContent({ onBack }: WorkflowViewContentProps
             </div>
           </div>
 
-          {/* Right Sidebar: In-Page Navigation via WeaverRelatedList */}
-          <WeaverRelatedList
-            items={relatedNavItems}
-            title="Related List"
-            sticky
-            stickyTop={84}
-            onItemClick={(item) => {
-              if (item.targetId === "workflow-queries-section") setQueriesExpanded(true);
-              if (item.targetId === "workflow-databases-section") setDatabasesExpanded(true);
-              if (item.targetId === "workflow-connections-section") setConnectionsExpanded(true);
-              if (item.targetId === "workflow-scripts-section") setScriptsExpanded(true);
-              if (item.targetId === "workflow-activity-section") setActivityExpanded(true);
-            }}
-          />
+
         </div>
       )}
     </div>

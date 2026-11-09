@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { Search, Sun, Moon } from "lucide-react";
+import { Search, Sun, Moon, Menu } from "lucide-react";
 import { useBackendHealthChecks } from "@/features/home";
 import { UserMenu } from "@/features/auth";
 import { useThemeMode } from "@/context/ThemeModeContext";
+import { useSidebarStore } from "@/store/useSidebarStore";
 import styles from "./Header.module.css";
 
 interface HeaderProps {
@@ -14,6 +15,8 @@ export const Header: React.FC<HeaderProps> = ({ search = "", onSearchChange }) =
   const searchInputRef = useRef<HTMLInputElement>(null);
   const { mode, toggleMode: handleToggleTheme } = useThemeMode();
   const darkMode = mode === "dark";
+  const collapsed = useSidebarStore((state) => state.collapsed);
+  const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
 
   const { weaver: weaverHealth, conductor: conductorHealth } = useBackendHealthChecks();
   const isHealthy = Boolean(
@@ -34,8 +37,19 @@ export const Header: React.FC<HeaderProps> = ({ search = "", onSearchChange }) =
 
   return (
     <header className={styles.header} role="banner">
-      {/* Left spacer for symmetrical grid centering */}
-      <div className={styles.headerLeft} aria-hidden="true" />
+      {/* Left: Mobile Navigation Trigger */}
+      <div className={styles.headerLeft}>
+        <button
+          type="button"
+          onClick={toggleSidebar}
+          className={styles.mobileMenuBtn}
+          title={collapsed ? "Open navigation" : "Collapse navigation"}
+          aria-label={collapsed ? "Open navigation" : "Collapse navigation"}
+          aria-expanded={!collapsed}
+        >
+          <Menu size={18} />
+        </button>
+      </div>
 
       {/* Center: Global Quick Search Trigger */}
       <div className={styles.headerCenter}>
@@ -65,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ search = "", onSearchChange }) =
           title={isHealthy ? "Conductor & Weaver clusters active" : "Cluster services degraded"}
         >
           <span className={styles.pulseDot} aria-hidden="true" />
-          <span>{isHealthy ? "Cluster UP" : "Degraded"}</span>
+          <span className={styles.clusterStatusText}>{isHealthy ? "Cluster UP" : "Degraded"}</span>
         </div>
 
         <button

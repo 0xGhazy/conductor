@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { Box, Link } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import StorageIcon from "@mui/icons-material/Storage";
 import { useNavigate } from "react-router-dom";
 
-import { WeaverDataExplorer } from "@/components/common/data";
+import { WeaverDataExplorer, UserAvatarCell, resolveUserDisplay } from "@/components/common/data";
 import type {
   WeaverDataAction,
   WeaverDataField,
@@ -15,6 +15,7 @@ import Tag from "@/components/common/data/Tag/Tag";
 import { getErrorMessage } from "@/utils/error";
 import { toTimezoneDateTime } from "@/utils/dateTime";
 import { getUserName } from "@/utils/user";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import { normalizeQuery } from "@/features/queries/services/queriesService";
 import { useQueryDefinitionsList } from "@/features/queries/hooks/useQueryDefinitions";
 
@@ -92,6 +93,8 @@ interface QueriesPageContentProps {
 }
 
 export default function QueriesPageContent({ search = "", onCreateQuery = null }: QueriesPageContentProps) {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
@@ -227,18 +230,22 @@ export default function QueriesPageContent({ search = "", onCreateQuery = null }
       {
         key: "createdBy",
         label: "Created By",
-        getValue: (r) => getUserName(r.createdBy, "-"),
+        getValue: (r) => resolveUserDisplay(r.createdBy, currentUser)?.name || getUserName(r.createdBy, "-"),
         visibleByDefault: false,
         hideable: true,
-        width: 150,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.createdBy} currentUser={currentUser} />,
       },
       {
         key: "updatedBy",
         label: "Updated By",
-        getValue: (r) => getUserName(r.updatedBy, "-"),
+        getValue: (r) => resolveUserDisplay(r.updatedBy, currentUser)?.name || getUserName(r.updatedBy, "-"),
         visibleByDefault: false,
         hideable: true,
-        width: 150,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.updatedBy} currentUser={currentUser} />,
       },
       {
         key: "updatedAt",
@@ -251,7 +258,7 @@ export default function QueriesPageContent({ search = "", onCreateQuery = null }
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
       },
     ],
-    [navigate]
+    [currentUser, navigate]
   );
 
   const openCreateView = useCallback(() => {
@@ -270,6 +277,8 @@ export default function QueriesPageContent({ search = "", onCreateQuery = null }
         label: "New Query",
         icon: <AddIcon fontSize="small" />,
         asButton: true,
+        buttonVariant: "contained",
+        buttonColor: "primary",
         onClick: openCreateView,
       },
     ],
@@ -311,7 +320,7 @@ export default function QueriesPageContent({ search = "", onCreateQuery = null }
       searchValue={search}
       searchPlaceholder="Search queries by name..."
       stickyHeader
-      height="calc(100vh - 220px)"
+      height="calc(100vh - 104px)"
       toolbarActions={toolbarActions}
       onRecordClick={handleRecordClick}
       pagination

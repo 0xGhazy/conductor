@@ -65,6 +65,6 @@ describe("DatabasesPage", () => {
 
   it("sets the page title", () => {
     renderPage();
-    expect(document.title).toBe("Weaver - Databases");
+    expect(document.title).toBe("Databases");
   });
 });

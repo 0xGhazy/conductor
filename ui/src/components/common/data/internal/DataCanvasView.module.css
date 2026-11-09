@@ -140,3 +140,11 @@
     opacity: 0.6;
   }
 }
+
+@media (max-width: 480px) {
+  .canvasGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+}

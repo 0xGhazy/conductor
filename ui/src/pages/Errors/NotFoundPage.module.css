@@ -1,0 +1,134 @@
+.container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  box-sizing: border-box;
+  background-color: var(--color-canvas-subtle);
+  background-image: 
+    radial-gradient(ellipse at 50% -20%, color-mix(in srgb, var(--color-accent-solid) 8%, transparent), transparent 70%),
+    radial-gradient(circle at 10% 90%, color-mix(in srgb, var(--hue-indigo) 5%, transparent), transparent 40%),
+    radial-gradient(circle at 90% 80%, color-mix(in srgb, var(--color-accent-solid) 5%, transparent), transparent 40%);
+  position: relative;
+  overflow-x: hidden;
+  font-family: inherit;
+}
+
+.canvasGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size: 28px 28px;
+  background-image: radial-gradient(circle, var(--color-border-default) 1px, transparent 1px);
+  opacity: 0.5;
+  mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  background-color: var(--color-canvas-default);
+  border: 1px solid var(--color-border-default);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 20px 40px -15px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.heroSection {
+  padding: 3.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: var(--color-canvas-default);
+  position: relative;
+}
+
+/* Flow diagram graphic */
+.diagramWrapper {
+  width: 100%;
+  max-width: 480px;
+  margin: 0.5rem 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagramSvg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.heading {
+  margin: 0 0 0.75rem;
+  color: var(--color-fg-default);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+}
+
+.description {
+  margin: 0;
+  max-width: 500px;
+  color: var(--color-fg-muted);
+  font-size: 0.96rem;
+  line-height: 1.6;
+}
+
+/* Actions Section */
+.actionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-accent-solid);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.75rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-accent-solid) 30%, transparent);
+  text-decoration: none;
+}
+
+.primaryBtn:hover {
+  background-color: var(--color-accent-hover);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent-solid) 40%, transparent);
+  transform: translateY(-1px);
+}
+
+.primaryBtn:active {
+  transform: translateY(0);
+}
+
+/* Responsiveness */
+@media (max-width: 640px) {
+  .heroSection {
+    padding: 2.5rem 1.5rem;
+  }
+  .heading {
+    font-size: 1.55rem;
+  }
+  .primaryBtn {
+    width: 100%;
+  }
+}

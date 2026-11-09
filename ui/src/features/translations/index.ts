@@ -1,4 +1,3 @@
-export { default as TranslationsPageContent } from "./components/TranslationsPageContent";
 export { TranslationFormModal } from "./components/TranslationFormModal";
 export { WorkflowTranslationsModal } from "./components/WorkflowTranslationsModal";
 export * from "./services/translationApi";

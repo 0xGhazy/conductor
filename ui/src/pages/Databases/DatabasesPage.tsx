@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { CircularProgress } from "@mui/material";
@@ -12,7 +12,8 @@ import { SiPostgresql, SiMysql } from "react-icons/si";
 
 import type { AppLayoutContext } from "@/app/layout/AppLayout";
 import { useWeaverNotification } from "@/components/common/notifications";
-import { WeaverDataExplorer } from "@/components/common/data";
+import { WeaverDataExplorer, UserAvatarCell, resolveUserDisplay } from "@/components/common/data";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import type {
   WeaverDataAction,
   WeaverDataField,
@@ -53,6 +54,8 @@ const renderDatabaseCanvasIcon = () => (
 const getDatabaseCanvasTitle = (db: Datasource) => db.name || "Untitled Database";
 
 export default function DatabasesPage() {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
   const navigate = useNavigate();
   const notify = useWeaverNotification();
   const { search } = useOutletContext<AppLayoutContext>() ?? { search: "" };
@@ -80,7 +83,7 @@ export default function DatabasesPage() {
 
   useEffect(() => {
     if (!isCreating) {
-      document.title = "Weaver - Databases";
+      document.title = "Databases";
     }
   }, [isCreating]);
 
@@ -416,18 +419,22 @@ export default function DatabasesPage() {
       {
         key: "createdBy",
         label: "Created By",
-        getValue: (r) => getUserName(r.createdBy, "-"),
+        getValue: (r) => resolveUserDisplay(r.createdBy, currentUser)?.name || getUserName(r.createdBy, "-"),
         visibleByDefault: false,
         hideable: true,
-        width: 150,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.createdBy} currentUser={currentUser} />,
       },
       {
         key: "updatedBy",
         label: "Updated By",
-        getValue: (r) => getUserName(r.updatedBy, "-"),
+        getValue: (r) => resolveUserDisplay(r.updatedBy, currentUser)?.name || getUserName(r.updatedBy, "-"),
         visibleByDefault: false,
         hideable: true,
-        width: 150,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => <UserAvatarCell value={r.updatedBy} currentUser={currentUser} />,
       },
       {
         key: "actions",
@@ -473,7 +480,7 @@ export default function DatabasesPage() {
         },
       },
     ],
-    [handleDuplicate, handlePing, navigate, pingResults, pingingId]
+    [currentUser, handleDuplicate, handlePing, navigate, pingResults, pingingId]
   );
 
   // The only toolbar action, shown as a button (so there is no table options menu).
@@ -484,6 +491,8 @@ export default function DatabasesPage() {
         label: "New Database",
         icon: <FiPlus size={14} />,
         asButton: true,
+        buttonVariant: "contained",
+        buttonColor: "primary",
         onClick: () => {
           setIsCreating(true);
         },
@@ -604,7 +613,7 @@ export default function DatabasesPage() {
           onPaginationChange={handlePaginationChange}
           canvas={canvas}
           onRecordClick={openDatabase}
-          height="calc(100vh - 220px)"
+          height="calc(100vh - 104px)"
         />
       </div>
     </div>

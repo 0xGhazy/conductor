@@ -43,8 +43,8 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
 
         String sql =
                 "INSERT INTO secrets ("
-                        + "id, name, encrypted_value, iv, displayed_text, description, version, created_by, created_at, updated_at"
-                        + ") VALUES (?::uuid, ?, ?, ?, ?, ?, ?, ?::uuid, ?, ?)";
+                        + "id, name, encrypted_value, iv, displayed_text, description, version, created_by, updated_by, created_at, updated_at"
+                        + ") VALUES (?::uuid, ?, ?, ?, ?, ?, ?, ?::uuid, ?::uuid, ?, ?)";
 
         executeWithTransaction(
                 sql,
@@ -57,6 +57,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
                     q.addParameter(model.getDescription());
                     q.addParameter(model.getVersion());
                     q.addParameter(model.getCreatedBy() != null ? model.getCreatedBy().toString() : null);
+                    q.addParameter(model.getUpdatedBy() != null ? model.getUpdatedBy().toString() : null);
                     q.addTimestampParameter(toTimestamp(model.getCreatedAt()));
                     q.addTimestampParameter(toTimestamp(model.getUpdatedAt()));
                     q.executeUpdate();
@@ -74,12 +75,12 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
         if (hasNewValue) {
             sql =
                     "UPDATE secrets SET "
-                            + "encrypted_value = ?, iv = ?, displayed_text = ?, description = ?, version = ?, updated_at = ? "
+                            + "encrypted_value = ?, iv = ?, displayed_text = ?, description = ?, version = ?, updated_at = ?, updated_by = ?::uuid "
                             + "WHERE id = ?::uuid";
         } else {
             sql =
                     "UPDATE secrets SET "
-                            + "description = ?, version = ?, updated_at = ? "
+                            + "description = ?, version = ?, updated_at = ?, updated_by = ?::uuid "
                             + "WHERE id = ?::uuid";
         }
 
@@ -93,11 +94,13 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
                         q.addParameter(model.getDescription());
                         q.addParameter(newVersion);
                         q.addTimestampParameter(toTimestamp(model.getUpdatedAt()));
+                        q.addParameter(model.getUpdatedBy() != null ? model.getUpdatedBy().toString() : null);
                         q.addParameter(model.getId().toString());
                     } else {
                         q.addParameter(model.getDescription());
                         q.addParameter(newVersion);
                         q.addTimestampParameter(toTimestamp(model.getUpdatedAt()));
+                        q.addParameter(model.getUpdatedBy() != null ? model.getUpdatedBy().toString() : null);
                         q.addParameter(model.getId().toString());
                     }
                     q.executeUpdate();
@@ -132,7 +135,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
             return Optional.empty();
         }
         String sql =
-                "SELECT id, name, encrypted_value, iv, displayed_text, description, version, created_by, created_at, updated_at "
+                "SELECT id, name, encrypted_value, iv, displayed_text, description, version, created_by, updated_by, created_at, updated_at "
                         + "FROM secrets WHERE id = ?::uuid";
 
         return queryWithTransaction(
@@ -155,7 +158,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
             return Optional.empty();
         }
         String sql =
-                "SELECT id, name, encrypted_value, iv, displayed_text, description, version, created_by, created_at, updated_at "
+                "SELECT id, name, encrypted_value, iv, displayed_text, description, version, created_by, updated_by, created_at, updated_at "
                         + "FROM secrets WHERE name = ?";
 
         return queryWithTransaction(
@@ -190,7 +193,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
     public List<SecretModel> findAll(String search, int offset, int limit) {
         StringBuilder sql =
                 new StringBuilder(
-                        "SELECT id, name, encrypted_value, iv, displayed_text, description, version, created_by, created_at, updated_at FROM secrets ");
+                        "SELECT id, name, encrypted_value, iv, displayed_text, description, version, created_by, updated_by, created_at, updated_at FROM secrets ");
         boolean hasSearch = search != null && !search.isBlank();
         if (hasSearch) {
             sql.append("WHERE LOWER(name) LIKE ? OR LOWER(description) LIKE ? ");
@@ -330,6 +333,10 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
         Timestamp createdTs = rs.getTimestamp("created_at");
         Timestamp updatedTs = rs.getTimestamp("updated_at");
         String createdByStr = rs.getString("created_by");
+        String updatedByStr = null;
+        try {
+            updatedByStr = rs.getString("updated_by");
+        } catch (SQLException ignored) {}
 
         return SecretModel.builder()
                 .id(UUID.fromString(rs.getString("id")))
@@ -340,6 +347,7 @@ public class PostgresSecretDAO extends PostgresBaseDAO implements SecretDAO {
                 .description(rs.getString("description"))
                 .version(rs.getLong("version"))
                 .createdBy(createdByStr != null ? UUID.fromString(createdByStr) : null)
+                .updatedBy(updatedByStr != null ? UUID.fromString(updatedByStr) : null)
                 .createdAt(createdTs != null ? createdTs.toInstant() : null)
                 .updatedAt(updatedTs != null ? updatedTs.toInstant() : null)
                 .build();

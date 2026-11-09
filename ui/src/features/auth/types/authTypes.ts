@@ -6,6 +6,10 @@ export interface UserProfile {
   lastName?: string;
   fullName?: string;
   roles: string[];
+  realmRoles?: string[];
+  clientRoles?: string[];
+  resourceRoles?: string[];
+  resourceAccess?: Record<string, { roles: string[] }>;
 }
 
 export interface AuthContextType {

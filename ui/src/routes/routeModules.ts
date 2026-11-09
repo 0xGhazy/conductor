@@ -28,7 +28,6 @@ export const pageLoaders = {
   settingsAuditLogs: () => import("@/pages/Settings/SettingsAuditLogsPage"),
   settingsUsers: () => import("@/pages/Settings/SettingsUsersPage"),
   settingsRoles: () => import("@/pages/Settings/SettingsRolesPage"),
-  translations: () => import("@/pages/Translations/TranslationsPage"),
   supportedLanguages: () => import("@/pages/Settings/SupportedLanguagesPage"),
 } as const;
 
@@ -41,13 +40,12 @@ const PREFETCH_BY_PATH: Record<string, PageKey[]> = {
   "/workflows": ["workflows", "workflowView"],
   "/executions": ["executions", "executionView"],
   "/databases": ["databases", "databaseView"],
-  "/redis": ["redisSources", "redisSourceView"],
+  "/caching": ["redisSources", "redisSourceView"],
   "/queries": ["queries", "queryView"],
   "/collections": ["collections", "collectionView"],
   "/scripts": ["scripts", "scriptView"],
-  "/connections": ["connections", "connectionView"],
+  "/authentications": ["connections", "connectionView"],
   "/secrets": ["secrets", "secretView"],
-  "/translations": ["translations"],
   "/workbench": ["workbench"],
   "/settings/languages": ["supportedLanguages"],
   "/settings": ["settingsMigrations", "settingsConfigurations", "settingsAuditLogs", "settingsUsers", "settingsRoles"],

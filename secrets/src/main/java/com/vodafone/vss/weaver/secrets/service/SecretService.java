@@ -69,6 +69,8 @@ public class SecretService {
                         .iv(encrypted.iv())
                         .displayedText(SecretMasker.mask(request.getValue()))
                         .description(normalizeDescription(request.getDescription()))
+                        .createdBy(request.getCreatedBy())
+                        .updatedBy(request.getUpdatedBy() != null ? request.getUpdatedBy() : request.getCreatedBy())
                         .build();
 
         SecretModel saved = secretDAO.create(model);
@@ -120,6 +122,9 @@ public class SecretService {
         if (request.getDescription() != null) {
             secret.setDescription(normalizeDescription(request.getDescription()));
         }
+        if (request.getUpdatedBy() != null) {
+            secret.setUpdatedBy(request.getUpdatedBy());
+        }
 
         SecretModel saved = secretDAO.update(secret);
         evictFromCache(saved.getName());
@@ -170,6 +175,8 @@ public class SecretService {
                 .version(model.getVersion())
                 .createdAt(model.getCreatedAt())
                 .updatedAt(model.getUpdatedAt())
+                .createdBy(model.getCreatedBy() != null ? model.getCreatedBy().toString() : null)
+                .updatedBy(model.getUpdatedBy() != null ? model.getUpdatedBy().toString() : null)
                 .build();
     }
 

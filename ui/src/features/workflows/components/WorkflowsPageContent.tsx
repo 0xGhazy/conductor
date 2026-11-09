@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { isValidElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Box, Stack, Typography } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import { Copy, Layers } from "lucide-react";
+import { WorkflowTreeGraphic } from "@/components/common/data/internal/DataCanvasCard";
+import { WeaverButton } from "@/components/common/buttons";
 
 import { WeaverDataExplorer } from "@/components/common/data";
 import type {
@@ -19,13 +20,139 @@ import { WeaverConfirmDialog } from "@/components/common/dialogs";
 import { useConductorMetadataService } from "@/features/workflows/services/conductorMetadataService";
 import { getErrorMessage } from "@/utils/error";
 import { toTimezoneDateTime } from "@/utils/dateTime";
+import { config } from "@/config/appConfig";
+import apiClient from "@/services/apiClient";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import {
+  buildWorkflowPayload,
   filterWorkflows,
   getLatestWorkflows,
   normalizeWorkflows,
 } from "@/features/workflows/services/workflowsService";
+import styles from "./WorkflowsPageContent.module.css";
 
 const BACKEND_DOWN_MESSAGE = "Unable to reach backend service. Please ensure backend is running.";
+
+const AVATAR_PALETTE = [
+  "#D9102B", // Weaver Primary Crimson
+  "#0284C7", // Sky Blue
+  "#0D9488", // Teal
+  "#7C3AED", // Violet
+  "#D97706", // Amber
+  "#059669", // Emerald
+  "#EA580C", // Tangerine
+  "#4F46E5", // Indigo
+];
+
+function getDeterministicAvatarColor(identifier: string): string {
+  let hash = 0;
+  for (let i = 0; i < identifier.length; i++) {
+    hash = identifier.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % AVATAR_PALETTE.length;
+  return AVATAR_PALETTE[index];
+}
+
+interface ResolvedUserDisplay {
+  name: string;
+  initials: string;
+  avatarColor: string;
+  tooltip?: string;
+}
+
+function resolveUserDisplay(
+  rawInput: unknown,
+  currentUser?: {
+    username?: string;
+    email?: string;
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    id?: string;
+  } | null
+): ResolvedUserDisplay | null {
+  const raw = String(rawInput ?? "").trim();
+  if (!raw || raw === "-" || raw.toLowerCase() === "null" || raw.toLowerCase() === "undefined") {
+    return null;
+  }
+
+  const rawLower = raw.toLowerCase();
+
+  // Match against current logged-in user profile
+  const currentEmailLower = currentUser?.email?.toLowerCase();
+  const currentUsernameLower = currentUser?.username?.toLowerCase();
+  const currentFullNameLower = currentUser?.fullName?.toLowerCase();
+  const currentCompositeName = `${currentUser?.firstName || ""} ${currentUser?.lastName || ""}`.trim().toLowerCase();
+
+  const isCurrentUser =
+    (currentEmailLower && rawLower === currentEmailLower) ||
+    (currentUsernameLower && rawLower === currentUsernameLower) ||
+    (currentUser?.id && raw === currentUser.id) ||
+    (currentFullNameLower && rawLower === currentFullNameLower) ||
+    (currentCompositeName && rawLower === currentCompositeName) ||
+    // Development environment fallback: admin user created workflows
+    (rawLower.startsWith("admin@weaver") || rawLower === "admin");
+
+  if (isCurrentUser) {
+    const fullName =
+      currentUser?.fullName?.trim() ||
+      `${currentUser?.firstName || ""} ${currentUser?.lastName || ""}`.trim() ||
+      "Hossam Hamdy";
+
+    let initials = "HH";
+    if (currentUser?.firstName && currentUser?.lastName) {
+      initials = `${currentUser.firstName[0]}${currentUser.lastName[0]}`.toUpperCase();
+    } else {
+      const parts = fullName.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) {
+        initials = `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+      } else if (parts[0]?.length >= 2) {
+        initials = parts[0].slice(0, 2).toUpperCase();
+      }
+    }
+
+    const colorIdentifier = currentUser?.username || "admin";
+
+    return {
+      name: fullName,
+      initials,
+      avatarColor: getDeterministicAvatarColor(colorIdentifier),
+      tooltip: `${fullName} (${raw})`,
+    };
+  }
+
+  // Parse email or custom string
+  let displayName = raw;
+  let initials = "?";
+
+  if (raw.includes("@")) {
+    const localPart = raw.split("@")[0].trim();
+    const parts = localPart.split(/[._-]+/).filter(Boolean);
+    if (parts.length >= 2) {
+      displayName = parts.map((p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(" ");
+      initials = `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    } else if (parts.length === 1) {
+      displayName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase();
+      initials = parts[0].length >= 2 ? parts[0].slice(0, 2).toUpperCase() : parts[0].toUpperCase();
+    }
+  } else {
+    const parts = raw.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      displayName = parts.map((p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase()).join(" ");
+      initials = `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    } else if (parts.length === 1) {
+      displayName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase();
+      initials = parts[0].length >= 2 ? parts[0].slice(0, 2).toUpperCase() : parts[0].toUpperCase();
+    }
+  }
+
+  return {
+    name: displayName,
+    initials,
+    avatarColor: getDeterministicAvatarColor(raw),
+    tooltip: raw,
+  };
+}
 
 const shortenText = (value: any, maxLength = 48) => {
   const text = String(value || "").trim();
@@ -35,7 +162,7 @@ const shortenText = (value: any, maxLength = 48) => {
 };
 
 const PAGE_SIZE_OPTIONS = [10, 20, 25, 50, 75, 100];
-const DEFAULT_VISIBLE_FIELDS = ["name", "version", "description", "createdAt"];
+const DEFAULT_VISIBLE_FIELDS = ["name", "version", "description", "createdAt", "updatedAt"];
 
 export interface WorkflowsPageContentProps {
   onNotify?: ((payload: { severity?: string; message?: string } | null) => void) | null;
@@ -43,6 +170,8 @@ export interface WorkflowsPageContentProps {
 }
 
 export default function WorkflowsTab({ onNotify = null, search = "" }: WorkflowsPageContentProps) {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
   const [workflowPage, setWorkflowPage] = useState(0);
   const [workflowRowsPerPage, setWorkflowRowsPerPage] = useState(25);
   const [confirmState, setConfirmState] = useState<{
@@ -67,8 +196,10 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
   const backendDownNotifiedRef = useRef(false);
 
   // Single cached list; pagination happens client-side in WeaverDataExplorer.
-  const { workflows, deleteWorkflow } = useConductorMetadataService();
+  const { workflows, saveWorkflow, deleteWorkflow } = useConductorMetadataService();
   const { refetch: refetchWorkflows } = workflows;
+  const [duplicatingWorkflowName, setDuplicatingWorkflowName] = useState<string | null>(null);
+  const [deletingWorkflowKey, setDeletingWorkflowKey] = useState<string | null>(null);
 
   const workflowsData = useMemo(() => {
     if (Array.isArray(workflows.data)) return workflows.data;
@@ -184,6 +315,95 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
     []
   );
 
+  const handleDuplicateWorkflow = useCallback(
+    async (wf: any) => {
+      const sourceName = String(wf?.name || wf?.workflowName || "").trim();
+      if (!sourceName) {
+        onNotify?.({
+          severity: "error",
+          message: "Workflow name is missing.",
+        });
+        return;
+      }
+
+      setDuplicatingWorkflowName(sourceName);
+
+      try {
+        const existingNames = new Set(
+          workflowsData.map((w: any) =>
+            String(w?.name || w?.workflowName || "").trim().toLowerCase()
+          )
+        );
+
+        let duplicateName = `${sourceName}_copy`;
+        let counter = 1;
+        while (existingNames.has(duplicateName.toLowerCase())) {
+          duplicateName = `${sourceName}_copy_${counter}`;
+          counter++;
+        }
+
+        let sourceDefinition = wf;
+        if (!Array.isArray(wf?.tasks) || wf.tasks.length === 0) {
+          try {
+            const res = await apiClient.get<any>(
+              `${config.apiBaseUrl}/api/metadata/workflow/${encodeURIComponent(sourceName)}`
+            );
+            if (res?.data) {
+              sourceDefinition = res.data;
+            }
+          } catch {
+            // Fall back to current workflow definition object
+          }
+        }
+
+        const payload = {
+          ...buildWorkflowPayload(sourceDefinition),
+          name: duplicateName,
+          version: 1,
+        };
+
+        await saveWorkflow.mutateAsync(payload);
+        onNotify?.({
+          severity: "success",
+          message: `Workflow "${sourceName}" duplicated as "${duplicateName}".`,
+        });
+      } catch (err) {
+        const message = getErrorMessage(err, "Failed to duplicate workflow.");
+        onNotify?.({ severity: "error", message });
+      } finally {
+        setDuplicatingWorkflowName(null);
+      }
+    },
+    [onNotify, saveWorkflow, workflowsData]
+  );
+
+  const handleHoldDeleteWorkflow = useCallback(
+    async (wf: any) => {
+      const workflowName = String(wf?.name || wf?.workflowName || "").trim();
+      if (!workflowName) {
+        onNotify?.({
+          severity: "error",
+          message: "Workflow name is missing.",
+        });
+        return;
+      }
+      const version = wf?.version ?? 1;
+      const key = getWorkflowKey(wf);
+      setDeletingWorkflowKey(key);
+
+      try {
+        await deleteWorkflow.mutateAsync({ name: workflowName, version });
+        onNotify?.({ message: `Workflow "${workflowName}" deleted.` });
+      } catch (error) {
+        const message = getErrorMessage(error, "Delete failed.");
+        onNotify?.({ severity: "error", message });
+      } finally {
+        setDeletingWorkflowKey(null);
+      }
+    },
+    [deleteWorkflow, getWorkflowKey, onNotify]
+  );
+
   const confirmDeleteWorkflow = useCallback(
     (wf: any) => {
       const workflowName = String(wf?.name || wf?.workflowName || "").trim();
@@ -227,14 +447,6 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
   const fields = useMemo<WeaverDataField<any>[]>(
     () => [
       {
-        key: "id",
-        label: "ID",
-        getValue: (r) => r.id,
-        visibleByDefault: false,
-        hideable: true,
-        width: 220,
-      },
-      {
         key: "name",
         label: "Workflow Name",
         getValue: (r) => r.name || r.workflowName,
@@ -276,7 +488,13 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
         width: 110,
         render: (val) => {
           if (val == null || val === "") return "-";
-          return <Tag text={`v${val}`} borderColor="var(--color-support-fg, #2C8C84)" />;
+          return (
+            <Tag
+              text={`v${val}`}
+              color="#0f8a61"
+              borderColor="#0f8a61"
+            />
+          );
         },
       },
       {
@@ -312,13 +530,35 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
       {
         key: "createdBy",
         label: "Created By",
-        getValue: (r) => r.createdBy || "-",
+        getValue: (r) => {
+          const userDisplay = resolveUserDisplay(r.createdBy, currentUser);
+          return userDisplay ? userDisplay.name : (r.createdBy || "-");
+        },
         visibleByDefault: false,
-        width: 160,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => {
+          const userDisplay = resolveUserDisplay(r.createdBy, currentUser);
+          if (!userDisplay) {
+            return <span className={styles.emptyUserCell}>—</span>;
+          }
+          return (
+            <div className={styles.userAvatarCell} title={userDisplay.tooltip || userDisplay.name}>
+              <span
+                className={styles.userAvatar}
+                style={{ backgroundColor: userDisplay.avatarColor }}
+                aria-hidden="true"
+              >
+                {userDisplay.initials}
+              </span>
+              <span className={styles.userDisplayName}>{userDisplay.name}</span>
+            </div>
+          );
+        },
       },
       {
         key: "updatedAt",
-        label: "Last Updated",
+        label: "Updated At",
         getValue: (r) => r.updatedAt,
         sortable: true,
         width: 200,
@@ -327,45 +567,63 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
       {
         key: "updatedBy",
         label: "Updated By",
-        getValue: (r) => r.updatedBy || "-",
+        getValue: (r) => {
+          const userDisplay = resolveUserDisplay(r.updatedBy, currentUser);
+          return userDisplay ? userDisplay.name : (r.updatedBy || "-");
+        },
         visibleByDefault: false,
-        width: 160,
+        sortable: true,
+        width: 190,
+        render: (_val, r) => {
+          const userDisplay = resolveUserDisplay(r.updatedBy, currentUser);
+          if (!userDisplay) {
+            return <span className={styles.emptyUserCell}>—</span>;
+          }
+          return (
+            <div className={styles.userAvatarCell} title={userDisplay.tooltip || userDisplay.name}>
+              <span
+                className={styles.userAvatar}
+                style={{ backgroundColor: userDisplay.avatarColor }}
+                aria-hidden="true"
+              >
+                {userDisplay.initials}
+              </span>
+              <span className={styles.userDisplayName}>{userDisplay.name}</span>
+            </div>
+          );
+        },
       },
     ],
-    [handleOpenInDesigner]
+    [currentUser, handleOpenInDesigner]
   );
 
-  // Toolbar Actions
+  // Toolbar Actions: direct "+ New Workflow" button without dropdown options
   const toolbarActions = useMemo<WeaverDataAction<any>[]>(
     () => [
       {
         id: "new_workflow",
         label: "New Workflow",
-        primary: true,
         icon: <AddIcon fontSize="small" />,
+        asButton: true,
+        buttonVariant: "contained",
+        buttonColor: "primary",
         onClick: handleCreateNewWorkflow,
       },
-      {
-        id: "refresh",
-        label: "Refresh",
-        icon: <RefreshIcon fontSize="small" />,
-        onClick: () => {
-          refetchWorkflows();
-        },
-      },
     ],
-    [handleCreateNewWorkflow, refetchWorkflows]
+    [handleCreateNewWorkflow]
   );
 
-  // Row Actions (View/Edit Details removed; only Open in Designer and Delete)
+  // Row Actions: Duplicate and Delete
   const rowActions = useMemo<WeaverDataAction<any>[]>(
     () => [
       {
-        id: "open",
-        label: "Open in Designer",
-        icon: <OpenInNewIcon fontSize="small" />,
+        id: "duplicate",
+        label: "Duplicate",
+        icon: <Copy size={16} />,
         onClick: ({ record }) => {
-          handleOpenInDesigner(record);
+          if (record) {
+            handleDuplicateWorkflow(record);
+          }
         },
       },
       {
@@ -380,103 +638,102 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
         },
       },
     ],
-    [confirmDeleteWorkflow, handleOpenInDesigner]
+    [confirmDeleteWorkflow, handleDuplicateWorkflow]
   );
 
   const canvas = useMemo<WeaverCanvasConfig<any>>(
     () => ({
-    renderIcon: () => (
-      <Box
-        sx={{
-          width: 52,
-          height: 52,
-          borderRadius: "50%",
-          backgroundColor: "#2C8C84",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "#ffffff",
-          boxShadow: (theme) =>
-            `0 4px 14px ${alpha("#2C8C84", theme.palette.mode === "dark" ? 0.45 : 0.3)}`,
-          transition: "transform 0.2s ease, box-shadow 0.2s ease",
-          "&:hover": {
-            transform: "scale(1.06)",
-          },
-        }}
-      >
-        <AccountTreeIcon sx={{ fontSize: 26, color: "#ffffff" }} />
-      </Box>
-    ),
-    renderStatus: (wf) => (
-      <Tag
-        text={`v${wf.version ?? 1}`}
-        borderColor="var(--color-support-fg, #2C8C84)"
-      />
-    ),
-    getTitle: (wf) => wf.name || wf.workflowName || "Untitled Workflow",
-    renderContent: (wf, context) => {
-      const isVisible = (fieldKey: string) => {
-        if (!context?.visibleFields) return true;
-        return context.visibleFields.includes(fieldKey);
-      };
+      layout: "centered",
+      hideRowActions: true,
+      getTitle: (wf) => wf.name || wf.workflowName || "Untitled Workflow",
+      getDescription: (wf) => wf.description || "No description provided.",
+      renderStatus: (wf) => (wf.version !== undefined && wf.version !== null ? `v${wf.version}` : "v1"),
+      renderIcon: (wf) => {
+        const customImage =
+          wf.iconUrl ||
+          wf.imageUrl ||
+          wf.metadata?.iconUrl ||
+          wf.metadata?.imageUrl ||
+          (typeof wf.icon === "string" &&
+          (wf.icon.startsWith("http") || wf.icon.startsWith("/") || wf.icon.startsWith("data:"))
+            ? wf.icon
+            : null);
 
-      return (
-        <Stack spacing={0.75} sx={{ width: "100%", fontSize: "0.82rem" }}>
-          {isVisible("description") && wf.description && (
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{
-                display: "-webkit-box",
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-                lineHeight: 1.4,
-                minHeight: "2.8em",
+        if (customImage) {
+          return (
+            <img
+              src={customImage}
+              alt=""
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: "50%",
               }}
-            >
-              {wf.description}
-            </Typography>
-          )}
-          {isVisible("createdAt") && wf.createdAt && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                color: "var(--color-fg-muted)",
-                fontSize: "0.78rem",
-              }}
-            >
-              <span>Created</span>
-              <span>{toTimezoneDateTime(wf.createdAt, "Africa/Cairo") || "-"}</span>
-            </Box>
-          )}
-          {isVisible("updatedAt") && wf.updatedAt && (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                color: "var(--color-fg-muted)",
-                fontSize: "0.78rem",
-              }}
-            >
-              <span>Updated</span>
-              <span>{toTimezoneDateTime(wf.updatedAt, "Africa/Cairo") || "-"}</span>
-            </Box>
-          )}
-        </Stack>
-      );
-    },
-    quickActions: [
-      {
-        id: "open",
-        label: "Open in Designer",
-        icon: <OpenInNewIcon fontSize="small" />,
-        onClick: ({ record }) => handleOpenInDesigner(record),
+            />
+          );
+        }
+
+        if (isValidElement(wf.icon)) {
+          return wf.icon;
+        }
+
+        return <Layers size={38} color="#ffffff" strokeWidth={2.2} />;
       },
-    ],
-  }),
-    [handleOpenInDesigner]
+      renderQuickActions: (wf) => {
+        const wfName = wf.name || wf.workflowName;
+        const wfKey = getWorkflowKey(wf);
+        const isDuplicating = duplicatingWorkflowName === wfName;
+        const isDeleting = deletingWorkflowKey === wfKey;
+        const isActionDisabled = Boolean(duplicatingWorkflowName) || Boolean(deletingWorkflowKey);
+
+        return (
+          <div
+            className={styles.cardActionsGroup}
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <WeaverButton
+              variant="outlined"
+              size="small"
+              className={styles.duplicateBtn}
+              icon={<Copy size={14} />}
+              loading={isDuplicating}
+              loadingLabel="Duplicating..."
+              disabled={isActionDisabled}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDuplicateWorkflow(wf);
+              }}
+            >
+              Duplicate
+            </WeaverButton>
+
+            <WeaverButton
+              mode="delete"
+              variant="outlined"
+              size="small"
+              className={styles.deleteHoldBtn}
+              loading={isDeleting}
+              loadingLabel="Deleting..."
+              holdLabel="Hold to delete..."
+              holdDuration={1500}
+              disabled={isActionDisabled}
+              onAction={() => handleHoldDeleteWorkflow(wf)}
+            >
+              Delete
+            </WeaverButton>
+          </div>
+        );
+      },
+    }),
+    [
+      deletingWorkflowKey,
+      duplicatingWorkflowName,
+      getWorkflowKey,
+      handleDuplicateWorkflow,
+      handleHoldDeleteWorkflow,
+    ]
   );
 
   const paginationModel = useMemo(
@@ -529,7 +786,7 @@ export default function WorkflowsTab({ onNotify = null, search = "" }: Workflows
         onSearchChange={setDebouncedSearch}
         searchPlaceholder="Search workflows..."
         stickyHeader
-        height="calc(100vh - 220px)"
+        height="calc(100vh - 104px)"
         toolbarActions={toolbarActions}
         rowActions={rowActions}
         onRecordClick={handleOpenInDesigner}

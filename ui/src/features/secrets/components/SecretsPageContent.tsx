@@ -1,7 +1,9 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link, Typography } from "@mui/material";
-import { WeaverDataExplorer } from "@/components/common/data";
+import AddIcon from "@mui/icons-material/Add";
+import { WeaverDataExplorer, UserAvatarCell, resolveUserDisplay } from "@/components/common/data";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import type {
   WeaverDataAction,
   WeaverDataField,
@@ -21,6 +23,8 @@ const formatDateTime = (value: unknown) => toTimezoneDateTime(value as string, "
 const monoSx = { fontFamily: "var(--font-mono, monospace)", fontSize: 13 };
 
 export default function SecretsPageContent() {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,11 +98,18 @@ export default function SecretsPageContent() {
         key: "updatedAt",
         label: "Updated",
         getValue: (s) => s.updatedAt ?? s.createdAt,
-        width: 220,
-        render: (val, s) => {
-          const by = s.updatedBy?.name || s.createdBy?.name;
-          return by ? `${formatDateTime(val)} · ${by}` : formatDateTime(val);
-        },
+        width: 190,
+        render: (val) => formatDateTime(val),
+      },
+      {
+        key: "updatedBy",
+        label: "Updated By",
+        getValue: (s) => resolveUserDisplay(s.updatedBy?.name || s.updatedBy, currentUser)?.name || s.updatedBy?.name || "-",
+        visibleByDefault: false,
+        hideable: true,
+        sortable: true,
+        width: 190,
+        render: (_val, s) => <UserAvatarCell value={s.updatedBy?.name || s.updatedBy} currentUser={currentUser} />,
       },
       {
         key: "createdAt",
@@ -106,17 +117,18 @@ export default function SecretsPageContent() {
         getValue: (s) => s.createdAt,
         visibleByDefault: false,
         hideable: true,
-        width: 200,
+        width: 190,
         render: (val) => formatDateTime(val),
       },
       {
         key: "createdBy",
-        label: "Created by",
-        getValue: (s) => s.createdBy?.name,
+        label: "Created By",
+        getValue: (s) => resolveUserDisplay(s.createdBy?.name || s.createdBy, currentUser)?.name || s.createdBy?.name || "-",
         visibleByDefault: false,
         hideable: true,
-        width: 180,
-        render: (val) => String(val || "-"),
+        sortable: true,
+        width: 190,
+        render: (_val, s) => <UserAvatarCell value={s.createdBy?.name || s.createdBy} currentUser={currentUser} />,
       },
       {
         key: "actions",
@@ -126,14 +138,15 @@ export default function SecretsPageContent() {
         render: (val) => (val ? <CopyReferenceButton placeholder={String(val)} variant="button" /> : null),
       },
     ],
-    [openSecret]
+    [currentUser, openSecret]
   );
 
   const toolbarActions = useMemo<WeaverDataAction<Secret>[]>(
     () => [
       {
         id: "new",
-        label: "+ New Secret",
+        label: "New Secret",
+        icon: <AddIcon fontSize="small" />,
         asButton: true,
         buttonVariant: "contained",
         buttonColor: "primary",
@@ -179,7 +192,7 @@ export default function SecretsPageContent() {
       paginationModel={paginationModel}
       onPaginationChange={handlePaginationChange}
       onRecordClick={openSecret}
-      height="calc(100vh - 220px)"
+      height="calc(100vh - 104px)"
       emptyTitle="No secrets yet"
       emptyDescription="Store API keys and passwords once, then reference them in database and HTTP connections as ${weaver.secrets.name}."
     />

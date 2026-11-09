@@ -5,8 +5,6 @@ interface CollectionSettingsFormProps {
   form: any;
   formErrors: Record<string, string>;
   onChange: (field: string, value: any) => void;
-  connections: any[];
-  connectionsLoading?: boolean;
   isCreateMode?: boolean;
 }
 
@@ -14,8 +12,6 @@ export const CollectionSettingsForm: React.FC<CollectionSettingsFormProps> = ({
   form,
   formErrors,
   onChange,
-  connections,
-  connectionsLoading = false,
   isCreateMode = false,
 }) => {
   return (
@@ -59,27 +55,6 @@ export const CollectionSettingsForm: React.FC<CollectionSettingsFormProps> = ({
           >
             <option value="POSTMAN">Postman Collection</option>
             <option value="SWAGGER">OpenAPI / Swagger Spec</option>
-          </select>
-        </div>
-
-        {/* Connection Binding */}
-        <div className={styles.formGroup}>
-          <label htmlFor="setting-connection" className={styles.label}>
-            HTTP Connection (Optional)
-          </label>
-          <select
-            id="setting-connection"
-            className={styles.select}
-            value={form?.connection || ""}
-            onChange={(e) => onChange("connection", e.target.value)}
-            disabled={connectionsLoading}
-          >
-            <option value="">None (No connection)</option>
-            {connections.map((conn) => (
-              <option key={conn.id || conn.name} value={conn.id || ""}>
-                {conn.name} {conn.strategy ? `(${conn.strategy})` : ""}
-              </option>
-            ))}
           </select>
         </div>
 

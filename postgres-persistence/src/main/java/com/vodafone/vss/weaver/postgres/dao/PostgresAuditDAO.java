@@ -36,7 +36,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * PostgreSQL implementation of AuditDAO persisting audit events to conductor_audit_log table.
+ * PostgreSQL implementation of AuditDAO persisting audit events to audit_logs table.
  */
 public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
 
@@ -59,7 +59,7 @@ public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
                 event.getTimestamp() != null ? event.getTimestamp() : System.currentTimeMillis();
 
         String sql =
-                "INSERT INTO conductor_audit_log ("
+                "INSERT INTO audit_logs ("
                         + "id, created_at, actor_id, actor_username, actor_name, actor_email, "
                         + "action, resource_type, resource_id, status, duration_ms, error_message, details, client_ip"
                         + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?::jsonb, ?)";
@@ -104,7 +104,7 @@ public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
                     "SELECT id, created_at, actor_id, actor_username, actor_name, actor_email, "
                             + "action, resource_type, resource_id, status, duration_ms, error_message, details, client_ip, "
                             + RESOURCE_NAME
-                            + " FROM conductor_audit_log WHERE resource_id = ? AND resource_type = ? "
+                            + " FROM audit_logs WHERE resource_id = ? AND resource_type = ? "
                             + "ORDER BY created_at DESC LIMIT ?";
             return queryWithTransaction(
                     sql,
@@ -257,7 +257,7 @@ public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
     @Override
     public List<AuditEvent> searchAuditEvents(AuditEventQuery query, int offset, int limit) {
         Where where = where(query);
-        String sql = "SELECT " + LIST_COLUMNS + "FROM conductor_audit_log" + where.sql()
+        String sql = "SELECT " + LIST_COLUMNS + "FROM audit_logs" + where.sql()
                 + orderBy(query) + " LIMIT ? OFFSET ?";
         return queryWithTransaction(
                 sql,
@@ -280,7 +280,7 @@ public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
     public long countAuditEvents(AuditEventQuery query) {
         Where where = where(query);
         return queryWithTransaction(
-                "SELECT COUNT(*) FROM conductor_audit_log" + where.sql(),
+                "SELECT COUNT(*) FROM audit_logs" + where.sql(),
                 q -> {
                     bind(q, where.params());
                     return q.executeAndFetch(rs -> rs.next() ? rs.getLong(1) : 0L);
@@ -295,7 +295,7 @@ public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
         return queryWithTransaction(
                 "SELECT id, created_at, actor_id, actor_username, actor_name, actor_email, action, "
                         + "resource_type, resource_id, status, duration_ms, error_message, details, client_ip, "
-                        + RESOURCE_NAME + " FROM conductor_audit_log WHERE id = ?",
+                        + RESOURCE_NAME + " FROM audit_logs WHERE id = ?",
                 q -> {
                     q.addParameter(id);
                     return q.executeAndFetch(
@@ -310,7 +310,7 @@ public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
     static String histogramSql(Where where) {
         return "SELECT FLOOR((EXTRACT(EPOCH FROM created_at) * 1000 - ?) / ?)::bigint AS bucket, "
                 + "COUNT(*) AS total, COUNT(*) FILTER (WHERE status = 'FAILED') AS failed "
-                + "FROM conductor_audit_log" + where.sql() + " GROUP BY bucket ORDER BY bucket";
+                + "FROM audit_logs" + where.sql() + " GROUP BY bucket ORDER BY bucket";
     }
 
     @Override
@@ -351,7 +351,7 @@ public class PostgresAuditDAO extends PostgresBaseDAO implements AuditDAO {
     /** Distinct values of one of our own columns (never a caller-supplied name). */
     private List<String> distinct(String column) {
         return queryWithTransaction(
-                "SELECT DISTINCT " + column + " FROM conductor_audit_log WHERE " + column
+                "SELECT DISTINCT " + column + " FROM audit_logs WHERE " + column
                         + " IS NOT NULL ORDER BY 1 LIMIT 500",
                 q -> q.executeAndFetch(
                         rs -> {

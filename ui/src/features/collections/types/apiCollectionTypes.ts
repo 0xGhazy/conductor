@@ -27,7 +27,6 @@ export interface ApiCollection {
   id: string;
   name: string;
   description?: string;
-  connection?: string | null;
   type?: CollectionType;
   endpoints?: CollectionEndpoint[];
   createdAt?: string | null;
@@ -40,7 +39,6 @@ export interface ApiCollection {
 export interface ApiCollectionPayload {
   name: string;
   description?: string;
-  connection?: string | null;
   type?: CollectionType;
   [key: string]: unknown;
 }

@@ -320,3 +320,24 @@
     animation-duration: 0.01ms !important;
   }
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    box-shadow: var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.2));
+  }
+
+  .collapsed {
+    width: 0;
+    border-right: none;
+  }
+
+  .expanded {
+    width: 260px;
+    z-index: 1000;
+  }
+}

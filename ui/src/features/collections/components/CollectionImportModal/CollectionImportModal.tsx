@@ -19,7 +19,6 @@ import {
   parseCollectionFile,
 } from "@/features/collections/services/apiCollectionsService";
 import { collectionKeys } from "@/features/collections/hooks/queryKeys";
-import { useConnectionsList } from "@/features/connections";
 import { getErrorMessage } from "@/utils/error";
 import styles from "./CollectionImportModal.module.css";
 
@@ -60,19 +59,6 @@ export const CollectionImportModal: React.FC<CollectionImportModalProps> = ({
   const [parsedData, setParsedData] = useState<ParsedSpecData | null>(null);
   const [collectionName, setCollectionName] = useState("");
   const [description, setDescription] = useState("");
-  const [connectionId, setConnectionId] = useState<string>("");
-
-  const { data: connectionsResponse } = useConnectionsList({
-    page: 0,
-    size: 100,
-    sort: "createdAt,DESC",
-  });
-
-  const connectionOptions = React.useMemo(() => {
-    const body = (connectionsResponse as any)?.data ?? {};
-    const items = body?.data?.items ?? body?.items ?? body ?? [];
-    return Array.isArray(items) ? items : [];
-  }, [connectionsResponse]);
 
   const processFile = useCallback(
     async (file: File) => {
@@ -109,7 +95,6 @@ export const CollectionImportModal: React.FC<CollectionImportModalProps> = ({
     setParseError(null);
     setCollectionName("");
     setDescription("");
-    setConnectionId("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -160,7 +145,6 @@ export const CollectionImportModal: React.FC<CollectionImportModalProps> = ({
           ...buildEmptyCollection(),
           name: collectionName.trim(),
           description: description.trim(),
-          connection: connectionId || null,
           type: parsedData.type,
         },
         parsedData
@@ -368,25 +352,6 @@ export const CollectionImportModal: React.FC<CollectionImportModalProps> = ({
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Brief description of the service domain and endpoints..."
                   />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="collection-connection" className={styles.label}>
-                    HTTP Connection (Optional)
-                  </label>
-                  <select
-                    id="collection-connection"
-                    className={styles.select}
-                    value={connectionId}
-                    onChange={(e) => setConnectionId(e.target.value)}
-                  >
-                    <option value="">None (No connection)</option>
-                    {connectionOptions.map((conn: any) => (
-                      <option key={conn.id} value={conn.id}>
-                        {conn.name} {conn.strategy ? `(${conn.strategy})` : ""}
-                      </option>
-                    ))}
-                  </select>
                 </div>
 
                 {parseError && (

@@ -75,6 +75,7 @@ public class PostgresAuditDAOFilterIT {
         dataSource = new HikariDataSource(config);
         execute(dataSource, migration("V19__conductor_audit_log.sql"));
         execute(dataSource, migration("V30__audit_log_filter_indexes.sql"));
+        execute(dataSource, migration("V32__rename_tables_and_add_audit_columns.sql"));
         dao = new PostgresAuditDAO(new RetryTemplate(), new ObjectMapper(), dataSource);
 
         // Five events, a minute apart; T0 + 4 min is the newest.

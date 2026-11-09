@@ -22,6 +22,7 @@ public class SecretModel {
     @Builder.Default
     private Long version = 0L;
     private UUID createdBy;
+    private UUID updatedBy;
     private Instant createdAt;
     private Instant updatedAt;
 }

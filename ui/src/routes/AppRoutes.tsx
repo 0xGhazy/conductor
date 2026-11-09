@@ -36,7 +36,6 @@ const SettingsConfigurationsPage = React.lazy(pageLoaders.settingsConfigurations
 const SettingsAuditLogsPage = React.lazy(pageLoaders.settingsAuditLogs);
 const SettingsUsersPage = React.lazy(pageLoaders.settingsUsers);
 const SettingsRolesPage = React.lazy(pageLoaders.settingsRoles);
-const TranslationsPage = React.lazy(pageLoaders.translations);
 const SupportedLanguagesPage = React.lazy(pageLoaders.supportedLanguages);
 
 export default function AppRoutes() {
@@ -58,25 +57,30 @@ export default function AppRoutes() {
             <Route path="/workflows/:id" element={<WorkflowViewPage />} />
             <Route path="/databases" element={<DatabasesPage />} />
             <Route path="/databases/:id" element={<DatabaseViewPage />} />
-            <Route path="/redis" element={<RedisSourcesPage />} />
-            <Route path="/redis/new" element={<RedisSourceViewPage />} />
-            <Route path="/redis/:id" element={<RedisSourceViewPage />} />
+            <Route path="/caching" element={<RedisSourcesPage />} />
+            <Route path="/caching/new" element={<RedisSourceViewPage />} />
+            <Route path="/caching/:id" element={<RedisSourceViewPage />} />
+            <Route path="/redis" element={<Navigate to="/caching" replace />} />
+            <Route path="/redis/new" element={<Navigate to="/caching/new" replace />} />
+            <Route path="/redis/:id" element={<Navigate to="/caching/:id" replace />} />
             <Route path="/queries" element={<QueriesPage />} />
             <Route path="/queries/new" element={<QueryViewPage isCreateMode={true} />} />
             <Route path="/queries/:id" element={<QueryViewPage />} />
             <Route path="/collections" element={<CollectionsPage />} />
             <Route path="/collections/new" element={<CollectionViewPage />} />
             <Route path="/collections/:id" element={<CollectionViewPage />} />
-            <Route path="/connections" element={<ConnectionsPage />} />
-            <Route path="/connections/new" element={<ConnectionViewPage />} />
-            <Route path="/connections/:id" element={<ConnectionViewPage />} />
+            <Route path="/authentications" element={<ConnectionsPage />} />
+            <Route path="/authentications/new" element={<ConnectionViewPage />} />
+            <Route path="/authentications/:id" element={<ConnectionViewPage />} />
+            <Route path="/connections" element={<Navigate to="/authentications" replace />} />
+            <Route path="/connections/new" element={<Navigate to="/authentications/new" replace />} />
+            <Route path="/connections/:id" element={<Navigate to="/authentications/:id" replace />} />
             <Route path="/secrets" element={<SecretsPage />} />
             <Route path="/secrets/new" element={<SecretViewPage isCreateMode={true} />} />
             <Route path="/secrets/:id" element={<SecretViewPage />} />
             <Route path="/scripts" element={<ScriptsPage />} />
             <Route path="/scripts/new" element={<ScriptViewPage />} />
             <Route path="/scripts/:id" element={<ScriptViewPage />} />
-            <Route path="/translations" element={<TranslationsPage />} />
             <Route path="/executions" element={<WorkflowMonitoringPage />} />
             <Route path="/executions/:workflowId" element={<WorkflowExecutionViewPage />} />
             <Route path="/workbench" element={<WorkbenchPage />} />
@@ -89,9 +93,9 @@ export default function AppRoutes() {
               <Route path="identity" element={<Navigate to="users" replace />} />
               <Route path="identity/users" element={<SettingsUsersPage />} />
               <Route path="identity/roles" element={<SettingsRolesPage />} />
+              <Route path="languages" element={<SupportedLanguagesPage />} />
             </Route>
             <Route path="/settings/migration" element={<Navigate to="/settings/migrations" replace />} />
-            <Route path="/settings/languages" element={<SupportedLanguagesPage />} />
           </Route>
 
           <Route path="/designer" element={<DesignerPage />} />

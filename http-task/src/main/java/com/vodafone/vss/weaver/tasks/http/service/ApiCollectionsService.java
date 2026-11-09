@@ -61,7 +61,6 @@ public class ApiCollectionsService {
                 ApiCollectionModel.builder()
                         .name(name)
                         .description(dto.description())
-                        .connection(dto.connection())
                         .type(dto.type())
                         .createdAt(now)
                         .createdBy(dto.createdBy())
@@ -87,7 +86,6 @@ public class ApiCollectionsService {
         }
 
         if (dto.description() != null) existing.setDescription(dto.description());
-        if (dto.connection() != null) existing.setConnection(dto.connection());
         if (dto.type() != null) existing.setType(dto.type());
         existing.setUpdatedAt(Instant.now());
         if (dto.updatedBy() != null) existing.setUpdatedBy(dto.updatedBy());
@@ -164,7 +162,6 @@ public class ApiCollectionsService {
                 ApiCollectionModel.builder()
                         .name(name)
                         .description(dto.description())
-                        .connection(dto.connection())
                         .type(dto.type())
                         .createdAt(now)
                         .createdBy(dto.createdBy())

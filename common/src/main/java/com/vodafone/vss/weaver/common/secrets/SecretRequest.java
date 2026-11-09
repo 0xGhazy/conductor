@@ -1,5 +1,7 @@
 package com.vodafone.vss.weaver.common.secrets;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -28,6 +30,9 @@ public class SecretRequest {
 
     @Size(max = 500, message = "Description must be at most 500 characters")
     private String description;
+
+    private UUID createdBy;
+    private UUID updatedBy;
 
     @Override
     public String toString() {

@@ -1,5 +1,7 @@
 package com.vodafone.vss.weaver.common.secrets;
 
+import java.util.UUID;
+
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,8 @@ public class SecretUpdateRequest {
     private String description;
 
     private Long version;
+
+    private UUID updatedBy;
 
     @Override
     public String toString() {

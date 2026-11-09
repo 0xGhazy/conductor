@@ -1,5 +1,6 @@
 .tableContainer {
   width: 100%;
+  height: 100%;
   overflow-x: auto;
   background-color: var(--color-canvas-default);
   scrollbar-width: thin;
@@ -54,11 +55,25 @@
   color: var(--color-fg-default);
 }
 
-/* Table Body Rows */
+/* Table Body Rows - Animated Entrance on Fulfill */
+@keyframes rowEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .bodyRow {
   height: 40px;
   transition: background-color 0.15s ease;
   cursor: default;
+  animation: rowEntrance 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: min(calc(var(--row-index, 0) * 24ms), 300ms);
+  will-change: transform, opacity;
 }
 
 .bodyRowClickable {
@@ -120,4 +135,13 @@
   margin-left: 4px;
   vertical-align: middle;
   color: var(--color-accent-fg);
+}
+
+/* Accessibility: respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bodyRow {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

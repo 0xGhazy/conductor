@@ -89,6 +89,10 @@ public class HttpConnectionService {
                             .name(conn.getName())
                             .strategy(conn.getStrategy())
                             .status(isActive)
+                            .createdAt(conn.getCreatedAt())
+                            .updatedAt(conn.getUpdatedAt())
+                            .createdBy(conn.getCreatedBy())
+                            .updatedBy(conn.getUpdatedBy())
                             .build());
         }
         return result;
@@ -105,6 +109,8 @@ public class HttpConnectionService {
                         .name(name)
                         .strategy(dto.strategy())
                         .authConfig(dto.authConfig())
+                        .createdBy(dto.createdBy())
+                        .updatedBy(dto.updatedBy() != null ? dto.updatedBy() : dto.createdBy())
                         .build();
 
         HttpConnectionModel saved = repository.create(model);
@@ -115,6 +121,10 @@ public class HttpConnectionService {
                 .name(saved.getName())
                 .strategy(saved.getStrategy())
                 .status(getConnectionStatus(saved))
+                .createdAt(saved.getCreatedAt())
+                .updatedAt(saved.getUpdatedAt())
+                .createdBy(saved.getCreatedBy())
+                .updatedBy(saved.getUpdatedBy())
                 .build();
     }
 
@@ -141,6 +151,9 @@ public class HttpConnectionService {
         existing.setName(name);
         existing.setStrategy(dto.strategy());
         existing.setAuthConfig(dto.authConfig());
+        if (dto.updatedBy() != null) {
+            existing.setUpdatedBy(dto.updatedBy());
+        }
 
         HttpConnectionModel saved = repository.update(existing);
         if (oldName != null && !oldName.equalsIgnoreCase(name)) {
@@ -153,6 +166,10 @@ public class HttpConnectionService {
                 .name(saved.getName())
                 .strategy(saved.getStrategy())
                 .status(getConnectionStatus(saved))
+                .createdAt(saved.getCreatedAt())
+                .updatedAt(saved.getUpdatedAt())
+                .createdBy(saved.getCreatedBy())
+                .updatedBy(saved.getUpdatedBy())
                 .build();
     }
 

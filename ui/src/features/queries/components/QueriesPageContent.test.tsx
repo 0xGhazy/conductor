@@ -74,6 +74,6 @@ describe("QueriesPageContent", () => {
         <QueriesPage />
       </MemoryRouter>
     );
-    expect(document.title).toBe("Weaver - Queries");
+    expect(document.title).toBe("Queries");
   });
 });

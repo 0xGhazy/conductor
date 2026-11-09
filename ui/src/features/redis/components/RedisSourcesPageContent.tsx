@@ -1,16 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { Box, Link } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { SiRedis } from "react-icons/si";
 
-import { WeaverDataExplorer } from "@/components/common/data";
+import { WeaverDataExplorer, UserAvatarCell, resolveUserDisplay } from "@/components/common/data";
+import { AuthContext } from "@/features/auth/context/AuthContext";
 import type {
   WeaverDataAction,
   WeaverDataField,
@@ -49,6 +49,7 @@ const getRedisRecordId = (r: RedisRow) => r.id;
 const DEFAULT_VISIBLE_FIELDS = ["name", "host", "port", "databaseIndex", "ssl", "active", "createdAt"];
 
 const REDIS_CANVAS = {
+  hideRowActions: true,
   renderIcon: () => (
     <Box
       sx={{
@@ -82,6 +83,8 @@ const REDIS_CANVAS = {
 };
 
 export default function RedisSourcesPageContent({ onNotify = null, search = "" }: any) {
+  const authContext = useContext(AuthContext);
+  const currentUser = authContext?.user || null;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -215,6 +218,16 @@ export default function RedisSourcesPageContent({ onNotify = null, search = "" }
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
       },
       {
+        key: "createdBy",
+        label: "Created By",
+        getValue: (r: any) => resolveUserDisplay(r.createdBy, currentUser)?.name || r.createdBy || "-",
+        visibleByDefault: false,
+        hideable: true,
+        sortable: true,
+        width: 190,
+        render: (_val, r: any) => <UserAvatarCell value={r.createdBy} currentUser={currentUser} />,
+      },
+      {
         key: "updatedAt",
         label: "Updated at",
         getValue: (r) => r.updatedAt,
@@ -224,8 +237,18 @@ export default function RedisSourcesPageContent({ onNotify = null, search = "" }
         width: 200,
         render: (val) => toTimezoneDateTime(val, "Africa/Cairo") || "-",
       },
+      {
+        key: "updatedBy",
+        label: "Updated By",
+        getValue: (r: any) => resolveUserDisplay(r.updatedBy, currentUser)?.name || r.updatedBy || "-",
+        visibleByDefault: false,
+        hideable: true,
+        sortable: true,
+        width: 190,
+        render: (_val, r: any) => <UserAvatarCell value={r.updatedBy} currentUser={currentUser} />,
+      },
     ],
-    [navigate]
+    [currentUser, navigate]
   );
 
   const openDeleteConfirm = useCallback(
@@ -274,9 +297,12 @@ export default function RedisSourcesPageContent({ onNotify = null, search = "" }
     () => [
       {
         id: "new",
-        label: "New Redis Source",
+        label: "New Cache",
         icon: <AddIcon fontSize="small" />,
-        onClick: () => navigate("/redis/new"),
+        asButton: true,
+        buttonVariant: "contained",
+        buttonColor: "primary",
+        onClick: () => navigate("/caching/new"),
       },
       {
         id: "refresh",
@@ -290,32 +316,6 @@ export default function RedisSourcesPageContent({ onNotify = null, search = "" }
     [navigate, refetchRedisSources]
   );
 
-  const rowActions = useMemo<WeaverDataAction<any>[]>(
-    () => [
-      {
-        id: "open",
-        label: "Open / Edit",
-        icon: <VisibilityIcon fontSize="small" />,
-        onClick: ({ record }) => {
-          if (record?.id) {
-            navigate(`/redis/${encodeURIComponent(record.id)}`);
-          }
-        },
-      },
-      {
-        id: "delete",
-        label: "Delete",
-        icon: <DeleteOutlineIcon fontSize="small" />,
-        danger: true,
-        onClick: ({ record }) => {
-          if (record) {
-            openDeleteConfirm({ selectedRows: [record] });
-          }
-        },
-      },
-    ],
-    [navigate, openDeleteConfirm]
-  );
 
   const bulkActions = useMemo<WeaverDataAction<any>[]>(
     () => [
@@ -348,7 +348,7 @@ export default function RedisSourcesPageContent({ onNotify = null, search = "" }
 
   const handleRecordClick = useCallback(
     (r: RedisRow) => {
-      if (r?.id) navigate(`/redis/${encodeURIComponent(r.id)}`);
+      if (r?.id) navigate(`/caching/${encodeURIComponent(r.id)}`);
     },
     [navigate]
   );
@@ -369,15 +369,14 @@ export default function RedisSourcesPageContent({ onNotify = null, search = "" }
         errorMessage={errorMessage || undefined}
         searchable
         searchValue={search}
-        searchPlaceholder="Search Redis sources by name, host..."
+        searchPlaceholder="Search caching by name, host..."
         stickyHeader
-        height="calc(100vh - 220px)"
+        height="calc(100vh - 104px)"
         toolbarActions={toolbarActions}
-        rowActions={rowActions}
         bulkActions={bulkActions}
         onRecordClick={handleRecordClick}
         canvas={REDIS_CANVAS}
-        emptyTitle="No Redis sources found"
+        emptyTitle="No cache found"
         emptyDescription="Configure Redis sources to manage multi-tenant Redis cache configurations and pools."
       />
 

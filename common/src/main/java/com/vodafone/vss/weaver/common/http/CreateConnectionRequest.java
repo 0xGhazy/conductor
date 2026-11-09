@@ -16,6 +16,7 @@
 package com.vodafone.vss.weaver.common.http;
 
 import java.util.Map;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +27,12 @@ import jakarta.validation.constraints.NotNull;
 public record CreateConnectionRequest(
         @NotBlank(message = "Connection name is required") String name,
         @NotNull(message = "Authentication strategy is required") AuthenticationStrategy strategy,
-        Map<String, Object> authConfig
-) {}
+        Map<String, Object> authConfig,
+        UUID createdBy,
+        UUID updatedBy
+) {
+    public CreateConnectionRequest(String name, AuthenticationStrategy strategy, Map<String, Object> authConfig) {
+        this(name, strategy, authConfig, null, null);
+    }
+}
 
