@@ -1,0 +1,175 @@
+name: weaver-stack
+
+services:
+  weaver-server:
+    env_file:
+      - ../.env
+    environment:
+      - CONFIG_PROP=${CONFIG_PROP:-config-postgres-redis-postgres.properties}
+      - SERVER_PORT=${WEAVER_SERVER_PORT:-8080}
+      - JAVA_OPTS=-Dpolyglot.engine.WarnInterpreterOnly=false
+      - weaver.app.ownerEmailMandatory=false
+      - WEAVER_REDIS_HOST=weaver-redis
+      - WEAVER_DATASOURCE_URL=jdbc:postgresql://weaver-postgres:5432/${WEAVER_DATASOURCE_NAME:-weaver}
+      - WEAVER_DATASOURCE_HOST=weaver-postgres
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - COHERE_API_KEY=${COHERE_API_KEY:-}
+    image: weaver:server
+    container_name: weaver-server
+    build:
+      context: ../
+      dockerfile: docker/server/Dockerfile
+      args:
+        YARN_OPTS: ${YARN_OPTS}
+        INDEXING_BACKEND: postgres
+    networks:
+      - internal
+    ports:
+      - "${WEAVER_SERVER_PORT:-8080}:8080"
+      - "8127:5000"
+    volumes:
+      - ./server/config:/app/config
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "-XGET", "http://localhost:8080/health" ]
+      interval: 60s
+      timeout: 30s
+      retries: 12
+    links:
+      - weaver-postgres:postgresdb
+      - weaver-redis:rs
+      - keycloak:keycloak
+    depends_on:
+      weaver-postgres:
+        condition: service_healthy
+      weaver-redis:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1k"
+        max-file: "3"
+
+  weaver-postgres:
+    image: postgres:16
+    container_name: weaver-postgres
+    environment:
+      - POSTGRES_USER=${WEAVER_DATASOURCE_USERNAME:-weaver}
+      - POSTGRES_PASSWORD=${WEAVER_DATASOURCE_PASSWORD:-weaver}
+      - POSTGRES_DB=${WEAVER_DATASOURCE_NAME:-weaver}
+    volumes:
+      - pgdata-weaver:/var/lib/postgresql/data
+    networks:
+      - internal
+    ports:
+      - "${WEAVER_DATASOURCE_PORT:-5432}:5432"
+    healthcheck:
+      test: timeout 5 bash -c 'cat < /dev/null > /dev/tcp/localhost/5432'
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1k"
+        max-file: "3"
+
+  weaver-redis:
+    image: redis:6.2.3-alpine
+    container_name: weaver-redis
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "${WEAVER_REDIS_PASSWORD:?WEAVER_REDIS_PASSWORD is required and cannot be empty}" ]
+    volumes:
+      - ./server/config/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - WEAVER_REDIS_PASSWORD=${WEAVER_REDIS_PASSWORD}
+    networks:
+      - internal
+    ports:
+      - "${WEAVER_REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli -a \"$${WEAVER_REDIS_PASSWORD}\" ping | grep PONG" ]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # Creates the "keycloak" role and database in weaver-postgres if they are missing, plus the
+  # read-only "keycloak_reader" role Conductor uses to show who created / updated records, then exits.
+  keycloak-db-init:
+    image: postgres:16
+    environment:
+      - PGHOST=weaver-postgres
+      - PGUSER=${WEAVER_DATASOURCE_USERNAME:-weaver}
+      - PGPASSWORD=${WEAVER_DATASOURCE_PASSWORD:-weaver}
+      - PGDATABASE=${WEAVER_DATASOURCE_NAME:-weaver}
+      - KEYCLOAK_DB_PASSWORD=${WEAVER_KEYCLOAK_DB_PASSWORD:-keycloak}
+      - KEYCLOAK_READER_PASSWORD=${WEAVER_KEYCLOAK_READER_PASSWORD:-keycloak_reader}
+    entrypoint: [ "sh", "-c" ]
+    command:
+      - |
+        psql -v ON_ERROR_STOP=1 -v pw="$$KEYCLOAK_DB_PASSWORD" -v rpw="$$KEYCLOAK_READER_PASSWORD" <<'SQL'
+        SELECT format('CREATE ROLE keycloak LOGIN PASSWORD %L', :'pw')
+        WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'keycloak') \gexec
+        SELECT format('ALTER ROLE keycloak WITH LOGIN PASSWORD %L', :'pw') \gexec
+        SELECT 'CREATE DATABASE keycloak OWNER keycloak'
+        WHERE NOT EXISTS (SELECT 1 FROM pg_database WHERE datname = 'keycloak') \gexec
+        SELECT format('CREATE ROLE keycloak_reader LOGIN PASSWORD %L', :'rpw')
+        WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'keycloak_reader') \gexec
+        SELECT format('ALTER ROLE keycloak_reader WITH LOGIN PASSWORD %L', :'rpw') \gexec
+        \connect keycloak
+        GRANT CONNECT ON DATABASE keycloak TO keycloak_reader;
+        GRANT USAGE ON SCHEMA public TO keycloak_reader;
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO keycloak_reader;
+        ALTER DEFAULT PRIVILEGES FOR ROLE keycloak IN SCHEMA public GRANT SELECT ON TABLES TO keycloak_reader;
+        SQL
+    depends_on:
+      weaver-postgres:
+        condition: service_healthy
+    networks:
+      - internal
+    restart: "no"
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: weaver-keycloak
+    command: start-dev --import-realm
+    environment:
+      - KEYCLOAK_ADMIN=${WEAVER_IDENTITY_ADMIN_USERNAME:-${WEAVER_KEYCLOAK_ADMIN_USERNAME:-admin}}
+      - KEYCLOAK_ADMIN_PASSWORD=${WEAVER_IDENTITY_ADMIN_PASSWORD:-${WEAVER_KEYCLOAK_ADMIN_PASSWORD:-admin}}
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${WEAVER_IDENTITY_ADMIN_USERNAME:-${WEAVER_KEYCLOAK_ADMIN_USERNAME:-admin}}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${WEAVER_IDENTITY_ADMIN_PASSWORD:-${WEAVER_KEYCLOAK_ADMIN_PASSWORD:-admin}}
+      - KC_HEALTH_ENABLED=true
+      - KC_HTTP_PORT=8080
+      - KC_HOSTNAME_STRICT=false
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://weaver-postgres:5432/keycloak
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD=${WEAVER_KEYCLOAK_DB_PASSWORD:-keycloak}
+    depends_on:
+      keycloak-db-init:
+        condition: service_completed_successfully
+    volumes:
+      - ./keycloak/weaver-realm.json:/opt/keycloak/data/import/weaver-realm.json:ro
+      - ./keycloak/themes/weaver:/opt/keycloak/themes/weaver:ro
+    ports:
+      - "${WEAVER_KEYCLOAK_PORT:-${WEAVER_IDENTITY_PORT:-8085}}:8080"
+    networks:
+      - internal
+    healthcheck:
+      test: timeout 5 bash -c 'cat < /dev/null > /dev/tcp/localhost/8080'
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1k"
+        max-file: "3"
+
+volumes:
+  pgdata-weaver:
+    driver: local
+
+networks:
+  internal:

@@ -19,7 +19,7 @@
 # 0. Build stage
 # ===========================================================================================================
 FROM node:lts AS builder
-LABEL maintainer="Orkes OSS <oss@orkes.io>"
+LABEL maintainer="Hossam Hamdy <hossam.tawfik@vodafone.com>"
 
 COPY ui-next /conductor/ui-next
 WORKDIR /conductor/ui-next
@@ -32,7 +32,7 @@ RUN corepack enable && \
 # 1. Serve stage
 # ===========================================================================================================
 FROM nginx:stable-alpine
-LABEL maintainer="Orkes OSS <oss@orkes.io>"
+LABEL maintainer="Hossam Hamdy <hossam.tawfik@vodafone.com>"
 
 # Upstream conductor server for /api and /actuator; override at runtime.
 ENV WF_SERVER=http://conductor-server:8080

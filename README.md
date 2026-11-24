@@ -217,12 +217,9 @@ powershell -c "irm https://conductor-oss.github.io/conductor-skills/install.ps1 
 
 | Backend | Configuration |
 |---------|---------------|
-| Redis + ES7 (default) | [config-redis.properties](docker/server/config/config-redis.properties) |
-| Redis + ES8 | [config-redis-es8.properties](docker/server/config/config-redis-es8.properties) |
-| Redis + OpenSearch | [config-redis-os.properties](docker/server/config/config-redis-os.properties) |
-| Postgres | [config-postgres.properties](docker/server/config/config-postgres.properties) |
-| Postgres + ES7 | [config-postgres-es7.properties](docker/server/config/config-postgres-es7.properties) |
-| MySQL + ES7 | [config-mysql.properties](docker/server/config/config-mysql.properties) |
+| Postgres + Redis + ES8 | [config-postgres-redis-elasticsearch8.properties](docker/server/config/config-postgres-redis-elasticsearch8.properties) |
+| Postgres + Redis + OpenSearch 3 | [config-postgres-redis-opensearch3.properties](docker/server/config/config-postgres-redis-opensearch3.properties) |
+| Postgres + Redis + Postgres | [config-postgres-redis-postgres.properties](docker/server/config/config-postgres-redis-postgres.properties) |
 
 </details>
 

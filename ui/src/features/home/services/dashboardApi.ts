@@ -1,4 +1,4 @@
-﻿import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { config } from "@/config/appConfig";
 import apiClient from "@/services/apiClient";
 import type {
@@ -17,8 +17,7 @@ import type {
  *  - GET http://localhost:8080/api/tasks/queue/polldata/all
  *  - GET http://localhost:8080/health
  */
-const WEAVER_BASE: string = config.weaverApiBaseUrl ?? "";
-const WEAVER_BASE = config.apiBaseUrl || "";
+const WEAVER_BASE: string = config.weaverApiBaseUrl || config.apiBaseUrl || "";
 
 export const DASHBOARD_ENDPOINTS = {
   queueAll: `${WEAVER_BASE}/api/tasks/queue/all`,

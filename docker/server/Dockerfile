@@ -15,20 +15,20 @@ FROM azul/zulu-openjdk-debian:21 AS builder
 ARG PREBUILT=false
 ARG INDEXING_BACKEND=elasticsearch
 
-LABEL maintainer="Orkes OSS <oss@orkes.io>"
+LABEL maintainer="Hossam Hamdy <hossam.tawfik@vodafone.com>"
 
 COPY . /conductor
 WORKDIR /conductor
 
 RUN if [ "$PREBUILT" = "true" ]; then \
-      rm -rf server/target && mkdir -p server/target && \
-      cp docker/server/libs/conductor-server.jar server/target/conductor-server.jar && \
-      echo "Using pre-built server JAR"; \
-    else \
-      sed -i 's/\r$//' ./mvnw && \
-      sh ./mvnw clean package -DskipTests -B --no-transfer-progress && \
-      cp server/target/conductor-server-*.jar server/target/conductor-server.jar; \
-    fi
+  rm -rf server/target && mkdir -p server/target && \
+  cp docker/server/libs/*server*.jar server/target/conductor-server.jar && \
+  echo "Using pre-built server JAR"; \
+  else \
+  sed -i 's/\r$//' ./mvnw && \
+  sh ./mvnw clean package -DskipTests -B --no-transfer-progress && \
+  cp server/target/*server*.jar server/target/conductor-server.jar; \
+  fi
 
 
 # ===========================================================================================================
@@ -39,32 +39,32 @@ FROM node:lts AS ui-builder
 ARG PREBUILT=false
 ARG SKIP_UI=false
 
-LABEL maintainer="Orkes OSS <oss@orkes.io>"
+LABEL maintainer="Hossam Hamdy <hossam.tawfik@vodafone.com>"
 
 COPY ui-next /conductor/ui-next
 WORKDIR /conductor/ui-next
 
 RUN if [ "$SKIP_UI" = "true" ]; then \
-      mkdir -p dist && echo "UI build skipped (SKIP_UI=true)"; \
-    elif [ "$PREBUILT" = "false" ]; then \
-      npm install -g pnpm && \
-      pnpm install && \
-      NODE_OPTIONS=--max-old-space-size=4096 pnpm build; \
-    else \
-      echo "Using pre-built UI assets"; \
-    fi
+  mkdir -p dist && echo "UI build skipped (SKIP_UI=true)"; \
+  elif [ "$PREBUILT" = "false" ]; then \
+  npm install -g pnpm && \
+  pnpm install && \
+  NODE_OPTIONS=--max-old-space-size=4096 pnpm build; \
+  else \
+  echo "Using pre-built UI assets"; \
+  fi
 
 # ===========================================================================================================
 # 2. Final stage
 # ===========================================================================================================
 FROM debian:stable-slim
 
-LABEL maintainer="Orkes OSS <oss@orkes.io>"
+LABEL maintainer="Hossam Hamdy <hossam.tawfik@vodafone.com>"
 
 RUN apt-get -o Acquire::http::Pipeline-Depth=0 update \
-    && apt-get install -y --no-install-recommends openjdk-21-jre-headless nginx curl ca-certificates \
-    && rm -f /etc/nginx/sites-enabled/default \
-    && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends openjdk-21-jre-headless nginx curl ca-certificates \
+  && rm -f /etc/nginx/sites-enabled/default \
+  && rm -rf /var/lib/apt/lists/*
 
 # Make app folders
 RUN mkdir -p /app/config /app/logs /app/libs

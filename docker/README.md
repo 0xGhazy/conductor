@@ -48,9 +48,7 @@ TODO: Link to the helm charts
 |--------------------------------------------------------------|---------------------------------|
 | [docker-compose-postgres-redis-elasticsearch8.yaml](docker-compose-postgres-redis-elasticsearch8.yaml) | Postgres + Redis + Elasticsearch 8 |
 | [docker-compose-postgres-redis-opensearch3.yaml](docker-compose-postgres-redis-opensearch3.yaml)       | Postgres + Redis + OpenSearch 3    |
-| [docker-compose-es8.yaml](docker-compose-es8.yaml)           | Redis + Elasticsearch 8         |
-| [docker-compose-redis-os3.yaml](docker-compose-redis-os3.yaml) | Redis + OpenSearch 3            |
-| [docker-compose-postgres.yaml](docker-compose-postgres.yaml) | Postgres standalone             |
+| [docker-compose-postgres-redis-postgres.yaml](docker-compose-postgres-redis-postgres.yaml)       | Postgres + Redis + Postgres        |
 
 ### Network errors during UI build with yarn
 

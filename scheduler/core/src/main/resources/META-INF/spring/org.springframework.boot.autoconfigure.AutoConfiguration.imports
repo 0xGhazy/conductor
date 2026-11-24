@@ -1,1 +1,1 @@
-io.orkes.conductor.scheduler.config.SchedulerOssConfiguration
+com.vodafone.vss.weaver.scheduler.config.SchedulerOssConfiguration

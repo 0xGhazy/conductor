@@ -78,7 +78,7 @@ _HIDDEN_COMPONENTS = {"ping"}
 
 
 def _log_components(sp, components):
-    """One compact line, e.g. `database [✓], redis [✓], elasticsearch [✗]`, then the reason for each problem."""
+    """One compact line, e.g. `database [OK], redis [OK], elasticsearch [DOWN]`, then the reason for each problem."""
     shown = [(name, c) for name, c in components if name not in _HIDDEN_COMPONENTS]
     marks, problems = [], []
     for name, component in shown:
@@ -86,17 +86,17 @@ def _log_components(sp, components):
         label = _COMPONENT_LABELS.get(top, top) + dot + rest
         state = component.get("status", "UNKNOWN")
         if state == "UP":
-            marks.append(f"{label} [{Color.GREEN}✓{Color.RESET}]")
+            marks.append(f"{label} [{Color.GREEN}OK{Color.RESET}]")
             continue
         color = Color.RED if state == "DOWN" else Color.YELLOW
-        marks.append(f"{label} [{color}{'✗' if state == 'DOWN' else '⚠'}{Color.RESET}]")
+        marks.append(f"{label} [{color}{'DOWN' if state == 'DOWN' else state}{Color.RESET}]")
         details = component.get("details", {})
         error = (str(details.get("error", "")).splitlines() or [""])[0][:150] if isinstance(details, dict) else ""
         problems.append(f"{color}{label}: {state}{f' ({error})' if error else ''}{Color.RESET}")
     if marks:
-        sp.write("        " + ", ".join(marks))
+        sp.info(", ".join(marks))
     for problem in problems:
-        sp.write("          " + problem)
+        sp.error(problem)
 
 
 def check_identity(sp):

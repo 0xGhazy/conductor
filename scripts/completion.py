@@ -37,8 +37,10 @@ def candidates(parser, words, container_services, check_services):
 
     if command in CONTAINER_COMMANDS:
         services = container_services()
-    elif command == "check":
+    elif command == "health":
         services = check_services
+    elif command in ("check", "init"):
+        return [t for t in ["env"] if t.startswith(current)]
     else:
         return []
     typed = set(words[1:-1])

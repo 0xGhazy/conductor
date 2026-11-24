@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_COMPOSE_FILE = "docker/docker-compose-postgres-redis-elasticsearch8.yaml"
 WAIT_TIMEOUT = 300  # seconds `run` / `restart` wait for containers to become healthy
 
-# CLI service names -> compose service names, so `run database` matches `check database`.
+# CLI service names -> compose service names, so `run database` matches `health database`.
 ALIASES = {"server": "weaver-server", "database": "postgres", "identity": "keycloak"}
 
 
@@ -71,7 +71,7 @@ def _containers(base, services):
 
 
 def _log_status(sp, base, services):
-    """One compact line, e.g. `postgres [✓ healthy], redis [✓ running], keycloak [■ exited]`."""
+    """One compact line, e.g. `postgres [[OK] healthy], redis [[OK] running], keycloak [[-] exited]`."""
     try:
         containers = _containers(base, services)
     except (RuntimeError, ValueError) as e:  # don't hide the error that brought us here
@@ -81,27 +81,27 @@ def _log_status(sp, base, services):
     for container in sorted(containers, key=lambda c: c.get("Service", "")):
         color, text = _state(container)
         marks.append(f"{container.get('Service', container.get('Name', '?'))} [{color}{text}{Color.RESET}]")
-    sp.write("        " + (", ".join(marks) if marks else f"{Color.DIM}no containers{Color.RESET}"))
+    sp.info(", ".join(marks) if marks else f"{Color.DIM}no containers{Color.RESET}")
 
 
 def _state(container):
-    """(color, text) for a container's state, e.g. (GREEN, '✓ healthy') or (DIM, '■ exited')."""
+    """(color, text) for a container's state, e.g. (GREEN, '[OK] healthy') or (DIM, '[-] exited')."""
     state, health = container.get("State", "unknown"), container.get("Health", "")
     if state == "running" and health in ("", "healthy"):
-        return Color.GREEN, f"✓ {health or state}"
+        return Color.GREEN, f"[OK] {health or state}"
     if state == "running":
         unhealthy = health == "unhealthy"
-        return (Color.RED if unhealthy else Color.YELLOW), f"{'✗' if unhealthy else '⚠'} {health}"
-    return Color.DIM, f"■ {state}"
+        return (Color.RED if unhealthy else Color.YELLOW), f"{'[FAIL]' if unhealthy else '[WARN]'} {health}"
+    return Color.DIM, f"[-] {state}"
 
 
 def _ports(container):
-    """Published ports as `host→container`, e.g. `8127→5000`; IPv4/IPv6 duplicates collapsed."""
+    """Published ports as `host->container`, e.g. `8127->5000`; IPv4/IPv6 duplicates collapsed."""
     published = {
-        f"{p['PublishedPort']}→{p['TargetPort']}"
+        f"{p['PublishedPort']}->{p['TargetPort']}"
         for p in container.get("Publishers") or [] if p.get("PublishedPort")
     }
-    return ", ".join(sorted(published, key=lambda port: int(port.split("→")[0])))
+    return ", ".join(sorted(published, key=lambda port: int(port.split("->")[0])))
 
 
 def show_logs(names, tail, follow, timestamps):
@@ -110,7 +110,7 @@ def show_logs(names, tail, follow, timestamps):
         base = _compose_base()
         services = _resolve(base, names)
     except RuntimeError as e:
-        print(f"{Color.RED}✗ {e}{Color.RESET}", flush=True)
+        print(f"{Color.RED}[ERROR] {e}{Color.RESET}", flush=True)
         return 1
 
     args = ["logs", "--tail", str(tail)]
@@ -120,7 +120,7 @@ def show_logs(names, tail, follow, timestamps):
         args.append("--timestamps")
     hint = f" {Color.DIM}(Ctrl+C to stop){Color.RESET}" if follow else ""
     # flush, or the header lands after the logs when output is piped (compose writes to the terminal directly)
-    print(f"{Color.BLUE}ℹ logs for {_target(services)}, last {tail} lines{Color.RESET}{hint}\n", flush=True)
+    print(f"{Color.BLUE}[INFO] logs for {_target(services)}, last {tail} lines{Color.RESET}{hint}\n", flush=True)
     try:
         return subprocess.run([*base, *args, *services], cwd=ROOT, env=SHELL_ENVIRON).returncode
     except KeyboardInterrupt:  # Ctrl+C is how you leave --follow, not an error
@@ -137,7 +137,7 @@ def list_containers(names):
         for service in services or _compose(base, "config", "--services").split():
             container = containers.get(service)
             if container is None:
-                rows.append((service, "-", (Color.DIM, "■ not created"), "", ""))
+                rows.append((service, "-", (Color.DIM, "[-] not created"), "", ""))
             else:
                 rows.append((service, container.get("Name", "?"), _state(container),
                              container.get("Status", ""), _ports(container)))

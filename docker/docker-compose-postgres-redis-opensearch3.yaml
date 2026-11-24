@@ -1,9 +1,17 @@
-﻿services:
+name: weaver-stack
+
+services:
   weaver-server:
+    env_file:
+      - ../.env
     environment:
-      - CONFIG_PROP=config-postgres-redis-opensearch3.properties
+      - CONFIG_PROP=${CONFIG_PROP:-config-postgres-redis-opensearch3.properties}
+      - SERVER_PORT=${WEAVER_SERVER_PORT:-8080}
       - JAVA_OPTS=-Dpolyglot.engine.WarnInterpreterOnly=false
       - weaver.app.ownerEmailMandatory=false
+      - WEAVER_REDIS_HOST=weaver-redis
+      - WEAVER_DATASOURCE_URL=jdbc:postgresql://weaver-postgres:5432/${WEAVER_DATASOURCE_NAME:-weaver}
+      - WEAVER_DATASOURCE_HOST=weaver-postgres
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - COHERE_API_KEY=${COHERE_API_KEY:-}
@@ -18,7 +26,7 @@
     networks:
       - internal
     ports:
-      - 8000:8080
+      - "${WEAVER_SERVER_PORT:-8080}:8080"
       - 8128:5000
     volumes:
       - ./server/config:/app/config
@@ -38,6 +46,8 @@
       weaver-redis:
         condition: service_healthy
       conductor-opensearch:
+        condition: service_healthy
+      keycloak:
         condition: service_healthy
     logging:
       driver: "json-file"
@@ -69,14 +79,20 @@
 
   weaver-redis:
     image: redis:6.2.3-alpine
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "${WEAVER_REDIS_PASSWORD:?WEAVER_REDIS_PASSWORD is required and cannot be empty}"]
     volumes:
-      - ../server/config/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./server/config/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - WEAVER_REDIS_PASSWORD=${WEAVER_REDIS_PASSWORD}
     networks:
       - internal
     ports:
       - "6379:6379"
     healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
+      test: [ "CMD-SHELL", "redis-cli -a \"$${WEAVER_REDIS_PASSWORD}\" ping | grep PONG" ]
+      interval: 5s
+      timeout: 5s
+      retries: 12
 
   conductor-opensearch:
     image: opensearchproject/opensearch:3.0.0
@@ -114,14 +130,15 @@
     image: postgres:16
     environment:
       - PGHOST=weaver-postgres
-      - PGUSER=conductor
-      - PGPASSWORD=conductor
+      - PGUSER=${WEAVER_DATASOURCE_USERNAME:-weaver}
+      - PGPASSWORD=${WEAVER_DATASOURCE_PASSWORD:-weaver}
+      - PGDATABASE=${WEAVER_DATASOURCE_NAME:-weaver}
       - KEYCLOAK_DB_PASSWORD=${WEAVER_KEYCLOAK_DB_PASSWORD:-keycloak}
       - KEYCLOAK_READER_PASSWORD=${WEAVER_KEYCLOAK_READER_PASSWORD:-keycloak_reader}
     entrypoint: ["sh", "-c"]
     command:
       - |
-        psql -v ON_ERROR_STOP=1 -d postgres -v pw="$$KEYCLOAK_DB_PASSWORD" -v rpw="$$KEYCLOAK_READER_PASSWORD" <<'SQL'
+        psql -v ON_ERROR_STOP=1 -v pw="$$KEYCLOAK_DB_PASSWORD" -v rpw="$$KEYCLOAK_READER_PASSWORD" <<'SQL'
         SELECT format('CREATE ROLE keycloak LOGIN PASSWORD %L', :'pw')
         WHERE NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'keycloak') \gexec
         SELECT format('ALTER ROLE keycloak WITH LOGIN PASSWORD %L', :'pw') \gexec
@@ -145,13 +162,13 @@
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
-    container_name: conductor-keycloak
+    container_name: weaver-keycloak
     command: start-dev --import-realm
     environment:
-      - KEYCLOAK_ADMIN=${WEAVER_KEYCLOAK_ADMIN_USERNAME:-admin}
-      - KEYCLOAK_ADMIN_PASSWORD=${WEAVER_KEYCLOAK_ADMIN_PASSWORD:-admin}
-      - KC_BOOTSTRAP_ADMIN_USERNAME=${WEAVER_KEYCLOAK_ADMIN_USERNAME:-admin}
-      - KC_BOOTSTRAP_ADMIN_PASSWORD=${WEAVER_KEYCLOAK_ADMIN_PASSWORD:-admin}
+      - KEYCLOAK_ADMIN=${WEAVER_IDENTITY_ADMIN_USERNAME:-${WEAVER_KEYCLOAK_ADMIN_USERNAME:-admin}}
+      - KEYCLOAK_ADMIN_PASSWORD=${WEAVER_IDENTITY_ADMIN_PASSWORD:-${WEAVER_KEYCLOAK_ADMIN_PASSWORD:-admin}}
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${WEAVER_IDENTITY_ADMIN_USERNAME:-${WEAVER_KEYCLOAK_ADMIN_USERNAME:-admin}}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${WEAVER_IDENTITY_ADMIN_PASSWORD:-${WEAVER_KEYCLOAK_ADMIN_PASSWORD:-admin}}
       - KC_HEALTH_ENABLED=true
       - KC_HTTP_PORT=8080
       - KC_HOSTNAME_STRICT=false
@@ -168,7 +185,7 @@
       # Weaver login theme; the realm selects it with "loginTheme": "weaver"
       - ./keycloak/themes/weaver:/opt/keycloak/themes/weaver:ro
     ports:
-      - "${WEAVER_KEYCLOAK_PORT:-8085}:8080"
+      - "${WEAVER_KEYCLOAK_PORT:-${WEAVER_IDENTITY_PORT:-8085}}:8080"
     networks:
       - internal
     healthcheck:

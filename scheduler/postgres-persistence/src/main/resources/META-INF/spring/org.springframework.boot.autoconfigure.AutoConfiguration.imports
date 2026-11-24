@@ -1,1 +1,1 @@
-org.conductoross.conductor.scheduler.postgres.config.PostgresSchedulerConfiguration
+com.vodafone.vss.weaver.scheduler.postgres.config.PostgresSchedulerConfiguration

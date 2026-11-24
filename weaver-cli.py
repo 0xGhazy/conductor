@@ -13,7 +13,7 @@ from typing import Callable
 from scripts.console import Color
 from scripts.env import SHELL_ENVIRON, load_env
 from scripts.tasks import StageSkipped
-from scripts.tasks.check_prerequisites import check_prerequisites
+from scripts.tasks.check_prerequisites import check_env, check_prerequisites
 from scripts.tasks.check_status import DEFAULT_SERVICES, SERVICES, service_name
 from scripts.tasks.docker_compose import (
     ALIASES,
@@ -71,6 +71,8 @@ class Spinner:
         self._line = ""  # last spinner line drawn, redrawn after log lines
 
     def _run(self):
+        if not sys.stdout.isatty():
+            return
         start = last_switch = self._start
         for i, frame in enumerate(itertools.cycle(self.FRAMES)):
             if self._stop.is_set():
@@ -82,7 +84,7 @@ class Spinner:
             dots = ". " * ((i // 3) % 4)
             elapsed = f"{int(now - start)}s"
             if self.started_at is not None:
-                elapsed += f" · total {int(now - self.started_at)}s"
+                elapsed += f" - total {int(now - self.started_at)}s"
             with self._lock:
                 self._line = (
                     f"{self.prefix}{Color.MAGENTA}{frame} {self._verb}{dots:<6}{Color.RESET}"
@@ -99,24 +101,28 @@ class Spinner:
     def write(self, msg):
         """Print a log line above the spinner, then redraw the spinner so it never disappears."""
         with self._lock:
-            sys.stdout.write(f"\r\033[K{msg}\n{self._line}")
+            if sys.stdout.isatty():
+                sys.stdout.write(f"\r\033[K{msg}\n{self._line}")
+            else:
+                sys.stdout.write(f"{msg}\n")
             sys.stdout.flush()
 
     def info(self, msg):
-        self.write(f"    {Color.BLUE}ℹ {msg}{Color.RESET}")
+        self.write(f"{Color.BLUE}[INFO]{Color.RESET} {msg}")
 
     def success(self, msg):
-        self.write(f"    {Color.GREEN}✓ {msg}{Color.RESET}")
+        self.write(f"{Color.GREEN}[OK]{Color.RESET} {msg}")
 
     def warn(self, msg):
-        self.write(f"    {Color.YELLOW}⚠ {msg}{Color.RESET}")
+        self.write(f"{Color.YELLOW}[WARN]{Color.RESET} {msg}")
 
     def error(self, msg):
-        self.write(f"    {Color.RED}✗ {msg}{Color.RESET}")
+        self.write(f"{Color.RED}[ERROR]{Color.RESET} {msg}")
 
     def __enter__(self):
         self._start = time.monotonic()
-        sys.stdout.write("\033[?25l")  # hide cursor
+        if sys.stdout.isatty():
+            sys.stdout.write("\033[?25l")  # hide cursor
         self._thread.start()
         return self
 
@@ -132,16 +138,21 @@ class Spinner:
             self._stop.set()
             self._thread.join()
         if interrupted:
-            status = f"{Color.YELLOW}- {self.verbs[0]} cancelled{Color.RESET}"
+            status = f"{Color.YELLOW}[CANCELLED] {self.verbs[0]} cancelled{Color.RESET}"
         elif exc_type is StageSkipped:
-            status = f"{Color.YELLOW}- {self.verbs[0]} skipped: {exc}{Color.RESET}"
+            status = f"{Color.YELLOW}[SKIPPED] {self.verbs[0]} skipped: {exc}{Color.RESET}"
         elif exc_type:
-            status = f"{Color.RED}✗ {self.verbs[0]} failed: {exc}{Color.RESET}"
+            status = f"{Color.RED}[FAIL] {self.verbs[0]} failed: {exc}{Color.RESET}"
         else:
-            status = f"{Color.GREEN}✓ {self.done}{Color.RESET}"
-        sys.stdout.write(
-            f"\r\033[K{self.prefix}{status} {Color.DIM}({elapsed:.1f}s){Color.RESET}\n\033[?25h"  # show cursor again
-        )
+            status = f"{Color.GREEN}[OK] {self.done}{Color.RESET}"
+        if sys.stdout.isatty():
+            sys.stdout.write(
+                f"\r\033[K{self.prefix}{status} {Color.DIM}({elapsed:.1f}s){Color.RESET}\n\033[?25h"
+            )
+        else:
+            sys.stdout.write(
+                f"{self.prefix}{status} {Color.DIM}({elapsed:.1f}s){Color.RESET}\n"
+            )
         sys.stdout.flush()
         if interrupted and exc_type is not KeyboardInterrupt:
             raise KeyboardInterrupt  # the task finished, but the user still asked to cancel
@@ -166,8 +177,9 @@ def run_pipeline(stages, keep_going=False):
     started_at = time.monotonic()
     passed = failed = 0
     for i, stage in enumerate(stages, 1):
+        prefix = f"[{i}/{total}]" if total > 1 else ""
         try:
-            with Spinner(verbs=stage.verbs, prefix=f"[{i}/{total}]", done=stage.done, started_at=started_at) as sp:
+            with Spinner(verbs=stage.verbs, prefix=prefix, done=stage.done, started_at=started_at) as sp:
                 stage.action(sp)
             passed += 1
         except StageSkipped:
@@ -177,7 +189,8 @@ def run_pipeline(stages, keep_going=False):
             if keep_going:
                 continue
             for j, skipped in enumerate(stages[i:], i + 1):
-                print(f"{Color.DIM}[{j}/{total}]{Color.RESET} {Color.YELLOW}- {skipped.verbs[0]} skipped{Color.RESET}")
+                skipped_prefix = f"{Color.DIM}[{j}/{total}]{Color.RESET} " if total > 1 else ""
+                print(f"{skipped_prefix}{Color.YELLOW}[SKIPPED] {skipped.verbs[0]} skipped{Color.RESET}")
             break
     print_summary(passed, failed, total - passed - failed, time.monotonic() - started_at)
     return failed == 0
@@ -187,10 +200,10 @@ def print_summary(passed, failed, skipped, seconds):
     skipped_part = [f"{skipped} skipped"] if skipped else []
     if failed == 0:
         summary = f"All {passed} passed" if not skipped else ", ".join([f"{passed} passed", *skipped_part])
-        print(f"\n{Color.GREEN}✓ {summary}{Color.RESET} {Color.DIM}in {seconds:.1f}s{Color.RESET}")
+        print(f"\n{Color.GREEN}[OK] {summary}{Color.RESET} {Color.DIM}in {seconds:.1f}s{Color.RESET}")
         return
     parts = [f"{failed} failed", f"{passed} passed", *skipped_part]
-    print(f"\n{Color.RED}✗ {', '.join(parts)}{Color.RESET} {Color.DIM}in {seconds:.1f}s{Color.RESET}")
+    print(f"\n{Color.RED}[FAIL] {', '.join(parts)}{Color.RESET} {Color.DIM}in {seconds:.1f}s{Color.RESET}")
 
 
 # --- Stage actions: replace the sleeps with real work ---
@@ -214,7 +227,7 @@ def verify(sp):
     time.sleep(1.5)
 
 
-PREREQUISITES_STAGE = Stage(["Checking prerequisites"], "Prerequisites found", check_prerequisites)
+PREREQUISITES_STAGE = Stage(["Checking environment"], "Environment check complete", check_env)
 
 
 CONTAINER_COMMANDS = {
@@ -240,10 +253,10 @@ def service_arg(value):
 
 HELP_EPILOG = """\
 examples:
-  python3 weaver-cli.py init                  check this machine is ready
-  python3 weaver-cli.py check                 check every service
-  python3 weaver-cli.py check server redis    check only the named services
-  python3 weaver-cli.py check -h              list services and what each check does
+  python3 weaver-cli.py check env             check environment (service & containerized prerequisites)
+  python3 weaver-cli.py health                check health of every service
+  python3 weaver-cli.py health server redis   check health of only the named services
+  python3 weaver-cli.py health -h             list services and what each check does
   python3 weaver-cli.py run                   start all docker-compose containers
   python3 weaver-cli.py restart database      restart one container
   python3 weaver-cli.py ps                    list containers and their status
@@ -253,7 +266,7 @@ examples:
 
 configuration:
   Settings are read from .env next to weaver-cli.py. Variables already set in
-  your shell override the file, e.g.  WEAVER_PORT=9090 python3 weaver-cli.py check server
+  your shell override the file, e.g.  WEAVER_PORT=9090 python3 weaver-cli.py health server
 
 exit codes:
   0  everything passed (skipped stages don't count as failures)
@@ -263,8 +276,8 @@ exit codes:
 docs: WEAVER_CLI.md
 """
 
-CHECK_DESCRIPTION = """\
-Check that Weaver's services are up. With no service named, checks:
+HEALTH_DESCRIPTION = """\
+Check that Weaver's services are healthy. With no service named, checks:
   {defaults}
 
 Every named service is checked even if an earlier one fails.
@@ -291,29 +304,44 @@ def build_parser():
     formatter = argparse.RawDescriptionHelpFormatter
     parser = argparse.ArgumentParser(
         prog="weaver-cli.py", formatter_class=formatter, epilog=HELP_EPILOG,
-        description="Weaver CLI: check that a machine and Weaver's services are ready to run.",
+        description="Weaver CLI: check environment prerequisites and Weaver's services health.",
     )
     parser.add_argument("-i", "--interactive", action="store_true",
                         help="start an interactive shell: type commands at a `weaver>` prompt")
     sub = parser.add_subparsers(dest="command", metavar="command")
 
-    sub.add_parser(
-        "init", formatter_class=formatter,
-        help="check prerequisites (Docker, Java 21, Maven) and the database",
-        description="Check this machine is ready for Weaver:\n"
-                    "  1. Docker, Java 21 and Maven are installed\n"
-                    "  2. the database from .env accepts a login\n\n"
-                    "Stops at the first failure.",
-    )
-
     check = sub.add_parser(
         "check", formatter_class=formatter,
-        help="check that services are up (all of them if none are named)",
-        description=CHECK_DESCRIPTION.format(defaults=", ".join(DEFAULT_SERVICES)),
+        help="check environment prerequisites for installation",
+        description="Check environment prerequisites and determine whether the application\n"
+                    "can be installed as a service or containerized.\n\n"
+                    "prerequisites:\n"
+                    "  service:       Java 21, Maven, Node, NPM\n"
+                    "  containerized: Docker, Docker Compose",
     )
     check.add_argument(
+        "target", nargs="*", default=["env"],
+        help="target to check (default: env)",
+    )
+    check.add_argument(
+        "-v", "--verbose", action="store_true",
+        help="show individual tool check results",
+    )
+
+    health = sub.add_parser(
+        "health", formatter_class=formatter,
+        help="check that services are healthy (all of them if none are named)",
+        description=HEALTH_DESCRIPTION.format(defaults=", ".join(DEFAULT_SERVICES)),
+    )
+    health.add_argument(
         "services", nargs="*", type=service_arg, metavar="service",
         help=f"services to check (default: {', '.join(DEFAULT_SERVICES)})",
+    )
+
+    sub.add_parser(
+        "init", formatter_class=formatter,
+        help="alias for 'check env'",
+        description="Check environment prerequisites for installation (alias for 'check env').",
     )
 
     aliases = ", ".join(f"{alias} = {service}" for alias, service in ALIASES.items())
@@ -329,7 +357,7 @@ def build_parser():
             help=f"{action} the docker-compose containers (all, or the ones named)",
             description=f"{action.capitalize()} the containers in docker/docker-compose.yaml. {extra}\n\n"
                         f"Services use their compose names (e.g. postgres, redis), or the same names as\n"
-                        f"`check`: {aliases}.\n"
+                        f"`health`: {aliases}.\n"
                         f"Set COMPOSE_FILE to use another compose file.",
         )
         command.add_argument("services", nargs="*", type=str.lower, metavar="service",
@@ -340,7 +368,7 @@ def build_parser():
         help="show docker-compose container logs, following new output",
         description="Show the logs of the containers in docker/docker-compose.yaml and keep\n"
                     "following new output until you press Ctrl+C.\n\n"
-                    f"Services use their compose names or the `check` names: {aliases}.",
+                    f"Services use their compose names or the `health` names: {aliases}.",
         epilog="examples:\n"
                "  python3 weaver-cli.py logs                  follow every container\n"
                "  python3 weaver-cli.py logs server           follow conductor-server\n"
@@ -374,9 +402,29 @@ def build_parser():
 
 def stages_for(args):
     """Return (stages, keep_going) for the parsed command."""
-    if args.command == "init":
-        return [PREREQUISITES_STAGE, service_stage("database")], False
-    if args.command == "check":
+    if args.command in ("check", "init"):
+        targets = getattr(args, "target", ["env"])
+        if isinstance(targets, list):
+            service_hits = [t for t in targets if service_name(t) in SERVICES]
+            if service_hits:
+                raise RuntimeError(
+                    f"The 'check' command is now 'health' for services. "
+                    f"Did you mean: python3 weaver-cli.py health {' '.join(targets)}? "
+                    f"(Use 'weaver-cli.py check env' to check prerequisites)"
+                )
+            non_env = [t for t in targets if t.lower() not in ("env", "environment")]
+            if non_env:
+                raise RuntimeError(
+                    f"unknown check target(s): {', '.join(non_env)}. Supported target: env"
+                )
+        verbose = getattr(args, "verbose", False)
+        stage = Stage(
+            ["Checking environment"],
+            "Environment check complete",
+            lambda sp: check_env(sp, verbose=verbose),
+        )
+        return [stage], False
+    if args.command == "health":
         return [service_stage(name) for name in dict.fromkeys(args.services or DEFAULT_SERVICES)], True
     if args.command in CONTAINER_COMMANDS:
         verbs, done, action = CONTAINER_COMMANDS[args.command]
@@ -438,11 +486,15 @@ def execute(args):
     os.environ.clear()
     os.environ.update(SHELL_ENVIRON)
     if load_env(ENV_FILE):
-        print(f"{Color.BLUE}ℹ Loaded {ENV_FILE.name}{Color.RESET}")
+        print(f"{Color.BLUE}[INFO] Loaded {ENV_FILE.name}{Color.RESET}")
     else:
-        print(f"{Color.YELLOW}⚠ {ENV_FILE} not found, using environment variables only{Color.RESET}")
+        print(f"{Color.YELLOW}[WARN] {ENV_FILE} not found, using environment variables only{Color.RESET}")
 
-    stages, keep_going = stages_for(args)
+    try:
+        stages, keep_going = stages_for(args)
+    except RuntimeError as e:
+        print(f"{Color.RED}[ERROR] {e}{Color.RESET}")
+        return 2
     return 0 if run_pipeline(stages, keep_going=keep_going) else 1
 
 

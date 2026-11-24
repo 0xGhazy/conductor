@@ -70,7 +70,7 @@ def _change_directory(words):
     try:
         os.chdir(target)
     except OSError as e:
-        print(f"{Color.RED}✗ cd: {e.strerror}: {target}{Color.RESET}")
+        print(f"{Color.RED}[ERROR] cd: {e.strerror}: {target}{Color.RESET}")
         return 1
     return 0
 
@@ -90,7 +90,7 @@ def run_shell(parser, execute, complete):
     exit code; `complete(words)` returns TAB completions. Returns the last command's exit code."""
     _setup_readline(complete)
     tab = " TAB completes." if readline else ""
-    print(f"{Color.BLUE}ℹ Interactive mode: type a command such as `check`, `ps` or `logs server`, "
+    print(f"{Color.BLUE}[INFO] Interactive mode: type a command such as `health`, `check env`, `ps` or `logs server`, "
           f"`help`, or `exit`.{tab}\n  Anything else runs in your system shell; prefix with ! to force it "
           f"(e.g. `!ps`).{Color.RESET}")
     commands = set(subcommands(parser))
@@ -113,7 +113,7 @@ def run_shell(parser, execute, complete):
             try:
                 words = shlex.split(line)
             except ValueError as e:
-                print(f"{Color.RED}✗ {e}{Color.RESET}")
+                print(f"{Color.RED}[ERROR] {e}{Color.RESET}")
                 status = 2
                 continue
             if not words:
@@ -128,9 +128,9 @@ def run_shell(parser, execute, complete):
             if words[0] in ("exit", "quit"):
                 break
             if words[0] in ("help", "?"):
-                words = [*words[1:], "-h"]  # `help check` shows `check -h`
+                words = [*words[1:], "-h"]  # `help health` shows `health -h`
             if words[0] in ("-i", "--interactive"):
-                print(f"{Color.YELLOW}⚠ already in interactive mode{Color.RESET}")
+                print(f"{Color.YELLOW}[WARN] already in interactive mode{Color.RESET}")
                 continue
 
             try:
@@ -145,7 +145,7 @@ def run_shell(parser, execute, complete):
             try:
                 status = execute(args)
             except KeyboardInterrupt:
-                print(f"\n{Color.YELLOW}⚠ cancelled{Color.RESET}")
+                print(f"\n{Color.YELLOW}[CANCELLED] cancelled{Color.RESET}")
                 status = 130
     finally:
         _save_history()
