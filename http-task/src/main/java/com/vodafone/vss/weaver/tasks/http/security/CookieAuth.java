@@ -17,7 +17,7 @@ package com.vodafone.vss.weaver.tasks.http.security;
 
 import java.util.Map;
 
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpHeaders;
 
 import com.vodafone.vss.weaver.common.StringUtils;
 
@@ -39,12 +39,12 @@ public class CookieAuth implements AuthStrategy {
     }
 
     @Override
-    public WebClient.RequestHeadersSpec<?> apply(WebClient.RequestHeadersSpec<?> req) {
+    public void apply(HttpHeaders headers) {
         if (cookie == null || cookie.isBlank()) {
             throw new IllegalStateException("cookie is required for CookieAuth");
         }
-        String headerName = (header == null || header.isBlank()) ? "Cookie" : header;
-        return req.header(headerName, cookie);
+        String headerName = (header == null || header.isBlank()) ? HttpHeaders.COOKIE : header;
+        headers.add(headerName, cookie);
     }
 
     @Override

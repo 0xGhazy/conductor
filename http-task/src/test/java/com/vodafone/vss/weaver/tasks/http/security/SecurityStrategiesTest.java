@@ -18,6 +18,8 @@ package com.vodafone.vss.weaver.tasks.http.security;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
+import org.springframework.util.MultiValueMap;
 
 import com.vodafone.vss.weaver.common.http.AuthenticationStrategy;
 import com.vodafone.vss.weaver.common.http.HttpConnectionModel;
@@ -41,8 +43,13 @@ class SecurityStrategiesTest {
         assertEquals("X-Custom-Key", apiKey.getHeader());
         assertTrue(apiKey.testAuthentication());
 
+        HttpHeaders headers = new HttpHeaders();
+        apiKey.apply(headers);
+        assertEquals("abc-123", headers.getFirst("X-Custom-Key"));
+
         ApiKey emptyKey = new ApiKey(HttpConnectionModel.builder().authConfig(Map.of()).build());
         assertFalse(emptyKey.testAuthentication());
+        assertThrows(IllegalStateException.class, () -> emptyKey.apply(new HttpHeaders()));
     }
 
     @Test
@@ -52,8 +59,14 @@ class SecurityStrategiesTest {
         assertTrue(auth.testAuthentication());
         assertEquals("user1", auth.getUsername());
 
+        HttpHeaders headers = new HttpHeaders();
+        auth.apply(headers);
+        assertNotNull(headers.getFirst(HttpHeaders.AUTHORIZATION));
+        assertTrue(headers.getFirst(HttpHeaders.AUTHORIZATION).startsWith("Basic "));
+
         BasicAuthentication emptyAuth = new BasicAuthentication(Map.of());
         assertFalse(emptyAuth.testAuthentication());
+        assertThrows(IllegalStateException.class, () -> emptyAuth.apply(new HttpHeaders()));
     }
 
     @Test
@@ -62,8 +75,13 @@ class SecurityStrategiesTest {
         assertTrue(auth.testAuthentication());
         assertEquals("JSESSIONID=12345", auth.getCookie());
 
+        HttpHeaders headers = new HttpHeaders();
+        auth.apply(headers);
+        assertEquals("JSESSIONID=12345", headers.getFirst("Cookie"));
+
         CookieAuth emptyAuth = new CookieAuth(Map.of());
         assertFalse(emptyAuth.testAuthentication());
+        assertThrows(IllegalStateException.class, () -> emptyAuth.apply(new HttpHeaders()));
     }
 
     @Test
@@ -79,6 +97,11 @@ class SecurityStrategiesTest {
 
         assertDoesNotThrow(config::validateRequiredGrantTypeParameters);
         assertNotNull(config.buildStrategy());
+
+        MultiValueMap<String, String> formData = config.buildFormData();
+        assertEquals("client_credentials", formData.getFirst("grant_type"));
+        assertEquals("client-id-1", formData.getFirst("client_id"));
+        assertEquals("client-sec-1", formData.getFirst("client_secret"));
     }
 
     @Test
@@ -93,6 +116,21 @@ class SecurityStrategiesTest {
                         .build();
 
         assertThrows(IllegalArgumentException.class, invalid::validateRequiredGrantTypeParameters);
+    }
+
+    @Test
+    void oauth2_shutdown_terminates_cleanly() {
+        OAuth2Config config =
+                OAuth2Config.builder()
+                        .name("OAUTH-SHUTDOWN")
+                        .grantType(XGrantType.CLIENT_CREDENTIALS)
+                        .tokenEndpoint("https://auth.vodafone.com/token")
+                        .clientId("client-id-1")
+                        .clientSecret("client-sec-1")
+                        .build();
+
+        OAuth2 oauth2 = new OAuth2(config);
+        assertDoesNotThrow(oauth2::shutdown);
     }
 }
 

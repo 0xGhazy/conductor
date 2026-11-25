@@ -17,12 +17,14 @@ package com.vodafone.vss.weaver.tasks.http;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import com.vodafone.vss.weaver.common.http.HttpRequest;
@@ -41,11 +43,14 @@ import io.micrometer.core.instrument.MeterRegistry;
 /**
  * High-performance, in-process WorkflowSystemTask implementing the HttpWorker action.
  */
+@Slf4j
 @Component("HttpWorker")
 public class HttpWorkerTask extends WorkflowSystemTask {
 
-    private static final Logger log = LoggerFactory.getLogger(HttpWorkerTask.class);
     public static final String TASK_TYPE = "HttpWorker";
+
+    private static final Set<String> SENSITIVE_HEADERS =
+            Set.of("set-cookie", "authorization", "proxy-authenticate", "cookie");
 
     private final HttpExecutorService httpExecutorService;
     private final ObjectMapper objectMapper;
@@ -115,7 +120,7 @@ public class HttpWorkerTask extends WorkflowSystemTask {
                         .url(resolvedUrl)
                         .method(dto.getMethod().toUpperCase())
                         .headers(resolvedHeaders != null ? resolvedHeaders : Collections.emptyMap())
-                        .body(resolvedBody != null ? resolvedBody : Collections.emptyMap())
+                        .body(resolvedBody)
                         .timeout(timeout)
                         .connection(resolvedConnection != null && !resolvedConnection.isBlank() ? resolvedConnection : "--NONE--")
                         .build();
@@ -125,25 +130,45 @@ public class HttpWorkerTask extends WorkflowSystemTask {
             HttpResponse response = httpExecutorService.execute(request);
             recordMetric("success");
 
+            HttpHeaders sanitizedHeaders = new HttpHeaders();
+            if (response.headers() != null) {
+                response.headers().forEach((headerName, headerValues) -> {
+                    if (headerName != null && !SENSITIVE_HEADERS.contains(headerName.toLowerCase(Locale.ROOT))) {
+                        sanitizedHeaders.put(headerName, headerValues);
+                    }
+                });
+            }
+
             Map<String, Object> output = new HashMap<>();
             output.put("result", response.response());
             output.put("statusCode", response.statusCode());
-            output.put("headers", response.headers());
+            output.put("headers", sanitizedHeaders);
             task.getOutputData().putAll(output);
 
+            int statusCode = response.statusCode();
             if (response.status() != null && response.status().is2xxSuccessful()) {
                 task.setStatus(TaskModel.Status.COMPLETED);
-                log.info("HttpWorker task {} completed successfully with status {}", task.getTaskId(), response.statusCode());
+                log.info("HttpWorker task {} completed successfully with status {}", task.getTaskId(), statusCode);
+            } else if (isRetryableStatus(statusCode)) {
+                String reason = "HTTP call failed with retryable status code: " + statusCode;
+                task.setReasonForIncompletion(reason);
+                task.setStatus(TaskModel.Status.FAILED);
+                task.getOutputData().put("error", reason);
+                log.warn("HttpWorker task {} failed with retryable status {}", task.getTaskId(), statusCode);
             } else {
-                String reason = "HTTP call returned non-2xx status code: " + response.statusCode();
+                String reason = "HTTP call returned non-2xx status code: " + statusCode;
                 task.setReasonForIncompletion(reason);
                 task.setStatus(TaskModel.Status.FAILED_WITH_TERMINAL_ERROR);
-                log.warn("HttpWorker task {} failed with status {}", task.getTaskId(), response.statusCode());
+                task.getOutputData().put("error", reason);
+                log.warn("HttpWorker task {} failed with terminal status {}", task.getTaskId(), statusCode);
             }
         } catch (Exception e) {
             log.error("HttpWorker task {} execution failed: {}", task.getTaskId(), e.getMessage(), e);
             recordMetric("failed");
-            failTask(task, "HTTP execution error: " + e.getMessage());
+            String reason = "HTTP execution error: " + e.getMessage();
+            task.setReasonForIncompletion(reason);
+            task.setStatus(TaskModel.Status.FAILED);
+            task.getOutputData().put("error", reason);
         } finally {
             long duration = System.currentTimeMillis() - startTime;
             log.debug("HttpWorker task {} executed in {}ms", task.getTaskId(), duration);
@@ -162,7 +187,11 @@ public class HttpWorkerTask extends WorkflowSystemTask {
 
     @Override
     public boolean isAsync() {
-        return false;
+        return true;
+    }
+
+    private static boolean isRetryableStatus(int statusCode) {
+        return statusCode == 408 || statusCode == 429 || statusCode >= 500;
     }
 
     private void failTask(TaskModel task, String reason) {

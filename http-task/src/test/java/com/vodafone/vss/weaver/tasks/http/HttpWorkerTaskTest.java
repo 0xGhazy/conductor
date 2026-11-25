@@ -144,7 +144,7 @@ class HttpWorkerTaskTest {
     }
 
     @Test
-    void execute_fails_terminally_when_remote_returns_500() {
+    void execute_fails_with_retryable_status_when_remote_returns_500() {
         TaskModel task = new TaskModel();
         task.setTaskId("http-task-500");
         task.setStatus(TaskModel.Status.IN_PROGRESS);
@@ -160,8 +160,86 @@ class HttpWorkerTaskTest {
         WorkflowModel workflow = new WorkflowModel();
         httpWorkerTask.start(workflow, task, workflowExecutor);
 
-        assertEquals(TaskModel.Status.FAILED_WITH_TERMINAL_ERROR, task.getStatus());
+        assertEquals(TaskModel.Status.FAILED, task.getStatus());
         assertTrue(task.getReasonForIncompletion().contains("500"));
+        assertEquals("HTTP call failed with retryable status code: 500", task.getOutputData().get("error"));
+    }
+
+    @Test
+    void execute_fails_terminally_when_remote_returns_400() {
+        TaskModel task = new TaskModel();
+        task.setTaskId("http-task-400");
+        task.setStatus(TaskModel.Status.IN_PROGRESS);
+
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put("url", "https://api.vodafone.com/bad-request");
+        inputData.put("method", "POST");
+        task.setInputData(inputData);
+
+        HttpResponse mockResponse = new HttpResponse(HttpStatus.BAD_REQUEST, Map.of("error", "Bad Request"), new HttpHeaders());
+        when(httpExecutorService.execute(any())).thenReturn(mockResponse);
+
+        WorkflowModel workflow = new WorkflowModel();
+        httpWorkerTask.start(workflow, task, workflowExecutor);
+
+        assertEquals(TaskModel.Status.FAILED_WITH_TERMINAL_ERROR, task.getStatus());
+        assertTrue(task.getReasonForIncompletion().contains("400"));
+    }
+
+    @Test
+    void isAsync_returns_true() {
+        assertTrue(httpWorkerTask.isAsync());
+    }
+
+    @Test
+    void execute_sanitizes_sensitive_response_headers() {
+        TaskModel task = new TaskModel();
+        task.setTaskId("http-task-headers");
+        task.setStatus(TaskModel.Status.IN_PROGRESS);
+
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put("url", "https://api.vodafone.com/data");
+        inputData.put("method", "GET");
+        task.setInputData(inputData);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        headers.add("Set-Cookie", "session=12345; Secure; HttpOnly");
+        headers.add("Authorization", "Bearer secret");
+        headers.add("X-Custom-Header", "allowed");
+
+        HttpResponse mockResponse = new HttpResponse(HttpStatus.OK, Map.of("data", "1"), headers);
+        when(httpExecutorService.execute(any())).thenReturn(mockResponse);
+
+        httpWorkerTask.start(new WorkflowModel(), task, workflowExecutor);
+
+        assertEquals(TaskModel.Status.COMPLETED, task.getStatus());
+        HttpHeaders outputHeaders = (HttpHeaders) task.getOutputData().get("headers");
+        assertNotNull(outputHeaders);
+        assertTrue(outputHeaders.containsKey("Content-Type"));
+        assertTrue(outputHeaders.containsKey("X-Custom-Header"));
+        assertFalse(outputHeaders.containsKey("Set-Cookie"));
+        assertFalse(outputHeaders.containsKey("Authorization"));
+    }
+
+    @Test
+    void execute_passes_null_body_when_not_provided() {
+        TaskModel task = new TaskModel();
+        task.setTaskId("http-task-null-body");
+        task.setStatus(TaskModel.Status.IN_PROGRESS);
+
+        Map<String, Object> inputData = new HashMap<>();
+        inputData.put("url", "https://api.vodafone.com/users");
+        inputData.put("method", "GET");
+        task.setInputData(inputData);
+
+        HttpResponse mockResponse = new HttpResponse(HttpStatus.OK, Map.of(), new HttpHeaders());
+        when(httpExecutorService.execute(any())).thenReturn(mockResponse);
+
+        httpWorkerTask.start(new WorkflowModel(), task, workflowExecutor);
+
+        verify(httpExecutorService).execute(requestCaptor.capture());
+        assertNull(requestCaptor.getValue().getBody());
     }
 }
 

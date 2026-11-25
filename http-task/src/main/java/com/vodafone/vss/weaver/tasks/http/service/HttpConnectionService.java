@@ -23,6 +23,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +158,10 @@ public class HttpConnectionService {
 
         HttpConnectionModel saved = repository.update(existing);
         if (oldName != null && !oldName.equalsIgnoreCase(name)) {
-            connectionsPool.remove(oldName);
+            AuthStrategy removed = connectionsPool.remove(oldName);
+            if (removed != null) {
+                removed.shutdown();
+            }
         }
         registerToConnectionsPool(saved);
 
@@ -179,7 +183,10 @@ public class HttpConnectionService {
                         .orElseThrow(() -> new NotFoundException("Connection " + id + " not found"));
         repository.deleteById(id);
         if (existing.getName() != null) {
-            connectionsPool.remove(existing.getName());
+            AuthStrategy removed = connectionsPool.remove(existing.getName());
+            if (removed != null) {
+                removed.shutdown();
+            }
         }
     }
 
@@ -203,6 +210,19 @@ public class HttpConnectionService {
         repository.findById(id).ifPresent(this::registerToConnectionsPool);
     }
 
+    @PreDestroy
+    public void destroy() {
+        log.info("Shutting down HTTP connection pool with {} connections", connectionsPool.size());
+        connectionsPool.values().forEach(strategy -> {
+            try {
+                strategy.shutdown();
+            } catch (Exception e) {
+                log.warn("Error shutting down strategy {}: {}", strategy, e.getMessage());
+            }
+        });
+        connectionsPool.clear();
+    }
+
     private void registerToConnectionsPool(HttpConnectionModel stored) {
         HttpConnectionModel connection = withResolvedSecrets(stored);
         String name = connection.getName();
@@ -224,7 +244,10 @@ public class HttpConnectionService {
             throw new IllegalStateException("Unknown or unsupported authentication strategy: " + strategy);
         }
 
-        connectionsPool.put(name, authStrategy);
+        AuthStrategy previous = connectionsPool.put(name, authStrategy);
+        if (previous != null) {
+            previous.shutdown();
+        }
     }
 
     private boolean getConnectionStatus(HttpConnectionModel connection) {

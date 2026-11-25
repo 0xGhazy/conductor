@@ -15,22 +15,23 @@
  */
 package com.vodafone.vss.weaver.tasks.http.security;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 import com.vodafone.vss.weaver.common.http.TokenResponse;
 
@@ -46,17 +47,18 @@ public class OAuth2 implements AuthStrategy {
     private volatile Instant expiresAt;
     private volatile String accessToken;
     private volatile String refreshToken;
-    private final WebClient webClient;
+    private final RestClient restClient;
     private final ScheduledExecutorService scheduler;
     private final AtomicReference<ScheduledFuture<?>> refreshTask = new AtomicReference<>();
+    private final ReentrantLock tokenLock = new ReentrantLock();
 
     public OAuth2(OAuth2Config config) {
-        this(config, WebClient.builder().build());
+        this(config, RestClient.builder().build());
     }
 
-    public OAuth2(OAuth2Config config, WebClient webClient) {
+    public OAuth2(OAuth2Config config, RestClient restClient) {
         this.config = config;
-        this.webClient = webClient;
+        this.restClient = restClient != null ? restClient : RestClient.builder().build();
         this.scheduler =
                 Executors.newSingleThreadScheduledExecutor(
                         r -> {
@@ -67,23 +69,37 @@ public class OAuth2 implements AuthStrategy {
     }
 
     public String getAccessToken() {
-        if (accessToken == null || expiresAt == null || Instant.now().isAfter(expiresAt.minusSeconds(5))) {
-            fetchToken(refreshToken != null);
+        if (isTokenExpired()) {
+            tokenLock.lock();
+            try {
+                if (isTokenExpired()) {
+                    fetchToken(refreshToken != null);
+                }
+            } finally {
+                tokenLock.unlock();
+            }
         }
         return accessToken;
     }
 
     public String getRefreshToken() {
         if (refreshToken == null) {
-            fetchToken(true);
+            tokenLock.lock();
+            try {
+                if (refreshToken == null) {
+                    fetchToken(true);
+                }
+            } finally {
+                tokenLock.unlock();
+            }
         }
         return refreshToken;
     }
 
     @Override
-    public WebClient.RequestHeadersSpec<?> apply(WebClient.RequestHeadersSpec<?> req) {
+    public void apply(HttpHeaders headers) {
         String token = getAccessToken();
-        return req.headers(h -> h.setBearerAuth(token));
+        headers.setBearerAuth(token);
     }
 
     @Override
@@ -93,6 +109,22 @@ public class OAuth2 implements AuthStrategy {
         } catch (Exception ex) {
             log.warn("OAuth2 connection test failed for {}: {}", config.getName(), ex.getMessage());
             return false;
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        ScheduledFuture<?> current = refreshTask.getAndSet(null);
+        if (current != null) {
+            current.cancel(true);
+        }
+        scheduler.shutdownNow();
+        try {
+            if (!scheduler.awaitTermination(2, TimeUnit.SECONDS)) {
+                log.warn("OAuth2 refresh scheduler for {} did not terminate cleanly", config.getName());
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -122,6 +154,9 @@ public class OAuth2 implements AuthStrategy {
     }
 
     private void scheduleAutoRefresh(long expiresInSec) {
+        if (scheduler.isShutdown()) {
+            return;
+        }
         long delaySec = Math.max(0, expiresInSec - 5);
         ScheduledFuture<?> next = scheduler.schedule(this::autoRefreshTick, delaySec, TimeUnit.SECONDS);
         ScheduledFuture<?> prev = refreshTask.getAndSet(next);
@@ -131,6 +166,9 @@ public class OAuth2 implements AuthStrategy {
     }
 
     private void autoRefreshTick() {
+        if (scheduler.isShutdown()) {
+            return;
+        }
         try {
             TokenResponse token = (refreshToken != null) ? fetchToken(true) : fetchToken(false);
             if (token.getRefreshToken() != null && !token.getRefreshToken().isBlank()) {
@@ -142,6 +180,9 @@ public class OAuth2 implements AuthStrategy {
             scheduleAutoRefresh(expiresIn);
             log.debug("Tokens for {} connection refreshed successfully", config.getName());
         } catch (Exception e) {
+            if (scheduler.isShutdown()) {
+                return;
+            }
             log.error("Token auto-refresh failed for: {} - retrying in 10 seconds", config.getName(), e);
             ScheduledFuture<?> next = scheduler.schedule(this::autoRefreshTick, 10, TimeUnit.SECONDS);
             ScheduledFuture<?> prev = refreshTask.getAndSet(next);
@@ -151,107 +192,70 @@ public class OAuth2 implements AuthStrategy {
         }
     }
 
+    private boolean isTokenExpired() {
+        return accessToken == null || expiresAt == null || Instant.now().isAfter(expiresAt.minusSeconds(5));
+    }
+
     private TokenResponse fetchAccessToken() {
-        BodyInserters.FormInserter<String> form = config.buildStrategy();
+        MultiValueMap<String, String> form = config.buildFormData();
         try {
-            return webClient.post()
-                    .uri(config.getTokenEndpoint())
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .body(form)
-                    .retrieve()
-                    .onStatus(
-                            HttpStatusCode::is4xxClientError,
-                            response ->
-                                    response.bodyToMono(String.class)
-                                            .defaultIfEmpty("")
-                                            .map(
-                                                    body ->
-                                                            new IllegalStateException(
-                                                                    "Failed to fetch access token: client error "
-                                                                            + response.statusCode().value()
-                                                                            + ", body="
-                                                                            + body)))
-                    .onStatus(
-                            HttpStatusCode::is5xxServerError,
-                            response ->
-                                    response.bodyToMono(String.class)
-                                            .defaultIfEmpty("")
-                                            .map(
-                                                    body ->
-                                                            new IllegalStateException(
-                                                                    "Failed to fetch access token: server error "
-                                                                            + response.statusCode().value()
-                                                                            + ", body="
-                                                                            + body)))
-                    .bodyToMono(TokenResponse.class)
-                    .timeout(Duration.ofSeconds(10))
-                    .blockOptional()
-                    .filter(token -> token.getAccessToken() != null && !token.getAccessToken().isBlank())
-                    .orElseThrow(() -> new IllegalStateException("Token response is null or missing access_token"));
-        } catch (WebClientResponseException e) {
-            log.error("HTTP error while fetching access token: status={}, body={}", e.getStatusCode().value(), e.getResponseBodyAsString(), e);
-            throw new IllegalStateException("HTTP error while fetching access token", e);
-        } catch (WebClientRequestException e) {
-            log.error("Network error while fetching access token: {}", e.getMessage(), e);
+            TokenResponse response =
+                    restClient.post()
+                            .uri(config.getTokenEndpoint())
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .body(form)
+                            .retrieve()
+                            .body(TokenResponse.class);
+
+            if (response == null || response.getAccessToken() == null || response.getAccessToken().isBlank()) {
+                throw new IllegalStateException("Token response is null or missing access_token");
+            }
+            return response;
+        } catch (RestClientResponseException e) {
+            log.error("HTTP error while fetching access token for {}: status={}, body={}",
+                    config.getName(), e.getStatusCode().value(), e.getResponseBodyAsString(), e);
+            throw new IllegalStateException("HTTP error while fetching access token: " + e.getStatusCode().value(), e);
+        } catch (ResourceAccessException e) {
+            log.error("Network error while fetching access token for {}: {}", config.getName(), e.getMessage(), e);
             throw new IllegalStateException("Network error while fetching access token", e);
         } catch (Exception e) {
-            log.error("Unexpected error while fetching access token", e);
-            throw new IllegalStateException("Unexpected error while fetching access token", e);
+            log.error("Unexpected error while fetching access token for {}", config.getName(), e);
+            throw new IllegalStateException("Unexpected error while fetching access token: " + e.getMessage(), e);
         }
     }
 
     private TokenResponse fetchRefreshToken() {
-        BodyInserters.FormInserter<String> form =
-                BodyInserters.fromFormData("client_id", config.getClientId())
-                        .with("refresh_token", getRefreshToken())
-                        .with("grant_type", "refresh_token");
-        FormUtils.addIfPresent(form, "client_secret", config.getClientSecret());
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        form.add("client_id", config.getClientId());
+        form.add("refresh_token", getRefreshToken());
+        form.add("grant_type", "refresh_token");
+        if (config.getClientSecret() != null && !config.getClientSecret().isBlank()) {
+            form.add("client_secret", config.getClientSecret());
+        }
 
         try {
-            return webClient.post()
-                    .uri(config.getTokenEndpoint())
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                    .body(form)
-                    .retrieve()
-                    .onStatus(
-                            HttpStatusCode::is4xxClientError,
-                            response ->
-                                    response.bodyToMono(String.class)
-                                            .defaultIfEmpty("")
-                                            .map(
-                                                    body ->
-                                                            new IllegalStateException(
-                                                                    "Failed to refresh access token: client error "
-                                                                            + response.statusCode().value()
-                                                                            + ", body="
-                                                                            + body)))
-                    .onStatus(
-                            HttpStatusCode::is5xxServerError,
-                            response ->
-                                    response.bodyToMono(String.class)
-                                            .defaultIfEmpty("")
-                                            .map(
-                                                    body ->
-                                                            new IllegalStateException(
-                                                                    "Failed to refresh access token: server error "
-                                                                            + response.statusCode().value()
-                                                                            + ", body="
-                                                                            + body)))
-                    .bodyToMono(TokenResponse.class)
-                    .timeout(Duration.ofSeconds(10))
-                    .blockOptional()
-                    .filter(token -> token.getAccessToken() != null && !token.getAccessToken().isBlank())
-                    .orElseThrow(() -> new IllegalStateException("Refresh token response is null or missing access_token"));
-        } catch (WebClientResponseException e) {
-            log.error("HTTP error while refreshing access token: status={}, body={}", e.getStatusCode().value(), e.getResponseBodyAsString(), e);
-            throw new IllegalStateException("HTTP error while refreshing access token", e);
-        } catch (WebClientRequestException e) {
-            log.error("Network error while refreshing access token: {}", e.getMessage(), e);
+            TokenResponse response =
+                    restClient.post()
+                            .uri(config.getTokenEndpoint())
+                            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                            .body(form)
+                            .retrieve()
+                            .body(TokenResponse.class);
+
+            if (response == null || response.getAccessToken() == null || response.getAccessToken().isBlank()) {
+                throw new IllegalStateException("Refresh token response is null or missing access_token");
+            }
+            return response;
+        } catch (RestClientResponseException e) {
+            log.error("HTTP error while refreshing access token for {}: status={}, body={}",
+                    config.getName(), e.getStatusCode().value(), e.getResponseBodyAsString(), e);
+            throw new IllegalStateException("HTTP error while refreshing access token: " + e.getStatusCode().value(), e);
+        } catch (ResourceAccessException e) {
+            log.error("Network error while refreshing access token for {}: {}", config.getName(), e.getMessage(), e);
             throw new IllegalStateException("Network error while refreshing access token", e);
         } catch (Exception e) {
-            log.error("Unexpected error while refreshing access token", e);
-            throw new IllegalStateException("Unexpected error while refreshing access token", e);
+            log.error("Unexpected error while refreshing access token for {}", config.getName(), e);
+            throw new IllegalStateException("Unexpected error while refreshing access token: " + e.getMessage(), e);
         }
     }
 }
-

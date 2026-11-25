@@ -16,13 +16,13 @@
 package com.vodafone.vss.weaver.common.http;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 /**
  * Encapsulates the result of an HTTP execution.
  */
 public record HttpResponse(
-        HttpStatus status,
+        HttpStatusCode status,
         Object response,
         HttpHeaders headers
 ) {

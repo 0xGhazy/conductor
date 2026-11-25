@@ -16,10 +16,9 @@
 package com.vodafone.vss.weaver.tasks.http.security;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Map;
 
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpHeaders;
 
 import com.vodafone.vss.weaver.common.StringUtils;
 
@@ -41,12 +40,11 @@ public class BasicAuthentication implements AuthStrategy {
     }
 
     @Override
-    public WebClient.RequestHeadersSpec<?> apply(WebClient.RequestHeadersSpec<?> req) {
+    public void apply(HttpHeaders headers) {
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
             throw new IllegalStateException("username and password are required for BasicAuthentication");
         }
-        String token = Base64.getEncoder().encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
-        return req.header("Authorization", "Basic " + token);
+        headers.setBasicAuth(username, password, StandardCharsets.UTF_8);
     }
 
     @Override

@@ -148,5 +148,23 @@ class HttpConnectionServiceTest {
         verify(dao).deleteById(id);
         assertThrows(Exception.class, () -> service.getConnection("DELETE-ME"));
     }
+
+    @Test
+    void destroy_shuts_down_all_connections() {
+        HttpConnectionModel conn =
+                HttpConnectionModel.builder()
+                        .id(UUID.randomUUID())
+                        .name("DESTROY-CONN")
+                        .strategy(AuthenticationStrategy.API_KEY)
+                        .authConfig(Map.of("apiKey", "val", "apiKeyHeader", "H"))
+                        .build();
+
+        when(dao.findAll()).thenReturn(List.of(conn));
+        service.init();
+
+        assertNotNull(service.getConnection("DESTROY-CONN"));
+        assertDoesNotThrow(service::destroy);
+        assertThrows(Exception.class, () -> service.getConnection("DESTROY-CONN"));
+    }
 }
 

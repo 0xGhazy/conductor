@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 
 import com.vodafone.vss.weaver.common.StringUtils;
@@ -105,6 +107,46 @@ public class OAuth2Config {
             }
         }
         return null;
+    }
+
+    public MultiValueMap<String, String> buildFormData() {
+        validateRequiredGrantTypeParameters();
+        MultiValueMap<String, String> form = new LinkedMultiValueMap<>();
+        switch (Objects.requireNonNull(grantType)) {
+            case PASSWORD: {
+                form.add("grant_type", "password");
+                form.add("client_id", clientId);
+                form.add("username", username);
+                form.add("password", password);
+                addIfPresent(form, "client_secret", clientSecret);
+                addIfPresent(form, "scope", scope);
+                return form;
+            }
+            case CLIENT_CREDENTIALS: {
+                form.add("grant_type", "client_credentials");
+                form.add("client_id", clientId);
+                form.add("client_secret", clientSecret);
+                addIfPresent(form, "resource", resource);
+                addIfPresent(form, "scope", scope);
+                return form;
+            }
+            case AUTHORIZATION_CODE: {
+                form.add("grant_type", "authorization_code");
+                form.add("client_id", clientId);
+                form.add("code", code);
+                form.add("redirect_uri", redirectUri);
+                addIfPresent(form, "client_secret", clientSecret);
+                addIfPresent(form, "code_verifier", codeVerifier);
+                return form;
+            }
+        }
+        return form;
+    }
+
+    private static void addIfPresent(MultiValueMap<String, String> map, String key, String value) {
+        if (value != null && !value.isBlank()) {
+            map.add(key, value);
+        }
     }
 
     public void validateRequiredGrantTypeParameters() {

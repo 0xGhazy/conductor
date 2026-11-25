@@ -71,7 +71,7 @@ public class HttpWorkerTaskDto {
     private Map<String, String> headers = new HashMap<>();
 
     @Builder.Default
-    private Object body = new HashMap<>();
+    private Object body = null;
 
     @JsonProperty("timeoutMs")
     public void setTimeoutMs(Integer timeoutMs) {
@@ -93,11 +93,7 @@ public class HttpWorkerTaskDto {
     }
 
     public void setBody(Object rawBody) {
-        if (rawBody == null) {
-            this.body = new HashMap<>();
-        } else {
-            this.body = rawBody;
-        }
+        this.body = rawBody;
     }
 
     @SuppressWarnings("unchecked")

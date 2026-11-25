@@ -15,7 +15,7 @@
  */
 package com.vodafone.vss.weaver.tasks.http.security;
 
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpHeaders;
 
 import com.vodafone.vss.weaver.common.StringUtils;
 import com.vodafone.vss.weaver.common.http.HttpConnectionModel;
@@ -40,11 +40,11 @@ public class ApiKey implements AuthStrategy {
     }
 
     @Override
-    public WebClient.RequestHeadersSpec<?> apply(WebClient.RequestHeadersSpec<?> req) {
+    public void apply(HttpHeaders headers) {
         if (header == null || header.isBlank() || apiKey == null || apiKey.isBlank()) {
             throw new IllegalStateException("header and apiKey are required for ApiKey authentication");
         }
-        return req.header(header, apiKey);
+        headers.add(header, apiKey);
     }
 
     @Override

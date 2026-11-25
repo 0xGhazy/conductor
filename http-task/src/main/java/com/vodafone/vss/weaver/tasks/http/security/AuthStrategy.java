@@ -15,15 +15,17 @@
  */
 package com.vodafone.vss.weaver.tasks.http.security;
 
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpHeaders;
 
 /**
- * Strategy interface for mutating outbound reactive WebClient requests with credentials.
+ * Strategy interface for applying credentials to outbound HTTP request headers.
  */
 public interface AuthStrategy {
 
-    WebClient.RequestHeadersSpec<?> apply(WebClient.RequestHeadersSpec<?> req);
+    void apply(HttpHeaders headers);
 
     boolean testAuthentication();
+
+    default void shutdown() {}
 }
 
